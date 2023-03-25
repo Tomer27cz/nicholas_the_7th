@@ -1,0 +1,674 @@
+{
+    "Alternative Times Radio": {
+        "name": "Alternative Times Radio",
+        "url": "https://radia.cz/radio-alternative-times-radio-playlist",
+        "stream": "https://ice2.abradio.cz/alternative128.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015642862823690362/radio0.png",
+        "type": "radia_cz"
+    },
+    "\u010cesk\u00fd rozhlas Brno": {
+        "name": "\u010cesk\u00fd rozhlas Brno",
+        "url": "https://radia.cz/radio-cesky-rozhlas-brno-playlist",
+        "stream": "https://rozhlas.stream/brno_low.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015642864606248960/radio1.png",
+        "type": "radia_cz"
+    },
+    "\u010cesk\u00fd rozhlas \u010cesk\u00e9 Bud\u011bjovice": {
+        "name": "\u010cesk\u00fd rozhlas \u010cesk\u00e9 Bud\u011bjovice",
+        "url": "https://radia.cz/radio-cesky-rozhlas-ceske-budejovice-playlist",
+        "stream": "https://rozhlas.stream/ceske_budejovice_low.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015642866124587068/radio2.png",
+        "type": "radia_cz"
+    },
+    "\u010cesk\u00fd rozhlas D-dur": {
+        "name": "\u010cesk\u00fd rozhlas D-dur",
+        "url": "https://radia.cz/radio-cesky-rozhlas-d-dur-info",
+        "stream": "https://rozhlas.stream/ddur_high.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015642867718438942/radio3.png",
+        "type": "radia_cz"
+    },
+    "\u010cesk\u00fd rozhlas Dvojka": {
+        "name": "\u010cesk\u00fd rozhlas Dvojka",
+        "url": "https://radia.cz/radio-cesky-rozhlas-dvojka-playlist",
+        "stream": "https://rozhlas.stream/dvojka_high.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015642868972523611/radio4.png",
+        "type": "radia_cz"
+    },
+    "\u010cesk\u00fd rozhlas Hradec Kr\u00e1lov\u00e9": {
+        "name": "\u010cesk\u00fd rozhlas Hradec Kr\u00e1lov\u00e9",
+        "url": "https://radia.cz/radio-cesky-rozhlas-hradec-kralove-playlist",
+        "stream": "https://rozhlas.stream/hradec_kralove_low.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015642872709648494/radio5.png",
+        "type": "radia_cz"
+    },
+    "\u010cesk\u00fd rozhlas Jazz": {
+        "name": "\u010cesk\u00fd rozhlas Jazz",
+        "url": "https://radia.cz/radio-cesky-rozhlas-jazz-info",
+        "stream": "https://rozhlas.stream/jazz_high.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015642874144108625/radio6.png",
+        "type": "radia_cz"
+    },
+    "\u010cesk\u00fd rozhlas Karlovy Vary": {
+        "name": "\u010cesk\u00fd rozhlas Karlovy Vary",
+        "url": "https://radia.cz/radio-cesky-rozhlas-karlovy-vary-playlist",
+        "stream": "https://rozhlas.stream/karlovy_vary_low.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015642875519844412/radio7.png",
+        "type": "radia_cz"
+    },
+    "\u010cesk\u00fd rozhlas Liberec": {
+        "name": "\u010cesk\u00fd rozhlas Liberec",
+        "url": "https://radia.cz/radio-cesky-rozhlas-liberec-playlist",
+        "stream": "https://rozhlas.stream/liberec_aac_64.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015642877306613820/radio8.png",
+        "type": "radia_cz"
+    },
+    "\u010cesk\u00fd rozhlas Olomouc": {
+        "name": "\u010cesk\u00fd rozhlas Olomouc",
+        "url": "https://radia.cz/radio-cesky-rozhlas-olomouc-playlist",
+        "stream": "https://rozhlas.stream/olomouc.mp3",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015642878728470528/radio9.png",
+        "type": "radia_cz"
+    },
+    "\u010cesk\u00fd rozhlas Ostrava": {
+        "name": "\u010cesk\u00fd rozhlas Ostrava",
+        "url": "https://radia.cz/radio-cesky-rozhlas-ostrava-playlist",
+        "stream": "https://rozhlas.stream/ostrava_low.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015642883052814396/radio10.png",
+        "type": "radia_cz"
+    },
+    "\u010cesk\u00fd rozhlas Pardubice": {
+        "name": "\u010cesk\u00fd rozhlas Pardubice",
+        "url": "https://radia.cz/radio-cesky-rozhlas-pardubice-playlist",
+        "stream": "https://rozhlas.stream/pardubice_low.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015642884290129951/radio11.png",
+        "type": "radia_cz"
+    },
+    "\u010cesk\u00fd rozhlas Plus": {
+        "name": "\u010cesk\u00fd rozhlas Plus",
+        "url": "https://radia.cz/radio-cesky-rozhlas-plus-playlist",
+        "stream": "https://rozhlas.stream/plus.mp3",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015642885724569641/radio12.png",
+        "type": "radia_cz"
+    },
+    "\u010cesk\u00fd rozhlas Plze\u0148": {
+        "name": "\u010cesk\u00fd rozhlas Plze\u0148",
+        "url": "https://radia.cz/radio-cesky-rozhlas-plzen-playlist",
+        "stream": "https://rozhlas.stream/plzen_low.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015642888048226415/radio13.png",
+        "type": "radia_cz"
+    },
+    "\u010cesk\u00fd rozhlas Pohoda": {
+        "name": "\u010cesk\u00fd rozhlas Pohoda",
+        "url": "https://radia.cz/radio-cesky-rozhlas-pohoda-playlist",
+        "stream": "https://rozhlas.stream/pohoda_high.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015642890418016296/radio14.png",
+        "type": "radia_cz"
+    },
+    "\u010cesk\u00fd rozhlas Radio DAB Praha": {
+        "name": "\u010cesk\u00fd rozhlas Radio DAB Praha",
+        "url": "https://radia.cz/radio-cesky-rozhlas-regina-dab-praha-playlist",
+        "stream": "https://rozhlas.stream/radio_dab_praha_low.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015642893576314951/radio15.png",
+        "type": "radia_cz"
+    },
+    "\u010cesk\u00fd rozhlas R\u00e1dio Junior": {
+        "name": "\u010cesk\u00fd rozhlas R\u00e1dio Junior",
+        "url": "https://radia.cz/radio-cesky-rozhlas-radio-junior-playlist",
+        "stream": "https://rozhlas.stream/radio_junior_high.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015642895312765051/radio16.png",
+        "type": "radia_cz"
+    },
+    "\u010cesk\u00fd rozhlas Radio Wave": {
+        "name": "\u010cesk\u00fd rozhlas Radio Wave",
+        "url": "https://radia.cz/radio-cesky-rozhlas-radio-wave-playlist",
+        "stream": "https://rozhlas.stream/radio_wave.mp3",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015642896667508776/radio17.png",
+        "type": "radia_cz"
+    },
+    "\u010cesk\u00fd rozhlas Radio\u017eurn\u00e1l": {
+        "name": "\u010cesk\u00fd rozhlas Radio\u017eurn\u00e1l",
+        "url": "https://radia.cz/radio-cesky-rozhlas-radiozurnal-playlist",
+        "stream": "https://rozhlas.stream/radiozurnal_high.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015642898236186744/radio18.png",
+        "type": "radia_cz"
+    },
+    "\u010cesk\u00fd rozhlas Region": {
+        "name": "\u010cesk\u00fd rozhlas Region",
+        "url": "https://radia.cz/radio-cesky-rozhlas-region-playlist",
+        "stream": "https://rozhlas.stream/region_aac_64.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015642899725160458/radio19.png",
+        "type": "radia_cz"
+    },
+    "\u010cesk\u00fd rozhlas Sever": {
+        "name": "\u010cesk\u00fd rozhlas Sever",
+        "url": "https://radia.cz/radio-cesky-rozhlas-sever-playlist",
+        "stream": "https://rozhlas.stream/sever_low.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015642903298724001/radio20.png",
+        "type": "radia_cz"
+    },
+    "\u010cesk\u00fd rozhlas Vltava": {
+        "name": "\u010cesk\u00fd rozhlas Vltava",
+        "url": "https://radia.cz/radio-cesky-rozhlas-vltava-info",
+        "stream": "https://rozhlas.stream/vltava_high.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015642904552812565/radio21.png",
+        "type": "radia_cz"
+    },
+    "\u010cesk\u00fd rozhlas Vyso\u010dina": {
+        "name": "\u010cesk\u00fd rozhlas Vyso\u010dina",
+        "url": "https://radia.cz/radio-cesky-rozhlas-vysocina-playlist",
+        "stream": "https://rozhlas.stream/vysocina_low.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015642906708680724/radio22.png",
+        "type": "radia_cz"
+    },
+    "\u010cesk\u00fd rozhlas Zl\u00edn": {
+        "name": "\u010cesk\u00fd rozhlas Zl\u00edn",
+        "url": "https://radia.cz/radio-cesky-rozhlas-zlin-playlist",
+        "stream": "https://rozhlas.stream/zlin_low.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015642908315111485/radio23.png",
+        "type": "radia_cz"
+    },
+    "Coop TIP R\u00e1dio": {
+        "name": "Coop TIP R\u00e1dio",
+        "url": "https://radia.cz/radio-coop-tip-radio-playlist",
+        "stream": "https://ice2.abradio.cz/coop64.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015642910806519818/radio24.png",
+        "type": "radia_cz"
+    },
+    "Country Radio": {
+        "name": "Country Radio",
+        "url": "https://radia.cz/radio-country-playlist",
+        "stream": "https://ice5.abradio.cz/countryradio128.mp3",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015642913025294448/radio25.png",
+        "type": "radia_cz"
+    },
+    "Dance Club Radio": {
+        "name": "Dance Club Radio",
+        "url": "https://radia.cz/radio-dance-radio-playlist",
+        "stream": "https://ice2.abradio.cz/dance128.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015642916649173183/radio26.png",
+        "type": "radia_cz"
+    },
+    "Drumandbass Radio SHADOWBOX": {
+        "name": "Drumandbass Radio SHADOWBOX",
+        "url": "https://radia.cz/radio-drumandbass-radio-shadowbox-playlist",
+        "stream": "https://ice3.abradio.cz/shadowbox128.mp3",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015642918196887652/radio27.png",
+        "type": "radia_cz"
+    },
+    "E-R\u00e1dio JAZZINEC": {
+        "name": "E-R\u00e1dio JAZZINEC",
+        "url": "https://radia.cz/radio-e-radio-jazzinec-playlist",
+        "stream": "https://ice2.abradio.cz/jazzinec128.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015642920302415983/radio28.png",
+        "type": "radia_cz"
+    },
+    "Fajn Fresh Radio": {
+        "name": "Fajn Fresh Radio",
+        "url": "https://radia.cz/radio-fajn-radio-fresh-playlist",
+        "stream": "https://ice2.abradio.cz/fajnfresh128.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015642921862701116/radio29.png",
+        "type": "radia_cz"
+    },
+    "Fajn Radio": {
+        "name": "Fajn Radio",
+        "url": "https://radia.cz/radio-fajn-radio-playlist",
+        "stream": "https://20853.live.streamtheworld.com/FAJN_RADIO.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015642923267784825/radio30.png",
+        "type": "radia_cz"
+    },
+    "HipHopVibes Radio": {
+        "name": "HipHopVibes Radio",
+        "url": "https://radia.cz/radio-hiphopvibes-radio-playlist",
+        "stream": "https://ice4.abradio.cz/hiphopvibes128.mp3",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643118428762192/radio31.png",
+        "type": "radia_cz"
+    },
+    "Hitr\u00e1dio \u010cern\u00e1 Hora": {
+        "name": "Hitr\u00e1dio \u010cern\u00e1 Hora",
+        "url": "https://radia.cz/radio-cerna-hora-playlist",
+        "stream": "https://25583.live.streamtheworld.com/HITRADIO_CERNAHORA.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643120383316101/radio32.png",
+        "type": "radia_cz"
+    },
+    "Hitr\u00e1dio City 93,7 FM": {
+        "name": "Hitr\u00e1dio City 93,7 FM",
+        "url": "https://radia.cz/radio-hitradio-city-praha-playlist",
+        "stream": "https://25583.live.streamtheworld.com/HITRADIO_CITY_PRAHA.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643122203623465/radio33.png",
+        "type": "radia_cz"
+    },
+    "Hitr\u00e1dio City Brno": {
+        "name": "Hitr\u00e1dio City Brno",
+        "url": "https://radia.cz/radio-hitradio-city-brno-playlist",
+        "stream": "https://ice.abradio.cz/citybrno128.mp3",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643124011380846/radio34.png",
+        "type": "radia_cz"
+    },
+    "Hitr\u00e1dio Des\u00edtka": {
+        "name": "Hitr\u00e1dio Des\u00edtka",
+        "url": "https://radia.cz/radio-hitradio-desitka-playlist",
+        "stream": "https://ice2.abradio.cz/hit10128.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643126150475796/radio35.png",
+        "type": "radia_cz"
+    },
+    "Hitr\u00e1dio Devades\u00e1tka": {
+        "name": "Hitr\u00e1dio Devades\u00e1tka",
+        "url": "https://radia.cz/radio-hitradio-90tka-playlist",
+        "stream": "https://ice2.abradio.cz/hit90128.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643128398614528/radio36.png",
+        "type": "radia_cz"
+    },
+    "Hitr\u00e1dio Faktor": {
+        "name": "Hitr\u00e1dio Faktor",
+        "url": "https://radia.cz/radio-hitradio-faktor-playlist",
+        "stream": "https://20423.live.streamtheworld.com/HITRADIO_FAKTOR.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643130239909889/radio37.png",
+        "type": "radia_cz"
+    },
+    "Hitr\u00e1dio FM Plus": {
+        "name": "Hitr\u00e1dio FM Plus",
+        "url": "https://radia.cz/radio-hitradio-fm-plus-playlist",
+        "stream": "https://ice2.abradio.cz/fmplus64.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643132630683688/radio38.png",
+        "type": "radia_cz"
+    },
+    "Hitr\u00e1dio Mil\u00e9nium": {
+        "name": "Hitr\u00e1dio Mil\u00e9nium",
+        "url": "https://radia.cz/radio-hitradio-milenium-playlist",
+        "stream": "https://ice2.abradio.cz/hitmi128.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643134002212965/radio39.png",
+        "type": "radia_cz"
+    },
+    "Hitr\u00e1dio North Music": {
+        "name": "Hitr\u00e1dio North Music",
+        "url": "https://radia.cz/radio-hitradio-north-music-playlist",
+        "stream": "https://25583.live.streamtheworld.com/HITRADIO_FM.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643135868674098/radio40.png",
+        "type": "radia_cz"
+    },
+    "Hitr\u00e1dio Orion": {
+        "name": "Hitr\u00e1dio Orion",
+        "url": "https://radia.cz/radio-hitradio-orion-playlist",
+        "stream": "https://20423.live.streamtheworld.com/HITRADIO_ORION.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643138754355322/radio41.png",
+        "type": "radia_cz"
+    },
+    "Hitr\u00e1dio Osmdes\u00e1tka": {
+        "name": "Hitr\u00e1dio Osmdes\u00e1tka",
+        "url": "https://radia.cz/radio-hitradio-80tka-playlist",
+        "stream": "https://25583.live.streamtheworld.com/HITRADIO_OSMDESATKA.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643140042018896/radio42.png",
+        "type": "radia_cz"
+    },
+    "Hitr\u00e1dio PopRock": {
+        "name": "Hitr\u00e1dio PopRock",
+        "url": "https://radia.cz/radio-hitradio-poprock-playlist",
+        "stream": "https://ice2.abradio.cz/hitpoprock128.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643141472268390/radio43.png",
+        "type": "radia_cz"
+    },
+    "Hitr\u00e1dio Vyso\u010dina": {
+        "name": "Hitr\u00e1dio Vyso\u010dina",
+        "url": "https://radia.cz/radio-hitradio-vysocina-playlist",
+        "stream": "https://20423.live.streamtheworld.com/HITRADIO_VYSOCINA.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643143607169045/radio44.png",
+        "type": "radia_cz"
+    },
+    "Hitr\u00e1dio Zl\u00edn": {
+        "name": "Hitr\u00e1dio Zl\u00edn",
+        "url": "https://radia.cz/radio-hitradio-zlin-playlist",
+        "stream": "https://ice.abradio.cz/radiozlin128.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643146253770882/radio45.png",
+        "type": "radia_cz"
+    },
+    "Hitr\u00e1dio Z\u00f3na l\u00e1sky": {
+        "name": "Hitr\u00e1dio Z\u00f3na l\u00e1sky",
+        "url": "https://radia.cz/radio-hitradio-zona-lasky-playlist",
+        "stream": "https://ice2.abradio.cz/hitzl128.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643148959092746/radio46.png",
+        "type": "radia_cz"
+    },
+    "Kostka R\u00e1dio": {
+        "name": "Kostka R\u00e1dio",
+        "url": "https://radia.cz/radio-kostka-radio-playlist",
+        "stream": "https://ice6.abradio.cz/kostka128.mp3",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643150531969045/radio47.png",
+        "type": "radia_cz"
+    },
+    "Max R\u00e1dio Online": {
+        "name": "Max R\u00e1dio Online",
+        "url": "https://radia.cz/radio-max-radio-online-info",
+        "stream": "https://ice5.abradio.cz/maxradio128.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643153119854652/radio48.png",
+        "type": "radia_cz"
+    },
+    "Metalom\u00e1nie": {
+        "name": "Metalom\u00e1nie",
+        "url": "https://radia.cz/radio-metalomanie-playlist",
+        "stream": "https://ice2.abradio.cz/metalomanie128.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643154386538526/radio49.png",
+        "type": "radia_cz"
+    },
+    "Oldies radio": {
+        "name": "Oldies radio",
+        "url": "https://radia.cz/radio-oldies-radio-playlist",
+        "stream": "https://ice.abradio.cz/oldiesradio128.mp3",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643155762253834/radio50.png",
+        "type": "radia_cz"
+    },
+    "Radio 1": {
+        "name": "Radio 1",
+        "url": "https://radia.cz/radio-radio-1-playlist",
+        "stream": "https://ice5.abradio.cz/radio1-128.mp3",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643158756986910/radio51.png",
+        "type": "radia_cz"
+    },
+    "Radio 66": {
+        "name": "Radio 66",
+        "url": "https://radia.cz/radio-route-66-info",
+        "stream": "https://ice2.abradio.cz/route64.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643160317284462/radio52.png",
+        "type": "radia_cz"
+    },
+    "Radio Beat": {
+        "name": "Radio Beat",
+        "url": "https://radia.cz/radio-beat-playlist",
+        "stream": "https://ice6.abradio.cz/beat128.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643161995001907/radio53.png",
+        "type": "radia_cz"
+    },
+    "R\u00e1dio Bene\u0161ov City": {
+        "name": "R\u00e1dio Bene\u0161ov City",
+        "url": "https://radia.cz/radio-benesov-city-playlist",
+        "stream": "https://ice2.abradio.cz/benesov64.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643164062777466/radio54.png",
+        "type": "radia_cz"
+    },
+    "Radio Best of Rock": {
+        "name": "Radio Best of Rock",
+        "url": "https://radia.cz/radio-best-of-rock-playlist",
+        "stream": "https://ice2.abradio.cz/bestofrock128.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643165467885588/radio55.png",
+        "type": "radia_cz"
+    },
+    "R\u00e1dio BLAN\u00cdK": {
+        "name": "R\u00e1dio BLAN\u00cdK",
+        "url": "https://radia.cz/radio-blanik-playlist",
+        "stream": "https://23563.live.streamtheworld.com/RADIO_BLANIK.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643169448267786/radio56.png",
+        "type": "radia_cz"
+    },
+    "R\u00e1dio BLAN\u00cdK - Morava a Slezsko": {
+        "name": "R\u00e1dio BLAN\u00cdK - Morava a Slezsko",
+        "url": "https://radia.cz/radio-blanik-morava-playlist",
+        "stream": "https://ice2.abradio.cz/blanikmorava128.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643170824003624/radio57.png",
+        "type": "radia_cz"
+    },
+    "R\u00e1dio BLAN\u00cdK CZ": {
+        "name": "R\u00e1dio BLAN\u00cdK CZ",
+        "url": "https://radia.cz/radio-blanik-cz-playlist",
+        "stream": "https://22183.live.streamtheworld.com/RADIO_BLANIKCZ.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643172082286663/radio58.png",
+        "type": "radia_cz"
+    },
+    "R\u00e1dio BOHEMIA": {
+        "name": "R\u00e1dio BOHEMIA",
+        "url": "https://radia.cz/radio-bohemia-info",
+        "stream": "https://stream-radiobohemia.cz:8443/stream128.mp3",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643173558693928/radio59.png",
+        "type": "radia_cz"
+    },
+    "Radio Chillout": {
+        "name": "Radio Chillout",
+        "url": "https://radia.cz/radio-chillout-playlist",
+        "stream": "https://ice2.abradio.cz/chillout128.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643175626481664/radio60.png",
+        "type": "radia_cz"
+    },
+    "Radio Depeche Mode": {
+        "name": "Radio Depeche Mode",
+        "url": "https://radia.cz/radio-depeche-mode-playlist",
+        "stream": "https://ice4.abradio.cz/depeche128.mp3",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643371848609983/radio61.png",
+        "type": "radia_cz"
+    },
+    "Radio Domino": {
+        "name": "Radio Domino",
+        "url": "https://radia.cz/radio-domino-playlist",
+        "stream": "https://ice4.abradio.cz/domino128.mp3",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643374381957170/radio62.png",
+        "type": "radia_cz"
+    },
+    "Radio Expert": {
+        "name": "Radio Expert",
+        "url": "https://radia.cz/radio-expert-playlist",
+        "stream": "https://ice3.abradio.cz/expert-128.mp3",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643378110693466/radio63.png",
+        "type": "radia_cz"
+    },
+    "Radio Folk": {
+        "name": "Radio Folk",
+        "url": "https://radia.cz/radio-folk-playlist",
+        "stream": "https://ice2.abradio.cz/folk64a.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643379545161788/radio64.png",
+        "type": "radia_cz"
+    },
+    "R\u00e1dio Helax": {
+        "name": "R\u00e1dio Helax",
+        "url": "https://radia.cz/radio-helax-937-playlist",
+        "stream": "https://ice2.abradio.cz/helax128.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643381222875236/radio65.png",
+        "type": "radia_cz"
+    },
+    "R\u00e1dio Humor": {
+        "name": "R\u00e1dio Humor",
+        "url": "https://radia.cz/radio-humor-playlist",
+        "stream": "https://20853.live.streamtheworld.com/RADIO_HUMOR.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643383370358794/radio66.png",
+        "type": "radia_cz"
+    },
+    "R\u00e1dio In": {
+        "name": "R\u00e1dio In",
+        "url": "https://radia.cz/radio-radio-in-playlist",
+        "stream": "https://ice5.abradio.cz/inradio128.mp3",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643384502820956/radio67.png",
+        "type": "radia_cz"
+    },
+    "Radio Kiss": {
+        "name": "Radio Kiss",
+        "url": "https://radia.cz/radio-radio-kiss-playlist",
+        "stream": "https://ice5.abradio.cz/kiss128.mp3",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643385706586152/radio68.png",
+        "type": "radia_cz"
+    },
+    "R\u00e1dio MB": {
+        "name": "R\u00e1dio MB",
+        "url": "https://radia.cz/radio-radio-mb-playlist",
+        "stream": "https://ice3.abradio.cz/radiomb64.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643387715665960/radio69.png",
+        "type": "radia_cz"
+    },
+    "Radio Oldies Rock": {
+        "name": "Radio Oldies Rock",
+        "url": "https://radia.cz/radio-oldies-rock-playlist",
+        "stream": "https://ice2.abradio.cz/oldiesrock128.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643390714576976/radio70.png",
+        "type": "radia_cz"
+    },
+    "R\u00e1dio Poh\u00e1dka": {
+        "name": "R\u00e1dio Poh\u00e1dka",
+        "url": "https://radia.cz/radio-pohadka-playlist",
+        "stream": "https://ice2.abradio.cz/pohadka128.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643393277300867/radio71.png",
+        "type": "radia_cz"
+    },
+    "R\u00e1dio Ponte Records": {
+        "name": "R\u00e1dio Ponte Records",
+        "url": "https://radia.cz/radio-ponte-records-playlist",
+        "stream": "https://ice3.abradio.cz/ponterec128.mp3",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643395693223946/radio72.png",
+        "type": "radia_cz"
+    },
+    "R\u00e1dio Pov\u00eddka": {
+        "name": "R\u00e1dio Pov\u00eddka",
+        "url": "https://radia.cz/radio-povidka-playlist",
+        "stream": "https://ice2.abradio.cz/povidka128.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643398415327325/radio73.png",
+        "type": "radia_cz"
+    },
+    "Radio Prague International": {
+        "name": "Radio Prague International",
+        "url": "https://radia.cz/radio-radio-prague-international-info",
+        "stream": "https://rozhlas.stream/radio_prague_int_low.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643400495697960/radio74.png",
+        "type": "radia_cz"
+    },
+    "Radio Spin 96,2 FM": {
+        "name": "Radio Spin 96,2 FM",
+        "url": "https://radia.cz/radio-spin-962-fm-playlist",
+        "stream": "https://n17a-eu.rcs.revma.com/xcvkqtvb938uv?rj-ttl=5&rj-tok=AAABguIsS0QAkMYWxeiA-h_TZg",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643402064367727/radio75.png",
+        "type": "radia_cz"
+    },
+    "R\u00e1dio Tloskov": {
+        "name": "R\u00e1dio Tloskov",
+        "url": "https://radia.cz/radio-tloskov-playlist",
+        "stream": "https://ice2.abradio.cz/tloskov64.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643404425773087/radio76.png",
+        "type": "radia_cz"
+    },
+    "R\u00e1dio Ukrajina": {
+        "name": "R\u00e1dio Ukrajina",
+        "url": "https://radia.cz/radio-ukrajina-playlist",
+        "stream": "https://uk.radia.cz/uk128.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643405700829194/radio77.png",
+        "type": "radia_cz"
+    },
+    "R\u00e1dio Vratislavice": {
+        "name": "R\u00e1dio Vratislavice",
+        "url": "https://radia.cz/radio-vratislavice-playlist",
+        "stream": "https://ice4.abradio.cz/vratislavice128.mp3",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643406967513148/radio78.png",
+        "type": "radia_cz"
+    },
+    "R\u00e1dio Vyso\u010dina": {
+        "name": "R\u00e1dio Vyso\u010dina",
+        "url": "https://radia.cz/radio-vysocina-playlist",
+        "stream": "https://ice3.abradio.cz/radiovysocina64.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643410285199470/radio79.png",
+        "type": "radia_cz"
+    },
+    "R\u00e1dio VY\u0160\u0160\u00cd HLAS": {
+        "name": "R\u00e1dio VY\u0160\u0160\u00cd HLAS",
+        "url": "https://radia.cz/radio-vyssi-hlas-playlist",
+        "stream": "https://ice4.abradio.cz/vyssihlas128.mp3",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643412113932349/radio80.png",
+        "type": "radia_cz"
+    },
+    "R\u00e1dio Zelen\u00e1 Hora": {
+        "name": "R\u00e1dio Zelen\u00e1 Hora",
+        "url": "https://radia.cz/radio-radio-zelena-hora-info",
+        "stream": "https://ice3.abradio.cz/zelenahora64.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643413758083192/radio81.png",
+        "type": "radia_cz"
+    },
+    "Radio\u017eurn\u00e1l Sport": {
+        "name": "Radio\u017eurn\u00e1l Sport",
+        "url": "https://radia.cz/radio-radiozurnal-sport-playlist",
+        "stream": "https://rozhlas.stream/radiozurnal_sport.mp3",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643415528079360/radio82.png",
+        "type": "radia_cz"
+    },
+    "Relaxace - Jedouc\u00ed Vlak": {
+        "name": "Relaxace - Jedouc\u00ed Vlak",
+        "url": "https://radia.cz/radio-relaxace-jedouci-vlak-facebook",
+        "stream": "https://ice6.abradio.cz/relax-train128.mp3",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643417369395200/radio83.png",
+        "type": "radia_cz"
+    },
+    "Relaxace - Letn\u00ed bou\u0159ka": {
+        "name": "Relaxace - Letn\u00ed bou\u0159ka",
+        "url": "https://radia.cz/radio-relaxace-letni-bourka-facebook",
+        "stream": "https://ice6.abradio.cz/relax-thunder-rain128.mp3",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643421353975839/radio84.png",
+        "type": "radia_cz"
+    },
+    "Relaxace - Mo\u0159e": {
+        "name": "Relaxace - Mo\u0159e",
+        "url": "https://radia.cz/radio-relaxace-more-facebook",
+        "stream": "https://ice6.abradio.cz/relax-sea128.mp3",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643422981369956/radio85.png",
+        "type": "radia_cz"
+    },
+    "Relaxace - Ohe\u0148 v krbu": {
+        "name": "Relaxace - Ohe\u0148 v krbu",
+        "url": "https://radia.cz/radio-relaxace-ohen-v-krbu-facebook",
+        "stream": "https://ice6.abradio.cz/relax-fire128.mp3",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643424482922586/radio86.png",
+        "type": "radia_cz"
+    },
+    "Relaxace - Zp\u011bv pt\u00e1k\u016f": {
+        "name": "Relaxace - Zp\u011bv pt\u00e1k\u016f",
+        "url": "https://radia.cz/radio-relaxace-zpev-ptaku-facebook",
+        "stream": "https://ice6.abradio.cz/relax-morning-birds128.mp3",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643426009665597/radio87.png",
+        "type": "radia_cz"
+    },
+    "Rock Radio": {
+        "name": "Rock Radio",
+        "url": "https://radia.cz/radio-rock-radio-playlist",
+        "stream": "https://20853.live.streamtheworld.com/ROCK_RADIO.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643427519602748/radio88.png",
+        "type": "radia_cz"
+    },
+    "Rock Radio Morava": {
+        "name": "Rock Radio Morava",
+        "url": "https://radia.cz/radio-rock-radio-morava-playlist",
+        "stream": "https://ice2.abradio.cz/rockradiomorava128.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643431076368444/radio89.png",
+        "type": "radia_cz"
+    },
+    "Rockov\u00e1 z\u00e1bava": {
+        "name": "Rockov\u00e1 z\u00e1bava",
+        "url": "https://radia.cz/radio-rockova-zabava-playlist",
+        "stream": "https://ice.abradio.cz/rockzabava128.mp3",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643433316130877/radio90.png",
+        "type": "radia_cz"
+    },
+    "Roma R\u00e1dio": {
+        "name": "Roma R\u00e1dio",
+        "url": "https://radia.cz/radio-roma-radio-playlist",
+        "stream": "https://ice5.abradio.cz/romaradio128.mp3",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643624471527494/radio91.png",
+        "type": "radia_cz"
+    },
+    "Sign\u00e1l R\u00e1dio": {
+        "name": "Sign\u00e1l R\u00e1dio",
+        "url": "https://radia.cz/radio-signal-radio-playlist",
+        "stream": "https://ice5.abradio.cz/signal128.mp3",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643625553670154/radio92.png",
+        "type": "radia_cz"
+    },
+    "WebR\u00e1dio Epigon": {
+        "name": "WebR\u00e1dio Epigon",
+        "url": "https://radia.cz/radio-webradio-epigon-playlist",
+        "stream": "https://ice2.abradio.cz/epigon64.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643627009085490/radio93.png",
+        "type": "radia_cz"
+    },
+    "Zn\u00e1mka Punku": {
+        "name": "Zn\u00e1mka Punku",
+        "url": "https://radia.cz/radio-znamka-punku-playlist",
+        "stream": "https://ice2.abradio.cz/znamkapunku128.aac",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643629848637450/radio94.png",
+        "type": "radia_cz"
+    },
+    "Evropa 2": {
+        "name": "Evropa 2",
+        "url": "https://rds.actve.net/v1/metadata/channel/evropa2",
+        "stream": "https://25223.live.streamtheworld.com/EVROPA2AAC",
+        "thumbnail": "https://static.mytuner.mobi/media/tvos_radios/4eYJ2UArA8.png",
+        "type": "actve"
+    }
+}

@@ -1,0 +1,105 @@
+{
+    "837695985625858048": {
+        "options": {
+            "guild_id": 837695985625858048,
+            "stopped": false,
+            "loop": false,
+            "is_radio": false,
+            "language": "cs",
+            "response_type": "short",
+            "search_query": "Never gonna give you up",
+            "buttons": false,
+            "volume": 1.0,
+            "buffer": 600
+        },
+        "queue": {},
+        "search_list": {},
+        "now_playing": {
+            "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+            "author": 349164237605568513,
+            "title": "Rick Astley - Never Gonna Give You Up (Official Music Video)",
+            "picture": "https://img.youtube.com/vi/dQw4w9WgXcQ/default.jpg",
+            "duration": "212",
+            "channel_name": "Rick Astley",
+            "channel_link": "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw"
+        }
+    },
+    "1008145667622969397": {
+        "options": {
+            "guild_id": 1008145667622969397,
+            "stopped": true,
+            "loop": false,
+            "is_radio": false,
+            "language": "cs",
+            "response_type": "short",
+            "search_query": "Never gonna give you up",
+            "buttons": false,
+            "volume": 1.0,
+            "buffer": 600
+        },
+        "queue": {
+            "0": {
+                "url": "https://www.youtube.com/watch?v=IpPIK4T068s",
+                "author": 349164237605568513,
+                "title": "Test Drive (From How To Train Your Dragon Music From The Motion Picture)",
+                "picture": "https://img.youtube.com/vi/IpPIK4T068s/default.jpg",
+                "duration": "156",
+                "channel_name": "John Powell - Topic",
+                "channel_link": "https://www.youtube.com/channel/UC1u5DtpzQE05T2P_NMg-a7Q"
+            },
+            "1": {
+                "url": "https://www.youtube.com/watch?v=IpPIK4T068s",
+                "author": 349164237605568513,
+                "title": "Test Drive (From How To Train Your Dragon Music From The Motion Picture)",
+                "picture": "https://img.youtube.com/vi/IpPIK4T068s/default.jpg",
+                "duration": "156",
+                "channel_name": "John Powell - Topic",
+                "channel_link": "https://www.youtube.com/channel/UC1u5DtpzQE05T2P_NMg-a7Q"
+            },
+            "2": {
+                "url": "https://www.youtube.com/watch?v=BM8gC3Oj0OA",
+                "author": 349164237605568513,
+                "title": "Where No One Goes",
+                "picture": "https://img.youtube.com/vi/BM8gC3Oj0OA/default.jpg",
+                "duration": "165",
+                "channel_name": "John Powell - Topic",
+                "channel_link": "https://www.youtube.com/channel/UC1u5DtpzQE05T2P_NMg-a7Q"
+            }
+        },
+        "search_list": {},
+        "now_playing": {
+            "url": "https://www.youtube.com/watch?v=IpPIK4T068s",
+            "author": 349164237605568513,
+            "title": "Test Drive (From How To Train Your Dragon Music From The Motion Picture)",
+            "picture": "https://img.youtube.com/vi/IpPIK4T068s/default.jpg",
+            "duration": "156",
+            "channel_name": "John Powell - Topic",
+            "channel_link": "https://www.youtube.com/channel/UC1u5DtpzQE05T2P_NMg-a7Q"
+        }
+    },
+    "892403162315644928": {
+        "options": {
+            "guild_id": 892403162315644928,
+            "stopped": true,
+            "loop": false,
+            "is_radio": false,
+            "language": "cs",
+            "response_type": "short",
+            "search_query": "hdbcshdvhjksbhjibvkhjsdbuhkifvvhdsauihujisbvbfujisdbnaujkgfbnjhb",
+            "buttons": false,
+            "volume": 1.0,
+            "buffer": 600
+        },
+        "queue": {},
+        "search_list": {},
+        "now_playing": {
+            "url": null,
+            "author": 349164237605568513,
+            "title": "seal",
+            "picture": "https://cdn.discordapp.com/attachments/892403162315644931/1008054767379030096/vlc.png",
+            "duration": "00:30",
+            "channel_name": "Local file",
+            "channel_link": "Local file"
+        }
+    }
+}
