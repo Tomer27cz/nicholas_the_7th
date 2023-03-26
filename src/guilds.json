@@ -12,14 +12,27 @@
             "volume": 1.0,
             "buffer": 600
         },
+        "data": {
+            "name": null,
+            "id": null,
+            "member_count": null,
+            "owner_id": null,
+            "created_at": null,
+            "description": null,
+            "large": null,
+            "icon": null,
+            "banner": null,
+            "splash": null,
+            "discovery_splash": null
+        },
         "queue": {},
         "search_list": {},
         "now_playing": {
             "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
             "author": 349164237605568513,
-            "title": "Rick Astley - Never Gonna Give You Up (Official Music Video)",
+            "title": "Never gonna give you up",
             "picture": "https://img.youtube.com/vi/dQw4w9WgXcQ/default.jpg",
-            "duration": "212",
+            "duration": "3:33",
             "channel_name": "Rick Astley",
             "channel_link": "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw"
         }
@@ -27,7 +40,7 @@
     "1008145667622969397": {
         "options": {
             "guild_id": 1008145667622969397,
-            "stopped": true,
+            "stopped": false,
             "loop": false,
             "is_radio": false,
             "language": "cs",
@@ -37,69 +50,69 @@
             "volume": 1.0,
             "buffer": 600
         },
-        "queue": {
-            "0": {
-                "url": "https://www.youtube.com/watch?v=IpPIK4T068s",
-                "author": 349164237605568513,
-                "title": "Test Drive (From How To Train Your Dragon Music From The Motion Picture)",
-                "picture": "https://img.youtube.com/vi/IpPIK4T068s/default.jpg",
-                "duration": "156",
-                "channel_name": "John Powell - Topic",
-                "channel_link": "https://www.youtube.com/channel/UC1u5DtpzQE05T2P_NMg-a7Q"
-            },
-            "1": {
-                "url": "https://www.youtube.com/watch?v=IpPIK4T068s",
-                "author": 349164237605568513,
-                "title": "Test Drive (From How To Train Your Dragon Music From The Motion Picture)",
-                "picture": "https://img.youtube.com/vi/IpPIK4T068s/default.jpg",
-                "duration": "156",
-                "channel_name": "John Powell - Topic",
-                "channel_link": "https://www.youtube.com/channel/UC1u5DtpzQE05T2P_NMg-a7Q"
-            },
-            "2": {
-                "url": "https://www.youtube.com/watch?v=BM8gC3Oj0OA",
-                "author": 349164237605568513,
-                "title": "Where No One Goes",
-                "picture": "https://img.youtube.com/vi/BM8gC3Oj0OA/default.jpg",
-                "duration": "165",
-                "channel_name": "John Powell - Topic",
-                "channel_link": "https://www.youtube.com/channel/UC1u5DtpzQE05T2P_NMg-a7Q"
-            }
+        "data": {
+            "name": "Tomer27cz's server",
+            "id": 1008145667622969397,
+            "member_count": 6,
+            "owner_id": 349164237605568513,
+            "owner_name": "Tomer27cz",
+            "created_at": "13/08/2022 22:50:57",
+            "description": null,
+            "large": false,
+            "icon": null,
+            "banner": null,
+            "splash": null,
+            "discovery_splash": null
         },
+        "queue": {},
         "search_list": {},
         "now_playing": {
-            "url": "https://www.youtube.com/watch?v=IpPIK4T068s",
+            "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
             "author": 349164237605568513,
-            "title": "Test Drive (From How To Train Your Dragon Music From The Motion Picture)",
-            "picture": "https://img.youtube.com/vi/IpPIK4T068s/default.jpg",
-            "duration": "156",
-            "channel_name": "John Powell - Topic",
-            "channel_link": "https://www.youtube.com/channel/UC1u5DtpzQE05T2P_NMg-a7Q"
+            "title": "Never gonna give you up",
+            "picture": "https://img.youtube.com/vi/dQw4w9WgXcQ/default.jpg",
+            "duration": "3:33",
+            "channel_name": "Rick Astley",
+            "channel_link": "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw"
         }
     },
     "892403162315644928": {
         "options": {
             "guild_id": 892403162315644928,
-            "stopped": true,
+            "stopped": false,
             "loop": false,
             "is_radio": false,
             "language": "cs",
             "response_type": "short",
-            "search_query": "hdbcshdvhjksbhjibvkhjsdbuhkifvvhdsauihujisbvbfujisdbnaujkgfbnjhb",
+            "search_query": "Never gonna give you up",
             "buttons": false,
             "volume": 1.0,
             "buffer": 600
         },
+        "data": {
+            "name": "pog",
+            "id": 892403162315644928,
+            "member_count": 6,
+            "owner_id": 349164237605568513,
+            "owner_name": "Tomer27cz",
+            "created_at": "28/09/2021 13:31:33",
+            "description": null,
+            "large": false,
+            "icon": "https://cdn.discordapp.com/icons/892403162315644928/ddf21b11faf19f03dafe5d0289996fa1.png?size=1024",
+            "banner": null,
+            "splash": null,
+            "discovery_splash": null
+        },
         "queue": {},
         "search_list": {},
         "now_playing": {
-            "url": null,
+            "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
             "author": 349164237605568513,
-            "title": "seal",
-            "picture": "https://cdn.discordapp.com/attachments/892403162315644931/1008054767379030096/vlc.png",
-            "duration": "00:30",
-            "channel_name": "Local file",
-            "channel_link": "Local file"
+            "title": "Never gonna give you up",
+            "picture": "https://img.youtube.com/vi/dQw4w9WgXcQ/default.jpg",
+            "duration": "3:33",
+            "channel_name": "Rick Astley",
+            "channel_link": "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw"
         }
     }
 }

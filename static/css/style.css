@@ -1,0 +1,16 @@
+
+body {
+    background-color: #2d3339;
+    color: white;
+    font-family: 'Consolas';
+}
+
+td {
+    vertical-align: middle;
+}
+
+.index-align {
+    text-align: center;
+    font-size: 20px;
+}
+
