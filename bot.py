@@ -266,7 +266,7 @@ class Guild:
                                  duration='3:33',
                                  channel_name='Rick Astley',
                                  channel_link='https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw')
-        self.data = GuildData(guild_id)
+        # self.data = GuildData(guild_id)
 
 
 # -------- Get SoundEffects ------------
@@ -350,8 +350,8 @@ def guild_to_json(guild_object):
             queue_dict[index] = video_to_json(video)
 
     guild_dict['options'] = guild_object.options.__dict__
-    guild_dict['data'] = GuildData(guild_object.options.guild_id).__dict__
-    print(guild_dict['data'])
+    # guild_dict['data'] = GuildData(guild_object.options.guild_id).__dict__
+    # print(guild_dict['data'])
     guild_dict['queue'] = queue_dict
     guild_dict['search_list'] = search_dict
     guild_dict['now_playing'] = video_to_json(guild_object.now_playing)
@@ -388,7 +388,7 @@ def json_to_guild(guild_dict):
     # guild_object.options = Options(guild_dict['options']['guild_id'])
     # options_time = time.time() - start_time - guild_time
     guild_object.options.__dict__ = guild_dict['options']
-    guild_object.data.__dict__ = guild_dict['data']
+    # guild_object.data.__dict__ = guild_dict['data']
     guild_object.queue = [json_to_video(video_dict) for video_dict in guild_dict['queue'].values()]
     guild_object.search_list = [json_to_video(video_dict) for video_dict in guild_dict['search_list'].values()]
     guild_object.now_playing = json_to_video(guild_dict['now_playing'])
@@ -1442,7 +1442,7 @@ async def remove_def(ctx: commands.Context,
     if not display_type:
         display_type = guild[guild_id].options.response_type
 
-    if number:
+    if number or number == 0 or number == '0':
         if number > len(guild[guild_id].queue):
             if not guild[guild_id].queue:
                 await ctx.reply(tg(guild_id, "Nothing to **remove**, queue is **empty!**"), ephemeral=True)
@@ -2529,8 +2529,9 @@ from quart import Quart, render_template, request, redirect, url_for, flash, jso
 
 
 # --------------------------------------------- WEB SERVER --------------------------------------------- #
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 
-app = Quart(__name__)
+app = Flask(__name__)
 
 @app.route('/')
 async def index_page():
@@ -2545,10 +2546,22 @@ async def guild_page(guild_id):
     guild_object = guild[int(guild_id)]
     return render_template('guild.html', guild=guild_object, convert_duration=convert_duration)
 
-from multiprocessing import Process
+# from multiprocessing import Process
 
-Process(target=app.run()).start()
-Process(target=bot.run, kwargs={'api_key': api_key}).start()
+# Process(target=app.run()).start()
+# Process(target=bot.run, kwargs={'api_key': api_key}).start()
 
+import threading
+
+web_thread = threading.Thread(target=app.run)
+bot_thread = threading.Thread(target=bot.run, kwargs={'token':api_key})
+
+web_thread.start()
+bot_thread.start()
+
+web_thread.join()
+bot_thread.join()
+
+# bot.run(token=api_key)
 
 # bot.run(api_key)
