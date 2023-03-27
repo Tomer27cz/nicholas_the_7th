@@ -108,6 +108,11 @@ class Bot(commands.Bot):
 
 # ---------------- Data Classes ------------
 
+class WebData:
+    def __init__(self, guild_id, author):
+        self.guild_id = guild_id
+        self.author = author
+
 
 class Options:
     def __init__(self, guild_id):
@@ -266,7 +271,7 @@ class Guild:
                                  duration='3:33',
                                  channel_name='Rick Astley',
                                  channel_link='https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw')
-        # self.data = GuildData(guild_id)
+        self.data = GuildData(guild_id)
 
 
 # -------- Get SoundEffects ------------
@@ -291,7 +296,7 @@ def print_command(ctx, text_data, opt, text_only=False):
 
     if not text_only:
         message = f"{now_time.strftime('(CET) %d/%m/%Y %X')} | {ctx.guild.id} | Command ({text_data}) was requested by" \
-                  f" ({ctx.message.author}) -- (options: {opt})"
+                  f" ({ctx.message.author}) -> {opt}"
 
     print(message)
     message += "\n"
@@ -302,6 +307,16 @@ def print_command(ctx, text_data, opt, text_only=False):
 def print_function(ctx, text_data, opt):
     now_time = datetime.datetime.now(datetime.timezone(datetime.timedelta(seconds=3600), 'CET'))
     message = f"{now_time.strftime('(CET) %d/%m/%Y %X')} | {ctx.guild.id} | {text_data} -> {opt}"
+
+    print(message)
+    message += "\n"
+
+    with open("log.txt", "a", encoding="utf-8") as f:
+        f.write(message)
+
+def print_web(web_data, command, opt):
+    now_time = datetime.datetime.now(datetime.timezone(datetime.timedelta(seconds=3600), 'CET'))
+    message = f"{now_time.strftime('(CET) %d/%m/%Y %X')} | {web_data.guild_id} | Command ({command}) was requested by ({web_data.author}) -> {opt}"
 
     print(message)
     message += "\n"
@@ -350,8 +365,7 @@ def guild_to_json(guild_object):
             queue_dict[index] = video_to_json(video)
 
     guild_dict['options'] = guild_object.options.__dict__
-    # guild_dict['data'] = GuildData(guild_object.options.guild_id).__dict__
-    # print(guild_dict['data'])
+    guild_dict['data'] = GuildData(guild_object.options.guild_id).__dict__
     guild_dict['queue'] = queue_dict
     guild_dict['search_list'] = search_dict
     guild_dict['now_playing'] = video_to_json(guild_object.now_playing)
@@ -385,10 +399,8 @@ def json_to_video(video_dict):
 
 def json_to_guild(guild_dict):
     guild_object = Guild(guild_dict['options']['guild_id'])
-    # guild_object.options = Options(guild_dict['options']['guild_id'])
-    # options_time = time.time() - start_time - guild_time
     guild_object.options.__dict__ = guild_dict['options']
-    # guild_object.data.__dict__ = guild_dict['data']
+    guild_object.data.__dict__ = guild_dict['data']
     guild_object.queue = [json_to_video(video_dict) for video_dict in guild_dict['queue'].values()]
     guild_object.search_list = [json_to_video(video_dict) for video_dict in guild_dict['search_list'].values()]
     guild_object.now_playing = json_to_video(guild_dict['now_playing'])
@@ -448,11 +460,11 @@ if build_new_guilds:
     with open('src/guilds.json', 'w') as file:
         try:
             json = json.dumps(guilds_to_json(guild), indent=4)
-        except Exception as e:
-            print(e)
-            exit(1)
+        except Exception as exception:
+            print(exception)
+            sys.exit(1)
         file.write(json)
-    exit(1)
+    sys.exit(1)
 
 
 with open('src/guilds.json', 'r') as file:
@@ -2181,7 +2193,7 @@ async def kys_def(ctx: commands.Context):
     print_function(ctx, 'kys_def', [])
     guild_id = ctx.guild.id
     await ctx.reply(tg(guild_id, "Committing seppuku..."))
-    exit(3)
+    sys.exit(3)
 
 
 async def config_command_def(ctx: commands.Context,
@@ -2336,6 +2348,158 @@ async def probe_command_def(ctx: commands.Context,
         await ctx.reply(f'Error: {e}', ephemeral=ephemeral)
 
     save_json()
+
+# --------------------------------------------- WEB COMMANDS -----------------------------------------------------------
+
+async def web_remove(web_data, number):
+    print_web(web_data, 'web_remove', [number])
+    guild_id = web_data.guild_id
+    queue_length = len(guild[guild_id].queue)
+
+    if queue_length == 0:
+        print_message(guild_id, "web_remove -> No songs in queue")
+        return 'No songs in queue'
+
+    if type(number) is not int:
+        try:
+            number = int(number)
+        except ValueError:
+            print_message(guild_id, "web_remove -> Number must be an integer")
+            return 'Number must be an integer (Internal web error -> contact developer)'
+
+    if queue_length-1 >= number >= 0:
+        video = guild[guild_id].queue[number]
+        guild[guild_id].queue.pop(number)
+
+        save_json()
+
+        return f"Removed #{number} : {video.title}"
+
+    print_message(guild_id, "web_remove -> Number must be between 0 and {queue_length - 1}")
+    return f'Number must be between 0 and {queue_length - 1}'
+
+async def web_move(web_data, org_number, destination_number):
+    print_web(web_data, 'web_move', [org_number, destination_number])
+    guild_id = web_data.guild_id
+    queue_length = len(guild[guild_id].queue)
+
+    if queue_length == 0:
+        print_message(guild_id, "web_move -> No songs in queue")
+        return 'No songs in queue'
+
+    if type(org_number) is not int:
+        try:
+            org_number = int(org_number)
+        except ValueError:
+            print_message(guild_id, "web_move -> Original number must be an integer")
+            return 'Original number must be an integer (Internal web error -> contact developer)'
+
+    if type(destination_number) is not int:
+        try:
+            destination_number = int(destination_number)
+        except ValueError:
+            print_message(guild_id, "web_move -> Destination number must be an integer")
+            return 'Destination number must be an integer (Internal web error -> contact developer)'
+
+    if queue_length-1 >= org_number >= 0:
+        if queue_length-1 >= destination_number >= 0:
+            video = guild[guild_id].queue.pop(org_number)
+            guild[guild_id].queue.insert(destination_number, video)
+
+            save_json()
+
+            return f"Moved #{org_number} to #{destination_number} : {video.title}"
+
+        print_message(guild_id, "web_move -> Destination number must be between 0 and {queue_length - 1}")
+        return f'Destination number must be between 0 and {queue_length - 1}'
+    print_message(guild_id, "web_move -> Original number must be between 0 and {queue_length - 1}")
+    return f'Original number must be between 0 and {queue_length - 1}'
+
+async def web_up(web_data, number):
+    print_web(web_data, 'web_up', [number])
+    guild_id = web_data.guild_id
+    queue_length = len(guild[guild_id].queue)
+
+    if type(number) is not int:
+        try:
+            number = int(number)
+        except ValueError:
+            print_message(guild_id, "web_up -> Number must be an integer")
+            return 'Number must be an integer (Internal web error -> contact developer)'
+
+    if queue_length == 0:
+        print_message(guild_id, "web_up -> No songs in queue")
+        return 'No songs in queue'
+
+    if number == 0:
+        return await web_move(web_data, 0, queue_length-1)
+
+    return await web_move(web_data, number, number-1)
+
+async def web_down(web_data, number):
+    print_web(web_data, 'web_down', [number])
+    guild_id = web_data.guild_id
+    queue_length = len(guild[guild_id].queue)
+
+    if type(number) is not int:
+        try:
+            number = int(number)
+        except ValueError:
+            print_message(guild_id, "web_down -> Number must be an integer")
+            return 'Number must be an integer (Internal web error -> contact developer)'
+
+    if queue_length == 0:
+        print_message(guild_id, "web_down -> No songs in queue")
+        return 'No songs in queue'
+
+    if number == queue_length-1:
+        return await web_move(web_data, number, 0)
+
+    return await web_move(web_data, number, number+1)
+
+async def web_top(web_data, number):
+    print_web(web_data, 'web_top', [number])
+    guild_id = web_data.guild_id
+    queue_length = len(guild[guild_id].queue)
+
+    if type(number) is not int:
+        try:
+            number = int(number)
+        except ValueError:
+            print_message(guild_id, "web_top -> Number must be an integer")
+            return 'Number must be an integer (Internal web error -> contact developer)'
+
+    if queue_length == 0:
+        print_message(guild_id, "web_top -> No songs in queue")
+        return 'No songs in queue'
+
+    if number == 0:
+        print_message(guild_id, "web_top -> Already at the top")
+        return 'Already at the top'
+
+    return await web_move(web_data, number, 0)
+
+async def web_bottom(web_data, number):
+    print_web(web_data, 'web_bottom', [number])
+    guild_id = web_data.guild_id
+    queue_length = len(guild[guild_id].queue)
+
+    if type(number) is not int:
+        try:
+            number = int(number)
+        except ValueError:
+            print_message(guild_id, "web_bottom -> Number must be an integer")
+            return 'Number must be an integer (Internal web error -> contact developer)'
+
+    if queue_length == 0:
+        print_message(guild_id, "web_bottom -> No songs in queue")
+        return 'No songs in queue'
+
+    if number == queue_length-1:
+        print_message(guild_id, "web_bottom -> Already at the bottom")
+        return 'Already at the bottom'
+
+    return await web_move(web_data, number, queue_length-1)
 
 
 
@@ -2520,16 +2684,9 @@ async def help_command(ctx: commands.Context,
 
     await ctx.reply(embed=embed, ephemeral=True)
 
-
-# ------------------------------------------------------- WEB SERVER ---------------------------------------------------
-
-from quart import Quart, render_template, request, redirect, url_for, flash, jsonify
-
-
-
-
 # --------------------------------------------- WEB SERVER --------------------------------------------- #
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
+import threading
 
 app = Flask(__name__)
 
@@ -2543,15 +2700,28 @@ async def about_page():
 
 @app.route('/guild/<guild_id>', methods=['GET', 'POST'])
 async def guild_page(guild_id):
-    guild_object = guild[int(guild_id)]
-    return render_template('guild.html', guild=guild_object, convert_duration=convert_duration)
+    if request.method == 'POST':
 
-# from multiprocessing import Process
+        web_data = WebData(int(guild_id), 'author')
 
-# Process(target=app.run()).start()
-# Process(target=bot.run, kwargs={'api_key': api_key}).start()
+        keys = request.form.keys()
+        if 'del_btn' in keys:
+            await web_remove(web_data, request.form['del_btn'])
+        if 'up_btn' in keys:
+            await web_up(web_data, request.form['up_btn'])
+        if 'down_btn' in keys:
+            await web_down(web_data, request.form['down_btn'])
+        if 'top_btn' in keys:
+            await web_top(web_data, request.form['top_btn'])
+        if 'bottom_btn' in keys:
+            await web_bottom(web_data, request.form['bottom_btn'])
 
-import threading
+    try:
+        guild_object = guild[int(guild_id)]
+        return render_template('guild.html', guild=guild_object, convert_duration=convert_duration)
+    except
+
+# run
 
 web_thread = threading.Thread(target=app.run)
 bot_thread = threading.Thread(target=bot.run, kwargs={'token':api_key})
@@ -2561,7 +2731,3 @@ bot_thread.start()
 
 web_thread.join()
 bot_thread.join()
-
-# bot.run(token=api_key)
-
-# bot.run(api_key)

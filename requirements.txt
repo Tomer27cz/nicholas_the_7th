@@ -10,3 +10,5 @@ beautifulsoup4
 urllib3
 lxml
 yt_dlp
+asgiref
+flask

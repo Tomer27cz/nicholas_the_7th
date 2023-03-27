@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html class="has-background-link-light">
+<head>
+  <title>Random joke</title>
+  <script src="https://unpkg.com/htmx.org@1.7.0"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+</head>
+ 
+<body>
+  <section class="section">
+    <div class="container">
+      <div class="columns is-multiline is-centered">
+        <div class="column is-8 has-text-centered">
+          <h2 class="mt-2 mb-4 is-size-1 is-size-3-mobile has-text-weight-bold has-text-success-dark">
+            Get a random Joke </h2>
+          <p class="subtitle has-text-grey mb-5">Wait for a Joke or push button</p>
+          <div class="buttons is-centered">
+            <a class="button is-warning ml-4" hx-get="/joke" hx-target="#output_api">Get Joke</a>
+            <p hidden hx-get="/joke" hx-target="#output_api" hx-trigger="every 15s">Chuck Joke</p>
+          </div>
+          <p id="output_api" class="subtitle has-text-grey mt-6"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+</body>
+</html>
