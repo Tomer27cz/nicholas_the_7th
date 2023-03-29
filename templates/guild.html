@@ -7,6 +7,29 @@
 {% block content %}
     <h1>About</h1>
     <p>Some information about the site.</p>
+    <div>
+        <h2>Current Guild</h2>
+        <p>{{guild.data.name}}</p>
+        <h2>Now Playing</h2>
+        <table class="table table-dark table-group-divider">
+            <tr>
+                <td class="index-align"><img src="{{guild.now_playing.picture}}" alt="thumbnail"></td>
+                <td>{{convert_duration(guild.now_playing.duration)}}</td>
+                <td>{{guild.now_playing.author}}</td>
+                <td><a href="{{guild.now_playing.url}}">{{guild.now_playing.title}}</a></td>
+                <td><a href="{{guild.now_playing.channel_link}}">{{guild.now_playing.channel_name}}</a></td>
+                <td>
+                    <form action="#" method="POST">
+                        <button class="btn btn-outline btn-danger btn-sm" type="submit" name="stop_btn">Stop</button>
+                        <button class="btn btn-outline btn-success btn-sm" type="submit" name="pause_btn">Pause</button>
+                        <button class="btn btn-outline btn-success btn-sm" type="submit" name="resume_btn">Resume</button>
+                        <button class="btn btn-outline btn-success btn-sm" type="submit" name="skip_btn">Skip</button>
+                    </form>
+                </td>
+            </tr>
+        </table>
+    </div>
+
     <form method="POST" action="#">
         <table class="table table-dark table-group-divider">
           <thead>

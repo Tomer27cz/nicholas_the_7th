@@ -26,7 +26,6 @@ import functools
 
 # ---------------- Bot class ------------
 
-
 class Bot(commands.Bot):
     def __init__(self):
         intents = discord.Intents.all()
@@ -60,6 +59,32 @@ class Bot(commands.Bot):
 
     async def on_voice_state_update(self, member, before, after):
         voice_state = member.guild.voice_client
+
+        if before.channel is not None:
+            before_state = before.channel.guild.voice_client
+        else:
+            before_state = None
+
+        if after.channel is not None:
+            after_state = after.channel.guild.voice_client
+        else:
+            after_state = None
+
+        print(before_state)
+        print(after_state)
+        print(voice_state)
+
+        if voice_state is not None:
+            if before_state:
+                if not after_state:
+                    return
+                print(after_state.is_playing())
+                print(before_state.is_playing())
+
+                if before_state.is_playing() and not after_state.is_playing():
+                    print("was playing and now is not")
+
+
         if voice_state is not None and len(voice_state.channel.members) == 1:
             after.channel.guild.voice_client.stop()
             await voice_state.disconnect()
@@ -264,7 +289,8 @@ class Guild:
         self.options = Options(guild_id)
         self.queue = []
         self.search_list = []
-        self.now_playing = Video(url='https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+        self.now_playing = None
+        self.last_played = Video(url='https://www.youtube.com/watch?v=dQw4w9WgXcQ',
                                  author=bot.get_user(my_id),
                                  title='Never gonna give you up',
                                  picture='https://img.youtube.com/vi/dQw4w9WgXcQ/default.jpg',
@@ -337,6 +363,8 @@ def print_message(guild_id, content):
 # ---------------------------------------------- GUILD TO JSON ---------------------------------------------------------
 
 def video_to_json(video):
+    if video is None:
+        return None
     try:
         author = video.author.id
     except AttributeError:
@@ -369,6 +397,7 @@ def guild_to_json(guild_object):
     guild_dict['queue'] = queue_dict
     guild_dict['search_list'] = search_dict
     guild_dict['now_playing'] = video_to_json(guild_object.now_playing)
+    guild_dict['last_played'] = video_to_json(guild_object.last_played)
 
     return guild_dict
 
@@ -382,6 +411,8 @@ def guilds_to_json(guild_dict):
 # ---------------------------------------------- JSON TO GUILD ---------------------------------------------------------
 
 def json_to_video(video_dict):
+    if not video_dict:
+        return None
     try:
         author = bot.get_user(video_dict['author'])
     except AttributeError:
@@ -404,6 +435,7 @@ def json_to_guild(guild_dict):
     guild_object.queue = [json_to_video(video_dict) for video_dict in guild_dict['queue'].values()]
     guild_object.search_list = [json_to_video(video_dict) for video_dict in guild_dict['search_list'].values()]
     guild_object.now_playing = json_to_video(guild_dict['now_playing'])
+    guild_object.last_played = json_to_video(guild_dict['last_played'])
 
     return guild_object
 
@@ -1622,22 +1654,24 @@ async def search_command_def(ctx: commands.Context,
 
 async def play_def(ctx: commands.Context,
                url=None,
-               force=False
+               force=False,
+               mute_response=False
                ):
-    print_function(ctx, 'play_def', [url, force])
+    print_function(ctx, 'play_def', [url, force, mute_response])
     response = []
     guild_id = ctx.guild.id
 
     if url == 'next':
         if guild[guild_id].options.stopped:
-            print_message(guild_id, "stopped")
+            print_message(guild_id, "play_def -> stopped play next loop")
             return
 
     voice = ctx.voice_client
 
     if not voice or voice is None:
         if ctx.author.voice is None:
-            await ctx.reply(tg(guild_id, "You are **not connected** to a voice channel"))
+            if not mute_response:
+                await ctx.reply(tg(guild_id, "You are **not connected** to a voice channel"))
             return
 
 
@@ -1664,20 +1698,24 @@ async def play_def(ctx: commands.Context,
         if not guild[guild_id].options.is_radio and not force:
             if url and not force:
                 if response:
-                    await ctx.reply(f'{tg(guild_id, "**Already playing**, added to queue")}: [`{response[2].title}`](<{response[2].url}>)')
-                    return
-                await ctx.reply(f'{tg(guild_id, "**Already playing**, added to queue")}')
-                return
-            await ctx.reply(tg(guild_id, "**Already playing**"), ephemeral=True)
-            return
+                    if not mute_response:
+                        await ctx.reply(f'{tg(guild_id, "**Already playing**, added to queue")}: [`{response[2].title}`](<{response[2].url}>)')
+                    return 'already playing, added to queue'
+                if not mute_response:
+                    await ctx.reply(f'{tg(guild_id, "**Already playing**, added to queue")}')
+                return 'already playing, added to queue'
+            if not mute_response:
+                await ctx.reply(tg(guild_id, "**Already playing**"), ephemeral=True)
+            return 'already playing'
         voice.stop()
         guild[guild_id].options.stopped = True
         guild[guild_id].options.is_radio = False
 
     if not guild[guild_id].queue:
         if url != 'next':
-            await ctx.reply(tg(guild_id, "There is **nothing** in your **queue**"))
-        return
+            if not mute_response:
+                await ctx.reply(tg(guild_id, "There is **nothing** in your **queue**"))
+        return 'nothing in queue'
 
     video = guild[guild_id].queue[0]
     if not force:
@@ -1686,6 +1724,8 @@ async def play_def(ctx: commands.Context,
     try:
         source = await YTDLSource.create_source(ctx, video.url)  # loop=bot.loop  va_list[0]
         voice.play(source, after=lambda e: asyncio.run_coroutine_threadsafe(play_def(ctx, 'next'), bot.loop))
+
+        await volume_command_def(ctx, guild[guild_id].options.volume * 100, False, True)
 
         guild[guild_id].options.stopped = False
         guild[guild_id].now_playing = video
@@ -1700,17 +1740,19 @@ async def play_def(ctx: commands.Context,
         if guild[guild_id].options.response_type == 'long':
             embed = create_embed(video, "Now playing", guild_id)
             if guild[guild_id].options.buttons:
-                await ctx.reply(embed=embed, view=view)
+                if not mute_response:
+                    await ctx.reply(embed=embed, view=view)
             else:
-                await ctx.reply(embed=embed)
+                if not mute_response:
+                    await ctx.reply(embed=embed)
 
         if guild[guild_id].options.response_type == 'short':
             if guild[guild_id].options.buttons:
-                await ctx.reply(f'{tg(guild_id, "Now playing")} [`{video.title}`](<{video.url}>)', view=view)
+                if not mute_response:
+                    await ctx.reply(f'{tg(guild_id, "Now playing")} [`{video.title}`](<{video.url}>)', view=view)
             else:
-                await ctx.reply(f'{tg(guild_id, "Now playing")} [`{video.title}`](<{video.url}>)')
-
-        await volume_command_def(ctx, guild[guild_id].options.volume*100, False, True)
+                if not mute_response:
+                    await ctx.reply(f'{tg(guild_id, "Now playing")} [`{video.title}`](<{video.url}>)')
 
         save_json()
 
@@ -2066,7 +2108,7 @@ async def volume_command_def(ctx: commands.Context,
 
 async def ping_def(ctx: commands.Context):
     print_function(ctx, 'ping_def', [])
-    await ctx.reply(f'**Pong!** Latency: {round(bot.latency * 1000)}ms')
+    await ctx.reply(f'**Pong!** Latency: {round(bot.latency * 1000)}ms ------ {ctx.guild.voice_client.is_playing()}')
     save_json()
 
 
@@ -2501,7 +2543,112 @@ async def web_bottom(web_data, number):
 
     return await web_move(web_data, number, queue_length-1)
 
+async def web_stop(web_data):
+    print_web(web_data, 'web_stop', [])
+    guild_id = web_data.guild_id
+    guild_object = bot.get_guild(int(guild_id))
+    voice = guild_object.voice_client
 
+    if voice is None:
+        print_message(guild_id, "web_stop -> Not in a voice channel")
+        return 'Not in a voice channel'
+
+    if not voice.is_playing():
+        print_message(guild_id, "web_stop -> Not playing")
+        return 'Not playing'
+
+    if voice.is_playing():
+        guild[guild_id].options.stopped = True
+        voice.stop()
+        save_json()
+        print_message(guild_id, "web_stop -> Stopped")
+        return 'Stopped playing'
+
+    print_message(guild_id, "web_stop -> Unknown error")
+    return 'Unknown error'
+
+async def web_pause(web_data):
+    print_web(web_data, 'web_pause', [])
+    guild_id = web_data.guild_id
+    guild_object = bot.get_guild(int(guild_id))
+    voice = guild_object.voice_client
+
+    if voice is None:
+        print_message(guild_id, "web_pause -> Not in a voice channel")
+        return 'Not in a voice channel'
+
+    if not voice.is_playing():
+        print_message(guild_id, "web_pause -> Not playing")
+        return 'Not playing'
+
+    if voice.is_playing():
+        voice.pause()
+        save_json()
+        print_message(guild_id, "web_pause -> Paused")
+        return 'Stopped playing'
+
+    print_message(guild_id, "web_pause -> Unknown error")
+    return 'Unknown error'
+
+async def web_resume(web_data):
+    print_web(web_data, 'web_resume', [])
+    guild_id = web_data.guild_id
+    guild_object = bot.get_guild(int(guild_id))
+    voice = guild_object.voice_client
+
+    if voice is None:
+        print_message(guild_id, "web_resume -> Not in a voice channel")
+        return 'Not in a voice channel'
+
+    if voice.is_playing():
+        if voice.is_paused():
+            voice.resume()
+            save_json()
+            print_message(guild_id, "web_resume -> Resumed")
+            return 'Resumed playing'
+        print_message(guild_id, "web_resume -> Nothing paused")
+        return 'Nothing paused'
+
+    if not voice.is_playing():
+        save_json()
+        print_message(guild_id, "web_resume -> Nothing paused")
+        return 'Nothing paused'
+
+
+
+    print_message(guild_id, "web_resume -> Unknown error")
+    return 'Unknown error'
+
+async def web_skip(web_data):
+    print_web(web_data, 'web_skip', [])
+    guild_id = web_data.guild_id
+    guild_object = bot.get_guild(int(guild_id))
+    voice = guild_object.voice_client
+
+    if voice is None:
+        print_message(guild_id, "web_skip -> Not in a voice channel")
+        return 'Not in a voice channel'
+
+    if not voice.is_playing():
+        print_message(guild_id, "web_skip -> Not playing")
+        return 'Not playing'
+
+    if voice.is_playing():
+        voice.stop()
+        save_json()
+        print_message(guild_id, "web_skip -> Stopped")
+        return 'Stopped playing'
+
+    print_message(guild_id, "web_skip -> Unknown error")
+    return 'Unknown error'
+
+async def web_play(web_data, url):
+    print_web(web_data, 'web_play', [url])
+    guild_id = web_data.guild_id
+    guild_object = bot.get_guild(int(guild_id))
+    voice = guild_object.voice_client
+
+    await guild_object.system_channel.send('cock.log')
 
 # --------------------------------------------- HELP COMMAND -----------------------------------------------------------
 
@@ -2715,11 +2862,19 @@ async def guild_page(guild_id):
             await web_top(web_data, request.form['top_btn'])
         if 'bottom_btn' in keys:
             await web_bottom(web_data, request.form['bottom_btn'])
-
+        if 'stop_btn' in keys:
+            await web_stop(web_data)
+        if 'pause_btn' in keys:
+            await web_pause(web_data)
+        if 'resume_btn' in keys:
+            await web_resume(web_data)
+        if 'skip_btn' in keys:
+            await web_skip(web_data)
     try:
         guild_object = guild[int(guild_id)]
         return render_template('guild.html', guild=guild_object, convert_duration=convert_duration)
-    except
+    except KeyError:
+        return render_template('no_guild.html', guild_id=guild_id)
 
 # run
 
