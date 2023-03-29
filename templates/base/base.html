@@ -13,9 +13,12 @@
     </script>
   </head>
   <body>
-    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-md navbar-dark nav-discord" data-bs-theme="dark">
       <div class="container-fluid">
-        <a class="navbar-brand" href="#">{{ nav_title }}</a>
+        <a class="navbar-brand" href="#">
+          <img src="/static/img/bot_icon.png" alt="Logo" width="30" height="30" class="d-inline-block align-text-top">
+          {{nav_title}}
+        </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -25,7 +28,14 @@
               <a class="nav-link" href="/">Home</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="about">About</a>
+              <a class="nav-link" href="/guild">Servers</a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="/contact">Contact</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/about">About</a>
             </li>
             {% block nav_items %}{% endblock %}
           </ul>

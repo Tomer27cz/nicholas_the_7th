@@ -60,35 +60,36 @@ class Bot(commands.Bot):
     async def on_voice_state_update(self, member, before, after):
         voice_state = member.guild.voice_client
 
-        if before.channel is not None:
-            before_state = before.channel.guild.voice_client
-        else:
-            before_state = None
-
-        if after.channel is not None:
-            after_state = after.channel.guild.voice_client
-        else:
-            after_state = None
-
-        print(before_state)
-        print(after_state)
-        print(voice_state)
-
-        if voice_state is not None:
-            if before_state:
-                if not after_state:
-                    return
-                print(after_state.is_playing())
-                print(before_state.is_playing())
-
-                if before_state.is_playing() and not after_state.is_playing():
-                    print("was playing and now is not")
-
+        # if before.channel is not None:
+        #     before_state = before.channel.guild.voice_client
+        # else:
+        #     before_state = None
+        #
+        # if after.channel is not None:
+        #     after_state = after.channel.guild.voice_client
+        # else:
+        #     after_state = None
+        #
+        # print(before_state)
+        # print(after_state)
+        # print(voice_state)
+        #
+        # if voice_state is not None:
+        #     if before_state:
+        #         if not after_state:
+        #             return
+        #         print(after_state.is_playing())
+        #         print(before_state.is_playing())
+        #
+        #         if before_state.is_playing() and not after_state.is_playing():
+        #             print("was playing and now is not")
+        #
 
         if voice_state is not None and len(voice_state.channel.members) == 1:
             after.channel.guild.voice_client.stop()
             await voice_state.disconnect()
-            print_message(member.guild.id, "Disconnecting when last person left")
+            print_message(member.guild.id, "-->> Disconnecting when last person left <<--")
+            now_to_last(member.guild.id)
         if not member.id == self.user.id:
             return
         elif before.channel is None:
@@ -103,7 +104,8 @@ class Bot(commands.Bot):
                     guild[member.guild.id].options.stopped = True
                     voice.stop()
                     await voice.disconnect()
-                    print_message(member.guild.id, f"Disconnecting after {guild[member.guild.id].options.buffer} seconds of nothing playing")
+                    print_message(member.guild.id, f"-->> Disconnecting after {guild[member.guild.id].options.buffer} seconds of nothing playing <<--")
+                    now_to_last(member.guild.id)
                 if not voice.is_connected():
                     break
 
@@ -179,6 +181,23 @@ class GuildData:
             else:self.discovery_splash = None
 
         else:
+            if 'guild' in globals():
+                if guild:
+                    if guild_id in guild.keys():
+                        if guild[guild_id].data.name is not None:
+                            self.name = guild[guild_id].data.name
+                            self.id = guild[guild_id].data.id
+                            self.member_count = guild[guild_id].data.member_count
+                            self.owner_id = guild[guild_id].data.owner_id
+                            self.created_at = guild[guild_id].data.created_at
+                            self.description = guild[guild_id].data.description
+                            self.large = guild[guild_id].data.large
+                            self.icon = guild[guild_id].data.icon
+                            self.banner = guild[guild_id].data.banner
+                            self.splash = guild[guild_id].data.splash
+                            self.discovery_splash = guild[guild_id].data.discovery_splash
+                            return
+
             self.name = None
             self.id = None
             self.member_count = None
@@ -206,13 +225,12 @@ class Video:
             except Exception as e:
                 raise ValueError(f"Not a youtube link: {e}")
 
-
         self.title = title
         self.picture = picture
         self.duration = duration
         self.channel_name = channel_name
         self.channel_link = channel_link
-
+        self.type = 'Video'
 
         if video:
             self.title = video['title']
@@ -226,7 +244,7 @@ class Video:
 
 
 class Radio:
-    def __init__(self, name, author):
+    def __init__(self, name, author, url=None, picture=None, duration=None, channel_name=None, channel_link=None, radio_website=None):
         self.author = author
         self.url = radio_dict[name]['url']
 
@@ -236,6 +254,7 @@ class Radio:
         self.title = name
         self.duration = 'Stream'
         self.radio_website = radio_dict[name]['type']
+        self.type = 'Radio'
 
     def renew(self):
         if self.radio_website == 'radia_cz':
@@ -257,7 +276,7 @@ class Radio:
 
 
 class LocalFile:
-    def __init__(self, title, duration, author):
+    def __init__(self, title, duration, author, number):
         self.url = None
         self.author = author
         self.title = title
@@ -265,6 +284,8 @@ class LocalFile:
         self.duration = duration
         self.channel_name = 'Local file'
         self.channel_link = 'Local file'
+        self.number = number
+        self.type = 'LocalFile'
 
     def renew(self):
         pass
@@ -279,6 +300,7 @@ class FromProbe:
         self.duration = duration
         self.channel_name = channel_name
         self.channel_link = channel_link
+        self.type = 'FromProbe'
 
     def renew(self):
         pass
@@ -291,7 +313,7 @@ class Guild:
         self.search_list = []
         self.now_playing = None
         self.last_played = Video(url='https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-                                 author=bot.get_user(my_id),
+                                 author=my_id,
                                  title='Never gonna give you up',
                                  picture='https://img.youtube.com/vi/dQw4w9WgXcQ/default.jpg',
                                  duration='3:33',
@@ -316,13 +338,9 @@ def load_sound_effects():
 
 # ------------ PRINT --------------------
 
-def print_command(ctx, text_data, opt, text_only=False):
+def print_command(ctx, text_data, opt):
     now_time = datetime.datetime.now(datetime.timezone(datetime.timedelta(seconds=3600), 'CET'))
-    message = f"{now_time.strftime('(CET) %d/%m/%Y %X')} | {ctx.guild.id} | {text_data}: {opt}"
-
-    if not text_only:
-        message = f"{now_time.strftime('(CET) %d/%m/%Y %X')} | {ctx.guild.id} | Command ({text_data}) was requested by" \
-                  f" ({ctx.message.author}) -> {opt}"
+    message = f"{now_time.strftime('(CET) %d/%m/%Y %X')} | C {ctx.guild.id} | Command ({text_data}) was requested by ({ctx.message.author}) -> {opt}"
 
     print(message)
     message += "\n"
@@ -332,7 +350,7 @@ def print_command(ctx, text_data, opt, text_only=False):
 
 def print_function(ctx, text_data, opt):
     now_time = datetime.datetime.now(datetime.timezone(datetime.timedelta(seconds=3600), 'CET'))
-    message = f"{now_time.strftime('(CET) %d/%m/%Y %X')} | {ctx.guild.id} | {text_data} -> {opt}"
+    message = f"{now_time.strftime('(CET) %d/%m/%Y %X')} | F {ctx.guild.id} | {text_data} -> {opt}"
 
     print(message)
     message += "\n"
@@ -342,7 +360,7 @@ def print_function(ctx, text_data, opt):
 
 def print_web(web_data, command, opt):
     now_time = datetime.datetime.now(datetime.timezone(datetime.timedelta(seconds=3600), 'CET'))
-    message = f"{now_time.strftime('(CET) %d/%m/%Y %X')} | {web_data.guild_id} | Command ({command}) was requested by ({web_data.author}) -> {opt}"
+    message = f"{now_time.strftime('(CET) %d/%m/%Y %X')} | W {web_data.guild_id} | Command ({command}) was requested by ({web_data.author}) -> {opt}"
 
     print(message)
     message += "\n"
@@ -352,7 +370,7 @@ def print_web(web_data, command, opt):
 
 def print_message(guild_id, content):
     now_time = datetime.datetime.now(datetime.timezone(datetime.timedelta(seconds=3600), 'CET'))
-    message = f"{now_time.strftime('(CET) %d/%m/%Y %X')} | {guild_id} | {content}"
+    message = f"{now_time.strftime('(CET) %d/%m/%Y %X')} | M {guild_id} | {content}"
 
     print(message)
     message += "\n"
@@ -362,22 +380,22 @@ def print_message(guild_id, content):
 
 # ---------------------------------------------- GUILD TO JSON ---------------------------------------------------------
 
-def video_to_json(video):
-    if video is None:
-        return None
-    try:
-        author = video.author.id
-    except AttributeError:
-        author = my_id
-
-    video_dict = {'url': video.url,
-                  'author': author,
-                  'title': video.title,
-                  'picture': video.picture,
-                  'duration': video.duration,
-                  'channel_name': video.channel_name,
-                  'channel_link': video.channel_link}
-    return video_dict
+# def video_to_json(video):
+#     if video is None:
+#         return None
+#     try:
+#         author = video.author.id
+#     except AttributeError:
+#         author = my_id
+#
+#     video_dict = {'url': video.url,
+#                   'author': author,
+#                   'title': video.title,
+#                   'picture': video.picture,
+#                   'duration': video.duration,
+#                   'channel_name': video.channel_name,
+#                   'channel_link': video.channel_link}
+#     return video_dict
 
 
 def guild_to_json(guild_object):
@@ -386,18 +404,24 @@ def guild_to_json(guild_object):
     queue_dict = {}
     if guild_object.search_list:
         for index, video in enumerate(guild_object.search_list):
-            search_dict[index] = video_to_json(video)
+            search_dict[index] = video.__dict__
 
     if guild_object.queue:
         for index, video in enumerate(guild_object.queue):
-            queue_dict[index] = video_to_json(video)
+            queue_dict[index] = video.__dict__
 
     guild_dict['options'] = guild_object.options.__dict__
     guild_dict['data'] = GuildData(guild_object.options.guild_id).__dict__
     guild_dict['queue'] = queue_dict
     guild_dict['search_list'] = search_dict
-    guild_dict['now_playing'] = video_to_json(guild_object.now_playing)
-    guild_dict['last_played'] = video_to_json(guild_object.last_played)
+    if guild_object.now_playing:
+        guild_dict['now_playing'] = guild_object.now_playing.__dict__
+    else:
+        guild_dict['now_playing'] = {}
+    if guild_object.last_played:
+        guild_dict['last_played'] = guild_object.last_played.__dict__
+    else:
+        guild_dict['last_played'] = {}
 
     return guild_dict
 
@@ -413,18 +437,42 @@ def guilds_to_json(guild_dict):
 def json_to_video(video_dict):
     if not video_dict:
         return None
-    try:
-        author = bot.get_user(video_dict['author'])
-    except AttributeError:
-        author = bot.get_user(bot_id)
 
-    video = Video(url=video_dict['url'],
-                  author=author,
-                  title=video_dict['title'],
-                  picture=video_dict['picture'],
-                  duration=video_dict['duration'],
-                  channel_name=video_dict['channel_name'],
-                  channel_link=video_dict['channel_link'])
+    video = None
+
+    if video_dict['type'] == 'Video':
+        video = Video(url=video_dict['url'],
+                      author=video_dict['author'],
+                      title=video_dict['title'],
+                      picture=video_dict['picture'],
+                      duration=video_dict['duration'],
+                      channel_name=video_dict['channel_name'],
+                      channel_link=video_dict['channel_link'])
+
+    if video_dict['type'] == 'Radio':
+        video = Radio(url=video_dict['url'],
+                         author=video_dict['author'],
+                         name=video_dict['title'],
+                         picture=video_dict['picture'],
+                         duration=video_dict['duration'],
+                         channel_name=video_dict['channel_name'],
+                         channel_link=video_dict['channel_link'],
+                         radio_website=video_dict['radio_website'])
+
+    if video_dict['type'] == 'LocalFile':
+        video = LocalFile(author=video_dict['author'],
+                          title=video_dict['title'],
+                          duration=video_dict['duration'],
+                          number=video_dict['number'])
+
+    if video_dict['type'] == 'FromProbe':
+        video = FromProbe(url=video_dict['url'],
+                      author=video_dict['author'],
+                      title=video_dict['title'],
+                      duration=video_dict['duration'],
+                      channel_name=video_dict['channel_name'],
+                      channel_link=video_dict['channel_link'])
+
     return video
 
 
@@ -489,14 +537,16 @@ if build_new_guilds:
     with open('src/guilds.json', 'r') as file:
         jf = json.load(file)
     guild = dict(zip(jf.keys(), [Guild(int(guild)) for guild in jf.keys()]))
+
+    try:
+        json = json.dumps(guilds_to_json(guild), indent=4)
+    except Exception as ex:
+        print("something failed, figure it out")
+        print(ex)
+        exit(0)
     with open('src/guilds.json', 'w') as file:
-        try:
-            json = json.dumps(guilds_to_json(guild), indent=4)
-        except Exception as exception:
-            print(exception)
-            sys.exit(1)
         file.write(json)
-    sys.exit(1)
+    exit(0)
 
 
 with open('src/guilds.json', 'r') as file:
@@ -532,6 +582,23 @@ def get_playlist_from_url(url):
     return playlist_url
 
 # -------------- convert / get -----------
+
+def get_username(user_id):
+    try:
+        name = bot.get_user(user_id).name
+        return name
+    except:
+        return user_id
+
+
+def now_to_last(guild_id):
+    if guild[guild_id].now_playing is not None:
+        print(f"{guild[guild_id].now_playing.title} is now the last played song")
+
+        guild[guild_id].last_played = guild[guild_id].now_playing
+        guild[guild_id].now_playing = None
+        save_json()
+
 
 def mp3_length(path_of_mp3):
     audio = MP3(path_of_mp3)
@@ -575,7 +642,7 @@ def create_embed(video, name, guild_id):
         guild[guild_id].now_playing = video
     embed.add_field(name=tg(guild_id, 'Duration'), value=convert_duration(video.duration))
     try:
-        embed.add_field(name=tg(guild_id, 'Requested by'), value=video.author.mention)
+        embed.add_field(name=tg(guild_id, 'Requested by'), value=bot.get_user(video.author).mention)
     except AttributeError:
         embed.add_field(name=tg(guild_id, 'Requested by'), value=video.author)
     embed.add_field(name=tg(guild_id, 'Author'), value=f'[{video.channel_name}]({video.channel_link})')
@@ -1354,7 +1421,7 @@ async def queue_command_def(ctx: commands.Context,
 
             # noinspection PyTypeChecker
             url = f"https://www.youtube.com/watch?v={playlist_videos[index]['id']}"
-            video = Video(url, author)
+            video = Video(url, author.id)
 
             if position or position == 0: guild[guild_id].queue.insert(position, video)
             else: guild[guild_id].queue.append(video)
@@ -1377,7 +1444,7 @@ async def queue_command_def(ctx: commands.Context,
             return [False, message]
         try:
 
-            video = Video(url, author)
+            video = Video(url, author.id)
 
             if position or position == 0: guild[guild_id].queue.insert(position, video)
             else: guild[guild_id].queue.append(video)
@@ -1394,7 +1461,7 @@ async def queue_command_def(ctx: commands.Context,
         except (ValueError, IndexError, TypeError):
             try:
                 url_only_id = 'https://www.youtube.com/watch?v=' + url.split('watch?v=')[1]
-                video = Video(url_only_id, author)
+                video = Video(url_only_id, author.id)
 
                 if position or position == 0: guild[guild_id].queue.insert(position, video)
                 else: guild[guild_id].queue.append(video)
@@ -1412,7 +1479,7 @@ async def queue_command_def(ctx: commands.Context,
                 try:
                     # https://www.youtube.com/shorts/JRPKE_A9yjw
                     url_shorts = url.replace('shorts/', 'watch?v=')
-                    video = Video(url_shorts, author)
+                    video = Video(url_shorts, author.id)
 
                     if position or position == 0: guild[guild_id].queue.insert(position, video)
                     else: guild[guild_id].queue.append(video)
@@ -1635,7 +1702,7 @@ async def search_command_def(ctx: commands.Context,
     for i in range(5):
         # noinspection PyTypeChecker
         url = custom_search.result()['result'][i]['link']
-        video = Video(url, ctx.author)
+        video = Video(url, ctx.author.id)
         guild[guild_id].search_list.append(video)
 
         if display_type == 'long':
@@ -1664,6 +1731,7 @@ async def play_def(ctx: commands.Context,
     if url == 'next':
         if guild[guild_id].options.stopped:
             print_message(guild_id, "play_def -> stopped play next loop")
+            now_to_last(guild_id)
             return
 
     voice = ctx.voice_client
@@ -1715,9 +1783,32 @@ async def play_def(ctx: commands.Context,
         if url != 'next':
             if not mute_response:
                 await ctx.reply(tg(guild_id, "There is **nothing** in your **queue**"))
+        now_to_last(guild_id)
         return 'nothing in queue'
 
     video = guild[guild_id].queue[0]
+
+    print(video)
+    print(type(video))
+    print(guild[guild_id].queue)
+
+    if type(video) is not Video:
+        print(video)
+        print(type(video))
+        if type(video) is Radio:
+            await radio_def(ctx, video.title)
+            return
+        if type(video) is LocalFile:
+            await ps_def(ctx, video.number)
+            return
+        if type(video) is FromProbe:
+            await probe_command_def(ctx, video.url)
+            return
+
+        if not mute_response:
+            await ctx.reply(tg(guild_id, "Unknown type"))
+        return 'unknown type'
+
     if not force:
         guild[guild_id].options.stopped = False
 
@@ -1794,7 +1885,7 @@ async def radio_def(ctx: commands.Context,
     if ctx.voice_client.is_playing():
         await stop_def(ctx, True)  # call the stop coroutine if something else is playing, pass True to not send response
 
-    radio_class = Radio(radio_type, ctx.author)
+    radio_class = Radio(radio_type, ctx.author.id)
     guild[guild_id].now_playing = radio_class
 
     guild[guild_id].options.is_radio = True
@@ -1833,7 +1924,7 @@ async def ps_def(ctx: commands.Context,
     filename = "sound_effects/" + name + ".mp3"
     if path.exists(filename):
         source = FFmpegPCMAudio(filename)
-        video = LocalFile(name, convert_duration(mp3_length(filename)), ctx.author)
+        video = LocalFile(name, convert_duration(mp3_length(filename)), ctx.author.id, effect_number)
         guild[guild_id].now_playing = video
     else:
         filename = "sound_effects/" + name + ".wav"
@@ -1896,8 +1987,7 @@ async def last_def(ctx: commands.Context,
               ):
     print_function(ctx, 'last_def', [ephemeral])
     guild_id = ctx.guild.id
-    guild[guild_id].now_playing.renew()
-    embed = create_embed(guild[guild_id].now_playing, "Last played", guild_id)
+    embed = create_embed(guild[guild_id].last_played, "Last played", guild_id)
 
     view = PlayerControlView(ctx)
 
@@ -1957,6 +2047,7 @@ async def stop_def(ctx: commands.Context,
     if not mute_response:
         await ctx.reply(f"{tg(guild_id, 'Player **stopped!**')}", ephemeral=True)
 
+    now_to_last(guild_id)
     save_json()
 
 
@@ -2016,6 +2107,8 @@ async def join_def(ctx: commands.Context,
     print_function(ctx, 'join_def', [channel_id, mute_response])
     guild_id = ctx.guild.id
 
+    now_to_last(guild_id)
+
     if not channel_id:
         if ctx.author.voice:
             channel = ctx.message.author.voice.channel
@@ -2070,6 +2163,7 @@ async def disconnect_def(ctx: commands.Context,
         if not mute_response:
             await ctx.reply(tg(guild_id, "Bot is **not** in a voice channel"), ephemeral=True, mention_author=False)
 
+    now_to_last(guild_id)
     save_json()
 
 
@@ -2377,7 +2471,7 @@ async def probe_command_def(ctx: commands.Context,
         if ctx.voice_client.is_playing():
             await stop_def(ctx, True)
 
-        guild[guild_id].now_playing = FromProbe(url=url, author=ctx.author, title='URL Probe', duration=0, channel_link=url, channel_name='URL Probe')
+        guild[guild_id].now_playing = FromProbe(url=url, author=ctx.author.id, title='URL Probe', duration=0, channel_link=url, channel_name='URL Probe')
 
         source = discord.FFmpegPCMAudio(url, **FFMPEG_OPTIONS)
 
@@ -2642,13 +2736,54 @@ async def web_skip(web_data):
     print_message(guild_id, "web_skip -> Unknown error")
     return 'Unknown error'
 
+async def web_queue(web_data, url, number: int=None):
+    print_web(web_data, 'web_queue', [url, number])
+    guild_id = web_data.guild_id
+    video = None
+
+    if url == 'last_played':
+        video = guild[guild_id].last_played
+
+    if video:
+        try:
+            if not number:
+                guild[guild_id].queue.append(video)
+            else:
+                guild[guild_id].queue.insert(number, video)
+            save_json()
+            print_message(guild_id, "web_queue -> Queued")
+            return 'Queued'
+        except Exception as e:
+            print(e)
+            print_message(guild_id, "web_queue -> Error while queuing")
+            return 'Error while queuing (Internal web error -> contact developer)'
+    else:
+        print_message(guild_id, "web_queue -> Error while getting video")
+        return 'Error while getting video (Internal web error -> contact developer)'
+
 async def web_play(web_data, url):
     print_web(web_data, 'web_play', [url])
-    guild_id = web_data.guild_id
-    guild_object = bot.get_guild(int(guild_id))
-    voice = guild_object.voice_client
+    # guild_id = web_data.guild_id
+    # guild_object = bot.get_guild(int(guild_id))
+    # voice = guild_object.voice_client
+    #
+    # if video:
+    #     try:
+    #         video = await YTDLSource.from_url(video, loop=bot.loop, stream=True)
+    #     except Exception as e:
+    #         print_message(guild_id, "web_queue -> Error while getting video")
+    #         return 'Error while getting video (Internal web error -> contact developer)'
+    #
+    #     guild[guild_id].queue.insert(number, video)
+    #     save_json()
+    #     print_message(guild_id, "web_queue -> Queued")
+    #     return 'Queued'
+    #
+    # print_message(guild_id, "web_queue -> Unknown error")
+    # return 'Unknown error'
+    #
+    # await guild_object.system_channel.send('cock.log')
 
-    await guild_object.system_channel.send('cock.log')
 
 # --------------------------------------------- HELP COMMAND -----------------------------------------------------------
 
@@ -2845,6 +2980,10 @@ async def index_page():
 async def about_page():
     return render_template('about.html')
 
+@app.route('/guild')
+async def guilds_page():
+    return render_template('guild_list.html', guild=guild.values(), len=len)
+
 @app.route('/guild/<guild_id>', methods=['GET', 'POST'])
 async def guild_page(guild_id):
     if request.method == 'POST':
@@ -2870,10 +3009,15 @@ async def guild_page(guild_id):
             await web_resume(web_data)
         if 'skip_btn' in keys:
             await web_skip(web_data)
+
+        if 'queue_btn' in keys:
+            await web_queue(web_data, request.form['queue_btn'])
+        if 'nextup_btn' in keys:
+            await web_queue(web_data, request.form['nextup_btn'], 0)
     try:
         guild_object = guild[int(guild_id)]
-        return render_template('guild.html', guild=guild_object, convert_duration=convert_duration)
-    except KeyError:
+        return render_template('guild.html', guild=guild_object, convert_duration=convert_duration, get_username=get_username)
+    except (KeyError, ValueError, TypeError):
         return render_template('no_guild.html', guild_id=guild_id)
 
 # run

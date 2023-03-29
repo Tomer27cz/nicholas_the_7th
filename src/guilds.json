@@ -27,7 +27,7 @@
         },
         "queue": {},
         "search_list": {},
-        "now_playing": null,
+        "now_playing": {},
         "last_played": {
             "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
             "author": 349164237605568513,
@@ -35,21 +35,22 @@
             "picture": "https://img.youtube.com/vi/dQw4w9WgXcQ/default.jpg",
             "duration": "3:33",
             "channel_name": "Rick Astley",
-            "channel_link": "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw"
+            "channel_link": "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw",
+            "type": "Video"
         }
     },
     "1008145667622969397": {
         "options": {
             "guild_id": 1008145667622969397,
-            "stopped": false,
+            "stopped": true,
             "loop": false,
-            "is_radio": false,
+            "is_radio": true,
             "language": "cs",
             "response_type": "short",
             "search_query": "short song",
             "buttons": false,
             "volume": 1.0,
-            "buffer": 10
+            "buffer": 600
         },
         "data": {
             "name": "Tomer27cz's server",
@@ -65,7 +66,18 @@
             "splash": null,
             "discovery_splash": null
         },
-        "queue": {},
+        "queue": {
+            "0": {
+                "url": "https://www.youtube.com/watch?v=M-mtdN6R3bQ",
+                "author": 349164237605568513,
+                "title": "Short Song (English Song)\ud83c\udfb5 [W Lyrics] 30 seconds",
+                "picture": "https://img.youtube.com/vi/M-mtdN6R3bQ/default.jpg",
+                "duration": "30",
+                "channel_name": "LEVIOS LS",
+                "channel_link": "https://www.youtube.com/channel/UC5728jgtLYM7O9HYPq8BYbQ",
+                "type": "Video"
+            }
+        },
         "search_list": {
             "0": {
                 "url": "https://www.youtube.com/watch?v=M-mtdN6R3bQ",
@@ -74,62 +86,61 @@
                 "picture": "https://img.youtube.com/vi/M-mtdN6R3bQ/default.jpg",
                 "duration": "30",
                 "channel_name": "LEVIOS LS",
-                "channel_link": "https://www.youtube.com/channel/UC5728jgtLYM7O9HYPq8BYbQ"
+                "channel_link": "https://www.youtube.com/channel/UC5728jgtLYM7O9HYPq8BYbQ",
+                "type": "Video"
             },
             "1": {
-                "url": "https://www.youtube.com/watch?v=w0WGL5BPuus",
-                "author": 349164237605568513,
-                "title": "heart touching status \ud83e\udd7a\ud83d\udc94 || sad song status || alone video broken #status  @ajcreation_06",
-                "picture": "https://img.youtube.com/vi/w0WGL5BPuus/default.jpg",
-                "duration": "9",
-                "channel_name": "AJ creation",
-                "channel_link": "https://www.youtube.com/channel/UCUZLq6ML75hayQNLfUmlSdg"
-            },
-            "2": {
-                "url": "https://www.youtube.com/watch?v=pe7nVxkqSmI",
-                "author": 349164237605568513,
-                "title": "Long Short Opposites Song | Learning Opposites | Dream English Kids",
-                "picture": "https://img.youtube.com/vi/pe7nVxkqSmI/default.jpg",
-                "duration": "121",
-                "channel_name": "Dream English Kids",
-                "channel_link": "https://www.youtube.com/channel/UC6LKuH7RPkvRmzS9-8URtqA"
-            },
-            "3": {
-                "url": "https://www.youtube.com/watch?v=C4jRwMFDc4Q",
-                "author": 349164237605568513,
-                "title": "Tall and short song for kindergarten ! kids nursery rhymes with Monster ABC",
-                "picture": "https://img.youtube.com/vi/C4jRwMFDc4Q/default.jpg",
-                "duration": "149",
-                "channel_name": "ZooZooSong - ABC Kids Song",
-                "channel_link": "https://www.youtube.com/channel/UC5WZRg1AumC2YML2rsnA8ng"
-            },
-            "4": {
                 "url": "https://www.youtube.com/watch?v=DyOO1V8i7oQ",
                 "author": 349164237605568513,
                 "title": "Wheels on the Camper Van | CoComelon Nursery Rhymes & Kids Songs",
                 "picture": "https://img.youtube.com/vi/DyOO1V8i7oQ/default.jpg",
                 "duration": "172",
                 "channel_name": "Cocomelon - Nursery Rhymes",
-                "channel_link": "https://www.youtube.com/channel/UCbCmjCuTUZos6Inko4u57UQ"
+                "channel_link": "https://www.youtube.com/channel/UCbCmjCuTUZos6Inko4u57UQ",
+                "type": "Video"
+            },
+            "2": {
+                "url": "https://www.youtube.com/watch?v=r3ldqYJl_Uc",
+                "author": 349164237605568513,
+                "title": "Santesh - Shocked ft. Amos Paul (Official Music Video)",
+                "picture": "https://img.youtube.com/vi/r3ldqYJl_Uc/default.jpg",
+                "duration": "186",
+                "channel_name": "Rentak Angkasa",
+                "channel_link": "https://www.youtube.com/channel/UC6ItANpot0vNokc2lYL6JJw",
+                "type": "Video"
+            },
+            "3": {
+                "url": "https://www.youtube.com/watch?v=7rQqzAD_DOw",
+                "author": 349164237605568513,
+                "title": "Shohrat (Full Video) Jordan Sandhu | New Punjabi Song 2023 | Gabru Ne Shadi Nayi Kade | Punjabi Beat",
+                "picture": "https://img.youtube.com/vi/7rQqzAD_DOw/default.jpg",
+                "duration": "250",
+                "channel_name": "White Hill Music",
+                "channel_link": "https://www.youtube.com/channel/UCopY0NAzASqmD6eVaRj2TFQ",
+                "type": "Video"
+            },
+            "4": {
+                "url": "https://www.youtube.com/watch?v=w0WGL5BPuus",
+                "author": 349164237605568513,
+                "title": "heart touching status \ud83e\udd7a\ud83d\udc94 || sad song status || alone video broken #status  @ajcreation_06",
+                "picture": "https://img.youtube.com/vi/w0WGL5BPuus/default.jpg",
+                "duration": "9",
+                "channel_name": "AJ creation",
+                "channel_link": "https://www.youtube.com/channel/UCUZLq6ML75hayQNLfUmlSdg",
+                "type": "Video"
             }
         },
-        "now_playing": {
-            "url": "https://www.youtube.com/watch?v=M-mtdN6R3bQ",
-            "author": 349164237605568513,
-            "title": "Short Song (English Song)\ud83c\udfb5 [W Lyrics] 30 seconds",
-            "picture": "https://img.youtube.com/vi/M-mtdN6R3bQ/default.jpg",
-            "duration": "30",
-            "channel_name": "LEVIOS LS",
-            "channel_link": "https://www.youtube.com/channel/UC5728jgtLYM7O9HYPq8BYbQ"
-        },
+        "now_playing": {},
         "last_played": {
-            "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
             "author": 349164237605568513,
-            "title": "Never gonna give you up",
-            "picture": "https://img.youtube.com/vi/dQw4w9WgXcQ/default.jpg",
-            "duration": "3:33",
-            "channel_name": "Rick Astley",
-            "channel_link": "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw"
+            "url": "https://radia.cz/radio-blanik-playlist",
+            "picture": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643169448267786/radio56.png",
+            "channel_name": "radia_cz",
+            "channel_link": "https://radia.cz/radio-blanik-playlist",
+            "title": "R\u00e1dio BLAN\u00cdK",
+            "duration": "Stream",
+            "radio_website": "radia_cz",
+            "type": "Radio"
         }
     },
     "892403162315644928": {
@@ -161,7 +172,7 @@
         },
         "queue": {},
         "search_list": {},
-        "now_playing": null,
+        "now_playing": {},
         "last_played": {
             "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
             "author": 349164237605568513,
@@ -169,7 +180,8 @@
             "picture": "https://img.youtube.com/vi/dQw4w9WgXcQ/default.jpg",
             "duration": "3:33",
             "channel_name": "Rick Astley",
-            "channel_link": "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw"
+            "channel_link": "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw",
+            "type": "Video"
         }
     }
 }
