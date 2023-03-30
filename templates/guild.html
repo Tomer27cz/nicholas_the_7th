@@ -8,6 +8,36 @@
 <div>
     <div class="div-align">
         <h2>{{guild.data.name}}</h2>
+        <table class="table table-dark table-group-divider table-borderless">
+            <thead class="table-group-divider">
+                <tr>
+                    <th scope="col">Icon</th>
+                    <th scope="col">Member Count</th>
+                    <th scope="col">ID</th>
+                    <th scope="col">Owner</th>
+                    <th scope="col">Owner ID</th>
+                    <th scope="col">Created at</th>
+                    <th scope="col">Description</th>
+                </tr>
+            </thead>
+            <tbody class="div-align">
+                <tr>
+                    <td>
+                        {% if guild.data.icon is not none %}
+                        <img class="d-list-img" src={{guild.data.icon}} alt="Icon">
+                        {% else %}
+                        <img class="d-list-img" src="/static/img/discord_icon.png" alt="Icon">
+                        {% endif %}
+                    </td>
+                    <td>{{guild.data.member_count}}</td>
+                    <td>{{guild.data.id}}</td>
+                    <td>{{guild.data.owner_name}}</td>
+                    <td>{{guild.data.owner_id}}</td>
+                    <td>{{guild.data.created_at}}</td>
+                    <td>{{guild.data.description}}</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
     <div>
         <h2>Last Played</h2>
@@ -39,7 +69,7 @@
         {% if guild.now_playing is not none %}
         <table class="table table-dark table-group-divider">
             <tr>
-                <td class="index-align"><img src="{{guild.now_playing.picture}}" alt="thumbnail"></td>
+                <td class="index-align"><img class="d-list-img" src="{{guild.now_playing.picture}}" alt="thumbnail"></td>
                 <td>{{convert_duration(guild.now_playing.duration)}}</td>
                 <td>{{guild.now_playing.type}}</td>
                 <td>{{get_username(guild.now_playing.author)}}</td>
@@ -56,11 +86,20 @@
             </tr>
         </table>
         {% else %}
-            <p>Nothing is playing</p>
+            <table class="table table-dark table-group-divider">
+            <tr>
+                <td class="index-align">None</td>
+                <td>None</td>
+                <td>None</td>
+                <td>None</td>
+                <td>None</td>
+                <td>None</td>
+            </tr>
+        </table>
         {% endif %}
     </div>
 </div>
-
+<h2>Queue</h2>
 <form method="POST" action="#">
     <table class="table table-dark table-group-divider">
       <thead>
@@ -81,7 +120,7 @@
             {% set index = guild.queue.index(track)%}
             <tr>
                 <td class="index-align">{{index}}</td>
-                <td><img src="{{track.picture}}" alt="thumbnail"></td>
+                <td><img class="d-list-img" src="{{track.picture}}" alt="thumbnail"></td>
                 <td>{{convert_duration(track.duration)}}</td>
                 <td>{{track.type}}</td>
                 <td>{{get_username(track.author)}}</td>

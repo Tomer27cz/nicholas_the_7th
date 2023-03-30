@@ -6,6 +6,9 @@ from discord import FFmpegPCMAudio, app_commands
 from discord.ext import commands
 from discord.ui import View
 
+from flask import Flask, render_template, request
+import threading
+
 import yt_dlp
 import youtubesearchpython
 from urllib.request import urlopen
@@ -2343,6 +2346,9 @@ async def config_command_def(ctx: commands.Context,
         return
 
     content = config_file.read()
+    if not content:
+        await ctx.reply(f"no content in file: `{config_type}`")
+        return
 
     with open(f'src/{config_type}.json', 'wb') as f:
         f.write(content)
@@ -2967,8 +2973,6 @@ async def help_command(ctx: commands.Context,
     await ctx.reply(embed=embed, ephemeral=True)
 
 # --------------------------------------------- WEB SERVER --------------------------------------------- #
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
-import threading
 
 app = Flask(__name__)
 

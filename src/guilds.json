@@ -76,6 +76,17 @@
                 "channel_name": "LEVIOS LS",
                 "channel_link": "https://www.youtube.com/channel/UC5728jgtLYM7O9HYPq8BYbQ",
                 "type": "Video"
+            },
+            "1": {
+                "author": 349164237605568513,
+                "url": "https://radia.cz/radio-blanik-playlist",
+                "picture": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643169448267786/radio56.png",
+                "channel_name": "radia_cz",
+                "channel_link": "https://radia.cz/radio-blanik-playlist",
+                "title": "R\u00e1dio BLAN\u00cdK",
+                "duration": "Stream",
+                "radio_website": "radia_cz",
+                "type": "Radio"
             }
         },
         "search_list": {
