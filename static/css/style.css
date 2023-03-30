@@ -79,3 +79,14 @@ td {
   border: 4px solid rgb(255, 103, 90);
 }
 
+.accordion-button {
+  --bs-accordion-active-bg: None;
+  --bs-accordion-active-color: None;
+  --bs-accordion-btn-focus-border-color: None;
+  --bs-accordion-btn-focus-box-shadow: None;
+}
+
+.btn-m {
+  margin: 0.2em;
+}
+

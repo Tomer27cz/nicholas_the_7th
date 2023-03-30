@@ -247,17 +247,18 @@ class Video:
 
 
 class Radio:
-    def __init__(self, name, author, url=None, picture=None, duration=None, channel_name=None, channel_link=None, radio_website=None):
+    def __init__(self, name, author, radio_name, url=None, picture=None, duration=None, channel_name=None, channel_link=None, radio_website=None):
         self.author = author
-        self.url = radio_dict[name]['url']
+        self.url = radio_dict[radio_name]['url']
 
-        self.picture = radio_dict[name]['thumbnail']
-        self.channel_name = radio_dict[name]['type']
+        self.picture = radio_dict[radio_name]['thumbnail']
+        self.channel_name = radio_dict[radio_name]['type']
         self.channel_link = self.url
         self.title = name
         self.duration = 'Stream'
-        self.radio_website = radio_dict[name]['type']
+        self.radio_website = radio_dict[radio_name]['type']
         self.type = 'Radio'
+        self.radio_name = radio_name
 
     def renew(self):
         if self.radio_website == 'radia_cz':
@@ -460,7 +461,8 @@ def json_to_video(video_dict):
                          duration=video_dict['duration'],
                          channel_name=video_dict['channel_name'],
                          channel_link=video_dict['channel_link'],
-                         radio_website=video_dict['radio_website'])
+                         radio_website=video_dict['radio_website'],
+                         radio_name=video_dict['radio_name'])
 
     if video_dict['type'] == 'LocalFile':
         video = LocalFile(author=video_dict['author'],
@@ -1745,7 +1747,6 @@ async def play_def(ctx: commands.Context,
                 await ctx.reply(tg(guild_id, "You are **not connected** to a voice channel"))
             return
 
-
     if url and url != 'next':
         if force:
             response = await queue_command_def(ctx, url=url, position=0, mute_response=True, force=force, from_play=True)
@@ -1790,14 +1791,10 @@ async def play_def(ctx: commands.Context,
         return 'nothing in queue'
 
     video = guild[guild_id].queue[0]
-
-    print(video)
-    print(type(video))
-    print(guild[guild_id].queue)
+    now_to_last(guild_id)
 
     if type(video) is not Video:
-        print(video)
-        print(type(video))
+        guild[guild_id].queue.pop(0)
         if type(video) is Radio:
             await radio_def(ctx, video.title)
             return
@@ -1867,7 +1864,10 @@ async def radio_def(ctx: commands.Context,
     print_function(ctx, 'radio_def', [favourite_radio, radio_code])
     guild_id = ctx.guild.id
     radio_type = 'Rádio BLANÍK'
-    await ctx.defer(ephemeral=False)
+
+    # noinspection PyUnresolvedReferences
+    if not ctx.interaction.response.is_done():
+        await ctx.defer()
     if favourite_radio and radio_code:
         await ctx.reply(tg(guild_id, "Only **one** argument possible!"), ephemeral=True)
         return
@@ -1883,12 +1883,12 @@ async def radio_def(ctx: commands.Context,
             return
 
     url = radio_dict[radio_type]['stream']
-    guild[guild_id].queue.clear()
+    # guild[guild_id].queue.clear()
 
     if ctx.voice_client.is_playing():
         await stop_def(ctx, True)  # call the stop coroutine if something else is playing, pass True to not send response
 
-    radio_class = Radio(radio_type, ctx.author.id)
+    radio_class = Radio(radio_type, ctx.author.id, radio_type)
     guild[guild_id].now_playing = radio_class
 
     guild[guild_id].options.is_radio = True
@@ -2700,7 +2700,7 @@ async def web_resume(web_data):
         print_message(guild_id, "web_resume -> Not in a voice channel")
         return 'Not in a voice channel'
 
-    if voice.is_playing():
+    if not voice.is_playing():
         if voice.is_paused():
             voice.resume()
             save_json()
@@ -2709,7 +2709,7 @@ async def web_resume(web_data):
         print_message(guild_id, "web_resume -> Nothing paused")
         return 'Nothing paused'
 
-    if not voice.is_playing():
+    if voice.is_playing():
         save_json()
         print_message(guild_id, "web_resume -> Nothing paused")
         return 'Nothing paused'
@@ -2742,7 +2742,7 @@ async def web_skip(web_data):
     print_message(guild_id, "web_skip -> Unknown error")
     return 'Unknown error'
 
-async def web_queue(web_data, url, number: int=None):
+async def web_queue_from_video(web_data, url, number: int=None):
     print_web(web_data, 'web_queue', [url, number])
     guild_id = web_data.guild_id
     video = None
@@ -2978,15 +2978,15 @@ app = Flask(__name__)
 
 @app.route('/')
 async def index_page():
-    return render_template('index.html')
+    return render_template('nav/index.html')
 
 @app.route('/about')
 async def about_page():
-    return render_template('about.html')
+    return render_template('nav/about.html')
 
 @app.route('/guild')
 async def guilds_page():
-    return render_template('guild_list.html', guild=guild.values(), len=len)
+    return render_template('nav/guild_list.html', guild=guild.values(), len=len)
 
 @app.route('/guild/<guild_id>', methods=['GET', 'POST'])
 async def guild_page(guild_id):
@@ -3015,14 +3015,22 @@ async def guild_page(guild_id):
             await web_skip(web_data)
 
         if 'queue_btn' in keys:
-            await web_queue(web_data, request.form['queue_btn'])
+            await web_queue_from_video(web_data, request.form['queue_btn'])
         if 'nextup_btn' in keys:
-            await web_queue(web_data, request.form['nextup_btn'], 0)
+            await web_queue_from_video(web_data, request.form['nextup_btn'], 0)
+
     try:
         guild_object = guild[int(guild_id)]
-        return render_template('guild.html', guild=guild_object, convert_duration=convert_duration, get_username=get_username)
+        return render_template('control/guild.html', guild=guild_object, convert_duration=convert_duration, get_username=get_username)
     except (KeyError, ValueError, TypeError):
-        return render_template('no_guild.html', guild_id=guild_id)
+        return render_template('error/no_guild.html', guild_id=guild_id)
+
+@app.route('/guild/<guild_id>/add', methods=['GET', 'POST'])
+async def guild_add_page(guild_id):
+    if request.method == 'POST':
+        web_data = WebData(int(guild_id), 'author')
+        # await web_add(web_data, request.form['add_url'])
+    return render_template('control/action/add.html')
 
 # run
 

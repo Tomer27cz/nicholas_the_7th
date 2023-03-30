@@ -128,6 +128,7 @@
         "Nothing to **remove**, queue is **empty!**": "Nothing to **remove**, queue is **empty!**",
         "Index out of range!": "Index out of range!",
         "Player **already resumed!**": "Player **already resumed!**",
+        "Player **resumed!**": "Player **resumed!**",
         "No audio playing": "No audio playing",
         "No audio": "No audio",
         "Player **already paused!**": "Player **already paused!**",
