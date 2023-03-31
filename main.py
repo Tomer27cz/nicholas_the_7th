@@ -372,6 +372,16 @@ def print_web(web_data, command, opt):
     with open("log.txt", "a", encoding="utf-8") as f:
         f.write(message)
 
+def print_web_function(web_data, text_data, opt):
+    now_time = datetime.datetime.now(datetime.timezone(datetime.timedelta(seconds=3600), 'CET'))
+    message = f"{now_time.strftime('(CET) %d/%m/%Y %X')} | F {web_data.guild_id} | {text_data} -> {opt}"
+
+    print(message)
+    message += "\n"
+
+    with open("log.txt", "a", encoding="utf-8") as f:
+        f.write(message)
+
 def print_message(guild_id, content):
     now_time = datetime.datetime.now(datetime.timezone(datetime.timedelta(seconds=3600), 'CET'))
     message = f"{now_time.strftime('(CET) %d/%m/%Y %X')} | M {guild_id} | {content}"
@@ -955,9 +965,9 @@ class PlaylistOptionView(View):
         playlist_url = get_playlist_from_url(self.url)
         await interaction.response.edit_message(content=tg(self.guild_id, "Adding playlist to queue..."), view=None)
         if self.force:
-            response = await queue_command(self.ctx, playlist_url, 0, True, self.force)
+            response = await queue_command_def(self.ctx, playlist_url, 0, True, self.force)
         else:
-            response = await queue_command(self.ctx, playlist_url, None, True, self.force)
+            response = await queue_command_def(self.ctx, playlist_url, None, True, self.force)
 
         msg = await interaction.original_response()
         await msg.edit(content=response[1])
@@ -970,9 +980,9 @@ class PlaylistOptionView(View):
     async def callback_2(self, interaction, button):
         pure_url = self.url[:self.url.index('&list=')]
         if self.force:
-            response = await queue_command(self.ctx, pure_url, 0, True, self.force)
+            response = await queue_command_def(self.ctx, pure_url, 0, True, self.force)
         else:
-            response = await queue_command(self.ctx, pure_url, None, True, self.force)
+            response = await queue_command_def(self.ctx, pure_url, None, True, self.force)
         await interaction.response.edit_message(content=response[1], view=None)
         if self.from_play:
             await play_def(self.ctx)
@@ -2494,7 +2504,7 @@ async def probe_command_def(ctx: commands.Context,
 # --------------------------------------------- WEB COMMANDS -----------------------------------------------------------
 
 async def web_remove(web_data, number):
-    print_web(web_data, 'web_remove', [number])
+    print_web_function(web_data, 'web_remove', [number])
     guild_id = web_data.guild_id
     queue_length = len(guild[guild_id].queue)
 
@@ -2521,7 +2531,7 @@ async def web_remove(web_data, number):
     return f'Number must be between 0 and {queue_length - 1}'
 
 async def web_move(web_data, org_number, destination_number):
-    print_web(web_data, 'web_move', [org_number, destination_number])
+    print_web_function(web_data, 'web_move', [org_number, destination_number])
     guild_id = web_data.guild_id
     queue_length = len(guild[guild_id].queue)
 
@@ -2558,7 +2568,7 @@ async def web_move(web_data, org_number, destination_number):
     return f'Original number must be between 0 and {queue_length - 1}'
 
 async def web_up(web_data, number):
-    print_web(web_data, 'web_up', [number])
+    print_web_function(web_data, 'web_up', [number])
     guild_id = web_data.guild_id
     queue_length = len(guild[guild_id].queue)
 
@@ -2579,7 +2589,7 @@ async def web_up(web_data, number):
     return await web_move(web_data, number, number-1)
 
 async def web_down(web_data, number):
-    print_web(web_data, 'web_down', [number])
+    print_web_function(web_data, 'web_down', [number])
     guild_id = web_data.guild_id
     queue_length = len(guild[guild_id].queue)
 
@@ -2600,7 +2610,7 @@ async def web_down(web_data, number):
     return await web_move(web_data, number, number+1)
 
 async def web_top(web_data, number):
-    print_web(web_data, 'web_top', [number])
+    print_web_function(web_data, 'web_top', [number])
     guild_id = web_data.guild_id
     queue_length = len(guild[guild_id].queue)
 
@@ -2622,7 +2632,7 @@ async def web_top(web_data, number):
     return await web_move(web_data, number, 0)
 
 async def web_bottom(web_data, number):
-    print_web(web_data, 'web_bottom', [number])
+    print_web_function(web_data, 'web_bottom', [number])
     guild_id = web_data.guild_id
     queue_length = len(guild[guild_id].queue)
 
@@ -2644,7 +2654,7 @@ async def web_bottom(web_data, number):
     return await web_move(web_data, number, queue_length-1)
 
 async def web_stop(web_data):
-    print_web(web_data, 'web_stop', [])
+    print_web_function(web_data, 'web_stop', [])
     guild_id = web_data.guild_id
     guild_object = bot.get_guild(int(guild_id))
     voice = guild_object.voice_client
@@ -2668,7 +2678,7 @@ async def web_stop(web_data):
     return 'Unknown error'
 
 async def web_pause(web_data):
-    print_web(web_data, 'web_pause', [])
+    print_web_function(web_data, 'web_pause', [])
     guild_id = web_data.guild_id
     guild_object = bot.get_guild(int(guild_id))
     voice = guild_object.voice_client
@@ -2691,7 +2701,7 @@ async def web_pause(web_data):
     return 'Unknown error'
 
 async def web_resume(web_data):
-    print_web(web_data, 'web_resume', [])
+    print_web_function(web_data, 'web_resume', [])
     guild_id = web_data.guild_id
     guild_object = bot.get_guild(int(guild_id))
     voice = guild_object.voice_client
@@ -2720,7 +2730,7 @@ async def web_resume(web_data):
     return 'Unknown error'
 
 async def web_skip(web_data):
-    print_web(web_data, 'web_skip', [])
+    print_web_function(web_data, 'web_skip', [])
     guild_id = web_data.guild_id
     guild_object = bot.get_guild(int(guild_id))
     voice = guild_object.voice_client
@@ -2743,7 +2753,7 @@ async def web_skip(web_data):
     return 'Unknown error'
 
 async def web_queue_from_video(web_data, url, number: int=None):
-    print_web(web_data, 'web_queue', [url, number])
+    print_web_function(web_data, 'web_queue', [url, number])
     guild_id = web_data.guild_id
     video = None
 
@@ -2768,7 +2778,7 @@ async def web_queue_from_video(web_data, url, number: int=None):
         return 'Error while getting video (Internal web error -> contact developer)'
 
 async def web_play(web_data, url):
-    print_web(web_data, 'web_play', [url])
+    print_web_function(web_data, 'web_play', [url])
     # guild_id = web_data.guild_id
     # guild_object = bot.get_guild(int(guild_id))
     # voice = guild_object.voice_client
@@ -2996,27 +3006,38 @@ async def guild_page(guild_id):
 
         keys = request.form.keys()
         if 'del_btn' in keys:
+            print_web(web_data, 'web_remove', [request.form['del_btn']])
             await web_remove(web_data, request.form['del_btn'])
         if 'up_btn' in keys:
+            print_web(web_data, 'web_up', [request.form['up_btn']])
             await web_up(web_data, request.form['up_btn'])
         if 'down_btn' in keys:
+            print_web(web_data, 'web_down', [request.form['down_btn']])
             await web_down(web_data, request.form['down_btn'])
         if 'top_btn' in keys:
+            print_web(web_data, 'web_top', [request.form['top_btn']])
             await web_top(web_data, request.form['top_btn'])
         if 'bottom_btn' in keys:
+            print_web(web_data, 'web_bottom', [request.form['bottom_btn']])
             await web_bottom(web_data, request.form['bottom_btn'])
         if 'stop_btn' in keys:
+            print_web(web_data, 'web_stop', [])
             await web_stop(web_data)
         if 'pause_btn' in keys:
+            print_web(web_data, 'web_pause', [])
             await web_pause(web_data)
         if 'resume_btn' in keys:
+            print_web(web_data, 'web_resume', [])
             await web_resume(web_data)
         if 'skip_btn' in keys:
+            print_web(web_data, 'web_skip', [])
             await web_skip(web_data)
 
         if 'queue_btn' in keys:
+            print_web(web_data, 'web_add_queue', [request.form['queue_btn']])
             await web_queue_from_video(web_data, request.form['queue_btn'])
         if 'nextup_btn' in keys:
+            print_web(web_data, 'web_nextup', [request.form['nextup_btn'], 0])
             await web_queue_from_video(web_data, request.form['nextup_btn'], 0)
 
     try:

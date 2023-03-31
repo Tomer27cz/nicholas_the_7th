@@ -76,8 +76,8 @@
                         <td><a href="{{guild.last_played.channel_link}}">{{guild.last_played.channel_name}}</a></td>
                         <td>
                             <form action="#" method="POST">
-                                <button class="btn btn-outline btn-success btn-sm" type="submit" name="queue_btn" value="last_played">Add to Queue</button>
-                                <button class="btn btn-outline btn-success btn-sm" type="submit" name="nextup_btn" value="last_played">Next Up</button>
+                                <button class="btn btn-outline btn-success btn-sm btn-m" type="submit" name="queue_btn" value="last_played">Add to Queue</button>
+                                <button class="btn btn-outline btn-success btn-sm btn-m" type="submit" name="nextup_btn" value="last_played">Next Up</button>
                             </form>
                         </td>
                     </tr>
@@ -234,25 +234,25 @@
                 <td><a href="{{track.url}}">{{track.title}}</a></td>
                 <td><a href="{{track.channel_link}}">{{track.channel_name}}</a></td>
                 <td>
-                    <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button type="button" class="btn btn-secondary btn-sm dropdown-toggle btn-m" data-bs-toggle="dropdown" aria-expanded="false">
                         Action
                     </button>
                     <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
-                        <li><button class="dropdown-item" type="submit" name="top_btn" value={{index}}>Move to Top</button></li>
-                        <li><button class="dropdown-item" type="submit" name="bottom_btn" value={{index}}>Move to Bottom</button></li>
+                        <li><button class="dropdown-item" type="submit" name="top_btn" value={{guild.queue.index(track)}}>Move to Top</button></li>
+                        <li><button class="dropdown-item" type="submit" name="bottom_btn" value={{guild.queue.index(track)}}>Move to Bottom</button></li>
 <!--                            <li><hr class="dropdown-divider"></li>-->
 <!--                            <li><button class="dropdown-item" type="submit" name="play_btn" value={{index}}>Play Now</button></li>-->
                     </ul>
-                    <button class="btn btn-outline btn-danger btn-sm" type="submit" name="del_btn" value={{index}}>Remove</button>
+                    <button class="btn btn-outline btn-danger btn-sm btn-m" type="submit" name="del_btn" value={{guild.queue.index(track)}}>Remove</button>
                 </td>
                 <td>
                     <div class="btn-group-vertical">
-                        <button class="btn btn-dark" name="up_btn" value={{index}}>
+                        <button class="btn btn-dark" name="up_btn" value={{guild.queue.index(track)}}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-up" viewBox="0 0 16 16">
                             <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/>
                         </svg>
                     </button>
-                        <button class="btn btn-dark" name="down_btn" value={{index}}>
+                        <button class="btn btn-dark" name="down_btn" value={{guild.queue.index(track)}}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down" viewBox="0 0 16 16">
                             <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"/>
                         </svg>

@@ -68,26 +68,214 @@
         },
         "queue": {
             "0": {
-                "url": null,
+                "url": "https://www.youtube.com/watch?v=yMqL1iWfku4",
                 "author": 349164237605568513,
-                "title": "ok",
-                "picture": "https://cdn.discordapp.com/attachments/892403162315644931/1008054767379030096/vlc.png",
-                "duration": "00:04",
-                "channel_name": "Local file",
-                "channel_link": "Local file",
-                "number": 11,
-                "type": "LocalFile"
+                "title": "[Crayon Pop] \ud06c\ub808\uc6a9\ud31d \ube60\ube60\ube60(Bar Bar Bar) - M/V (\uc548\ubb34\ubc84\uc83c)",
+                "picture": "https://img.youtube.com/vi/yMqL1iWfku4/default.jpg",
+                "duration": "181",
+                "channel_name": "CROAYON POP",
+                "channel_link": "https://www.youtube.com/channel/UC88nGROvozD_D3FWojbNErA",
+                "type": "Video"
             },
             "1": {
-                "url": null,
+                "url": "https://www.youtube.com/watch?v=Z3RA7bi5FUM",
                 "author": 349164237605568513,
-                "title": "ok",
-                "picture": "https://cdn.discordapp.com/attachments/892403162315644931/1008054767379030096/vlc.png",
-                "duration": "00:04",
-                "channel_name": "Local file",
-                "channel_link": "Local file",
-                "number": 11,
-                "type": "LocalFile"
+                "title": "EVERGLOW (\uc5d0\ubc84\uae00\ub85c\uc6b0) - FIRST MV",
+                "picture": "https://img.youtube.com/vi/Z3RA7bi5FUM/default.jpg",
+                "duration": "237",
+                "channel_name": "Stone Music Entertainment",
+                "channel_link": "https://www.youtube.com/channel/UC_pwIXKXNm5KGhdEVzmY60A",
+                "type": "Video"
+            },
+            "2": {
+                "url": "https://www.youtube.com/watch?v=NoYKBAajoyo",
+                "author": 349164237605568513,
+                "title": "EVERGLOW (\uc5d0\ubc84\uae00\ub85c\uc6b0) - DUN DUN MV",
+                "picture": "https://img.youtube.com/vi/NoYKBAajoyo/default.jpg",
+                "duration": "209",
+                "channel_name": "Stone Music Entertainment",
+                "channel_link": "https://www.youtube.com/channel/UC_pwIXKXNm5KGhdEVzmY60A",
+                "type": "Video"
+            },
+            "3": {
+                "url": "https://www.youtube.com/watch?v=TIzTll9pJsU",
+                "author": 349164237605568513,
+                "title": "Pirate",
+                "picture": "https://img.youtube.com/vi/TIzTll9pJsU/default.jpg",
+                "duration": "210",
+                "channel_name": "EVERGLOW - Topic",
+                "channel_link": "https://www.youtube.com/channel/UCT4Z6ZLJisGUy0z2LHzi2jQ",
+                "type": "Video"
+            },
+            "4": {
+                "url": "https://www.youtube.com/watch?v=UOxkGD8qRB4",
+                "author": 349164237605568513,
+                "title": "K/DA - POP/STARS (ft. Madison Beer, (G)I-DLE, Jaira Burns) | Music Video - League of Legends",
+                "picture": "https://img.youtube.com/vi/UOxkGD8qRB4/default.jpg",
+                "duration": "203",
+                "channel_name": "League of Legends",
+                "channel_link": "https://www.youtube.com/channel/UC2t5bjwHdUX4vM2g8TRDq5g",
+                "type": "Video"
+            },
+            "5": {
+                "url": "https://www.youtube.com/watch?v=3VTkBuxU4yk",
+                "author": 349164237605568513,
+                "title": "K/DA - MORE ft. Madison Beer, (G)I-DLE, Lexie Liu, Jaira Burns, Seraphine (Official Music Video)",
+                "picture": "https://img.youtube.com/vi/3VTkBuxU4yk/default.jpg",
+                "duration": "231",
+                "channel_name": "League of Legends",
+                "channel_link": "https://www.youtube.com/channel/UC2t5bjwHdUX4vM2g8TRDq5g",
+                "type": "Video"
+            },
+            "6": {
+                "url": "https://www.youtube.com/watch?v=RkID8_gnTxw",
+                "author": 349164237605568513,
+                "title": "K/DA - THE BADDEST ft. (G)I-DLE, Bea Miller, Wolftyla (Official Lyric Video) | League of Legends",
+                "picture": "https://img.youtube.com/vi/RkID8_gnTxw/default.jpg",
+                "duration": "175",
+                "channel_name": "League of Legends",
+                "channel_link": "https://www.youtube.com/channel/UC2t5bjwHdUX4vM2g8TRDq5g",
+                "type": "Video"
+            },
+            "7": {
+                "url": "https://www.youtube.com/watch?v=xU2U73Tk-DM",
+                "author": 349164237605568513,
+                "title": "Can\u2019t Slow Me Down // Jett Hype Music Video - VALORANT",
+                "picture": "https://img.youtube.com/vi/xU2U73Tk-DM/default.jpg",
+                "duration": "158",
+                "channel_name": "VALORANT",
+                "channel_link": "https://www.youtube.com/channel/UC8CX0LD98EDXl4UYX1MDCXg",
+                "type": "Video"
+            },
+            "8": {
+                "url": "https://www.youtube.com/watch?v=18nDrsoii5M",
+                "author": 349164237605568513,
+                "title": "\ubd90\ubc14\uc57c (Boombayah)",
+                "picture": "https://img.youtube.com/vi/18nDrsoii5M/default.jpg",
+                "duration": "241",
+                "channel_name": "BLACKPINK - Topic",
+                "channel_link": "https://www.youtube.com/channel/UCkbbMCA40i18i7UdjayMPAg",
+                "type": "Video"
+            },
+            "9": {
+                "url": "https://www.youtube.com/watch?v=egqDPipqIAg",
+                "author": 349164237605568513,
+                "title": "[EXID(\uc774\uc5d1\uc2a4\uc544\uc774\ub514)] \uc544\uc608 (Ah Yeah) Music Video [Official MV]",
+                "picture": "https://img.youtube.com/vi/egqDPipqIAg/default.jpg",
+                "duration": "200",
+                "channel_name": "EXID_OFFICIAL",
+                "channel_link": "https://www.youtube.com/channel/UCZDD7mbBlV-Mg-vpI6wQvSA",
+                "type": "Video"
+            },
+            "10": {
+                "url": "https://www.youtube.com/watch?v=DqJgDhDaBIo",
+                "author": 349164237605568513,
+                "title": "ROCKSTAR",
+                "picture": "https://img.youtube.com/vi/DqJgDhDaBIo/default.jpg",
+                "duration": "226",
+                "channel_name": "Various Artists - Topic",
+                "channel_link": "https://www.youtube.com/channel/UCRVRJmok5szr9DXOIE-4SOg",
+                "type": "Video"
+            },
+            "11": {
+                "url": "https://www.youtube.com/watch?v=ESRlXp2dJLY",
+                "author": 349164237605568513,
+                "title": "ROCKSTAR (TAK Remix)",
+                "picture": "https://img.youtube.com/vi/ESRlXp2dJLY/default.jpg",
+                "duration": "217",
+                "channel_name": "Various Artists - Topic",
+                "channel_link": "https://www.youtube.com/channel/UCRVRJmok5szr9DXOIE-4SOg",
+                "type": "Video"
+            },
+            "12": {
+                "url": "https://www.youtube.com/watch?v=2KlHN15BCNg",
+                "author": 349164237605568513,
+                "title": "I'LL SHOW YOU",
+                "picture": "https://img.youtube.com/vi/2KlHN15BCNg/default.jpg",
+                "duration": "199",
+                "channel_name": "K/DA - Topic",
+                "channel_link": "https://www.youtube.com/channel/UCDsvjvBRosWw8F5eynK0HTQ",
+                "type": "Video"
+            },
+            "13": {
+                "url": "https://www.youtube.com/watch?v=ZO-runC5VTM",
+                "author": 349164237605568513,
+                "title": "\ubd09\ubd09\uc1fc\ucf5c\ub77c Bon Bon Chocolat",
+                "picture": "https://img.youtube.com/vi/ZO-runC5VTM/default.jpg",
+                "duration": "228",
+                "channel_name": "EVERGLOW - Topic",
+                "channel_link": "https://www.youtube.com/channel/UCT4Z6ZLJisGUy0z2LHzi2jQ",
+                "type": "Video"
+            },
+            "14": {
+                "url": "https://www.youtube.com/watch?v=VEI4TYQp9Is",
+                "author": 349164237605568513,
+                "title": "Alien",
+                "picture": "https://img.youtube.com/vi/VEI4TYQp9Is/default.jpg",
+                "duration": "182",
+                "channel_name": "LEE SUHYUN - Topic",
+                "channel_link": "https://www.youtube.com/channel/UCFUFuHuxVhyjyi39xTEGFvg",
+                "type": "Video"
+            },
+            "15": {
+                "url": "https://www.youtube.com/watch?v=7wNEXWnXAd0",
+                "author": 349164237605568513,
+                "title": "BVNDIT(\ubc34\ub514\ud2b8) - \"VENOM\" Music Video",
+                "picture": "https://img.youtube.com/vi/7wNEXWnXAd0/default.jpg",
+                "duration": "199",
+                "channel_name": "BVNDIT_Official",
+                "channel_link": "https://www.youtube.com/channel/UCNAIB6brZzCCe1QDXq0o7bQ",
+                "type": "Video"
+            },
+            "16": {
+                "url": "https://www.youtube.com/watch?v=aS3aWVTy5Ds",
+                "author": 349164237605568513,
+                "title": "\ubc34\ub514\ud2b8 (BVNDIT) - Dumb MV",
+                "picture": "https://img.youtube.com/vi/aS3aWVTy5Ds/default.jpg",
+                "duration": "190",
+                "channel_name": "Stone Music Entertainment",
+                "channel_link": "https://www.youtube.com/channel/UC_pwIXKXNm5KGhdEVzmY60A",
+                "type": "Video"
+            },
+            "17": {
+                "url": "https://www.youtube.com/watch?v=8UUDyQyuvwI",
+                "author": 349164237605568513,
+                "title": "\uc548\uc608\uc740(AHN YEEUN) HORROR SINGLE \ucc3d\uadc0 CHANGGWI LYRIC VIDEO",
+                "picture": "https://img.youtube.com/vi/8UUDyQyuvwI/default.jpg",
+                "duration": "206",
+                "channel_name": "xxentertainment",
+                "channel_link": "https://www.youtube.com/channel/UCPmQpfv8zIcDYm8L0_w6pBg",
+                "type": "Video"
+            },
+            "18": {
+                "url": "https://www.youtube.com/watch?v=_hC-fd5wyYk",
+                "author": 349164237605568513,
+                "title": "SLAVIC KOREAN - \ub378\ub85c X \uc720\uc5ec\ub984",
+                "picture": "https://img.youtube.com/vi/_hC-fd5wyYk/default.jpg",
+                "duration": "236",
+                "channel_name": "\ub378\ub85c\ub7b5\uad6d",
+                "channel_link": "https://www.youtube.com/channel/UCls1Y2LgkPk6t5TMFIKaoBQ",
+                "type": "Video"
+            },
+            "19": {
+                "url": "https://www.youtube.com/watch?v=FDSccIXtkLM",
+                "author": 349164237605568513,
+                "title": "BAAM",
+                "picture": "https://img.youtube.com/vi/FDSccIXtkLM/default.jpg",
+                "duration": "208",
+                "channel_name": "MOMOLAND - Topic",
+                "channel_link": "https://www.youtube.com/channel/UCDtL5zQzU2bp_CFF_gjPx-Q",
+                "type": "Video"
+            },
+            "20": {
+                "url": "https://www.youtube.com/watch?v=jeI992mvlEY",
+                "author": 349164237605568513,
+                "title": "EVERGLOW (\uc5d0\ubc84\uae00\ub85c\uc6b0) - LA DI DA MV",
+                "picture": "https://img.youtube.com/vi/jeI992mvlEY/default.jpg",
+                "duration": "221",
+                "channel_name": "Stone Music Entertainment",
+                "channel_link": "https://www.youtube.com/channel/UC_pwIXKXNm5KGhdEVzmY60A",
+                "type": "Video"
             }
         },
         "search_list": {},
