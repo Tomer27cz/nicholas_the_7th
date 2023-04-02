@@ -5,7 +5,6 @@ class Oauth:
     client_id = config.CLIENT_ID
     client_secret = config.CLIENT_SECRET
     redirect_uri = config.REDIRECT_URI
-    scope = "identify%20guilds%20email"
     discord_login_url = config.DISCORD_LOGIN_URL
     discord_api_endpoint = config.DISCORD_API_ENDPOINT
 

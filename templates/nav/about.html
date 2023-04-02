@@ -3,6 +3,38 @@
 {% set title = "About" %}
 
 {% block content %}
-    <h1>About</h1>
-    <p>Some information about the site.</p>
+    <div class="div-code">
+      <h1 id="discord_bot_stanley_the_7th">discord_bot_stanley_the_7th</h1>
+      <h2 id="about">About</h2>
+      <p>This is a discord bot that I made for my friends and I to use in our discord server. It is a work in progress and I will be adding more features as I go along.</p>
+      <p>It is not meant to be used by anyone else, but if you want to use it, feel free to do so.</p>
+      <h2 id="installation">Installation</h2>
+      <ul>
+          <li>Clone the repository</li>
+          <li>
+              Install the requirements
+              <div class="code">pip <span class="hljs-keyword">install</span> -r requirements.txt</div>
+          </li>
+          <li>
+              Create a file called <code>config.py</code> in the root directory
+            <div class="code">
+              <pre>
+                <span class="hljs-attr">CLIENT_ID</span> = 'YOUR_CLIENT_ID' <span class="hljs-comment"># This is your bots id</span>
+                <span class="hljs-attr">OWNER_ID</span> = 'YOUR_USER_ID' <span class="hljs-comment"># This is your user id</span>
+                <span class="hljs-attr">BOT_TOKEN</span> = 'YOUR_BOT_TOKEN' <span class="hljs-comment"># This is the token for the bot</span>
+                <span class="hljs-attr">CLIENT_SECRET</span> = <span class="hljs-string">"YOUR_CLIENT_SECRET"</span> <span class="hljs-comment"># This is the client secret for the bot</span>
+                <span class="hljs-attr">REDIRECT_URI</span> = <span class="hljs-string">"https://YOUR_WEBSITE/login"</span> <span class="hljs-comment"># http://127.0.0.1:5000/login is the default redirect uri for the flask server</span>
+                <span class="hljs-attr">DISCORD_LOGIN_URL</span> = <span class="hljs-string">"YOUR_DISCORD_LOGIN_URL"</span> <span class="hljs-comment"># identify guilds email - scopes are required for the bot to work</span>
+                <span class="hljs-attr">DISCORD_API_ENDPOINT</span> = 'https://discord.com/api/v10' <span class="hljs-comment"># This is the discord api endpoint (more recent version may be available)</span>
+              </pre>
+            </div>
+          </li>
+          <li>
+              Run the bot
+              <div class="code">
+                <span class="hljs-keyword">python</span> main.<span class="hljs-keyword">py</span>
+              </div>
+          </li>
+      </ul>
+    </div>
 {% endblock %}

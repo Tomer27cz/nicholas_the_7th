@@ -18,12 +18,62 @@ body {
 td {
     vertical-align: middle;
 }
+pre {
+    padding-top: 1rem;
+    margin: 0;
+    color: #6a8759;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.hljs-attr {
+    color: #e8bf6a;
+}
+
+.hljs-comment {
+    color: #999;
+}
+.hljs-keyword {
+    color: #cc7832;
+}
+
+.code {
+    border-radius: 1rem;
+    background-color: #313338;
+    padding: 1rem;
+}
+
+.code-div {
+    padding: 1rem;
+    margin: 1rem;
+    border-radius: 1rem;
+    background-color: #1e1f22;
+}
+
+.code-d {
+    border-radius: 0.3rem;
+    background-color: #2b2d31;
+    padding: 0.3rem;
+}
+
+.container h4 {
+    margin-top: 1rem;
+}
+
+.div-code {
+    padding: 1rem;
+    margin: 1rem;
+    border-radius: 1rem;
+    background-color: #2b2d31;
+}
 
 .d-list-img {
     max-width: 160px;
     max-height: 90px;
 }
-
 
 .index-align {
     text-align: center;
@@ -59,10 +109,10 @@ td {
 }
 
 .picker {
-  margin: 2em;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-  background-color: #23272a;
-  border-radius: 3px;
+  margin: 2rem;
+  margin-top: 0;
+  background-color: #1e1f22;
+  border-radius: 0.5rem;
 }
 
 .picker h3 {
@@ -82,6 +132,7 @@ td {
   display: grid;
   grid-template-rows: 1fr 0.2fr;
   justify-items: center;
+  transition: transform 0.3s;
 }
 
 .d-card:hover {
@@ -117,6 +168,19 @@ td {
 
 .btn-m {
   margin: 0.2rem;
+}
+
+.btn-xxl {
+  --bs-btn-padding-y: 1.5rem;
+  --bs-btn-padding-x: 2rem;
+  --bs-btn-font-size: 2.25rem;
+  --bs-btn-border-radius: 1.5rem;
+  margin: 1rem;
+  transition: transform 0.5s;
+}
+
+.btn-xxl:hover {
+  transform: scale(1.1);
 }
 
 .form-r {

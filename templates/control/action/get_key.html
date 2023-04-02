@@ -5,8 +5,9 @@
 {% block content %}
 {% if errors %}
     {% for error in errors %}
-        <div class="alert alert-danger div-align" role="alert">
+        <div class="alert alert-danger div-align alert-dismissible fade show" role="alert">
             {{error}}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     {% endfor %}
 {% endif %}
@@ -33,6 +34,7 @@
         <form action="#" method="post">
           <div class="modal-body">
               <input type="text" class="form-control" name="key" placeholder="Enter Code">
+              <div class="form-text">Do /key in the server to get the key</di>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

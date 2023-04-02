@@ -6,8 +6,9 @@
 
 {% if errors %}
     {% for error in errors %}
-        <div class="alert alert-danger div-align" role="alert">
+        <div class="alert alert-danger div-align alert-dismissible fade show" role="alert">
             {{error}}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     {% endfor %}
 {% endif %}
