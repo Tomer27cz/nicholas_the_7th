@@ -3,19 +3,30 @@
 {% block head %}<title>Control Panel</title>{% endblock %}
 
 {% block content %}
+
+{% if errors %}
+    {% for error in errors %}
+        <div class="alert alert-danger div-align" role="alert">
+            {{error}}
+        </div>
+    {% endfor %}
+{% endif %}
+
+
+<!-- Guild -->
 <div>
     <div class="div-align">
         <div class="accordion" id="accordionFlushExample">
           <div class="accordion-item">
-            <h2 class="accordion-header">
+            <div class="accordion-header">
                 <div class="d-grid gap-2">
-                    <button class="btn btn-dark" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                    <a class="btn btn-dark" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
                         <h2>{{guild.data.name}}</h2>
-                    </button>
+                    </a>
                 </div>
-            </h2>
+            </div>
             <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-                <table class="table table-dark table-group-divider table-borderless">
+                <table class="table table-dark table-responsive table-group-divider table-borderless">
                     <thead class="table-group-divider">
                         <tr>
                             <th scope="col">Icon</th>
@@ -33,7 +44,7 @@
                                 {% if guild.data.icon is not none %}
                                 <img class="d-list-img" src={{guild.data.icon}} alt="Icon">
                                 {% else %}
-                                <img class="d-list-img" src="/static/img/discord_icon.png" alt="Icon">
+                                None
                                 {% endif %}
                             </td>
                             <td>{{guild.data.member_count}}</td>
@@ -51,22 +62,21 @@
     </div>
 </div>
 
-
-
+<!-- Now and Last Playing -->
 <div class="accordion" id="accordionPanelsStayOpenExample">
     <div class="accordion-item">
       <div class="accordion-header">
         <div class="d-grid gap-2">
-          <button class="btn btn-dark accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="false" aria-controls="panelsStayOpen-collapseOne">
+          <a class="btn btn-dark accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="false" aria-controls="panelsStayOpen-collapseOne">
               <h3>Last Played</h3>
-          </button>
+          </a>
         </div>
       </div>
       <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse">
           <div class="accordion-body">
               <div>
                 {% if guild.last_played is not none %}
-                <table class="table table-dark table-borderless">
+                <table class="table table-dark table-responsive-lg table-borderless">
                     <tr>
                         <td class="index-align"><img class="d-list-img" src="{{guild.last_played.picture}}" alt="thumbnail"></td>
                         <td>{{convert_duration(guild.last_played.duration)}}</td>
@@ -94,9 +104,9 @@
     <div class="accordion-item">
       <div class="accordion-header">
         <div class="d-grid gap-2">
-          <button class="btn btn-dark accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="true" aria-controls="panelsStayOpen-collapseTwo">
+          <a class="btn btn-dark accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="true" aria-controls="panelsStayOpen-collapseTwo">
               <h3>Now Playing</h3>
-          </button>
+          </a>
         </div>
       </div>
       <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse show">
@@ -104,7 +114,7 @@
               <div>
                 {% if guild.now_playing is not none %}
                   {{guild.now_playing.renew()}}
-                <table class="table table-dark table-borderless">
+                <table class="table table-dark table-responsive-lg table-borderless">
                     <tr>
                         <td class="index-align"><img class="d-list-img" src="{{guild.now_playing.picture}}" alt="thumbnail"></td>
                         <td>{{convert_duration(guild.now_playing.duration)}}</td>
@@ -117,10 +127,8 @@
                         <td><a href="{{guild.now_playing.channel_link}}">{{guild.now_playing.channel_name}}</a></td>
                         <td>
                             <form action="#" method="POST">
-                                <button class="btn btn-outline btn-danger btn-sm btn-m" type="submit" name="stop_btn">Stop</button>
-                                <button class="btn btn-outline btn-success btn-sm btn-m" type="submit" name="pause_btn">Pause</button>
-                                <button class="btn btn-outline btn-success btn-sm btn-m" type="submit" name="resume_btn">Resume</button>
-                                <button class="btn btn-outline btn-success btn-sm btn-m" type="submit" name="skip_btn">Skip</button>
+                                <button class="btn btn-outline btn-success btn-sm btn-m" type="submit" name="queue_btn" value="now_playing">Add to Queue</button>
+                                <button class="btn btn-outline btn-success btn-sm btn-m" type="submit" name="nextup_btn" value="now_playing">Next Up</button>
                             </form>
                         </td>
                     </tr>
@@ -134,82 +142,49 @@
           </div>
       </div>
   </div>
+</div>
 
-
-
-
-
-<!--  <div class="accordion-item">-->
-<!--    <div class="accordion-header">-->
-<!--      <div class="d-grid gap-2">-->
-<!--          <button class="btn btn-dark accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="true" aria-controls="panelsStayOpen-collapseTwo">-->
-<!--              <h3>Now Playing</h3>-->
-<!--          </button>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--    <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse show">-->
-<!--      <div class="accordion-body">-->
-<!--          <div>-->
-<!--            {% if guild.now_playing is not none %}-->
-<!--            <table class="table table-dark">-->
-<!--                <tr>-->
-<!--                    <td class="index-align"><img class="d-list-img" src="{{guild.now_playing.picture}}" alt="thumbnail"></td>-->
-<!--                    <td>{{convert_duration(guild.now_playing.duration)}}</td>-->
-<!--                    <td>{{guild.now_playing.type}}</td>-->
-<!--                    <td>{{get_username(guild.now_playing.author)}}</td>-->
-<!--                    <td><a href="{{guild.now_playing.url}}">{{guild.now_playing.title}}</a></td>-->
-<!--                    <td><a href="{{guild.now_playing.channel_link}}">{{guild.now_playing.channel_name}}</a></td>-->
-<!--                    <td>-->
-<!--                        <form action="#" method="POST">-->
-<!--                            <button class="btn btn-outline btn-danger btn-sm" type="submit" name="stop_btn">Stop</button>-->
-<!--                            <button class="btn btn-outline btn-success btn-sm" type="submit" name="pause_btn">Pause</button>-->
-<!--                            <button class="btn btn-outline btn-success btn-sm" type="submit" name="resume_btn">Resume</button>-->
-<!--                            <button class="btn btn-outline btn-success btn-sm" type="submit" name="skip_btn">Skip</button>-->
-<!--                        </form>-->
-<!--                    </td>-->
-<!--                </tr>-->
-<!--            </table>-->
-<!--            {% else %}-->
-<!--                <table class="table table-dark">-->
-<!--                <tr>-->
-<!--                    <td>None</td>-->
-<!--                    <td>None</td>-->
-<!--                    <td>None</td>-->
-<!--                    <td>None</td>-->
-<!--                    <td>None</td>-->
-<!--                    <td>None</td>-->
-<!--                </tr>-->
-<!--            </table>-->
-<!--            {% endif %}-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
+<!-- Control -->
+<div class="t-cols">
+    <div class="t-col div-login">
+        <form action="#" method="POST">
+            <div class="d-flex">
+                <button class="btn btn-outline btn-success btn-sm btn-m flex-fill" type="submit" name="skip_btn">Skip</button>
+                <button class="btn btn-outline btn-success btn-sm btn-m flex-fill" type="submit" name="shuffle_btn">Shuffle</button>
+                <button class="btn btn-outline btn-danger btn-sm btn-m flex-fill" type="submit" name="clear_btn">Clear</button>
+            </div>
+        </form>
+    </div>
+    <div class="t-col div-login">
+        <form action="#" method="POST">
+            <div class="d-flex">
+                <button class="btn btn-outline btn-success btn-sm btn-m flex-fill" type="submit" name="pause_btn">Pause</button>
+                <button class="btn btn-outline btn-success btn-sm btn-m flex-fill" type="submit" name="resume_btn">Resume</button>
+                <button class="btn btn-outline btn-danger btn-sm btn-m flex-fill" type="submit" name="stop_btn">Stop</button>
+            </div>
+        </form>
+    </div>
+    <div class="t-col div-login">
+        <form action="#" method="POST">
+            <div class="d-flex">
+                <div class="btn-m">
+                    <input type="number" class="form-c form-control btn-m flex-fill" name="volumeInput" min="0" max="200" value={{volume}} oninput="this.form.volumeRange.value=this.value" />
+                </div>
+                <input type="range" class="form-r form-range btn-m" name="volumeRange" min="0" max="200" value={{volume}} oninput="this.form.volumeInput.value=this.value" />
+                <button class="btn btn-outline btn-primary btn-sm btn-m flex-fill" type="submit" name="volume_btn">Set</button>
+            </div>
+        </form>
+    </div>
 </div>
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+<!-- Queue -->
 <div class="div-align">
     <h2>Queue</h2>
 </div>
 <form method="POST" action="#">
-    <table class="table table-dark table-group-divider">
+    <table class="table table-dark table-responsive-lg table-group-divider">
       <thead>
         <tr>
             <th scope="col">#</th>
@@ -261,8 +236,60 @@
                 </td>
             </tr>
       {% endfor %}
-
       </tbody>
     </table>
 </form>
+
+<!-- Add Button -->
+<button id="addbutton" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#addToModal">
+    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+        <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"></path>
+    </svg>
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="addToModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">Add to Queue</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+        <form method="POST" id="ytForm">
+          <div class="modal-body">
+              <div class="mb-3">
+                  <div class="form-floating mb-3">
+                      <input type="url" class="form-control" name="ytURL" id="ytURL" placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ" required>
+                      <label for="ytURL">Youtube URL</label>
+                  </div>
+              </div>
+              <div class="mb-3">
+                  <label for="addTo" class="col-form-label">Add to</label>
+                  <div id="addTo">
+                      <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="addPosition" value="start" id="flexRadioDefault1">
+                          <label class="form-check-label" for="flexRadioDefault1">
+                              The Start
+                          </label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="addPosition" value="end" id="flexRadioDefault2" checked>
+                          <label class="form-check-label" for="flexRadioDefault2">
+                              The End
+                          </label>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Add</button>
+          </div>
+        </form>
+    </div>
+  </div>
+</div>
+
+
+
 {% endblock %}

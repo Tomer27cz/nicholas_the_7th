@@ -1,0 +1,22 @@
+{% extends "base/base.html" %}
+
+{% set title = title %}
+
+{% block content %}
+{% if errors %}
+    {% for error in errors %}
+        <div class="alert alert-danger div-align" role="alert">
+            {{error}}
+        </div>
+    {% endfor %}
+{% endif %}
+
+
+<div class="div-align-center">
+    <div class="div-login">
+        <h1>{{message}}</h1>
+        <a class="btn btn-primary btn-lg" href="/">Return Home</a>
+    </div>
+</div>
+
+{% endblock %}

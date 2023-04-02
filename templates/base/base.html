@@ -5,18 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="icon" href="https://cdn.discordapp.com/attachments/892404510465613875/1092118704763973723/bot_icon.png">
+    <title>Nicholas the 7th | {{title}}</title>
     {% block head %}{% endblock %}
     <script>
       if ( window.history.replaceState ) {
           window.history.replaceState( null, null, window.location.href );
       }
+      document.addEventListener("DOMContentLoaded", function(event) {
+            var scrollpos = localStorage.getItem('scrollpos');
+            if (scrollpos) window.scrollTo(0, scrollpos);
+        });
+
+        window.onbeforeunload = function(e) {
+            localStorage.setItem('scrollpos', window.scrollY);
+        };
     </script>
   </head>
   <body>
-    <nav class="navbar navbar-expand-md navbar-dark nav-discord" data-bs-theme="dark">
+    <nav class="navbar sticky-top navbar-expand-lg navbar-dark nav-discord" data-bs-theme="dark">
       <div class="container-fluid">
-        <a class="navbar-brand" href="#">
-          <img src="/static/img/bot_icon.png" alt="Logo" width="30" height="30" class="d-inline-block align-text-top">
+        <a class="navbar-brand" href="/">
+          <img src="https://cdn.discordapp.com/attachments/892404510465613875/1092118704763973723/bot_icon.png" alt="Logo" width="30" height="30" class="d-inline-block align-text-top">
           Nicholas the 7th
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,6 +49,19 @@
             </li>
             {% block nav_items %}{% endblock %}
           </ul>
+          <div class="nav-static-buttons">
+            <button onClick="window.location.reload();" class="btn btn-outline-primary">Refresh Data</button>
+          </div>
+          <div>
+            {% if user %}
+                <a>{{user['username']}}#{{user['discriminator']}}</a>
+              <a class="btn btn-danger" href="/logout">Logout</a>
+              <a class="btn btn-outline-success btn-sm btn-m" href="/login">Update Session</a>
+            {% else %}
+              <a class="btn btn-primary" href="/login">Login</a>
+            {% endif %}
+            <a class="btn btn-outline-danger btn-sm btn-m" href="/reset">Reset Session</a>
+          </div>
         </div>
       </div>
     </nav>

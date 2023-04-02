@@ -1,8 +1,16 @@
 {% extends "base/base.html" %}
 
-{% block head %}<title>Server List</title>{% endblock %}
+{% set title = "Server List" %}
 
 {% block content %}
+{% if errors %}
+    {% for error in errors %}
+        <div class="alert alert-danger div-align" role="alert">
+            {{error}}
+        </div>
+    {% endfor %}
+{% endif %}
+
 <div class="div-align">
   <h2>The Bot is in: {{len(guild)}} servers</h2>
 </div>
@@ -13,11 +21,19 @@
     {% for guild_object in guild %}
     <div class="d-card">
       <a href="/guild/{{guild_object.data.id}}">
-        {% if guild_object.data.icon is not none %}
-          <img src="{{guild_object.data.icon}}" class="red-border" />
-        {% else %}
-          <img src="/static/img/discord_icon.png" class="red-border" />
-        {% endif %}
+          {% if guild_object.data.id in mutual_guild_ids %}
+            {% if guild_object.data.icon is not none %}
+              <img src="{{guild_object.data.icon}}" class="green-border" />
+            {% else %}
+              <img src="https://cdn.discordapp.com/attachments/892404510465613875/1092118705074339920/discord_icon.png" class="green-border" />
+            {% endif %}
+          {% else %}
+            {% if guild_object.data.icon is not none %}
+              <img src="{{guild_object.data.icon}}" class="red-border" />
+            {% else %}
+              <img src="https://cdn.discordapp.com/attachments/892404510465613875/1092118705074339920/discord_icon.png" class="red-border" />
+            {% endif %}
+          {% endif %}
       </a>
       <br/>
       {{ guild_object.data.name }}

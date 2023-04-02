@@ -6,7 +6,7 @@ from discord import FFmpegPCMAudio, app_commands
 from discord.ext import commands
 from discord.ui import View
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, url_for, redirect, session, flash, send_file
 import threading
 
 import yt_dlp
@@ -23,7 +23,8 @@ from typing import Literal
 import traceback
 import datetime
 
-from api_keys import api_key_testing as api_key
+from oauth import Oauth
+import config_testing as config
 
 import functools
 
@@ -139,14 +140,15 @@ class Bot(commands.Bot):
 # ---------------- Data Classes ------------
 
 class WebData:
-    def __init__(self, guild_id, author):
+    def __init__(self, guild_id, author, author_id):
         self.guild_id = guild_id
         self.author = author
+        self.id = author_id
 
 
 class Options:
     def __init__(self, guild_id):
-        self.guild_id = guild_id
+        self.id = guild_id
         self.stopped = False
         self.loop = False
         self.is_radio = False
@@ -160,10 +162,16 @@ class Options:
 
 class GuildData:
     def __init__(self, guild_id):
+        self.id = guild_id
+
         guild_object = bot.get_guild(int(guild_id))
         if guild_object:
             self.name = guild_object.name
             self.id = guild_object.id
+
+            random.seed(self.id)
+            self.key = ''.join(random.choice('abcdefghijklmnopqrstuvwxyz0123456789') for _ in range(6))
+
             self.member_count = guild_object.member_count
             self.owner_id = guild_object.owner_id
             self.owner_name = guild_object.owner.name
@@ -247,7 +255,7 @@ class Video:
 
 
 class Radio:
-    def __init__(self, name, author, radio_name, url=None, picture=None, duration=None, channel_name=None, channel_link=None, radio_website=None):
+    def __init__(self, name, author, radio_name):
         self.author = author
         self.url = radio_dict[radio_name]['url']
 
@@ -312,6 +320,7 @@ class FromProbe:
 
 class Guild:
     def __init__(self, guild_id):
+        self.id = guild_id
         self.options = Options(guild_id)
         self.queue = []
         self.search_list = []
@@ -324,6 +333,9 @@ class Guild:
                                  channel_name='Rick Astley',
                                  channel_link='https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw')
         self.data = GuildData(guild_id)
+
+    def renew(self):
+        self.data = GuildData(self.id)
 
 
 # -------- Get SoundEffects ------------
@@ -390,6 +402,13 @@ def print_message(guild_id, content):
     message += "\n"
 
     with open("log.txt", "a", encoding="utf-8") as f:
+        f.write(message)
+
+def collect_data(data):
+    now_time = datetime.datetime.now(datetime.timezone(datetime.timedelta(seconds=3600), 'CET'))
+    message = f"{now_time.strftime('(CET) %d/%m/%Y %X')} | {data}\n"
+
+    with open("data.txt", "a", encoding="utf-8") as f:
         f.write(message)
 
 # ---------------------------------------------- GUILD TO JSON ---------------------------------------------------------
@@ -464,15 +483,9 @@ def json_to_video(video_dict):
                       channel_link=video_dict['channel_link'])
 
     if video_dict['type'] == 'Radio':
-        video = Radio(url=video_dict['url'],
-                         author=video_dict['author'],
-                         name=video_dict['title'],
-                         picture=video_dict['picture'],
-                         duration=video_dict['duration'],
-                         channel_name=video_dict['channel_name'],
-                         channel_link=video_dict['channel_link'],
-                         radio_website=video_dict['radio_website'],
-                         radio_name=video_dict['radio_name'])
+        video = Radio(author=video_dict['author'],
+                      name=video_dict['title'],
+                      radio_name=video_dict['radio_name'])
 
     if video_dict['type'] == 'LocalFile':
         video = LocalFile(author=video_dict['author'],
@@ -576,9 +589,11 @@ load_sound_effects()
 # ---------------------------------------------- SAVE JSON -------------------------------------------------------------
 
 def save_json():
+    for guild_object in guild.values():
+        guild_object.renew()
+
     with open('src/guilds.json', 'w') as f:
         json.dump(guilds_to_json(guild), f, indent=4)
-    # print_message(guild_id='all', content='Updated guilds.json')
 
 # ---------------------------------------------- TEXT ----------------------------------------------------------
 
@@ -600,9 +615,10 @@ def get_playlist_from_url(url):
 
 def get_username(user_id):
     try:
-        name = bot.get_user(user_id).name
+        name = bot.get_user(int(user_id)).name
         return name
-    except:
+    except Exception as e:
+        print(f"get_username failed for ({user_id}) : {e}")
         return user_id
 
 
@@ -1250,7 +1266,7 @@ async def show_profile(inter, member: discord.Member):
 
 
 @bot.hybrid_command(name='ping', with_app_command=True, description=text['ping'], help=text['ping'])
-async def ping(ctx: commands.Context):
+async def ping_command(ctx: commands.Context):
     print_command(ctx, 'ping', [])
 
     await ping_def(ctx)
@@ -1286,6 +1302,12 @@ async def list_radios(ctx: commands.Context,
 
     await list_radios_def(ctx, user_only)
 
+
+@bot.hybrid_command(name='key', with_app_command=True, description=text['key'], help=text['key'])
+async def key_command(ctx: commands.Context):
+    print_command(ctx, 'key', [])
+
+    await key_def(ctx)
 
 # ---------------------------------------- ADMIN --------------------------------------------------
 
@@ -1345,7 +1367,7 @@ async def config_command(ctx: commands.Context,
 @bot.hybrid_command(name='zz_log', with_app_command=True)
 @commands.check(is_authorised)
 async def log_command(ctx: commands.Context,
-                      log_type: Literal['log.txt', 'guilds.json', 'other.json', 'radio.json', 'languages.json', 'activity.log'] = 'log.txt'
+                      log_type: Literal['log.txt', 'guilds.json', 'other.json', 'radio.json', 'languages.json', 'activity.log', 'data.txt'] = 'log.txt'
                       ):
     print_command(ctx, 'zz_log', [log_type])
 
@@ -1758,6 +1780,9 @@ async def play_def(ctx: commands.Context,
             return
 
     if url and url != 'next':
+        if voice:
+            if not voice.is_playing():
+                force = True
         if force:
             response = await queue_command_def(ctx, url=url, position=0, mute_response=True, force=force, from_play=True)
         else:
@@ -2168,10 +2193,11 @@ async def disconnect_def(ctx: commands.Context,
     guild_id = ctx.guild.id
     if ctx.voice_client:
         await stop_def(ctx, True)
-        guild[guild_id].queue.clear()
+        #guild[guild_id].queue.clear()
+        channel = ctx.voice_client.channel
         await ctx.guild.voice_client.disconnect(force=True)
         if not mute_response:
-            await ctx.reply(f"{tg(guild_id, 'Left voice channel:')} `{ctx.guild.voice_client.channel}`", ephemeral=True)
+            await ctx.reply(f"{tg(guild_id, 'Left voice channel:')} `{channel}`", ephemeral=True)
     else:
         if not mute_response:
             await ctx.reply(tg(guild_id, "Bot is **not** in a voice channel"), ephemeral=True, mention_author=False)
@@ -2215,7 +2241,7 @@ async def volume_command_def(ctx: commands.Context,
 
 async def ping_def(ctx: commands.Context):
     print_function(ctx, 'ping_def', [])
-    await ctx.reply(f'**Pong!** Latency: {round(bot.latency * 1000)}ms ------ {ctx.guild.voice_client.is_playing()}')
+    await ctx.reply(f'**Pong!** Latency: {round(bot.latency * 1000)}ms')
     save_json()
 
 
@@ -2269,6 +2295,11 @@ async def list_radios_def(ctx: commands.Context,
 
     await ctx.send(embed=embed, ephemeral=ephemeral)
 
+
+async def key_def(ctx: commands.Context):
+    print_function(ctx, 'key_def', [])
+    await ctx.reply(f'Key: `{guild[ctx.guild.id].data.key}`')
+    save_json()
 
 # ---------------------------------------- ADMIN --------------------------------------------------
 
@@ -2374,11 +2405,15 @@ async def config_command_def(ctx: commands.Context,
 
 
 async def log_command_def(ctx: commands.Context,
-                      log_type: Literal['log.txt', 'guilds.json', 'other.json', 'radio.json', 'languages.json', 'activity.log'] = 'log.txt'
+                      log_type: Literal['log.txt', 'guilds.json', 'other.json', 'radio.json', 'languages.json', 'activity.log', 'data.txt'] = 'log.txt'
                       ):
     print_function(ctx, 'log_command_def', [log_type])
     save_json()
-    if log_type == 'other.json':
+    if log_type == 'log.txt':
+        file_to_send = discord.File('log.txt')
+    elif log_type == 'data.txt':
+        file_to_send = discord.File('data.txt')
+    elif log_type == 'other.json':
         file_to_send = discord.File('src/other.json')
     elif log_type == 'radio.json':
         file_to_send = discord.File('src/radio.json')
@@ -2453,14 +2488,14 @@ async def change_config_def(ctx: commands.Context,
         if buffer:
             guild[guild_id].options.buffer = buffer
 
-        config = f'`stopped={guild[guild_id].options.stopped}`, `loop={guild[guild_id].options.loop}`,' \
+        config_text = f'`stopped={guild[guild_id].options.stopped}`, `loop={guild[guild_id].options.loop}`,' \
                  f' `is_radio={guild[guild_id].options.is_radio}`, `buttons={guild[guild_id].options.buttons}`,' \
                  f' `language={guild[guild_id].options.language}`, `response_type={guild[guild_id].options.response_type}`,' \
                  f' `volume={guild[guild_id].options.volume}`, `buffer={guild[guild_id].options.buffer}`'
 
         save_json()
 
-        await ctx.reply(f'**Config for guild `{guild_id}`**\n {config}', ephemeral=True)
+        await ctx.reply(f'**Config for guild `{guild_id}`**\n {config_text}', ephemeral=True)
 
 
 async def probe_command_def(ctx: commands.Context,
@@ -2510,14 +2545,14 @@ async def web_remove(web_data, number):
 
     if queue_length == 0:
         print_message(guild_id, "web_remove -> No songs in queue")
-        return 'No songs in queue'
+        return [False, 'No songs in queue']
 
     if type(number) is not int:
         try:
             number = int(number)
         except ValueError:
             print_message(guild_id, "web_remove -> Number must be an integer")
-            return 'Number must be an integer (Internal web error -> contact developer)'
+            return [False, 'Number must be an integer (Internal web error -> contact developer)']
 
     if queue_length-1 >= number >= 0:
         video = guild[guild_id].queue[number]
@@ -2525,10 +2560,10 @@ async def web_remove(web_data, number):
 
         save_json()
 
-        return f"Removed #{number} : {video.title}"
+        return [True, f"Removed #{number} : {video.title}"]
 
     print_message(guild_id, "web_remove -> Number must be between 0 and {queue_length - 1}")
-    return f'Number must be between 0 and {queue_length - 1}'
+    return [False, f'Number must be between 0 and {queue_length - 1}']
 
 async def web_move(web_data, org_number, destination_number):
     print_web_function(web_data, 'web_move', [org_number, destination_number])
@@ -2537,21 +2572,21 @@ async def web_move(web_data, org_number, destination_number):
 
     if queue_length == 0:
         print_message(guild_id, "web_move -> No songs in queue")
-        return 'No songs in queue'
+        return [False, 'No songs in queue']
 
     if type(org_number) is not int:
         try:
             org_number = int(org_number)
         except ValueError:
             print_message(guild_id, "web_move -> Original number must be an integer")
-            return 'Original number must be an integer (Internal web error -> contact developer)'
+            return [False, 'Original number must be an integer (Internal web error -> contact developer)']
 
     if type(destination_number) is not int:
         try:
             destination_number = int(destination_number)
         except ValueError:
             print_message(guild_id, "web_move -> Destination number must be an integer")
-            return 'Destination number must be an integer (Internal web error -> contact developer)'
+            return [False, 'Destination number must be an integer (Internal web error -> contact developer)']
 
     if queue_length-1 >= org_number >= 0:
         if queue_length-1 >= destination_number >= 0:
@@ -2560,12 +2595,12 @@ async def web_move(web_data, org_number, destination_number):
 
             save_json()
 
-            return f"Moved #{org_number} to #{destination_number} : {video.title}"
+            return [True, f"Moved #{org_number} to #{destination_number} : {video.title}"]
 
         print_message(guild_id, "web_move -> Destination number must be between 0 and {queue_length - 1}")
-        return f'Destination number must be between 0 and {queue_length - 1}'
+        return [False, f'Destination number must be between 0 and {queue_length - 1}']
     print_message(guild_id, "web_move -> Original number must be between 0 and {queue_length - 1}")
-    return f'Original number must be between 0 and {queue_length - 1}'
+    return [False, f'Original number must be between 0 and {queue_length - 1}']
 
 async def web_up(web_data, number):
     print_web_function(web_data, 'web_up', [number])
@@ -2577,11 +2612,11 @@ async def web_up(web_data, number):
             number = int(number)
         except ValueError:
             print_message(guild_id, "web_up -> Number must be an integer")
-            return 'Number must be an integer (Internal web error -> contact developer)'
+            return [False, 'Number must be an integer (Internal web error -> contact developer)']
 
     if queue_length == 0:
         print_message(guild_id, "web_up -> No songs in queue")
-        return 'No songs in queue'
+        return [False, 'No songs in queue']
 
     if number == 0:
         return await web_move(web_data, 0, queue_length-1)
@@ -2598,11 +2633,11 @@ async def web_down(web_data, number):
             number = int(number)
         except ValueError:
             print_message(guild_id, "web_down -> Number must be an integer")
-            return 'Number must be an integer (Internal web error -> contact developer)'
+            return [False, 'Number must be an integer (Internal web error -> contact developer)']
 
     if queue_length == 0:
         print_message(guild_id, "web_down -> No songs in queue")
-        return 'No songs in queue'
+        return [False, 'No songs in queue']
 
     if number == queue_length-1:
         return await web_move(web_data, number, 0)
@@ -2619,15 +2654,15 @@ async def web_top(web_data, number):
             number = int(number)
         except ValueError:
             print_message(guild_id, "web_top -> Number must be an integer")
-            return 'Number must be an integer (Internal web error -> contact developer)'
+            return [False, 'Number must be an integer (Internal web error -> contact developer)']
 
     if queue_length == 0:
         print_message(guild_id, "web_top -> No songs in queue")
-        return 'No songs in queue'
+        return [False, 'No songs in queue']
 
     if number == 0:
         print_message(guild_id, "web_top -> Already at the top")
-        return 'Already at the top'
+        return [False, 'Already at the top']
 
     return await web_move(web_data, number, 0)
 
@@ -2641,15 +2676,15 @@ async def web_bottom(web_data, number):
             number = int(number)
         except ValueError:
             print_message(guild_id, "web_bottom -> Number must be an integer")
-            return 'Number must be an integer (Internal web error -> contact developer)'
+            return [False, 'Number must be an integer (Internal web error -> contact developer)']
 
     if queue_length == 0:
         print_message(guild_id, "web_bottom -> No songs in queue")
-        return 'No songs in queue'
+        return [False, 'No songs in queue']
 
     if number == queue_length-1:
         print_message(guild_id, "web_bottom -> Already at the bottom")
-        return 'Already at the bottom'
+        return [False, 'Already at the bottom']
 
     return await web_move(web_data, number, queue_length-1)
 
@@ -2661,21 +2696,21 @@ async def web_stop(web_data):
 
     if voice is None:
         print_message(guild_id, "web_stop -> Not in a voice channel")
-        return 'Not in a voice channel'
+        return [False, 'Not in a voice channel']
 
     if not voice.is_playing():
         print_message(guild_id, "web_stop -> Not playing")
-        return 'Not playing'
+        return [False, 'Not playing']
 
     if voice.is_playing():
         guild[guild_id].options.stopped = True
         voice.stop()
         save_json()
         print_message(guild_id, "web_stop -> Stopped")
-        return 'Stopped playing'
+        return [True, 'Stopped playing']
 
     print_message(guild_id, "web_stop -> Unknown error")
-    return 'Unknown error'
+    return [False, 'Unknown error']
 
 async def web_pause(web_data):
     print_web_function(web_data, 'web_pause', [])
@@ -2685,20 +2720,20 @@ async def web_pause(web_data):
 
     if voice is None:
         print_message(guild_id, "web_pause -> Not in a voice channel")
-        return 'Not in a voice channel'
+        return [False, 'Not in a voice channel']
 
     if not voice.is_playing():
         print_message(guild_id, "web_pause -> Not playing")
-        return 'Not playing'
+        return [False, 'Not playing']
 
     if voice.is_playing():
         voice.pause()
         save_json()
         print_message(guild_id, "web_pause -> Paused")
-        return 'Stopped playing'
+        return [True, 'Paused playing']
 
     print_message(guild_id, "web_pause -> Unknown error")
-    return 'Unknown error'
+    return [False, 'Unknown error']
 
 async def web_resume(web_data):
     print_web_function(web_data, 'web_resume', [])
@@ -2708,26 +2743,26 @@ async def web_resume(web_data):
 
     if voice is None:
         print_message(guild_id, "web_resume -> Not in a voice channel")
-        return 'Not in a voice channel'
+        return [False, 'Not in a voice channel']
 
     if not voice.is_playing():
         if voice.is_paused():
             voice.resume()
             save_json()
             print_message(guild_id, "web_resume -> Resumed")
-            return 'Resumed playing'
+            return [True, 'Resumed playing']
         print_message(guild_id, "web_resume -> Nothing paused")
-        return 'Nothing paused'
+        return [False, 'Nothing paused']
 
     if voice.is_playing():
         save_json()
         print_message(guild_id, "web_resume -> Nothing paused")
-        return 'Nothing paused'
+        return [False, 'Nothing paused']
 
 
 
     print_message(guild_id, "web_resume -> Unknown error")
-    return 'Unknown error'
+    return [False, 'Unknown error']
 
 async def web_skip(web_data):
     print_web_function(web_data, 'web_skip', [])
@@ -2737,20 +2772,79 @@ async def web_skip(web_data):
 
     if voice is None:
         print_message(guild_id, "web_skip -> Not in a voice channel")
-        return 'Not in a voice channel'
+        return [False, 'Not in a voice channel']
 
     if not voice.is_playing():
         print_message(guild_id, "web_skip -> Not playing")
-        return 'Not playing'
+        return [False, 'Not playing']
 
     if voice.is_playing():
         voice.stop()
         save_json()
         print_message(guild_id, "web_skip -> Stopped")
-        return 'Stopped playing'
+        return [True, 'Stopped playing']
 
     print_message(guild_id, "web_skip -> Unknown error")
-    return 'Unknown error'
+    return [False, 'Unknown error']
+
+async def web_shuffle(web_data):
+    print_web_function(web_data, 'web_shuffle', [])
+    guild_id = web_data.guild_id
+
+    if len(guild[guild_id].queue) == 0:
+        print_message(guild_id, "web_shuffle -> No songs in queue")
+        return [False, 'No songs in queue']
+
+    random.shuffle(guild[guild_id].queue)
+    save_json()
+
+    print_message(guild_id, "web_shuffle -> Shuffled queue")
+    return [True, 'Shuffled queue']
+
+async def web_clear(web_data):
+    print_web_function(web_data, 'web_clear', [])
+    guild_id = web_data.guild_id
+
+    if len(guild[guild_id].queue) == 0:
+        print_message(guild_id, "web_clear -> No songs in queue")
+        return [False, 'No songs in queue']
+
+    guild[guild_id].queue.clear()
+    save_json()
+    print_message(guild_id, "web_clear -> Cleared queue")
+    return [True, 'Cleared queue']
+
+async def web_volume(web_data, vol_range, vol_input):
+    print_web_function(web_data, 'web_volume', [vol_range, vol_input])
+    guild_id = web_data.guild_id
+    guild_object = bot.get_guild(int(guild_id))
+    voice = guild_object.voice_client
+
+    if int(vol_range) != int(vol_input):
+        print_message(guild_id, "web_volume -> Mismatched range and input")
+        return [False, 'Mismatched range and input (Internal web error -> contact developer)']
+    else:
+        number = int(vol_input)
+
+    if number:
+        new_volume = int(number) / 100
+
+        guild[guild_id].options.volume = new_volume
+        if voice:
+            try:
+                if voice.source:
+                    voice.source.volume = new_volume
+                    voice.source = discord.PCMVolumeTransformer(voice.source, volume=new_volume)
+            except AttributeError:
+                pass
+
+        save_json()
+
+        print_message(guild_id, "web_volume -> Changed volume")
+        return [True, f'Changed volume to {guild[guild_id].options.volume * 100}%']
+
+    print_message(guild_id, "web_volume -> No number given")
+    return [False, 'No number given (Internal web error -> contact developer)']
 
 async def web_queue_from_video(web_data, url, number: int=None):
     print_web_function(web_data, 'web_queue', [url, number])
@@ -2759,10 +2853,12 @@ async def web_queue_from_video(web_data, url, number: int=None):
 
     if url == 'last_played':
         video = guild[guild_id].last_played
+    elif url == 'now_playing':
+        video = guild[guild_id].now_playing
 
     if video:
         try:
-            if not number:
+            if not number and number != 0 and number != '0':
                 guild[guild_id].queue.append(video)
             else:
                 guild[guild_id].queue.insert(number, video)
@@ -2777,28 +2873,122 @@ async def web_queue_from_video(web_data, url, number: int=None):
         print_message(guild_id, "web_queue -> Error while getting video")
         return 'Error while getting video (Internal web error -> contact developer)'
 
-async def web_play(web_data, url):
-    print_web_function(web_data, 'web_play', [url])
-    # guild_id = web_data.guild_id
-    # guild_object = bot.get_guild(int(guild_id))
-    # voice = guild_object.voice_client
-    #
-    # if video:
-    #     try:
-    #         video = await YTDLSource.from_url(video, loop=bot.loop, stream=True)
-    #     except Exception as e:
-    #         print_message(guild_id, "web_queue -> Error while getting video")
-    #         return 'Error while getting video (Internal web error -> contact developer)'
-    #
-    #     guild[guild_id].queue.insert(number, video)
-    #     save_json()
-    #     print_message(guild_id, "web_queue -> Queued")
-    #     return 'Queued'
-    #
-    # print_message(guild_id, "web_queue -> Unknown error")
-    # return 'Unknown error'
-    #
-    # await guild_object.system_channel.send('cock.log')
+async def web_queue_from_url(web_data, url, position=None):
+    if position:
+        if position == "start":
+            position = 0
+        elif position == "end":
+            position = None
+
+    if url[0:33] == "https://www.youtube.com/playlist?":
+        try:
+            playlist_videos = youtubesearchpython.Playlist.getVideos(url)
+        except KeyError:
+            message = f'This playlist is unviewable: `{url}`'
+            return [False, message]
+        playlist_songs = 0
+
+        playlist_videos = playlist_videos['videos']
+        if position or position == 0:
+            playlist_videos = list(reversed(playlist_videos))
+
+        for index, val in enumerate(playlist_videos):
+            playlist_songs += 1
+
+            # noinspection PyTypeChecker
+            url = f"https://www.youtube.com/watch?v={playlist_videos[index]['id']}"
+            video = Video(url, web_data.id)
+
+            if position or position == 0:
+                guild[web_data.guild_id].queue.insert(position, video)
+            else:
+                guild[web_data.guild_id].queue.append(video)
+
+        message = f"`{playlist_songs}` songs from playlist added to queue!"
+
+        save_json()
+
+        return [True, message, None]
+
+    elif url:
+        try:
+
+            video = Video(url, web_data.id)
+
+            if position or position == 0:
+                guild[web_data.guild_id].queue.insert(position, video)
+            else:
+                guild[web_data.guild_id].queue.append(video)
+
+            message = f'`{video.title}` added to queue!'
+
+            save_json()
+
+            return [True, message, video]
+
+        except (ValueError, IndexError, TypeError):
+            try:
+                url_only_id = 'https://www.youtube.com/watch?v=' + url.split('watch?v=')[1]
+                video = Video(url_only_id, web_data.id)
+
+                if position or position == 0:
+                    guild[web_data.guild_id].queue.insert(position, video)
+                else:
+                    guild[web_data.guild_id].queue.append(video)
+
+                message = f'`{video.title}` added to queue!'
+
+                save_json()
+
+                return [True, message, video]
+
+            except (ValueError, IndexError, TypeError):
+                try:
+                    # https://www.youtube.com/shorts/JRPKE_A9yjw
+                    url_shorts = url.replace('shorts/', 'watch?v=')
+                    video = Video(url_shorts, web_data.id)
+
+                    if position or position == 0:
+                        guild[web_data.guild_id].queue.insert(position, video)
+                    else:
+                        guild[web_data.guild_id].queue.append(video)
+
+                    message = f'`{video.title}` added to queue!'
+
+                    save_json()
+
+                    return [True, message, video]
+
+                except (ValueError, IndexError, TypeError):
+
+                    message = f'{url} is not supported!'
+
+                    save_json()
+
+                    return [False, message]
+
+# async def web_play(web_data, url):
+#     print_web_function(web_data, 'web_play', [url])
+#     # guild_id = web_data.guild_id
+#     # guild_object = bot.get_guild(int(guild_id))
+#     # voice = guild_object.voice_client
+#     #
+#     # if video:
+#     #     try:
+#     #         video = await YTDLSource.from_url(video, loop=bot.loop, stream=True)
+#     #     except Exception as e:
+#     #         print_message(guild_id, "web_queue -> Error while getting video")
+#     #         return 'Error while getting video (Internal web error -> contact developer)'
+#     #
+#     #     guild[guild_id].queue.insert(number, video)
+#     #     save_json()
+#     #     print_message(guild_id, "web_queue -> Queued")
+#     #     return 'Queued'
+#     #
+#     # print_message(guild_id, "web_queue -> Unknown error")
+#     # return 'Unknown error'
+#     #
+#     # await guild_object.system_channel.send('cock.log')
 
 
 # --------------------------------------------- HELP COMMAND -----------------------------------------------------------
@@ -2833,6 +3023,7 @@ async def help_command(ctx: commands.Context,
                                           f"`/language` - {tg(gi, 'language')}\n"
                                           f"`/sound_ effects` - {tg(gi, 'sound')}\n"
                                           f"`/list_radios` - {tg(gi, 'list_radios')}\n"
+                                          f"`/key` - {tg(gi, 'key')}\n"
                     , inline=False)
     embed.add_field(name="Player", value=f"`/play` - {tg(gi, 'play')}\n"
                                          f"`/radio` - {tg(gi, 'radio')}\n"
@@ -2892,6 +3083,9 @@ async def help_command(ctx: commands.Context,
     elif command == 'list_radios':
         embed = discord.Embed(title="Help", description=f"`/list_radios` - {tg(gi, 'list_radios')}")
         embed.add_field(name=f"{tg(gi, 'Arguments')}", value=f"`user_only` - {tg(gi, 'ephemeral')}", inline=False)
+
+    elif command == 'key':
+        embed = discord.Embed(title="Help", description=f"`/key` - {tg(gi, 'key')}")
 
     elif command == 'play':
         embed = discord.Embed(title="Help", description=f"`/play` - {tg(gi, 'play')}")
@@ -2985,78 +3179,294 @@ async def help_command(ctx: commands.Context,
 # --------------------------------------------- WEB SERVER --------------------------------------------- #
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'secret!'
 
 @app.route('/')
 async def index_page():
-    return render_template('nav/index.html')
+    if 'discord_user' in session.keys(): user = session['discord_user']
+    else: user = None
+
+    return render_template('nav/index.html', user=user)
 
 @app.route('/about')
 async def about_page():
-    return render_template('nav/about.html')
+    if 'discord_user' in session.keys(): user = session['discord_user']
+    else: user = None
+
+    return render_template('nav/about.html', user=user)
+
+
+#[{'id': '85342800492634112', 'name': 'Subnautica (Official)', 'icon': '6857db3eb1f4830fcc4dcf13a7088430', 'owner': False, 'permissions': '66524785495104', 'features': ['VANITY_URL', 'NEWS', 'COMMUNITY_EXP_LARGE_GATED', 'VERIFIED', 'DISCOVERABLE', 'THREADS_ENABLED', 'BANNER', 'ANIMATED_BANNER', 'SEVEN_DAY_THREAD_ARCHIVE', 'VIP_REGIONS', 'PARTNERED', 'COMMUNITY', 'WELCOME_SCREEN_ENABLED', 'ANIMATED_ICON', 'INVITE_SPLASH', 'PREVIEW_ENABLED', 'THREE_DAY_THREAD_ARCHIVE', 'MEMBER_PROFILES', 'PRIVATE_THREADS', 'ROLE_ICONS', 'FEATURABLE', 'MEMBER_VERIFICATION_GATE_ENABLED']}, {'id': '118043411461701641', 'name': 'VoidFlame Network', 'icon': '6be4882ea6ecad84c00c93a82d231334', 'owner': False, 'permissions': '66939249876545', 'features': ['PREVIEW_ENABLED', 'NEWS', 'COMMUNITY', 'DISCOVERABLE', 'ENABLED_DISCOVERABLE_BEFORE', 'WELCOME_SCREEN_ENABLED', 'CREATOR_MONETIZABLE_PROVISIONAL']}, {'id': '236305188137336832', 'name': 'Jay3', 'icon': 'ad3f138f3490045f3271491fe1fe8e42', 'owner': False, 'permissions': '66939316932161', 'features': ['VANITY_URL', 'NEWS', 'TEXT_IN_VOICE_ENABLED', 'VERIFIED', 'DISCOVERABLE', 'THREADS_ENABLED', 'BANNER', 'ANIMATED_BANNER', 'SEVEN_DAY_THREAD_ARCHIVE', 'VIP_REGIONS', 'PARTNERED', 'COMMUNITY', 'COMMUNITY_EXP_LARGE_UNGATED', 'WELCOME_SCREEN_ENABLED', 'ANIMATED_ICON', 'INVITE_SPLASH', 'NEW_THREAD_PERMISSIONS', 'PREVIEW_ENABLED', 'THREE_DAY_THREAD_ARCHIVE', 'MEMBER_PROFILES', 'PRIVATE_THREADS', 'ROLE_ICONS']}, {'id': '269639757351354368', 'name': 'New Folder', 'icon': 'bd3a685ae3d4e7133ad146c17f583ba0', 'owner': False, 'permissions': '66939249871936', 'features': ['VANITY_URL', 'AUTO_MODERATION', 'NEWS', 'COMMUNITY_EXP_LARGE_GATED', 'DISCOVERABLE', 'THREADS_ENABLED', 'BANNER', 'ANIMATED_BANNER', 'GUILD_WEB_PAGE_VANITY_URL', 'SEVEN_DAY_THREAD_ARCHIVE', 'COMMUNITY', 'WELCOME_SCREEN_ENABLED', 'ANIMATED_ICON', 'INVITE_SPLASH', 'PREVIEW_ENABLED', 'THREE_DAY_THREAD_ARCHIVE', 'MEMBER_PROFILES', 'ENABLED_DISCOVERABLE_BEFORE', 'PRIVATE_THREADS', 'ROLE_ICONS', 'MEMBER_VERIFICATION_GATE_ENABLED']}, {'id': '270613445177638922', 'name': 'Memeology', 'icon': 'a_03f44a65cd5f64162d493630d14069c4', 'owner': False, 'permissions': '66801810624065', 'features': ['VANITY_URL', 'AUTO_MODERATION', 'NEWS', 'TEXT_IN_VOICE_ENABLED', 'COMMUNITY_EXP_LARGE_GATED', 'PRIVATE_THREADS', 'GUILD_ONBOARDING_EVER_ENABLED', 'DISCOVERABLE', 'THREADS_ENABLED', 'BANNER', 'ANIMATED_BANNER', 'GUILD_WEB_PAGE_VANITY_URL', 'SEVEN_DAY_THREAD_ARCHIVE', 'VIP_REGIONS', 'PARTNERED', 'COMMUNITY', 'GUILD_ONBOARDING_HAS_PROMPTS', 'WELCOME_SCREEN_ENABLED', 'ANIMATED_ICON', 'INVITE_SPLASH', 'NEW_THREAD_PERMISSIONS', 'PREVIEW_ENABLED', 'THREE_DAY_THREAD_ARCHIVE', 'MEMBER_PROFILES', 'MEMBER_VERIFICATION_GATE_ENABLED', 'ROLE_ICONS', 'GUILD_ONBOARDING', 'RAID_ALERTS_ENABLED']}, {'id': '298527098652327937', 'name': "TommyInnit's Discord", 'icon': 'a_a4d8e535f0f217ee9f2712fef496c81f', 'owner': False, 'permissions': '65975029456449', 'features': ['VANITY_URL', 'AUTO_MODERATION', 'NEWS', 'VERIFIED', 'DISCOVERABLE', 'BANNER', 'VIP_REGIONS', 'PARTNERED', 'WELCOME_SCREEN_ENABLED', 'NEW_THREAD_PERMISSIONS', 'PREVIEW_ENABLED', 'THREE_DAY_THREAD_ARCHIVE', 'MEMBER_PROFILES', 'ENABLED_DISCOVERABLE_BEFORE', 'PRIVATE_THREADS', 'ROLE_ICONS', 'RAID_ALERTS_ENABLED', 'COMMUNITY_EXP_LARGE_GATED', 'THREADS_ENABLED', 'ANIMATED_BANNER', 'GUILD_WEB_PAGE_VANITY_URL', 'SEVEN_DAY_THREAD_ARCHIVE', 'COMMUNITY', 'ANIMATED_ICON', 'INVITE_SPLASH', 'MEMBER_VERIFICATION_GATE_ENABLED']}, {'id': '324207629784186882', 'name': 'Subnautica Modding', 'icon': 'a_6b12bcd95e9d06b51d507e17b61afbc5', 'owner': False, 'permissions': '66939316981313', 'features': ['AUTO_MODERATION', 'NEWS', 'TEXT_IN_VOICE_ENABLED', 'GUILD_ONBOARDING_EVER_ENABLED', 'DISCOVERABLE', 'THREADS_ENABLED', 'BANNER', 'SEVEN_DAY_THREAD_ARCHIVE', 'GUILD_ONBOARDING_HAS_PROMPTS', 'COMMUNITY', 'COMMUNITY_EXP_LARGE_UNGATED', 'WELCOME_SCREEN_ENABLED', 'ANIMATED_ICON', 'INVITE_SPLASH', 'NEW_THREAD_PERMISSIONS', 'PREVIEW_ENABLED', 'THREE_DAY_THREAD_ARCHIVE', 'MEMBER_PROFILES', 'ENABLED_DISCOVERABLE_BEFORE', 'PRIVATE_THREADS', 'ROLE_ICONS', 'GUILD_ONBOARDING']}, {'id': '349657691385364480', 'name': 'ggGibi', 'icon': 'a_59e1dbd01c166da45b1139b6116b57dd', 'owner': False, 'permissions': '66939316948544', 'features': ['VANITY_URL', 'NEWS', 'COMMUNITY_EXP_LARGE_GATED', 'DISCOVERABLE', 'BANNER', 'ANIMATED_BANNER', 'SEVEN_DAY_THREAD_ARCHIVE', 'VIP_REGIONS', 'PARTNERED', 'COMMUNITY', 'ANIMATED_ICON', 'INVITE_SPLASH', 'PREVIEW_ENABLED', 'THREE_DAY_THREAD_ARCHIVE', 'MEMBER_PROFILES', 'ENABLED_DISCOVERABLE_BEFORE', 'PRIVATE_THREADS', 'ROLE_ICONS']}, {'id': '472883504217063466', 'name': "Tubbo's Pastel Cafe☕", 'icon': 'b51a61c4eec3295b24627c65ef599aaf', 'owner': False, 'permissions': '66664438812224', 'features': ['VANITY_URL', 'AUTO_MODERATION', 'TEXT_IN_VOICE_ENABLED', 'NEWS', 'COMMUNITY_EXP_LARGE_GATED', 'DISCOVERABLE', 'THREADS_ENABLED', 'BANNER', 'ANIMATED_BANNER', 'SEVEN_DAY_THREAD_ARCHIVE', 'COMMUNITY', 'WELCOME_SCREEN_ENABLED', 'ANIMATED_ICON', 'INVITE_SPLASH', 'NEW_THREAD_PERMISSIONS', 'PREVIEW_ENABLED', 'THREE_DAY_THREAD_ARCHIVE', 'MEMBER_PROFILES', 'ENABLED_DISCOVERABLE_BEFORE', 'PRIVATE_THREADS', 'ROLE_ICONS', 'MEMBER_VERIFICATION_GATE_ENABLED']}, {'id': '552281448682487811', 'name': 'Flintlock Servers', 'icon': 'e61d599007f55fe0e82aca827cd491af', 'owner': False, 'permissions': '66252122217025', 'features': []}, {'id': '595713203867222016', 'name': 'House of Mehple', 'icon': 'ee8694b7e1d8ab8cfc34de334fb766ec', 'owner': False, 'permissions': '67042396200513', 'features': ['THREE_DAY_THREAD_ARCHIVE', 'ANIMATED_ICON', 'INVITE_SPLASH']}, {'id': '610753275947515915', 'name': 'The Classified Collective', 'icon': 'ccc2403bee2df2be31b2e9b314ae8bb5', 'owner': False, 'permissions': '70368744177663', 'features': []}, {'id': '626881973398536194', 'name': 'mahoutsukai', 'icon': '091bae50d01eab49022afd240e226a5d', 'owner': False, 'permissions': '66664439074369', 'features': ['NEW_THREAD_PERMISSIONS', 'NEWS', 'COMMUNITY', 'THREADS_ENABLED', 'COMMUNITY_EXP_MEDIUM']}, {'id': '662267976984297473', 'name': 'Midjourney', 'icon': 'e75033be72087a87fa09e91727dac2a4', 'owner': False, 'permissions': '66973676719680', 'features': ['CREATOR_MONETIZABLE', 'VANITY_URL', 'AUTO_MODERATION', 'NEWS', 'GUILD_ROLE_SUBSCRIPTION_TRIALS', 'GUILD_HOME_DEPRECATION_OVERRIDE', 'BFG', 'VERIFIED', 'DEVELOPER_SUPPORT_SERVER', 'GUILD_ONBOARDING_EVER_ENABLED', 'DISCOVERABLE', 'GUILD_ROLE_SUBSCRIPTIONS', 'RELAY_ENABLED', 'BANNER', 'ANIMATED_BANNER', 'THREADS_ONLY_CHANNEL', 'GUILD_WEB_PAGE_VANITY_URL', 'SEVEN_DAY_THREAD_ARCHIVE', 'INCREASED_THREAD_LIMIT', 'COMMUNITY', 'GUILD_ONBOARDING_HAS_PROMPTS', 'WELCOME_SCREEN_ENABLED', 'GUILD_HOME_TEST', 'ANIMATED_ICON', 'INVITE_SPLASH', 'PREVIEW_ENABLED', 'THREE_DAY_THREAD_ARCHIVE', 'MEMBER_PROFILES', 'ENABLED_DISCOVERABLE_BEFORE', 'PRIVATE_THREADS', 'ROLE_ICONS', 'GUILD_ONBOARDING', 'RAID_ALERTS_ENABLED']}, {'id': '669899968567443477', 'name': 'Duklock', 'icon': 'a_c69f5e4daf138f82931a2cf657c03e61', 'owner': False, 'permissions': '66939249872449', 'features': ['VANITY_URL', 'AUTO_MODERATION', 'NEWS', 'DISCOVERABLE', 'BANNER', 'VIP_REGIONS', 'PARTNERED', 'WELCOME_SCREEN_ENABLED', 'NEW_THREAD_PERMISSIONS', 'PREVIEW_ENABLED', 'THREE_DAY_THREAD_ARCHIVE', 'MEMBER_PROFILES', 'ENABLED_DISCOVERABLE_BEFORE', 'PRIVATE_THREADS', 'ROLE_ICONS', 'RAID_ALERTS_ENABLED', 'TEXT_IN_VOICE_ENABLED', 'THREADS_ENABLED', 'ANIMATED_BANNER', 'SEVEN_DAY_THREAD_ARCHIVE', 'COMMUNITY', 'COMMUNITY_EXP_LARGE_UNGATED', 'ANIMATED_ICON', 'INVITE_SPLASH', 'MEMBER_VERIFICATION_GATE_ENABLED']}, {'id': '693756651357863957', 'name': 'Kerberus', 'icon': 'a_18c4a5427d18ab11003c91c67fd50d75', 'owner': False, 'permissions': '67042396196417', 'features': ['VANITY_URL', 'TEXT_IN_VOICE_ENABLED', 'NEWS', 'GUILD_ONBOARDING_EVER_ENABLED', 'THREADS_ENABLED', 'BANNER', 'ANIMATED_BANNER', 'SEVEN_DAY_THREAD_ARCHIVE', 'COMMUNITY', 'GUILD_ONBOARDING_HAS_PROMPTS', 'WELCOME_SCREEN_ENABLED', 'ANIMATED_ICON', 'INVITE_SPLASH', 'NEW_THREAD_PERMISSIONS', 'PREVIEW_ENABLED', 'THREE_DAY_THREAD_ARCHIVE', 'MEMBER_PROFILES', 'PRIVATE_THREADS', 'ROLE_ICONS', 'GUILD_ONBOARDING', 'MEMBER_VERIFICATION_GATE_ENABLED']}, {'id': '742980347540799508', 'name': 'TubNet', 'icon': '956741232147a111920ada8c19b3e9de', 'owner': False, 'permissions': '66526932700736', 'features': ['VANITY_URL', 'AUTO_MODERATION', 'NEWS', 'DISCOVERABLE', 'BANNER', 'ANIMATED_BANNER', 'SEVEN_DAY_THREAD_ARCHIVE', 'VIP_REGIONS', 'PARTNERED', 'COMMUNITY', 'WELCOME_SCREEN_ENABLED', 'GUILD_HOME_TEST', 'ANIMATED_ICON', 'INVITE_SPLASH', 'PREVIEW_ENABLED', 'THREE_DAY_THREAD_ARCHIVE', 'MEMBER_PROFILES', 'ENABLED_DISCOVERABLE_BEFORE', 'PRIVATE_THREADS', 'ROLE_ICONS', 'RAID_ALERTS_ENABLED']}, {'id': '750726239723061338', 'name': 'Stoneworks', 'icon': '17c74b26ed62238b83db95788e46a571', 'owner': False, 'permissions': '36152991403585', 'features': ['CREATOR_MONETIZABLE', 'VANITY_URL', 'AUTO_MODERATION', 'NEWS', 'DISCOVERABLE', 'THREADS_ENABLED', 'BANNER', 'ANIMATED_BANNER', 'GUILD_WEB_PAGE_VANITY_URL', 'SEVEN_DAY_THREAD_ARCHIVE', 'COMMUNITY', 'GUILD_HOME_TEST', 'ANIMATED_ICON', 'INVITE_SPLASH', 'NEW_THREAD_PERMISSIONS', 'PREVIEW_ENABLED', 'THREE_DAY_THREAD_ARCHIVE', 'MEMBER_PROFILES', 'ENABLED_DISCOVERABLE_BEFORE', 'PRIVATE_THREADS', 'ROLE_ICONS', 'MEMBER_VERIFICATION_GATE_ENABLED']}, {'id': '754508774148014190', 'name': "Ranboo's Corner", 'icon': '3ef795cd99fd8958594a25eb05b3bbf8', 'owner': False, 'permissions': '35184372419584', 'features': ['VANITY_URL', 'AUTO_MODERATION', 'NEWS', 'DISCOVERABLE', 'BANNER', 'VIP_REGIONS', 'PARTNERED', 'WELCOME_SCREEN_ENABLED', 'NEW_THREAD_PERMISSIONS', 'PREVIEW_ENABLED', 'THREE_DAY_THREAD_ARCHIVE', 'MEMBER_PROFILES', 'ENABLED_DISCOVERABLE_BEFORE', 'PRIVATE_THREADS', 'ROLE_ICONS', 'TEXT_IN_VOICE_ENABLED', 'COMMUNITY_EXP_LARGE_GATED', 'THREADS_ENABLED', 'ANIMATED_BANNER', 'SEVEN_DAY_THREAD_ARCHIVE', 'COMMUNITY', 'ANIMATED_ICON', 'INVITE_SPLASH', 'MEMBER_VERIFICATION_GATE_ENABLED']}, {'id': '768051887076278283', 'name': '3D', 'icon': 'aa257912603760635a1786964f7715b6', 'owner': False, 'permissions': '67042396327489', 'features': ['EXPOSED_TO_ACTIVITIES_WTP_EXPERIMENT']}, {'id': '785623194849116170', 'name': 'The Bartenders Guild of StoneWorks', 'icon': '13a0ddfb0177812ebfffd1b13ef36364', 'owner': False, 'permissions': '66939316981313', 'features': ['AUTO_MODERATION', 'NEWS', 'COMMUNITY', 'COMMUNITY_EXP_MEDIUM', 'ANIMATED_ICON', 'INVITE_SPLASH', 'NEW_THREAD_PERMISSIONS', 'PREVIEW_ENABLED', 'THREE_DAY_THREAD_ARCHIVE', 'THREADS_ENABLED', 'MEMBER_VERIFICATION_GATE_ENABLED']}, {'id': '809555442942083123', 'name': 'czernota.cz', 'icon': 'e05523eb8124390bbde30de04ec5f765', 'owner': False, 'permissions': '35706314803777', 'features': ['VANITY_URL', 'TEXT_IN_VOICE_ENABLED', 'NEWS', 'DISCOVERABLE_DISABLED', 'THREADS_ENABLED', 'BANNER', 'ANIMATED_BANNER', 'SEVEN_DAY_THREAD_ARCHIVE', 'COMMUNITY', 'ANIMATED_ICON', 'INVITE_SPLASH', 'NEW_THREAD_PERMISSIONS', 'PREVIEW_ENABLED', 'THREE_DAY_THREAD_ARCHIVE', 'MEMBER_PROFILES', 'ENABLED_DISCOVERABLE_BEFORE', 'PRIVATE_THREADS', 'ROLE_ICONS', 'MEMBER_VERIFICATION_GATE_ENABLED']}, {'id': '820745488231301210', 'name': 'No Text To Speech', 'icon': '05f582545d1455db8fce58e823303fea', 'owner': False, 'permissions': '831180049472', 'features': ['VANITY_URL', 'AUTO_MODERATION', 'TEXT_IN_VOICE_ENABLED', 'NEWS', 'COMMUNITY_EXP_LARGE_GATED', 'GUILD_ONBOARDING_EVER_ENABLED', 'DISCOVERABLE', 'THREADS_ENABLED', 'ROLE_ICONS', 'BANNER', 'ANIMATED_BANNER', 'GUILD_WEB_PAGE_VANITY_URL', 'SEVEN_DAY_THREAD_ARCHIVE', 'GUILD_ONBOARDING_HAS_PROMPTS', 'COMMUNITY', 'WELCOME_SCREEN_ENABLED', 'ANIMATED_ICON', 'INVITE_SPLASH', 'NEW_THREAD_PERMISSIONS', 'PREVIEW_ENABLED', 'THREE_DAY_THREAD_ARCHIVE', 'MEMBER_PROFILES', 'ENABLED_DISCOVERABLE_BEFORE', 'PRIVATE_THREADS', 'GUILD_SERVER_GUIDE', 'GUILD_ONBOARDING', 'MEMBER_VERIFICATION_GATE_ENABLED']}, {'id': '822893755416707172', 'name': 'Emerald Earth', 'icon': 'b28bb80d261536c03060d5f655daa9c2', 'owner': False, 'permissions': '67042396200513', 'features': ['NEWS', 'COMMUNITY', 'WELCOME_SCREEN_ENABLED', 'NEW_THREAD_PERMISSIONS', 'PREVIEW_ENABLED', 'THREADS_ENABLED', 'MEMBER_VERIFICATION_GATE_ENABLED', 'INVITES_DISABLED']}, {'id': '837695985625858048', 'name': 'Советский Союз', 'icon': '56eef8957d6c9442cefd6308cb653251', 'owner': False, 'permissions': '70368744177663', 'features': ['AUTO_MODERATION']}, {'id': '892391954673967104', 'name': 'Guilds of Cinder', 'icon': '4488ec6cda9c13bdd2898e3cf6000379', 'owner': False, 'permissions': '67042396196417', 'features': ['NEWS', 'COMMUNITY']}, {'id': '892403162315644928', 'name': 'pog', 'icon': 'ddf21b11faf19f03dafe5d0289996fa1', 'owner': True, 'permissions': '70368744177663', 'features': []}, {'id': '892404682285256735', 'name': 'Jebáci pri práci', 'icon': 'ca21e41d0ff13e3cc8798ed3367495ff', 'owner': True, 'permissions': '70368744177663', 'features': []}, {'id': '909330298368589864', 'name': 'Pawn Shop of Imperius', 'icon': 'd0366ab597aeae956dfbd93e3b335c49', 'owner': False, 'permissions': '67042396196417', 'features': ['WELCOME_SCREEN_ENABLED', 'COMMUNITY', 'NEWS']}, {'id': '933327044593455135', 'name': "Amy's Emporium", 'icon': '38462c3a5df2d5cdc991c64e5595411e', 'owner': False, 'permissions': '67042396196417', 'features': []}, {'id': '947286278234329118', 'name': 'Wizardry Venum', 'icon': '6ffba1e3feadd833a2e31f990258eed4', 'owner': False, 'permissions': '67042396196417', 'features': []}, {'id': '959376019700203520', 'name': 'Czech Place', 'icon': '65adabd90cf4c8c096af243fce7eb42c', 'owner': False, 'permissions': '67042396196417', 'features': ['NEWS', 'COMMUNITY', 'WELCOME_SCREEN_ENABLED', 'ANIMATED_ICON', 'INVITE_SPLASH', 'PREVIEW_ENABLED', 'THREE_DAY_THREAD_ARCHIVE', 'MEMBER_PROFILES', 'DISCOVERABLE', 'ENABLED_DISCOVERABLE_BEFORE', 'PRIVATE_THREADS', 'BANNER', 'ROLE_ICONS', 'MEMBER_VERIFICATION_GATE_ENABLED', 'SEVEN_DAY_THREAD_ARCHIVE']}, {'id': '959450843596329021', 'name': 'Slovakia Place 2022', 'icon': 'e39cd6028c58be00fb19c472d7d7165a', 'owner': False, 'permissions': '67042396196417', 'features': ['NEWS', 'COMMUNITY']}, {'id': '964642769987596388', 'name': 'Ore & Lore', 'icon': '75c315761f1862a4900efaddcb0f8071', 'owner': False, 'permissions': '66939316985409', 'features': ['AUTO_MODERATION', 'TEXT_IN_VOICE_ENABLED', 'COMMUNITY', 'GUILD_WEB_PAGE_VANITY_URL', 'NEWS', 'WELCOME_SCREEN_ENABLED', 'ANIMATED_ICON', 'INVITE_SPLASH', 'PREVIEW_ENABLED', 'THREE_DAY_THREAD_ARCHIVE', 'DISCOVERABLE', 'ENABLED_DISCOVERABLE_BEFORE', 'MEMBER_VERIFICATION_GATE_ENABLED']}, {'id': '972285603775385630', 'name': 'Ruby Civilizations', 'icon': '7ea0d1f86be33f46293251191445d435', 'owner': False, 'permissions': '67042396196417', 'features': ['AUTO_MODERATION', 'TEXT_IN_VOICE_ENABLED', 'COMMUNITY', 'NEWS', 'WELCOME_SCREEN_ENABLED', 'EXPOSED_TO_ACTIVITIES_WTP_EXPERIMENT', 'PREVIEW_ENABLED', 'MEMBER_VERIFICATION_GATE_ENABLED']}, {'id': '974519864045756446', 'name': 'OpenAI', 'icon': 'd7ec4ed5884437bae0333aa345a97160', 'owner': False, 'permissions': '35500052302912', 'features': ['VANITY_URL', 'AUTO_MODERATION', 'NEWS', 'COMMUNITY_EXP_LARGE_GATED', 'VERIFIED', 'DISCOVERABLE', 'BANNER', 'ANIMATED_BANNER', 'GUILD_WEB_PAGE_VANITY_URL', 'SEVEN_DAY_THREAD_ARCHIVE', 'INCREASED_THREAD_LIMIT', 'RAID_ALERTS_ENABLED', 'COMMUNITY', 'ANIMATED_ICON', 'INVITE_SPLASH', 'PREVIEW_ENABLED', 'THREE_DAY_THREAD_ARCHIVE', 'MEMBER_PROFILES', 'ENABLED_DISCOVERABLE_BEFORE', 'PRIVATE_THREADS', 'ROLE_ICONS', 'MEMBER_VERIFICATION_GATE_ENABLED']}, {'id': '976556270179975168', 'name': 'Methingham Brewrery', 'icon': '9e6b8f2de533b9b00f9e5e538dd838da', 'owner': True, 'permissions': '70368744177663', 'features': []}, {'id': '978104737369055252', 'name': 'BetterPixelmon', 'icon': 'a0e4df0b838d21bb4da861f128f9c868', 'owner': False, 'permissions': '67042396327489', 'features': ['NEWS', 'COMMUNITY', 'WELCOME_SCREEN_ENABLED', 'ANIMATED_ICON', 'INVITE_SPLASH', 'THREE_DAY_THREAD_ARCHIVE', 'MEMBER_PROFILES', 'PRIVATE_THREADS', 'BANNER', 'ROLE_ICONS', 'SEVEN_DAY_THREAD_ARCHIVE']}, {'id': '986518145537802290', 'name': 'The Russian Dude Discord', 'icon': '7ae38e5fe99c613d4668f7b072ce4303', 'owner': False, 'permissions': '67042396196417', 'features': ['VANITY_URL', 'NEWS', 'COMMUNITY', 'WELCOME_SCREEN_ENABLED', 'ANIMATED_ICON', 'INVITE_SPLASH', 'THREE_DAY_THREAD_ARCHIVE', 'MEMBER_PROFILES', 'PRIVATE_THREADS', 'BANNER', 'ROLE_ICONS', 'ANIMATED_BANNER', 'ROLE_SUBSCRIPTIONS_ENABLED', 'SEVEN_DAY_THREAD_ARCHIVE', 'CREATOR_MONETIZABLE_PROVISIONAL']}, {'id': '1008145667622969397', 'name': "Tomer27cz's server", 'icon': None, 'owner': True, 'permissions': '70368744177663', 'features': ['NEWS', 'COMMUNITY']}, {'id': '1008891153522888774', 'name': 'Ark Of Astradal', 'icon': 'a_2b7ef0076bbef1d90bff5f2e1ba9b362', 'owner': False, 'permissions': '67042396196417', 'features': ['AUTO_MODERATION', 'NEWS', 'COMMUNITY', 'ANIMATED_ICON', 'INVITE_SPLASH', 'THREE_DAY_THREAD_ARCHIVE', 'MEMBER_PROFILES', 'PRIVATE_THREADS', 'BANNER', 'ROLE_ICONS', 'SEVEN_DAY_THREAD_ARCHIVE']}, {'id': '1040343818274340935', 'name': 'Indently', 'icon': '92af3bf442f5052676306b63c389a9e6', 'owner': False, 'permissions': '66904889822785', 'features': ['AUTO_MODERATION', 'NEWS', 'COMMUNITY', 'WELCOME_SCREEN_ENABLED', 'PREVIEW_ENABLED', 'DISCOVERABLE', 'ENABLED_DISCOVERABLE_BEFORE', 'MEMBER_VERIFICATION_GATE_ENABLED']}, {'id': '1041648459574431825', 'name': 'videoprojekt anj', 'icon': '3d7afdffb80c64ec33b57d27e1142184', 'owner': False, 'permissions': '67042396327489', 'features': []}]
+#[{'id': '892403162315644928', 'name': 'pog', 'icon': 'ddf21b11faf19f03dafe5d0289996fa1', 'owner': False, 'permissions': '67042396327489', 'features': []}, {'id': '1008145667622969397', 'name': "Tomer27cz's server", 'icon': None, 'owner': False, 'permissions': '67042329218625', 'features': ['NEWS', 'COMMUNITY']}]
+
 
 @app.route('/guild')
 async def guilds_page():
-    return render_template('nav/guild_list.html', guild=guild.values(), len=len)
+    if 'discord_user' in session.keys():
+        user = session['discord_user']
+        mutual_guild_ids = session['mutual_guild_ids']
+    elif 'mutual_guild_ids' in session.keys():
+        mutual_guild_ids = session['mutual_guild_ids']
+        user = None
+        if mutual_guild_ids is None:
+            mutual_guild_ids = []
+            session['mutual_guild_ids'] = []
+    else:
+        user = None
+        mutual_guild_ids = []
+
+    print(f"mutual_guild_ids in guild list: {mutual_guild_ids}")
+
+    return render_template('nav/guild_list.html', guild=guild.values(), len=len, user=user, errors=None, mutual_guild_ids=mutual_guild_ids)
 
 @app.route('/guild/<guild_id>', methods=['GET', 'POST'])
-async def guild_page(guild_id):
+async def guild_get_key_page(guild_id):
+    if 'discord_user' in session.keys():
+        user = session['discord_user']
+        mutual_guild_ids = session['mutual_guild_ids']
+    elif 'mutual_guild_ids' in session.keys():
+        mutual_guild_ids = session['mutual_guild_ids']
+        user = None
+        if mutual_guild_ids is None:
+            mutual_guild_ids = []
+            session['mutual_guild_ids'] = []
+    else:
+        user = None
+        mutual_guild_ids = []
+
+    print(f"mutual_guild_ids before action: {mutual_guild_ids}")
+
+    try:
+        guild_object = guild[int(guild_id)]
+    except (KeyError, ValueError, TypeError):
+        return render_template('base/message.html', guild_id=guild_id, user=user, message="That Server doesn't exist or the bot is not in it", errors=None, title='Error')
+
+    if guild_object.id in mutual_guild_ids:
+        return redirect(f'/guild/{guild_id}&key={guild_object.data.key}')
+
+    if request.method == 'POST':
+        if 'key' in request.form.keys():
+            if request.form['key'] == guild_object.data.key:
+                if 'mutual_guild_ids' not in session.keys():
+                    session['mutual_guild_ids'] = []
+
+                session['mutual_guild_ids'] = session['mutual_guild_ids'] + [guild_object.id]
+                # mutual_guild_ids = session['mutual_guild_ids']
+
+                return redirect(f'/guild/{guild_id}&key={request.form["key"]}')
+
+        return render_template('control/action/get_key.html', guild_id=guild_id, errors=[f'Invalid code: {request.form["key"]} -> do /key in the server'], url=Oauth.discord_login_url, user=user)
+
+    return render_template('control/action/get_key.html', guild_id=guild_id, errors=None, url=Oauth.discord_login_url, user=user)
+
+
+@app.route('/guild/<guild_id>&key=<key>', methods=['GET', 'POST'])
+async def guild_page(guild_id, key):
+    errors = []
+    if 'discord_user' in session.keys():
+        user = session['discord_user']
+        user_name, user_id = user['username'], int(user['id'])
+        mutual_guild_ids = session['mutual_guild_ids']
+    elif 'mutual_guild_ids' in session.keys():
+        mutual_guild_ids = session['mutual_guild_ids']
+        user = None
+        user_name, user_id = "WEB", bot_id
+    else:
+        user = None
+        user_name, user_id = "WEB", bot_id
+        mutual_guild_ids = []
+
     if request.method == 'POST':
 
-        web_data = WebData(int(guild_id), 'author')
+        web_data = WebData(int(guild_id), user_name, user_id)
+        response = [True, '']
 
         keys = request.form.keys()
         if 'del_btn' in keys:
             print_web(web_data, 'web_remove', [request.form['del_btn']])
-            await web_remove(web_data, request.form['del_btn'])
+            response = await web_remove(web_data, request.form['del_btn'])
         if 'up_btn' in keys:
             print_web(web_data, 'web_up', [request.form['up_btn']])
-            await web_up(web_data, request.form['up_btn'])
+            response = await web_up(web_data, request.form['up_btn'])
         if 'down_btn' in keys:
             print_web(web_data, 'web_down', [request.form['down_btn']])
-            await web_down(web_data, request.form['down_btn'])
+            response = await web_down(web_data, request.form['down_btn'])
         if 'top_btn' in keys:
             print_web(web_data, 'web_top', [request.form['top_btn']])
-            await web_top(web_data, request.form['top_btn'])
+            response = await web_top(web_data, request.form['top_btn'])
         if 'bottom_btn' in keys:
             print_web(web_data, 'web_bottom', [request.form['bottom_btn']])
-            await web_bottom(web_data, request.form['bottom_btn'])
+            response = await web_bottom(web_data, request.form['bottom_btn'])
         if 'stop_btn' in keys:
             print_web(web_data, 'web_stop', [])
-            await web_stop(web_data)
+            response = await web_stop(web_data)
         if 'pause_btn' in keys:
             print_web(web_data, 'web_pause', [])
-            await web_pause(web_data)
+            response = await web_pause(web_data)
         if 'resume_btn' in keys:
             print_web(web_data, 'web_resume', [])
-            await web_resume(web_data)
+            response = await web_resume(web_data)
+
         if 'skip_btn' in keys:
             print_web(web_data, 'web_skip', [])
-            await web_skip(web_data)
+            response = await web_skip(web_data)
+        if 'shuffle_btn' in keys:
+            print_web(web_data, 'web_shuffle', [])
+            response = await web_shuffle(web_data)
+        if 'clear_btn' in keys:
+            print_web(web_data, 'web_clear', [])
+            response = await web_clear(web_data)
 
         if 'queue_btn' in keys:
             print_web(web_data, 'web_add_queue', [request.form['queue_btn']])
-            await web_queue_from_video(web_data, request.form['queue_btn'])
+            response = await web_queue_from_video(web_data, request.form['queue_btn'])
         if 'nextup_btn' in keys:
             print_web(web_data, 'web_nextup', [request.form['nextup_btn'], 0])
-            await web_queue_from_video(web_data, request.form['nextup_btn'], 0)
+            response = await web_queue_from_video(web_data, request.form['nextup_btn'], 0)
+
+        if 'volume_btn' in keys:
+            print_web(web_data, 'web_volume', [request.form['volumeRange'], request.form['volumeInput']])
+            response = await web_volume(web_data, request.form['volumeRange'], request.form['volumeInput'])
+
+        if 'ytURL' in keys:
+            print_web(web_data, 'web_add_queue', [request.form['ytURL'], request.form['addPosition']])
+            response = await web_queue_from_url(web_data, request.form['ytURL'], request.form['addPosition'])
+
+        if not response[0]:
+            errors = [response[1]]
 
     try:
         guild_object = guild[int(guild_id)]
-        return render_template('control/guild.html', guild=guild_object, convert_duration=convert_duration, get_username=get_username)
+
+        if key != guild_object.data.key:
+            if guild_object.id in mutual_guild_ids:
+                return redirect(f'/guild/{guild_id}&key={guild_object.data.key}')
+            return redirect(url_for('guild_get_key_page', guild_id=guild_id))
+
+        return render_template('control/guild.html', guild=guild_object, convert_duration=convert_duration, get_username=get_username, errors=errors, user=user, volume=round(guild_object.options.volume * 100))
     except (KeyError, ValueError, TypeError):
-        return render_template('error/no_guild.html', guild_id=guild_id)
+        return render_template('base/message.html', guild_id=guild_id, user=user, message="That Server doesn't exist or the bot is not in it", errors=None, title='Error')
 
-@app.route('/guild/<guild_id>/add', methods=['GET', 'POST'])
-async def guild_add_page(guild_id):
+
+# {'id': '349164237605568513', 'username': 'Tomer27cz', 'global_name': None, 'display_name': None, 'avatar': '7b49a22722306095584e6d8b9973ac13', 'avatar_decoration': None, 'discriminator': '4272', 'public_flags': 4194432, 'flags': 4194432, 'banner': None, 'banner_color': '#ffffff', 'accent_color': 16777215, 'locale': 'en-GB', 'mfa_enabled': True, 'premium_type': 0, 'email': 'tomer19cz@gmail.com', 'verified': True}
+
+@app.route('/login')
+async def login_page():
+    admin = False
+    if 'discord_user' in session.keys():
+        user = Oauth.get_user(session['access_token'])
+        collect_data(user)
+        session['discord_user'] = user
+
+        guilds = Oauth.get_user_guilds(session['access_token'])
+        collect_data(f'{user["username"]} -> {guilds}')
+
+        bot_guilds = Oauth.get_bot_guilds()
+        mutual_guilds = [x for x in guilds if x['id'] in map(lambda i: i['id'], bot_guilds)]
+
+        mutual_guild_ids = [int(guild_object['id']) for guild_object in mutual_guilds]
+        session['mutual_guild_ids'] = mutual_guild_ids
+
+        return render_template('base/message.html', message=f"Updated session for {user['username']}#{user['discriminator']}", errors=None, user=user, title='Update Success')
+
+    code = request.args.get('code')
+    if code is None:
+        return redirect(Oauth.discord_login_url)
+
+    response = Oauth.get_access_token(code)
+    access_token = response['access_token']
+
+    session['access_token'] = access_token
+
+    user = Oauth.get_user(access_token)
+    collect_data(user)
+    session['discord_user'] = user
+
+    guilds = Oauth.get_user_guilds(session['access_token'])
+    collect_data(f'{user["username"]} -> {guilds}')
+
+    bot_guilds = Oauth.get_bot_guilds()
+    mutual_guilds = [x for x in guilds if x['id'] in map(lambda i:i['id'], bot_guilds)]
+
+    mutual_guild_ids = [int(guild_object['id']) for guild_object in mutual_guilds]
+    if int(user['id']) == my_id:
+        mutual_guild_ids = [int(guild_object['id']) for guild_object in bot_guilds]
+        admin = True
+    session['mutual_guild_ids'] = mutual_guild_ids
+
+    return render_template('base/message.html', message=f"Success, logged in as {user['username']}#{user['discriminator']}{' -> ADMIN' if admin else ''}", errors=None, user=user, title='Login Success')
+
+@app.route('/logout')
+async def logout_page():
+    if 'discord_user' in session.keys():
+        user = session['discord_user']
+        username = user['username']
+        discriminator = user['discriminator']
+        session.pop('access_token')
+        session.pop('discord_user')
+        session.pop('mutual_guild_ids')
+        return render_template('base/message.html', message=f"Logged out as {username}#{discriminator}", errors=None, user=None, title='Logout Success')
+    return redirect(url_for('index_page'))
+
+@app.route('/reset')
+async def reset_page():
+    session.clear()
+    return redirect(url_for('index_page'))
+
+@app.route('/admin', methods=['GET', 'POST'])
+async def admin_page():
+    if 'discord_user' in session.keys():
+        user = session['discord_user']
+        user_name = user['username']
+        user_id = user['id']
+    else:
+        return redirect(url_for('index_page'))
+
+
     if request.method == 'POST':
-        web_data = WebData(int(guild_id), 'author')
-        # await web_add(web_data, request.form['add_url'])
-    return render_template('control/action/add.html')
+        guild_id = int(request.form['guild_id_select'])
+        print(f"guild_id: {guild_id}")
 
-# run
+        web_data = WebData(guild_id, user_name, user_id)
+
+        keys = request.form.keys()
+        if 'download_btn' in keys:
+            file_name = request.form['download_file']
+            try:
+                if file_name == 'log.txt' or file_name == 'data.txt' or file_name == 'activity.log':
+                    return send_file(f'{file_name}', as_attachment=True)
+                else:
+                    return send_file(f'src/{file_name}', as_attachment=True)
+            except Exception as e:
+                return str(e)
+        if 'upload_btn' in keys:
+            print('upload_btn')
+        if 'update_stopped_btn' in keys:
+            print('update_stopped_btn')
+        if 'update_loop_btn' in keys:
+            print('update_loop_btn')
+        if 'update_is_radio_btn' in keys:
+            print('update_is_radio_btn')
+        if 'update_buttons_btn' in keys:
+            print('update_buttons_btn')
+        if 'update_language_btn' in keys:
+            print('update_language_btn')
+        if 'update_response_type_btn' in keys:
+            print('update_response_type_btn')
+        if 'update_buffer_btn' in keys:
+            print('update_buffer_btn')
+        if 'update_volume_btn' in keys:
+            print('update_volume_btn')
+
+    if 'discord_user' in session.keys():
+        user = session['discord_user']
+        if int(user['id']) == my_id:
+            return render_template('nav/admin.html', user=user, guild=guild.values(), languages_dict=languages_dict)
+    return redirect(url_for('index_page'))
+
 
 web_thread = threading.Thread(target=app.run)
-bot_thread = threading.Thread(target=bot.run, kwargs={'token':api_key})
+bot_thread = threading.Thread(target=bot.run, kwargs={'token':config.BOT_TOKEN})
 
 web_thread.start()
 bot_thread.start()

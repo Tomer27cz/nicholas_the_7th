@@ -29,6 +29,7 @@
         "clear": "Clears the queue",
         "shuffle": "Shuffles the queue",
         "help": "Shows this message",
+        "key": "Shows the key for the server",
         "next_up": "Sets the next song to play",
         "action_type": "Chose action type",
         "profile": "Shows all available information about the profile",
