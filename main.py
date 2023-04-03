@@ -64,34 +64,9 @@ class Bot(commands.Bot):
 
     async def on_voice_state_update(self, member, before, after):
         voice_state = member.guild.voice_client
-
-        # if before.channel is not None:
-        #     before_state = before.channel.guild.voice_client
-        # else:
-        #     before_state = None
-        #
-        # if after.channel is not None:
-        #     after_state = after.channel.guild.voice_client
-        # else:
-        #     after_state = None
-        #
-        # print(before_state)
-        # print(after_state)
-        # print(voice_state)
-        #
-        # if voice_state is not None:
-        #     if before_state:
-        #         if not after_state:
-        #             return
-        #         print(after_state.is_playing())
-        #         print(before_state.is_playing())
-        #
-        #         if before_state.is_playing() and not after_state.is_playing():
-        #             print("was playing and now is not")
-        #
-
         if voice_state is not None and len(voice_state.channel.members) == 1:
-            after.channel.guild.voice_client.stop()
+            guild[member.guild.id].options.stopped = True
+            voice_state.stop()
             await voice_state.disconnect()
             print_message(member.guild.id, "-->> Disconnecting when last person left <<--")
             now_to_last(member.guild.id)
@@ -199,8 +174,10 @@ class GuildData:
                         if guild[guild_id].data.name is not None:
                             self.name = guild[guild_id].data.name
                             self.id = guild[guild_id].data.id
+                            self.key = guild[guild_id].data.key
                             self.member_count = guild[guild_id].data.member_count
                             self.owner_id = guild[guild_id].data.owner_id
+                            self.owner_name = guild[guild_id].data.owner_name
                             self.created_at = guild[guild_id].data.created_at
                             self.description = guild[guild_id].data.description
                             self.large = guild[guild_id].data.large
@@ -212,8 +189,10 @@ class GuildData:
 
             self.name = None
             self.id = None
+            self.key = None
             self.member_count = None
             self.owner_id = None
+            self.owner_name = None
             self.created_at = None
             self.description = None
             self.large = None

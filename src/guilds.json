@@ -30,36 +30,6 @@
         },
         "queue": {
             "0": {
-                "url": "https://www.youtube.com/watch?v=Kxl5G8FBG88",
-                "author": 349164237605568513,
-                "title": "Two Steps From Hell, Thomas Bergersen - Unbreakable (Live)",
-                "picture": "https://img.youtube.com/vi/Kxl5G8FBG88/default.jpg",
-                "duration": "262",
-                "channel_name": "TSFHVEVO",
-                "channel_link": "https://www.youtube.com/channel/UCVoCoDenGPiaXHE7KlPztQA",
-                "type": "Video"
-            },
-            "1": {
-                "url": "https://www.youtube.com/watch?v=V43mnZHyXJo",
-                "author": 349164237605568513,
-                "title": "Two Steps From Hell, Nick Phoenix - Master of Shadows (Live)",
-                "picture": "https://img.youtube.com/vi/V43mnZHyXJo/default.jpg",
-                "duration": "187",
-                "channel_name": "TSFHVEVO",
-                "channel_link": "https://www.youtube.com/channel/UCVoCoDenGPiaXHE7KlPztQA",
-                "type": "Video"
-            },
-            "2": {
-                "url": "https://www.youtube.com/watch?v=-CoZ0v04JHw",
-                "author": 349164237605568513,
-                "title": "Two Steps From Hell, Nick Phoenix - Fire Nation (Live)",
-                "picture": "https://img.youtube.com/vi/-CoZ0v04JHw/default.jpg",
-                "duration": "302",
-                "channel_name": "TSFHVEVO",
-                "channel_link": "https://www.youtube.com/channel/UCVoCoDenGPiaXHE7KlPztQA",
-                "type": "Video"
-            },
-            "3": {
                 "url": "https://www.youtube.com/watch?v=N56UI3NPEcU",
                 "author": 349164237605568513,
                 "title": "Two Steps From Hell, Thomas Bergersen - Evergreen (Live)",
@@ -69,7 +39,7 @@
                 "channel_link": "https://www.youtube.com/channel/UCVoCoDenGPiaXHE7KlPztQA",
                 "type": "Video"
             },
-            "4": {
+            "1": {
                 "url": "https://www.youtube.com/watch?v=4Cq1S93Yozg",
                 "author": 349164237605568513,
                 "title": "Two Steps From Hell, Nick Phoenix - Am I Not Human? (Live)",
@@ -79,7 +49,7 @@
                 "channel_link": "https://www.youtube.com/channel/UCVoCoDenGPiaXHE7KlPztQA",
                 "type": "Video"
             },
-            "5": {
+            "2": {
                 "url": "https://www.youtube.com/watch?v=yfvp2DNWeMo",
                 "author": 349164237605568513,
                 "title": "Two Steps From Hell, Thomas Bergersen - Blackheart (Live)",
@@ -89,7 +59,7 @@
                 "channel_link": "https://www.youtube.com/channel/UCVoCoDenGPiaXHE7KlPztQA",
                 "type": "Video"
             },
-            "6": {
+            "3": {
                 "url": "https://www.youtube.com/watch?v=r1BjWL48lYM",
                 "author": 349164237605568513,
                 "title": "Two Steps From Hell, Thomas Bergersen - Star Sky (Live)",
@@ -99,7 +69,7 @@
                 "channel_link": "https://www.youtube.com/channel/UCVoCoDenGPiaXHE7KlPztQA",
                 "type": "Video"
             },
-            "7": {
+            "4": {
                 "url": "https://www.youtube.com/watch?v=hvU8bOOvZyw",
                 "author": 349164237605568513,
                 "title": "Two Steps From Hell, Thomas Bergersen - Wings for Ukraine (Live)",
@@ -109,7 +79,7 @@
                 "channel_link": "https://www.youtube.com/channel/UCVoCoDenGPiaXHE7KlPztQA",
                 "type": "Video"
             },
-            "8": {
+            "5": {
                 "url": "https://www.youtube.com/watch?v=POmTXTBtRZA",
                 "author": 349164237605568513,
                 "title": "Two Steps From Hell, Thomas Bergersen - Strength of a Thousand Men (Live)",
@@ -119,7 +89,7 @@
                 "channel_link": "https://www.youtube.com/channel/UCVoCoDenGPiaXHE7KlPztQA",
                 "type": "Video"
             },
-            "9": {
+            "6": {
                 "url": "https://www.youtube.com/watch?v=H0VTurNn4Qw",
                 "author": 349164237605568513,
                 "title": "Two Steps From Hell, Thomas Bergersen - Victory (Live)",
@@ -129,7 +99,7 @@
                 "channel_link": "https://www.youtube.com/channel/UCVoCoDenGPiaXHE7KlPztQA",
                 "type": "Video"
             },
-            "10": {
+            "7": {
                 "url": "https://www.youtube.com/watch?v=nS_qMCotE5E",
                 "author": 349164237605568513,
                 "title": "Two Steps From Hell, Nick Phoenix - Wolf King (Live)",
@@ -139,7 +109,7 @@
                 "channel_link": "https://www.youtube.com/channel/UCVoCoDenGPiaXHE7KlPztQA",
                 "type": "Video"
             },
-            "11": {
+            "8": {
                 "url": "https://www.youtube.com/watch?v=s-i3g6Mj4t8",
                 "author": 349164237605568513,
                 "title": "Two Steps From Hell, Thomas Bergersen - Flight of the Silverbird (Live)",
@@ -149,7 +119,7 @@
                 "channel_link": "https://www.youtube.com/channel/UCVoCoDenGPiaXHE7KlPztQA",
                 "type": "Video"
             },
-            "12": {
+            "9": {
                 "url": "https://www.youtube.com/watch?v=LpvuMN0YstM",
                 "author": 349164237605568513,
                 "title": "Two Steps From Hell, Nick Phoenix - Titan Dream (Live)",
@@ -159,7 +129,7 @@
                 "channel_link": "https://www.youtube.com/channel/UCVoCoDenGPiaXHE7KlPztQA",
                 "type": "Video"
             },
-            "13": {
+            "10": {
                 "url": "https://www.youtube.com/watch?v=31FcS5Q-UAs",
                 "author": 349164237605568513,
                 "title": "Two Steps From Hell, Nick Phoenix - Dragon (Live)",
@@ -169,7 +139,7 @@
                 "channel_link": "https://www.youtube.com/channel/UCVoCoDenGPiaXHE7KlPztQA",
                 "type": "Video"
             },
-            "14": {
+            "11": {
                 "url": "https://www.youtube.com/watch?v=4bTMwuH37MY",
                 "author": 349164237605568513,
                 "title": "Two Steps From Hell, Thomas Bergersen - Remember Me (Live)",
@@ -179,7 +149,7 @@
                 "channel_link": "https://www.youtube.com/channel/UCVoCoDenGPiaXHE7KlPztQA",
                 "type": "Video"
             },
-            "15": {
+            "12": {
                 "url": "https://www.youtube.com/watch?v=xjTsB7Qse3I",
                 "author": 349164237605568513,
                 "title": "Two Steps From Hell, Thomas Bergersen - El Dorado (Live)",
@@ -189,7 +159,7 @@
                 "channel_link": "https://www.youtube.com/channel/UCVoCoDenGPiaXHE7KlPztQA",
                 "type": "Video"
             },
-            "16": {
+            "13": {
                 "url": "https://www.youtube.com/watch?v=sw5qsoTHgp0",
                 "author": 349164237605568513,
                 "title": "Two Steps From Hell, Nick Phoenix - Fall of the Fountain World (Live)",
@@ -199,7 +169,7 @@
                 "channel_link": "https://www.youtube.com/channel/UCVoCoDenGPiaXHE7KlPztQA",
                 "type": "Video"
             },
-            "17": {
+            "14": {
                 "url": "https://www.youtube.com/watch?v=yQb_j5UiHxc",
                 "author": 349164237605568513,
                 "title": "Two Steps From Hell, Thomas Bergersen - Impossible (Live)",
@@ -209,7 +179,7 @@
                 "channel_link": "https://www.youtube.com/channel/UCVoCoDenGPiaXHE7KlPztQA",
                 "type": "Video"
             },
-            "18": {
+            "15": {
                 "url": "https://www.youtube.com/watch?v=JUPnxqmSbCk",
                 "author": 349164237605568513,
                 "title": "Two Steps From Hell, Thomas Bergersen - Little Star (Live)",
@@ -219,7 +189,7 @@
                 "channel_link": "https://www.youtube.com/channel/UCVoCoDenGPiaXHE7KlPztQA",
                 "type": "Video"
             },
-            "19": {
+            "16": {
                 "url": "https://www.youtube.com/watch?v=cRsACd8I9Go",
                 "author": 349164237605568513,
                 "title": "Two Steps From Hell, Thomas Bergersen - New Life (Live)",
@@ -229,7 +199,7 @@
                 "channel_link": "https://www.youtube.com/channel/UCVoCoDenGPiaXHE7KlPztQA",
                 "type": "Video"
             },
-            "20": {
+            "17": {
                 "url": "https://www.youtube.com/watch?v=qJgh5LcLGcE",
                 "author": 349164237605568513,
                 "title": "Two Steps From Hell, Thomas Bergersen - Never Give Up On Your Dreams (Live)",
@@ -239,7 +209,7 @@
                 "channel_link": "https://www.youtube.com/channel/UCVoCoDenGPiaXHE7KlPztQA",
                 "type": "Video"
             },
-            "21": {
+            "18": {
                 "url": "https://www.youtube.com/watch?v=3O1uyuQoEhU",
                 "author": 349164237605568513,
                 "title": "Two Steps From Hell, Nick Phoenix - Rise Up (Live)",
@@ -249,7 +219,7 @@
                 "channel_link": "https://www.youtube.com/channel/UCVoCoDenGPiaXHE7KlPztQA",
                 "type": "Video"
             },
-            "22": {
+            "19": {
                 "url": "https://www.youtube.com/watch?v=kNwgUgZZ91A",
                 "author": 349164237605568513,
                 "title": "Two Steps From Hell, Thomas Bergersen - Protectors of the Earth (Live)",
@@ -259,7 +229,7 @@
                 "channel_link": "https://www.youtube.com/channel/UCVoCoDenGPiaXHE7KlPztQA",
                 "type": "Video"
             },
-            "23": {
+            "20": {
                 "url": "https://www.youtube.com/watch?v=7BlyPzvKPAs",
                 "author": 349164237605568513,
                 "title": "Two Steps From Hell, Nick Phoenix - Stormkeeper (Live)",
@@ -269,7 +239,7 @@
                 "channel_link": "https://www.youtube.com/channel/UCVoCoDenGPiaXHE7KlPztQA",
                 "type": "Video"
             },
-            "24": {
+            "21": {
                 "url": "https://www.youtube.com/watch?v=1Qvp-w24z1U",
                 "author": 349164237605568513,
                 "title": "Two Steps From Hell, Thomas Bergersen - Heart of Courage (Live)",
@@ -281,22 +251,13 @@
             }
         },
         "search_list": {},
-        "now_playing": {
-            "url": "https://www.youtube.com/watch?v=YJM149HUDo8",
-            "author": 349164237605568513,
-            "title": "Two Steps From Hell, Nick Phoenix - After the Fall (Live)",
-            "picture": "https://img.youtube.com/vi/YJM149HUDo8/default.jpg",
-            "duration": "148",
-            "channel_name": "TSFHVEVO",
-            "channel_link": "https://www.youtube.com/channel/UCVoCoDenGPiaXHE7KlPztQA",
-            "type": "Video"
-        },
+        "now_playing": {},
         "last_played": {
-            "url": "https://www.youtube.com/watch?v=ezf5IwftFvI",
+            "url": "https://www.youtube.com/watch?v=-CoZ0v04JHw",
             "author": 349164237605568513,
-            "title": "Two Steps From Hell, Thomas Bergersen - Cannon in D Minor (Live)",
-            "picture": "https://img.youtube.com/vi/ezf5IwftFvI/default.jpg",
-            "duration": "185",
+            "title": "Two Steps From Hell, Nick Phoenix - Fire Nation (Live)",
+            "picture": "https://img.youtube.com/vi/-CoZ0v04JHw/default.jpg",
+            "duration": "302",
             "channel_name": "TSFHVEVO",
             "channel_link": "https://www.youtube.com/channel/UCVoCoDenGPiaXHE7KlPztQA",
             "type": "Video"
