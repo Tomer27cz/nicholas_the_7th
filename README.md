@@ -22,6 +22,7 @@ CLIENT_SECRET = "YOUR_CLIENT_SECRET" # This is the client secret for the bot
 REDIRECT_URI = "https://YOUR_WEBSITE/login" # http://127.0.0.1:5000/login is the default redirect uri for the flask server
 DISCORD_LOGIN_URL = "YOUR_DISCORD_LOGIN_URL" # identify guilds email - scopes are required for the bot to work
 DISCORD_API_ENDPOINT = 'https://discord.com/api/v10' # This is the discord api endpoint (more recent version may be available)
+PORT = 5420
 ```
 - Run the bot
 ```
