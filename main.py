@@ -1215,7 +1215,7 @@ async def volume_command(ctx: commands.Context,
 async def add_to_queue(inter, message: discord.Message):
     ctx = await bot.get_context(inter)
     print_command(ctx, 'add_to_queue', [message.content])
-    response = await queue_command(ctx, message.content, None, True)
+    response = await queue_command_def(ctx, message.content, None, True)
     if not inter.response.is_done():
         await inter.response.send_message(content=response[1], ephemeral=True)
 
@@ -3460,7 +3460,7 @@ async def admin_page():
 
 
 def application():
-    web_thread = threading.Thread(target=app.run, kwargs={'debug': False, 'host': '0.0.0.0', 'port': int(os.environ.get('PORT', 8080))})
+    web_thread = threading.Thread(target=app.run, kwargs={'debug': False, 'host': '0.0.0.0', 'port': int(os.environ.get('PORT', config.PORT))})
     bot_thread = threading.Thread(target=bot.run, kwargs={'token':config.BOT_TOKEN})
 
     web_thread.start()
