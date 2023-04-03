@@ -1,3 +1,4 @@
+import os
 import random
 
 import discord
@@ -3458,11 +3459,14 @@ async def admin_page():
     return redirect(url_for('index_page'))
 
 
-web_thread = threading.Thread(target=app.run)
-bot_thread = threading.Thread(target=bot.run, kwargs={'token':config.BOT_TOKEN})
+def application():
+    web_thread = threading.Thread(target=app.run, kwargs={'debug': False, 'host': '0.0.0.0', 'port': int(os.environ.get('PORT', 8080))})
+    bot_thread = threading.Thread(target=bot.run, kwargs={'token':config.BOT_TOKEN})
 
-web_thread.start()
-bot_thread.start()
+    web_thread.start()
+    bot_thread.start()
 
-web_thread.join()
-bot_thread.join()
+    web_thread.join()
+    bot_thread.join()
+
+application()
