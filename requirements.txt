@@ -12,4 +12,3 @@ lxml
 yt_dlp
 asgiref
 flask
-gunicorn

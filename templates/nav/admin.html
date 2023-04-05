@@ -3,8 +3,26 @@
 {% set title = "Admin" %}
 
 {% block content %}
+{% if errors %}
+    {% for error in errors %}
+        <div class="alert alert-danger div-align alert-dismissible fade show" role="alert">
+            {{error}}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+{% endif %}
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-success div-align alert-dismissible fade show" role="alert">
+            {{message}}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+{% endif %}
+
+
 <div>
-  <form action="#" method="POST">
+  <form action="#" method="POST" enctype="multipart/form-data">
     <div class="div-align-center">
       <h1 class="btn-m">Admin</h1>
     </div>
@@ -36,7 +54,7 @@
             <button type="submit" class="btn btn-primary" name="download_btn">Download</button>
           </div>
           <div class="col-12">
-            <input type="file" class="form-control" id="upload_file" name="upload_file">
+            <input type="file" class="form-control" id="upload_file" name="file">
           </div>
           <div class="col-12">
               <button type="submit" class="btn btn-primary" name="upload_btn">Upload</button>

@@ -3396,6 +3396,8 @@ async def admin_page():
     else:
         return redirect(url_for('index_page'))
 
+    errors = []
+    messages = []
 
     if request.method == 'POST':
         guild_id = int(request.form['guild_id_select'])
@@ -3403,38 +3405,64 @@ async def admin_page():
         web_data = WebData(guild_id, user_name, user_id)
 
         keys = request.form.keys()
-        if 'download_btn' in keys:
-            file_name = request.form['download_file']
-            try:
-                if file_name == 'log.txt' or file_name == 'data.txt' or file_name == 'activity.log':
-                    return send_file(f'{file_name}', as_attachment=True)
+        try:
+            if 'download_btn' in keys:
+                file_name = request.form['download_file']
+                try:
+                    if file_name == 'log.txt' or file_name == 'data.txt' or file_name == 'activity.log':
+                        return send_file(f'{file_name}', as_attachment=True)
+                    else:
+                        return send_file(f'src/{file_name}', as_attachment=True)
+                except Exception as e:
+                    return str(e)
+            if 'upload_btn' in keys:
+                f = request.files['file']
+                file_name = request.form['download_file']
+                if not f:
+                    errors = ['No file']
+                elif file_name != f.filename:
+                    errors = ['File name does not match']
                 else:
-                    return send_file(f'src/{file_name}', as_attachment=True)
-            except Exception as e:
-                return str(e)
-        if 'upload_btn' in keys:
-            print('upload_btn')
-        if 'update_stopped_btn' in keys:
-            print('update_stopped_btn')
-        if 'update_loop_btn' in keys:
-            print('update_loop_btn')
-        if 'update_is_radio_btn' in keys:
-            print('update_is_radio_btn')
-        if 'update_buttons_btn' in keys:
-            print('update_buttons_btn')
-        if 'update_language_btn' in keys:
-            print('update_language_btn')
-        if 'update_response_type_btn' in keys:
-            print('update_response_type_btn')
-        if 'update_buffer_btn' in keys:
-            print('update_buffer_btn')
-        if 'update_volume_btn' in keys:
-            print('update_volume_btn')
+                    try:
+                        if file_name == 'log.txt' or file_name == 'data.txt' or file_name == 'activity.log':
+                            f.save(f.filename)
+                            messages = ['File uploaded']
+                        else:
+                            f.save(f"src/{f.filename}")
+                            messages = ['File uploaded']
+                    except Exception as e:
+                        return str(e)
+            if 'update_stopped_btn' in keys:
+                guild[guild_id].options.stopped = bool(request.form['stoppedSelect'])
+                messages = ['stopped updated']
+            if 'update_loop_btn' in keys:
+                guild[guild_id].options.loop = bool(request.form['loopSelect'])
+                messages = ['loop updated']
+            if 'update_is_radio_btn' in keys:
+                guild[guild_id].options.is_radio = bool(request.form['is_radioSelect'])
+                messages = ['is_radio updated']
+            if 'update_buttons_btn' in keys:
+                guild[guild_id].options.buttons = bool(request.form['buttonsSelect'])
+                messages = ['buttons updated']
+            if 'update_language_btn' in keys:
+                guild[guild_id].options.language = request.form['languageSelect']
+                messages = ['language updated']
+            if 'update_response_type_btn' in keys:
+                guild[guild_id].options.response_type = request.form['response_typeSelect']
+                messages = ['response_type updated']
+            if 'update_buffer_btn' in keys:
+                guild[guild_id].options.buffer = int(request.form['bufferSelect'])
+                messages = ['buffer updated']
+            if 'update_volume_btn' in keys:
+                guild[guild_id].options.volume = int(request.form['volumeSelect'])
+                messages = ['volume updated']
+        except Exception as e:
+            errors = [str(e)]
 
     if 'discord_user' in session.keys():
         user = session['discord_user']
         if int(user['id']) == my_id:
-            return render_template('nav/admin.html', user=user, guild=guild.values(), languages_dict=languages_dict)
+            return render_template('nav/admin.html', user=user, guild=guild.values(), languages_dict=languages_dict, errors=errors, messages=messages)
     return redirect(url_for('index_page'))
 
 
