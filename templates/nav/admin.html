@@ -5,7 +5,7 @@
 {% block content %}
 {% if errors %}
     {% for error in errors %}
-        <div class="alert alert-danger div-align alert-dismissible fade show" role="alert">
+        <div class="alert alert-danger div-align alert-dismissible fade show sticky-top" role="alert">
             {{error}}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
@@ -13,7 +13,7 @@
 {% endif %}
 {% if messages %}
     {% for message in messages %}
-        <div class="alert alert-success div-align alert-dismissible fade show" role="alert">
+        <div class="alert alert-success div-align alert-dismissible fade show sticky-top" role="alert">
             {{message}}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
@@ -25,13 +25,6 @@
   <form action="#" method="POST" enctype="multipart/form-data">
     <div class="div-align-center">
       <h1 class="btn-m">Admin</h1>
-    </div>
-    <div class="div-login">
-      <select class="form-select" aria-label="Default select example" name="guild_id_select">
-        {% for guild_object in guild %}
-          <option selected value={{guild_object.data.id}}>{{guild_object.data.name}}</option>
-        {% endfor %}
-      </select>
     </div>
 
     <div class="div-login">
@@ -61,7 +54,14 @@
           </div>
         </div>
       </div>
-    <div class="div-login">
+      <div class="div-login">
+          <select class="form-select" aria-label="Default select example" name="guild_id_select">
+            {% for guild_object in guild %}
+              <option selected value={{guild_object.data.id}}>{{guild_object.data.name}} -> {{guild_object.data.id}}</option>
+            {% endfor %}
+          </select>
+      </div>
+      <div class="div-login">
         <div class="row row-cols-lg-auto g-3">
           <div class="col-12">
             <h3>Options</h3>
@@ -182,7 +182,7 @@
               <button type="submit" class="btn btn-primary" name="update_volume_btn">Update</button>
             </div>
         </div>
-    </div>
+      </div>
   </form>
 </div>
 {% endblock %}

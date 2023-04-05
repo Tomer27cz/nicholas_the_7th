@@ -3317,7 +3317,7 @@ async def guild_page(guild_id, key):
                 return redirect(f'/guild/{guild_id}&key={guild_object.data.key}')
             return redirect(url_for('guild_get_key_page', guild_id=guild_id))
 
-        return render_template('control/guild.html', guild=guild_object, convert_duration=convert_duration, get_username=get_username, errors=errors, user=user, volume=round(guild_object.options.volume * 100))
+        return render_template('control/guild.html', guild=guild_object, convert_duration=convert_duration, get_username=get_username, errors=errors, user=user, volume=round(guild_object.options.volume * 100), radios=radio_dict.keys())
     except (KeyError, ValueError, TypeError):
         return render_template('base/message.html', guild_id=guild_id, user=user, message="That Server doesn't exist or the bot is not in it", errors=None, title='Error')
 
@@ -3394,7 +3394,7 @@ async def admin_page():
         user_name = user['username']
         user_id = user['id']
     else:
-        return redirect(url_for('index_page'))
+        return render_template('base/message.html', message="You are not logged in or don't have permission", errors=None, user=None, title='Error')
 
     errors = []
     messages = []
@@ -3408,6 +3408,7 @@ async def admin_page():
         try:
             if 'download_btn' in keys:
                 file_name = request.form['download_file']
+                print_web(web_data, 'download file', [file_name])
                 try:
                     if file_name == 'log.txt' or file_name == 'data.txt' or file_name == 'activity.log':
                         return send_file(f'{file_name}', as_attachment=True)
@@ -3418,6 +3419,7 @@ async def admin_page():
             if 'upload_btn' in keys:
                 f = request.files['file']
                 file_name = request.form['download_file']
+                print_web(web_data, 'upload file', [f.filename, file_name])
                 if not f:
                     errors = ['No file']
                 elif file_name != f.filename:
@@ -3435,29 +3437,38 @@ async def admin_page():
             if 'update_stopped_btn' in keys:
                 guild[guild_id].options.stopped = bool(request.form['stoppedSelect'])
                 messages = ['stopped updated']
+                print_web(web_data, 'update stopped', [guild[guild_id].options.stopped])
             if 'update_loop_btn' in keys:
                 guild[guild_id].options.loop = bool(request.form['loopSelect'])
                 messages = ['loop updated']
+                print_web(web_data, 'update loop', [guild[guild_id].options.loop])
             if 'update_is_radio_btn' in keys:
                 guild[guild_id].options.is_radio = bool(request.form['is_radioSelect'])
                 messages = ['is_radio updated']
+                print_web(web_data, 'update is_radio', [guild[guild_id].options.is_radio])
             if 'update_buttons_btn' in keys:
                 guild[guild_id].options.buttons = bool(request.form['buttonsSelect'])
                 messages = ['buttons updated']
+                print_web(web_data, 'update buttons', [guild[guild_id].options.buttons])
             if 'update_language_btn' in keys:
                 guild[guild_id].options.language = request.form['languageSelect']
                 messages = ['language updated']
+                print_web(web_data, 'update language', [guild[guild_id].options.language])
             if 'update_response_type_btn' in keys:
                 guild[guild_id].options.response_type = request.form['response_typeSelect']
                 messages = ['response_type updated']
+                print_web(web_data, 'update response_type', [guild[guild_id].options.response_type])
             if 'update_buffer_btn' in keys:
                 guild[guild_id].options.buffer = int(request.form['bufferSelect'])
                 messages = ['buffer updated']
+                print_web(web_data, 'update buffer', [guild[guild_id].options.buffer])
             if 'update_volume_btn' in keys:
                 guild[guild_id].options.volume = int(request.form['volumeSelect'])
                 messages = ['volume updated']
+                print_web(web_data, 'update volume', [guild[guild_id].options.volume])
         except Exception as e:
             errors = [str(e)]
+            print_web(web_data, 'error', [str(e)])
 
     if 'discord_user' in session.keys():
         user = session['discord_user']

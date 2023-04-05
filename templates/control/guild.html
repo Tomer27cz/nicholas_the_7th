@@ -284,7 +284,55 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary">Add</button>
+              <button type="button" id="addbuttonmodal" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addToModalRadio">Radio</button>
+            <button type="submit" class="btn btn-success">Add</button>
+          </div>
+        </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="addToModalRadio" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabelRadio">Add to Queue</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+        <form method="POST" id="RadioForm">
+          <div class="modal-body">
+              <div class="mb-3">
+                  <div>
+                      <label>Radio</label>
+                      <select class="form-select" aria-label="Default select example" name="radioSelect" id="radioSelect">
+                        {% for radio in radios %}
+                          <option selected value={{radio}}>{{radio}}</option>
+                        {% endfor %}
+                      </select>
+                  </div>
+              </div>
+              <div class="mb-3">
+                  <label for="addToRadio" class="col-form-label">Add to</label>
+                  <div id="addToRadio">
+                      <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="addPosition" value="start" id="flexRadioDefault1Radio">
+                          <label class="form-check-label" for="flexRadioDefault1">
+                              The Start
+                          </label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="addPosition" value="end" id="flexRadioDefault2Radio" checked>
+                          <label class="form-check-label" for="flexRadioDefault2">
+                              The End
+                          </label>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" id="addbuttonradio" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addToModal">Video</button>
+            <button type="submit" class="btn btn-success">Add</button>
           </div>
         </form>
     </div>
