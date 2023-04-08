@@ -1407,7 +1407,7 @@ async def queue_command_def(ctx: commands.Context,
             if position or position == 0: guild[guild_id].queue.insert(position, video)
             else: guild[guild_id].queue.append(video)
 
-        message = f"`{playlist_songs}` {tg(guild_id, 'songs from playlist added to queue!')} -> [Control Panel](http://nicholasthe7th.duckdns.org/guild/{ctx.guild.id}&key={guild[ctx.guild.id].data.key})"
+        message = f"`{playlist_songs}` {tg(guild_id, 'songs from playlist added to queue!')} -> [Control Panel](http://nicholasthe7th.duckdns.org:5420/guild/{ctx.guild.id}&key={guild[ctx.guild.id].data.key})"
         if not mute_response:
             await ctx.reply(message)
 
@@ -1430,7 +1430,7 @@ async def queue_command_def(ctx: commands.Context,
             if position or position == 0: guild[guild_id].queue.insert(position, video)
             else: guild[guild_id].queue.append(video)
 
-            message = f'[`{video.title}`](<{video.url}>) {tg(guild_id, "added to queue!")} -> [Control Panel](http://nicholasthe7th.duckdns.org/guild/{ctx.guild.id}&key={guild[ctx.guild.id].data.key})'
+            message = f'[`{video.title}`](<{video.url}>) {tg(guild_id, "added to queue!")} -> [Control Panel](http://nicholasthe7th.duckdns.org:5420/guild/{ctx.guild.id}&key={guild[ctx.guild.id].data.key})'
 
             if not mute_response:
                 await ctx.reply(message)
@@ -1447,7 +1447,7 @@ async def queue_command_def(ctx: commands.Context,
                 if position or position == 0: guild[guild_id].queue.insert(position, video)
                 else: guild[guild_id].queue.append(video)
 
-                message = f'[`{video.title}`](<{video.url}>) {tg(guild_id, "added to queue!")} -> [Control Panel](http://nicholasthe7th.duckdns.org/guild/{ctx.guild.id}&key={guild[ctx.guild.id].data.key})'
+                message = f'[`{video.title}`](<{video.url}>) {tg(guild_id, "added to queue!")} -> [Control Panel](http://nicholasthe7th.duckdns.org:5420/guild/{ctx.guild.id}&key={guild[ctx.guild.id].data.key})'
 
                 if not mute_response:
                     await ctx.reply(message)
@@ -1465,7 +1465,7 @@ async def queue_command_def(ctx: commands.Context,
                     if position or position == 0: guild[guild_id].queue.insert(position, video)
                     else: guild[guild_id].queue.append(video)
 
-                    message = f'[`{video.title}`](<{video.url}>) {tg(guild_id, "added to queue!")} -> [Control Panel](http://nicholasthe7th.duckdns.org/guild/{ctx.guild.id}&key={guild[ctx.guild.id].data.key})'
+                    message = f'[`{video.title}`](<{video.url}>) {tg(guild_id, "added to queue!")} -> [Control Panel](http://nicholasthe7th.duckdns.org:5420/guild/{ctx.guild.id}&key={guild[ctx.guild.id].data.key})'
 
                     if not mute_response:
                         await ctx.reply(message)
@@ -1478,7 +1478,7 @@ async def queue_command_def(ctx: commands.Context,
 
                     await search_command_def(ctx, url, 'short', force, from_play)
 
-                    message = f'[`{url}`](<{url}>) {tg(guild_id, "is not supported!")} -> [Control Panel](http://nicholasthe7th.duckdns.org/guild/{ctx.guild.id}&key={guild[ctx.guild.id].data.key})'
+                    message = f'[`{url}`](<{url}>) {tg(guild_id, "is not supported!")} -> [Control Panel](http://nicholasthe7th.duckdns.org:5420/guild/{ctx.guild.id}&key={guild[ctx.guild.id].data.key})'
 
                     # await ctx.reply(message, ephemeral=True)
 
@@ -2242,7 +2242,7 @@ async def list_radios_def(ctx: commands.Context,
 
 async def key_def(ctx: commands.Context):
     print_function(ctx, 'key_def', [])
-    await ctx.reply(f'Key: `{guild[ctx.guild.id].data.key}` -> [Control Panel](http://nicholasthe7th.duckdns.org/guild/{ctx.guild.id}&key={guild[ctx.guild.id].data.key})')
+    await ctx.reply(f'Key: `{guild[ctx.guild.id].data.key}` -> [Control Panel](http://nicholasthe7th.duckdns.org:5420/guild/{ctx.guild.id}&key={guild[ctx.guild.id].data.key})')
     save_json()
 
 # ---------------------------------------- ADMIN --------------------------------------------------
