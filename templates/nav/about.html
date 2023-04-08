@@ -3,39 +3,113 @@
 {% set title = "About" %}
 
 {% block content %}
-    <div class="div-code">
-      <h1 id="discord_bot_stanley_the_7th">discord_bot_stanley_the_7th</h1>
-      <h2 id="about">About</h2>
-      <p>This is a discord bot that I made for my friends and I to use in our discord server. It is a work in progress and I will be adding more features as I go along.</p>
-      <p>It is not meant to be used by anyone else, but if you want to use it, feel free to do so.</p>
-      <h2 id="installation">Installation</h2>
+    <div class="container">
+        <h1>
+            About
+        </h1>
+      <hr>
+        <h5>
+          This is a discord bot that I made for my friends and I to use in our discord server.
+          It is a work in progress and I will be adding more features as I go along.
+        </h5>
+        <h5>
+            It is not meant to be used by anyone else, but if you want to use it, feel free to do so.
+        </h5>
+      <br>
+        <h1>
+          Installation
+        </h1>
+      <hr>
+        <h5>
+          To install the bot, you will need to have <ins><a href="https://www.python.org/downloads/">python</a></ins> 3.8 or higher installed on your computer.
+          You will also need to have <ins><a href="https://pip.pypa.io/en/stable/installation/">pip</a></ins> installed.
+        </h5>
+        <h5>
+          To install the bot, follow the instructions on the <ins><a href="https://github.com/Tomer27cz/discord_bot_stanley_the_7th">github</a></ins> page.
+        </h5>
+        <a href="https://github.com/Tomer27cz/discord_bot_stanley_the_7th" class="btn btn-secondary btn-sm">GitHub</a>
+      <br>
+      <h1>
+        Credits
+      </h1>
+        <hr>
+        <h5>
+          The bot uses many open source libraries. Here are the credits for them:
+        </h5>
       <ul>
-          <li>Clone the repository</li>
-          <li>
-              Install the requirements
-              <div class="code">pip <span class="hljs-keyword">install</span> -r requirements.txt</div>
-          </li>
-          <li>
-              Create a file called <code>config.py</code> in the root directory
-            <div class="code">
-              <pre>
-                <span class="hljs-attr">CLIENT_ID</span> = 'YOUR_CLIENT_ID' <span class="hljs-comment"># This is your bots id</span>
-                <span class="hljs-attr">OWNER_ID</span> = 'YOUR_USER_ID' <span class="hljs-comment"># This is your user id</span>
-                <span class="hljs-attr">BOT_TOKEN</span> = 'YOUR_BOT_TOKEN' <span class="hljs-comment"># This is the token for the bot</span>
-                <span class="hljs-attr">CLIENT_SECRET</span> = <span class="hljs-string">"YOUR_CLIENT_SECRET"</span> <span class="hljs-comment"># This is the client secret for the bot</span>
-                <span class="hljs-attr">REDIRECT_URI</span> = <span class="hljs-string">"https://YOUR_WEBSITE/login"</span> <span class="hljs-comment"># http://127.0.0.1:5000/login is the default redirect uri for the flask server</span>
-                <span class="hljs-attr">DISCORD_LOGIN_URL</span> = <span class="hljs-string">"YOUR_DISCORD_LOGIN_URL"</span> <span class="hljs-comment"># identify guilds email - scopes are required for the bot to work</span>
-                <span class="hljs-attr">DISCORD_API_ENDPOINT</span> = 'https://discord.com/api/v10' <span class="hljs-comment"># This is the discord api endpoint (more recent version may be available)</span>
-                  <span class="hljs-attr">PORT</span> = 5420
-              </pre>
-            </div>
-          </li>
-          <li>
-              Run the bot
-              <div class="code">
-                <span class="hljs-keyword">python</span> main.<span class="hljs-keyword">py</span>
-              </div>
-          </li>
+        <li>
+          <a href="https://github.com/Rapptz/discord.py">discord.py</a> by Rapptz
+        </li>
+        <li>
+          <a href="https://github.com/pallets/flask">flask</a> by pallets
+        </li>
+        <li>
+          <a href="https://github.com/yt-dlp/yt-dlp">yt-dlp</a>
+        </li>
+        <li>
+          <a href="https://github.com/alexmercerind/youtube-search-python">youtube-search-python</a> by alexmercerind
+        </li>
+        <li>
+          <a href="https://github.com/psf/requests">requests</a> by psf
+        </li>
+        <li>
+          <a href="https://www.crummy.com/software/BeautifulSoup/">BeautifulSoup</a> by Leonard Richardson
+        </li>
       </ul>
+      <br>
+      <h1>
+        Commands
+      </h1>
+      <hr>
+      <h3>
+        The bot has a few commands that you can use.
+      </h3>
+      <div class="t-cols">
+        <div class="t-col code-div">
+          <h4>General</h4>
+          <span class="code-d">/help</span> - Shows this message<br>
+          <span class="code-d">/ping</span> - This command returns the latency<br>
+          <span class="code-d">/language</span> - Change the language for this server<br>
+          <span class="code-d">/sound_ effects</span> - Shows all available sound effects<br>
+          <span class="code-d">/list_radios</span> - Shows all available radios<br>
+          <span class="code-d">/key</span> - Shows the key for the server<br>
+        </div>
+        <div class="t-col code-div">
+          <h4>Player</h4>
+          <span class="code-d">/play</span> - Plays the songs :)<br>
+          <span class="code-d">/radio</span> - Plays radio from list<br>
+          <span class="code-d">/ps</span> - Plays sound effects by number<br>
+          <span class="code-d">/skip</span> - Skip song in queue<br>
+          <span class="code-d">/nowplaying</span> - Shows what is playing right now<br>
+          <span class="code-d">/last</span> - Shows the last song played<br>
+          <span class="code-d">/loop</span> - Turn on loop mode<br>
+          <span class="code-d">/loop_this</span> - This command loops currently playing song<br>
+        </div>
+        <div class="t-col code-div">
+          <h4>Queue</h4>
+          <span class="code-d">/queue</span> - Add song to queue<br>
+          <span class="code-d">/remove</span> - Removes song from queue<br>
+          <span class="code-d">/clear</span> - Clears the queue<br>
+          <span class="code-d">/shuffle</span> - Shuffles the queue<br>
+          <span class="code-d">/show</span> - Shows the queue<br>
+          <span class="code-d">/search</span> - Search youtube for the provided query<br>
+        </div>
+      </div>
+      <div class="t-cols">
+        <div class="t-col code-div">
+          <h4>Voice</h4>
+          <span class="code-d">/stop</span> - Stop the player<br>
+          <span class="code-d">/pause</span> - Pause the player<br>
+          <span class="code-d">/resume</span> - Resume the player<br>
+          <span class="code-d">/join</span> - Bot joins voice channel<br>
+          <span class="code-d">/disconnect</span> - Bot leaves voice channel<br>
+          <span class="code-d">/volume</span> - Set the volume of the player<br>
+        </div>
+        <div class="t-col code-div">
+          <h4>Context Menu</h4>
+          Add to queue - Add song to queue<br>
+          Show Profile - Shows all available information about the profile<br>
+        </div>
+      </div>
     </div>
 {% endblock %}

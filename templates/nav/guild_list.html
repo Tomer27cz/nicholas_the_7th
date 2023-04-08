@@ -24,15 +24,15 @@
       <a href="/guild/{{guild_object.data.id}}">
           {% if guild_object.data.id in mutual_guild_ids %}
             {% if guild_object.data.icon is not none %}
-              <img src="{{guild_object.data.icon}}" class="green-border" />
+              <img loading="lazy" src="{{guild_object.data.icon}}" class="green-border" />
             {% else %}
-              <img src="https://cdn.discordapp.com/attachments/892404510465613875/1092118705074339920/discord_icon.png" class="green-border" />
+              <img loading="lazy" src="/static/img/discord_icon.svg" class="green-border" />
             {% endif %}
           {% else %}
             {% if guild_object.data.icon is not none %}
-              <img src="{{guild_object.data.icon}}" class="red-border" />
+              <img loading="lazy" src="{{guild_object.data.icon}}" class="red-border" />
             {% else %}
-              <img src="https://cdn.discordapp.com/attachments/892404510465613875/1092118705074339920/discord_icon.png" class="red-border" />
+              <img loading="lazy" src="/static/img/discord_icon.svg" class="red-border" />
             {% endif %}
           {% endif %}
       </a>
@@ -42,6 +42,9 @@
     {% endfor %}
   </section>
     <br/>
+</div>
+<div class="div-align">
+    <h2>Your server not here? <a href="/invite" class="btn btn-primary btn-lg">Invite the bot</a></h2>
 </div>
 
 {% endblock %}

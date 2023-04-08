@@ -12,13 +12,11 @@ import threading
 
 import yt_dlp
 import youtubesearchpython
-from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import requests
 import json
 
 from os import path, listdir
-from mutagen.mp3 import MP3
 import sys
 from typing import Literal
 import traceback
@@ -250,7 +248,7 @@ class Radio:
 
     def renew(self):
         if self.radio_website == 'radia_cz':
-            html = urlopen(self.url).read()
+            html = requests.get(self.url).text
             soup = BeautifulSoup(html, features="lxml")
             data1 = soup.find('div', attrs={'class': 'interpret-image'})
             data2 = soup.find('div', attrs={'class': 'interpret-info'})
@@ -391,24 +389,8 @@ def collect_data(data):
     with open("data.txt", "a", encoding="utf-8") as f:
         f.write(message)
 
-# ---------------------------------------------- GUILD TO JSON ---------------------------------------------------------
 
-# def video_to_json(video):
-#     if video is None:
-#         return None
-#     try:
-#         author = video.author.id
-#     except AttributeError:
-#         author = my_id
-#
-#     video_dict = {'url': video.url,
-#                   'author': author,
-#                   'title': video.title,
-#                   'picture': video.picture,
-#                   'duration': video.duration,
-#                   'channel_name': video.channel_name,
-#                   'channel_link': video.channel_link}
-#     return video_dict
+# ---------------------------------------------- GUILD TO JSON ---------------------------------------------------------
 
 
 def guild_to_json(guild_object):
@@ -605,17 +587,9 @@ def get_username(user_id):
 
 def now_to_last(guild_id):
     if guild[guild_id].now_playing is not None:
-        print(f"{guild[guild_id].now_playing.title} is now the last played song")
-
         guild[guild_id].last_played = guild[guild_id].now_playing
         guild[guild_id].now_playing = None
         save_json()
-
-
-def mp3_length(path_of_mp3):
-    audio = MP3(path_of_mp3)
-    length = audio.info.length
-    return length
 
 
 def convert_duration(duration):
@@ -645,13 +619,7 @@ def convert_duration(duration):
 # ---------------EMBED--------------
 
 def create_embed(video, name, guild_id):
-    #  (link, title, picture, duration, user, author, author_link)
-    #  (  0    1       2         3        4    5          6      )
-    embed = (discord.Embed(title=name,
-                           description=f'```\n{video.title}\n```',
-                           color=discord.Color.blurple()))
-    if name == tg(guild_id, "Now playing"):
-        guild[guild_id].now_playing = video
+    embed = (discord.Embed(title=name, description=f'```\n{video.title}\n```', color=discord.Color.blurple()))
     embed.add_field(name=tg(guild_id, 'Duration'), value=convert_duration(video.duration))
     try:
         embed.add_field(name=tg(guild_id, 'Requested by'), value=bot.get_user(video.author).mention)
@@ -938,11 +906,6 @@ class SearchOptionView(View):
                                                         f'{tg(self.guild_id, "added to queue!")}', view=None)
         if self.from_play:
             await play_def(self.ctx)
-
-    # # noinspection PyUnusedLocal
-    # @discord.ui.button(emoji=react_dict['false'], style=discord.ButtonStyle.red, custom_id='6')
-    # async def callback_6(self, interaction, button):
-    #     await interaction.response.edit_message(content=f'{tg(self.guild_id, "Nothing selected")}', view=None)
 
 
 class PlaylistOptionView(View):
@@ -1444,7 +1407,7 @@ async def queue_command_def(ctx: commands.Context,
             if position or position == 0: guild[guild_id].queue.insert(position, video)
             else: guild[guild_id].queue.append(video)
 
-        message = f"`{playlist_songs}` {tg(guild_id, 'songs from playlist added to queue!')}"
+        message = f"`{playlist_songs}` {tg(guild_id, 'songs from playlist added to queue!')} -> [Control Panel](http://nicholasthe7th.duckdns.org/guild/{ctx.guild.id}&key={guild[ctx.guild.id].data.key})"
         if not mute_response:
             await ctx.reply(message)
 
@@ -1467,7 +1430,7 @@ async def queue_command_def(ctx: commands.Context,
             if position or position == 0: guild[guild_id].queue.insert(position, video)
             else: guild[guild_id].queue.append(video)
 
-            message = f'[`{video.title}`](<{video.url}>) {tg(guild_id, "added to queue!")}'
+            message = f'[`{video.title}`](<{video.url}>) {tg(guild_id, "added to queue!")} -> [Control Panel](http://nicholasthe7th.duckdns.org/guild/{ctx.guild.id}&key={guild[ctx.guild.id].data.key})'
 
             if not mute_response:
                 await ctx.reply(message)
@@ -1484,7 +1447,7 @@ async def queue_command_def(ctx: commands.Context,
                 if position or position == 0: guild[guild_id].queue.insert(position, video)
                 else: guild[guild_id].queue.append(video)
 
-                message = f'[`{video.title}`](<{video.url}>) {tg(guild_id, "added to queue!")}'
+                message = f'[`{video.title}`](<{video.url}>) {tg(guild_id, "added to queue!")} -> [Control Panel](http://nicholasthe7th.duckdns.org/guild/{ctx.guild.id}&key={guild[ctx.guild.id].data.key})'
 
                 if not mute_response:
                     await ctx.reply(message)
@@ -1502,7 +1465,7 @@ async def queue_command_def(ctx: commands.Context,
                     if position or position == 0: guild[guild_id].queue.insert(position, video)
                     else: guild[guild_id].queue.append(video)
 
-                    message = f'[`{video.title}`](<{video.url}>) {tg(guild_id, "added to queue!")}'
+                    message = f'[`{video.title}`](<{video.url}>) {tg(guild_id, "added to queue!")} -> [Control Panel](http://nicholasthe7th.duckdns.org/guild/{ctx.guild.id}&key={guild[ctx.guild.id].data.key})'
 
                     if not mute_response:
                         await ctx.reply(message)
@@ -1515,7 +1478,7 @@ async def queue_command_def(ctx: commands.Context,
 
                     await search_command_def(ctx, url, 'short', force, from_play)
 
-                    message = f'[`{url}`](<{url}>) {tg(guild_id, "is not supported!")}'
+                    message = f'[`{url}`](<{url}>) {tg(guild_id, "is not supported!")} -> [Control Panel](http://nicholasthe7th.duckdns.org/guild/{ctx.guild.id}&key={guild[ctx.guild.id].data.key})'
 
                     # await ctx.reply(message, ephemeral=True)
 
@@ -1943,7 +1906,7 @@ async def ps_def(ctx: commands.Context,
     filename = "sound_effects/" + name + ".mp3"
     if path.exists(filename):
         source = FFmpegPCMAudio(filename)
-        video = LocalFile(name, convert_duration(mp3_length(filename)), ctx.author.id, effect_number)
+        video = LocalFile(name, 'Unknown', ctx.author.id, effect_number)
         guild[guild_id].now_playing = video
     else:
         filename = "sound_effects/" + name + ".wav"
@@ -2279,7 +2242,7 @@ async def list_radios_def(ctx: commands.Context,
 
 async def key_def(ctx: commands.Context):
     print_function(ctx, 'key_def', [])
-    await ctx.reply(f'Key: `{guild[ctx.guild.id].data.key}`')
+    await ctx.reply(f'Key: `{guild[ctx.guild.id].data.key}` -> [Control Panel](http://nicholasthe7th.duckdns.org/guild/{ctx.guild.id}&key={guild[ctx.guild.id].data.key})')
     save_json()
 
 # ---------------------------------------- ADMIN --------------------------------------------------
@@ -2517,460 +2480,6 @@ async def probe_command_def(ctx: commands.Context,
 
     save_json()
 
-# --------------------------------------------- WEB COMMANDS -----------------------------------------------------------
-
-async def web_remove(web_data, number):
-    print_web_function(web_data, 'web_remove', [number])
-    guild_id = web_data.guild_id
-    queue_length = len(guild[guild_id].queue)
-
-    if queue_length == 0:
-        print_message(guild_id, "web_remove -> No songs in queue")
-        return [False, 'No songs in queue']
-
-    if type(number) is not int:
-        try:
-            number = int(number)
-        except ValueError:
-            print_message(guild_id, "web_remove -> Number must be an integer")
-            return [False, 'Number must be an integer (Internal web error -> contact developer)']
-
-    if queue_length-1 >= number >= 0:
-        video = guild[guild_id].queue[number]
-        guild[guild_id].queue.pop(number)
-
-        save_json()
-
-        return [True, f"Removed #{number} : {video.title}"]
-
-    print_message(guild_id, "web_remove -> Number must be between 0 and {queue_length - 1}")
-    return [False, f'Number must be between 0 and {queue_length - 1}']
-
-async def web_move(web_data, org_number, destination_number):
-    print_web_function(web_data, 'web_move', [org_number, destination_number])
-    guild_id = web_data.guild_id
-    queue_length = len(guild[guild_id].queue)
-
-    if queue_length == 0:
-        print_message(guild_id, "web_move -> No songs in queue")
-        return [False, 'No songs in queue']
-
-    if type(org_number) is not int:
-        try:
-            org_number = int(org_number)
-        except ValueError:
-            print_message(guild_id, "web_move -> Original number must be an integer")
-            return [False, 'Original number must be an integer (Internal web error -> contact developer)']
-
-    if type(destination_number) is not int:
-        try:
-            destination_number = int(destination_number)
-        except ValueError:
-            print_message(guild_id, "web_move -> Destination number must be an integer")
-            return [False, 'Destination number must be an integer (Internal web error -> contact developer)']
-
-    if queue_length-1 >= org_number >= 0:
-        if queue_length-1 >= destination_number >= 0:
-            video = guild[guild_id].queue.pop(org_number)
-            guild[guild_id].queue.insert(destination_number, video)
-
-            save_json()
-
-            return [True, f"Moved #{org_number} to #{destination_number} : {video.title}"]
-
-        print_message(guild_id, "web_move -> Destination number must be between 0 and {queue_length - 1}")
-        return [False, f'Destination number must be between 0 and {queue_length - 1}']
-    print_message(guild_id, "web_move -> Original number must be between 0 and {queue_length - 1}")
-    return [False, f'Original number must be between 0 and {queue_length - 1}']
-
-async def web_up(web_data, number):
-    print_web_function(web_data, 'web_up', [number])
-    guild_id = web_data.guild_id
-    queue_length = len(guild[guild_id].queue)
-
-    if type(number) is not int:
-        try:
-            number = int(number)
-        except ValueError:
-            print_message(guild_id, "web_up -> Number must be an integer")
-            return [False, 'Number must be an integer (Internal web error -> contact developer)']
-
-    if queue_length == 0:
-        print_message(guild_id, "web_up -> No songs in queue")
-        return [False, 'No songs in queue']
-
-    if number == 0:
-        return await web_move(web_data, 0, queue_length-1)
-
-    return await web_move(web_data, number, number-1)
-
-async def web_down(web_data, number):
-    print_web_function(web_data, 'web_down', [number])
-    guild_id = web_data.guild_id
-    queue_length = len(guild[guild_id].queue)
-
-    if type(number) is not int:
-        try:
-            number = int(number)
-        except ValueError:
-            print_message(guild_id, "web_down -> Number must be an integer")
-            return [False, 'Number must be an integer (Internal web error -> contact developer)']
-
-    if queue_length == 0:
-        print_message(guild_id, "web_down -> No songs in queue")
-        return [False, 'No songs in queue']
-
-    if number == queue_length-1:
-        return await web_move(web_data, number, 0)
-
-    return await web_move(web_data, number, number+1)
-
-async def web_top(web_data, number):
-    print_web_function(web_data, 'web_top', [number])
-    guild_id = web_data.guild_id
-    queue_length = len(guild[guild_id].queue)
-
-    if type(number) is not int:
-        try:
-            number = int(number)
-        except ValueError:
-            print_message(guild_id, "web_top -> Number must be an integer")
-            return [False, 'Number must be an integer (Internal web error -> contact developer)']
-
-    if queue_length == 0:
-        print_message(guild_id, "web_top -> No songs in queue")
-        return [False, 'No songs in queue']
-
-    if number == 0:
-        print_message(guild_id, "web_top -> Already at the top")
-        return [False, 'Already at the top']
-
-    return await web_move(web_data, number, 0)
-
-async def web_bottom(web_data, number):
-    print_web_function(web_data, 'web_bottom', [number])
-    guild_id = web_data.guild_id
-    queue_length = len(guild[guild_id].queue)
-
-    if type(number) is not int:
-        try:
-            number = int(number)
-        except ValueError:
-            print_message(guild_id, "web_bottom -> Number must be an integer")
-            return [False, 'Number must be an integer (Internal web error -> contact developer)']
-
-    if queue_length == 0:
-        print_message(guild_id, "web_bottom -> No songs in queue")
-        return [False, 'No songs in queue']
-
-    if number == queue_length-1:
-        print_message(guild_id, "web_bottom -> Already at the bottom")
-        return [False, 'Already at the bottom']
-
-    return await web_move(web_data, number, queue_length-1)
-
-async def web_stop(web_data):
-    print_web_function(web_data, 'web_stop', [])
-    guild_id = web_data.guild_id
-    guild_object = bot.get_guild(int(guild_id))
-    voice = guild_object.voice_client
-
-    if voice is None:
-        print_message(guild_id, "web_stop -> Not in a voice channel")
-        return [False, 'Not in a voice channel']
-
-    if not voice.is_playing():
-        print_message(guild_id, "web_stop -> Not playing")
-        return [False, 'Not playing']
-
-    if voice.is_playing():
-        guild[guild_id].options.stopped = True
-        voice.stop()
-        save_json()
-        print_message(guild_id, "web_stop -> Stopped")
-        return [True, 'Stopped playing']
-
-    print_message(guild_id, "web_stop -> Unknown error")
-    return [False, 'Unknown error']
-
-async def web_pause(web_data):
-    print_web_function(web_data, 'web_pause', [])
-    guild_id = web_data.guild_id
-    guild_object = bot.get_guild(int(guild_id))
-    voice = guild_object.voice_client
-
-    if voice is None:
-        print_message(guild_id, "web_pause -> Not in a voice channel")
-        return [False, 'Not in a voice channel']
-
-    if not voice.is_playing():
-        print_message(guild_id, "web_pause -> Not playing")
-        return [False, 'Not playing']
-
-    if voice.is_playing():
-        voice.pause()
-        save_json()
-        print_message(guild_id, "web_pause -> Paused")
-        return [True, 'Paused playing']
-
-    print_message(guild_id, "web_pause -> Unknown error")
-    return [False, 'Unknown error']
-
-async def web_resume(web_data):
-    print_web_function(web_data, 'web_resume', [])
-    guild_id = web_data.guild_id
-    guild_object = bot.get_guild(int(guild_id))
-    voice = guild_object.voice_client
-
-    if voice is None:
-        print_message(guild_id, "web_resume -> Not in a voice channel")
-        return [False, 'Not in a voice channel']
-
-    if not voice.is_playing():
-        if voice.is_paused():
-            voice.resume()
-            save_json()
-            print_message(guild_id, "web_resume -> Resumed")
-            return [True, 'Resumed playing']
-        print_message(guild_id, "web_resume -> Nothing paused")
-        return [False, 'Nothing paused']
-
-    if voice.is_playing():
-        save_json()
-        print_message(guild_id, "web_resume -> Nothing paused")
-        return [False, 'Nothing paused']
-
-
-
-    print_message(guild_id, "web_resume -> Unknown error")
-    return [False, 'Unknown error']
-
-async def web_skip(web_data):
-    print_web_function(web_data, 'web_skip', [])
-    guild_id = web_data.guild_id
-    guild_object = bot.get_guild(int(guild_id))
-    voice = guild_object.voice_client
-
-    if voice is None:
-        print_message(guild_id, "web_skip -> Not in a voice channel")
-        return [False, 'Not in a voice channel']
-
-    if not voice.is_playing():
-        print_message(guild_id, "web_skip -> Not playing")
-        return [False, 'Not playing']
-
-    if voice.is_playing():
-        voice.stop()
-        save_json()
-        print_message(guild_id, "web_skip -> Stopped")
-        return [True, 'Stopped playing']
-
-    print_message(guild_id, "web_skip -> Unknown error")
-    return [False, 'Unknown error']
-
-async def web_shuffle(web_data):
-    print_web_function(web_data, 'web_shuffle', [])
-    guild_id = web_data.guild_id
-
-    if len(guild[guild_id].queue) == 0:
-        print_message(guild_id, "web_shuffle -> No songs in queue")
-        return [False, 'No songs in queue']
-
-    random.shuffle(guild[guild_id].queue)
-    save_json()
-
-    print_message(guild_id, "web_shuffle -> Shuffled queue")
-    return [True, 'Shuffled queue']
-
-async def web_clear(web_data):
-    print_web_function(web_data, 'web_clear', [])
-    guild_id = web_data.guild_id
-
-    if len(guild[guild_id].queue) == 0:
-        print_message(guild_id, "web_clear -> No songs in queue")
-        return [False, 'No songs in queue']
-
-    guild[guild_id].queue.clear()
-    save_json()
-    print_message(guild_id, "web_clear -> Cleared queue")
-    return [True, 'Cleared queue']
-
-async def web_volume(web_data, vol_range, vol_input):
-    print_web_function(web_data, 'web_volume', [vol_range, vol_input])
-    guild_id = web_data.guild_id
-    guild_object = bot.get_guild(int(guild_id))
-    voice = guild_object.voice_client
-
-    if int(vol_range) != int(vol_input):
-        print_message(guild_id, "web_volume -> Mismatched range and input")
-        return [False, 'Mismatched range and input (Internal web error -> contact developer)']
-    else:
-        number = int(vol_input)
-
-    if number:
-        new_volume = int(number) / 100
-
-        guild[guild_id].options.volume = new_volume
-        if voice:
-            try:
-                if voice.source:
-                    voice.source.volume = new_volume
-                    voice.source = discord.PCMVolumeTransformer(voice.source, volume=new_volume)
-            except AttributeError:
-                pass
-
-        save_json()
-
-        print_message(guild_id, "web_volume -> Changed volume")
-        return [True, f'Changed volume to {guild[guild_id].options.volume * 100}%']
-
-    print_message(guild_id, "web_volume -> No number given")
-    return [False, 'No number given (Internal web error -> contact developer)']
-
-async def web_queue_from_video(web_data, url, number: int=None):
-    print_web_function(web_data, 'web_queue', [url, number])
-    guild_id = web_data.guild_id
-    video = None
-
-    if url == 'last_played':
-        video = guild[guild_id].last_played
-    elif url == 'now_playing':
-        video = guild[guild_id].now_playing
-
-    if video:
-        try:
-            if not number and number != 0 and number != '0':
-                guild[guild_id].queue.append(video)
-            else:
-                guild[guild_id].queue.insert(number, video)
-            save_json()
-            print_message(guild_id, "web_queue -> Queued")
-            return 'Queued'
-        except Exception as e:
-            print(e)
-            print_message(guild_id, "web_queue -> Error while queuing")
-            return 'Error while queuing (Internal web error -> contact developer)'
-    else:
-        print_message(guild_id, "web_queue -> Error while getting video")
-        return 'Error while getting video (Internal web error -> contact developer)'
-
-async def web_queue_from_url(web_data, url, position=None):
-    if position:
-        if position == "start":
-            position = 0
-        elif position == "end":
-            position = None
-
-    if url[0:33] == "https://www.youtube.com/playlist?":
-        try:
-            playlist_videos = youtubesearchpython.Playlist.getVideos(url)
-        except KeyError:
-            message = f'This playlist is unviewable: `{url}`'
-            return [False, message]
-        playlist_songs = 0
-
-        playlist_videos = playlist_videos['videos']
-        if position or position == 0:
-            playlist_videos = list(reversed(playlist_videos))
-
-        for index, val in enumerate(playlist_videos):
-            playlist_songs += 1
-
-            # noinspection PyTypeChecker
-            url = f"https://www.youtube.com/watch?v={playlist_videos[index]['id']}"
-            video = Video(url, web_data.id)
-
-            if position or position == 0:
-                guild[web_data.guild_id].queue.insert(position, video)
-            else:
-                guild[web_data.guild_id].queue.append(video)
-
-        message = f"`{playlist_songs}` songs from playlist added to queue!"
-
-        save_json()
-
-        return [True, message, None]
-
-    elif url:
-        try:
-
-            video = Video(url, web_data.id)
-
-            if position or position == 0:
-                guild[web_data.guild_id].queue.insert(position, video)
-            else:
-                guild[web_data.guild_id].queue.append(video)
-
-            message = f'`{video.title}` added to queue!'
-
-            save_json()
-
-            return [True, message, video]
-
-        except (ValueError, IndexError, TypeError):
-            try:
-                url_only_id = 'https://www.youtube.com/watch?v=' + url.split('watch?v=')[1]
-                video = Video(url_only_id, web_data.id)
-
-                if position or position == 0:
-                    guild[web_data.guild_id].queue.insert(position, video)
-                else:
-                    guild[web_data.guild_id].queue.append(video)
-
-                message = f'`{video.title}` added to queue!'
-
-                save_json()
-
-                return [True, message, video]
-
-            except (ValueError, IndexError, TypeError):
-                try:
-                    # https://www.youtube.com/shorts/JRPKE_A9yjw
-                    url_shorts = url.replace('shorts/', 'watch?v=')
-                    video = Video(url_shorts, web_data.id)
-
-                    if position or position == 0:
-                        guild[web_data.guild_id].queue.insert(position, video)
-                    else:
-                        guild[web_data.guild_id].queue.append(video)
-
-                    message = f'`{video.title}` added to queue!'
-
-                    save_json()
-
-                    return [True, message, video]
-
-                except (ValueError, IndexError, TypeError):
-
-                    message = f'{url} is not supported!'
-
-                    save_json()
-
-                    return [False, message]
-
-# async def web_play(web_data, url):
-#     print_web_function(web_data, 'web_play', [url])
-#     # guild_id = web_data.guild_id
-#     # guild_object = bot.get_guild(int(guild_id))
-#     # voice = guild_object.voice_client
-#     #
-#     # if video:
-#     #     try:
-#     #         video = await YTDLSource.from_url(video, loop=bot.loop, stream=True)
-#     #     except Exception as e:
-#     #         print_message(guild_id, "web_queue -> Error while getting video")
-#     #         return 'Error while getting video (Internal web error -> contact developer)'
-#     #
-#     #     guild[guild_id].queue.insert(number, video)
-#     #     save_json()
-#     #     print_message(guild_id, "web_queue -> Queued")
-#     #     return 'Queued'
-#     #
-#     # print_message(guild_id, "web_queue -> Unknown error")
-#     # return 'Unknown error'
-#     #
-#     # await guild_object.system_channel.send('cock.log')
-
 
 # --------------------------------------------- HELP COMMAND -----------------------------------------------------------
 
@@ -3157,10 +2666,485 @@ async def help_command(ctx: commands.Context,
 
     await ctx.reply(embed=embed, ephemeral=True)
 
+
+# --------------------------------------------- WEB COMMANDS -----------------------------------------------------------
+
+
+async def web_remove(web_data, number):
+    print_web_function(web_data, 'web_remove', [number])
+    guild_id = web_data.guild_id
+    queue_length = len(guild[guild_id].queue)
+
+    if queue_length == 0:
+        print_message(guild_id, "web_remove -> No songs in queue")
+        return [False, 'No songs in queue']
+
+    if type(number) is not int:
+        try:
+            number = int(number)
+        except ValueError:
+            print_message(guild_id, "web_remove -> Number must be an integer")
+            return [False, 'Number must be an integer (Internal web error -> contact developer)']
+
+    if queue_length-1 >= number >= 0:
+        video = guild[guild_id].queue[number]
+        guild[guild_id].queue.pop(number)
+
+        save_json()
+
+        return [True, f"Removed #{number} : {video.title}"]
+
+    print_message(guild_id, "web_remove -> Number must be between 0 and {queue_length - 1}")
+    return [False, f'Number must be between 0 and {queue_length - 1}']
+
+async def web_move(web_data, org_number, destination_number):
+    print_web_function(web_data, 'web_move', [org_number, destination_number])
+    guild_id = web_data.guild_id
+    queue_length = len(guild[guild_id].queue)
+
+    if queue_length == 0:
+        print_message(guild_id, "web_move -> No songs in queue")
+        return [False, 'No songs in queue']
+
+    if type(org_number) is not int:
+        try:
+            org_number = int(org_number)
+        except ValueError:
+            print_message(guild_id, "web_move -> Original number must be an integer")
+            return [False, 'Original number must be an integer (Internal web error -> contact developer)']
+
+    if type(destination_number) is not int:
+        try:
+            destination_number = int(destination_number)
+        except ValueError:
+            print_message(guild_id, "web_move -> Destination number must be an integer")
+            return [False, 'Destination number must be an integer (Internal web error -> contact developer)']
+
+    if queue_length-1 >= org_number >= 0:
+        if queue_length-1 >= destination_number >= 0:
+            video = guild[guild_id].queue.pop(org_number)
+            guild[guild_id].queue.insert(destination_number, video)
+
+            save_json()
+
+            return [True, f"Moved #{org_number} to #{destination_number} : {video.title}"]
+
+        print_message(guild_id, "web_move -> Destination number must be between 0 and {queue_length - 1}")
+        return [False, f'Destination number must be between 0 and {queue_length - 1}']
+    print_message(guild_id, "web_move -> Original number must be between 0 and {queue_length - 1}")
+    return [False, f'Original number must be between 0 and {queue_length - 1}']
+
+async def web_up(web_data, number):
+    print_web_function(web_data, 'web_up', [number])
+    guild_id = web_data.guild_id
+    queue_length = len(guild[guild_id].queue)
+
+    if type(number) is not int:
+        try:
+            number = int(number)
+        except ValueError:
+            print_message(guild_id, "web_up -> Number must be an integer")
+            return [False, 'Number must be an integer (Internal web error -> contact developer)']
+
+    if queue_length == 0:
+        print_message(guild_id, "web_up -> No songs in queue")
+        return [False, 'No songs in queue']
+
+    if number == 0:
+        return await web_move(web_data, 0, queue_length-1)
+
+    return await web_move(web_data, number, number-1)
+
+async def web_down(web_data, number):
+    print_web_function(web_data, 'web_down', [number])
+    guild_id = web_data.guild_id
+    queue_length = len(guild[guild_id].queue)
+
+    if type(number) is not int:
+        try:
+            number = int(number)
+        except ValueError:
+            print_message(guild_id, "web_down -> Number must be an integer")
+            return [False, 'Number must be an integer (Internal web error -> contact developer)']
+
+    if queue_length == 0:
+        print_message(guild_id, "web_down -> No songs in queue")
+        return [False, 'No songs in queue']
+
+    if number == queue_length-1:
+        return await web_move(web_data, number, 0)
+
+    return await web_move(web_data, number, number+1)
+
+async def web_top(web_data, number):
+    print_web_function(web_data, 'web_top', [number])
+    guild_id = web_data.guild_id
+    queue_length = len(guild[guild_id].queue)
+
+    if type(number) is not int:
+        try:
+            number = int(number)
+        except ValueError:
+            print_message(guild_id, "web_top -> Number must be an integer")
+            return [False, 'Number must be an integer (Internal web error -> contact developer)']
+
+    if queue_length == 0:
+        print_message(guild_id, "web_top -> No songs in queue")
+        return [False, 'No songs in queue']
+
+    if number == 0:
+        print_message(guild_id, "web_top -> Already at the top")
+        return [False, 'Already at the top']
+
+    return await web_move(web_data, number, 0)
+
+async def web_bottom(web_data, number):
+    print_web_function(web_data, 'web_bottom', [number])
+    guild_id = web_data.guild_id
+    queue_length = len(guild[guild_id].queue)
+
+    if type(number) is not int:
+        try:
+            number = int(number)
+        except ValueError:
+            print_message(guild_id, "web_bottom -> Number must be an integer")
+            return [False, 'Number must be an integer (Internal web error -> contact developer)']
+
+    if queue_length == 0:
+        print_message(guild_id, "web_bottom -> No songs in queue")
+        return [False, 'No songs in queue']
+
+    if number == queue_length-1:
+        print_message(guild_id, "web_bottom -> Already at the bottom")
+        return [False, 'Already at the bottom']
+
+    return await web_move(web_data, number, queue_length-1)
+
+async def web_stop(web_data):
+    print_web_function(web_data, 'web_stop', [])
+    guild_id = web_data.guild_id
+    guild_object = bot.get_guild(int(guild_id))
+    voice = guild_object.voice_client
+
+    now_to_last(guild_id)
+
+    if voice is None:
+        print_message(guild_id, "web_stop -> Not in a voice channel")
+        return [False, 'Not in a voice channel']
+
+    if not voice.is_playing():
+        print_message(guild_id, "web_stop -> Not playing")
+        return [False, 'Not playing']
+
+    if voice.is_playing():
+        guild[guild_id].options.stopped = True
+        voice.stop()
+        save_json()
+        print_message(guild_id, "web_stop -> Stopped")
+        return [True, 'Stopped playing']
+
+    print_message(guild_id, "web_stop -> Unknown error")
+    return [False, 'Unknown error']
+
+async def web_pause(web_data):
+    print_web_function(web_data, 'web_pause', [])
+    guild_id = web_data.guild_id
+    guild_object = bot.get_guild(int(guild_id))
+    voice = guild_object.voice_client
+
+    if voice is None:
+        print_message(guild_id, "web_pause -> Not in a voice channel")
+        return [False, 'Not in a voice channel']
+
+    if not voice.is_playing():
+        print_message(guild_id, "web_pause -> Not playing")
+        return [False, 'Not playing']
+
+    if voice.is_playing():
+        voice.pause()
+        save_json()
+        print_message(guild_id, "web_pause -> Paused")
+        return [True, 'Paused playing']
+
+    print_message(guild_id, "web_pause -> Unknown error")
+    return [False, 'Unknown error']
+
+async def web_resume(web_data):
+    print_web_function(web_data, 'web_resume', [])
+    guild_id = web_data.guild_id
+    guild_object = bot.get_guild(int(guild_id))
+    voice = guild_object.voice_client
+
+    if voice is None:
+        print_message(guild_id, "web_resume -> Not in a voice channel")
+        return [False, 'Not in a voice channel']
+
+    if not voice.is_playing():
+        if voice.is_paused():
+            voice.resume()
+            save_json()
+            print_message(guild_id, "web_resume -> Resumed")
+            return [True, 'Resumed playing']
+        print_message(guild_id, "web_resume -> Nothing paused")
+        return [False, 'Nothing paused']
+
+    if voice.is_playing():
+        save_json()
+        print_message(guild_id, "web_resume -> Nothing paused")
+        return [False, 'Nothing paused']
+
+
+
+    print_message(guild_id, "web_resume -> Unknown error")
+    return [False, 'Unknown error']
+
+async def web_skip(web_data):
+    print_web_function(web_data, 'web_skip', [])
+    guild_id = web_data.guild_id
+    guild_object = bot.get_guild(int(guild_id))
+    voice = guild_object.voice_client
+
+    now_to_last(guild_id)
+
+    if voice is None:
+        print_message(guild_id, "web_skip -> Not in a voice channel")
+        return [False, 'Not in a voice channel']
+
+    if not voice.is_playing():
+        print_message(guild_id, "web_skip -> Not playing")
+        return [False, 'Not playing']
+
+    if voice.is_playing():
+        voice.stop()
+        save_json()
+        print_message(guild_id, "web_skip -> Stopped")
+        return [True, 'Stopped playing']
+
+    print_message(guild_id, "web_skip -> Unknown error")
+    return [False, 'Unknown error']
+
+async def web_shuffle(web_data):
+    print_web_function(web_data, 'web_shuffle', [])
+    guild_id = web_data.guild_id
+
+    if len(guild[guild_id].queue) == 0:
+        print_message(guild_id, "web_shuffle -> No songs in queue")
+        return [False, 'No songs in queue']
+
+    random.shuffle(guild[guild_id].queue)
+    save_json()
+
+    print_message(guild_id, "web_shuffle -> Shuffled queue")
+    return [True, 'Shuffled queue']
+
+async def web_clear(web_data):
+    print_web_function(web_data, 'web_clear', [])
+    guild_id = web_data.guild_id
+
+    if len(guild[guild_id].queue) == 0:
+        print_message(guild_id, "web_clear -> No songs in queue")
+        return [False, 'No songs in queue']
+
+    guild[guild_id].queue.clear()
+    save_json()
+    print_message(guild_id, "web_clear -> Cleared queue")
+    return [True, 'Cleared queue']
+
+async def web_volume(web_data, vol_range, vol_input):
+    print_web_function(web_data, 'web_volume', [vol_range, vol_input])
+    guild_id = web_data.guild_id
+    guild_object = bot.get_guild(int(guild_id))
+    voice = guild_object.voice_client
+
+    if int(vol_range) != int(vol_input):
+        print_message(guild_id, "web_volume -> Mismatched range and input")
+        return [False, 'Mismatched range and input (Internal web error -> contact developer)']
+    else:
+        number = int(vol_input)
+
+    if number:
+        new_volume = int(number) / 100
+
+        guild[guild_id].options.volume = new_volume
+        if voice:
+            try:
+                if voice.source:
+                    voice.source.volume = new_volume
+                    voice.source = discord.PCMVolumeTransformer(voice.source, volume=new_volume)
+            except AttributeError:
+                pass
+
+        save_json()
+
+        print_message(guild_id, "web_volume -> Changed volume")
+        return [True, f'Changed volume to {guild[guild_id].options.volume * 100}%']
+
+    print_message(guild_id, "web_volume -> No number given")
+    return [False, 'No number given (Internal web error -> contact developer)']
+
+async def web_queue_from_video(web_data, url, number: int=None):
+    print_web_function(web_data, 'web_queue', [url, number])
+    guild_id = web_data.guild_id
+    video = None
+
+    if url == 'last_played':
+        video = guild[guild_id].last_played
+    elif url == 'now_playing':
+        video = guild[guild_id].now_playing
+
+    if type(video) == Video:
+        pass
+    elif type(video) == Radio:
+        video = Radio(name=video.radio_name, author=video.author, radio_name=video.radio_name)
+    elif type(video) == FromProbe:
+        video = FromProbe(url=video.url, title=video.title, duration=video.duration, author=video.author, channel_name=video.channel_name, channel_link=video.channel_link)
+    elif type(video) == LocalFile:
+        video = LocalFile(title=video.title, duration=video.duration, author=video.author, number=video.number)
+
+    if video:
+        try:
+            if not number and number != 0 and number != '0':
+                guild[guild_id].queue.append(video)
+            else:
+                guild[guild_id].queue.insert(number, video)
+            save_json()
+            print_message(guild_id, "web_queue -> Queued")
+            return [True, f'Queued {video.title}', video]
+        except Exception as e:
+            print(e)
+            print_message(guild_id, "web_queue -> Error while queuing")
+            return [False, 'Error while queuing (Internal web error -> contact developer)']
+    else:
+        print_message(guild_id, "web_queue -> Error while getting video")
+        return [False, 'Error while getting video (Internal web error -> contact developer)']
+
+async def web_queue_from_url(web_data, url, position=None):
+    if position:
+        if position == "start":
+            position = 0
+        elif position == "end":
+            position = None
+
+    if url[0:33] == "https://www.youtube.com/playlist?":
+        try:
+            playlist_videos = youtubesearchpython.Playlist.getVideos(url)
+        except KeyError:
+            message = f'This playlist is unviewable: `{url}`'
+            return [False, message]
+        playlist_songs = 0
+
+        playlist_videos = playlist_videos['videos']
+        if position or position == 0:
+            playlist_videos = list(reversed(playlist_videos))
+
+        for index, val in enumerate(playlist_videos):
+            playlist_songs += 1
+
+            # noinspection PyTypeChecker
+            url = f"https://www.youtube.com/watch?v={playlist_videos[index]['id']}"
+            video = Video(url, web_data.id)
+
+            if position or position == 0:
+                guild[web_data.guild_id].queue.insert(position, video)
+            else:
+                guild[web_data.guild_id].queue.append(video)
+
+        message = f"`{playlist_songs}` songs from playlist added to queue!"
+
+        save_json()
+
+        return [True, message, None]
+
+    elif url:
+        try:
+
+            video = Video(url, web_data.id)
+
+            if position or position == 0:
+                guild[web_data.guild_id].queue.insert(position, video)
+            else:
+                guild[web_data.guild_id].queue.append(video)
+
+            message = f'`{video.title}` added to queue!'
+
+            save_json()
+
+            return [True, message, video]
+
+        except (ValueError, IndexError, TypeError):
+            try:
+                url_only_id = 'https://www.youtube.com/watch?v=' + url.split('watch?v=')[1]
+                video = Video(url_only_id, web_data.id)
+
+                if position or position == 0:
+                    guild[web_data.guild_id].queue.insert(position, video)
+                else:
+                    guild[web_data.guild_id].queue.append(video)
+
+                message = f'`{video.title}` added to queue!'
+
+                save_json()
+
+                return [True, message, video]
+
+            except (ValueError, IndexError, TypeError):
+                try:
+                    # https://www.youtube.com/shorts/JRPKE_A9yjw
+                    url_shorts = url.replace('shorts/', 'watch?v=')
+                    video = Video(url_shorts, web_data.id)
+
+                    if position or position == 0:
+                        guild[web_data.guild_id].queue.insert(position, video)
+                    else:
+                        guild[web_data.guild_id].queue.append(video)
+
+                    message = f'`{video.title}` added to queue!'
+
+                    save_json()
+
+                    return [True, message, video]
+
+                except (ValueError, IndexError, TypeError):
+
+                    message = f'{url} is not supported!'
+
+                    save_json()
+
+                    return [False, message]
+
+async def web_queue_from_radio(web_data, radio_name, position=None):
+    if position:
+        if position == "start":
+            position = 0
+        elif position == "end":
+            position = None
+
+    if radio_name in radio_dict.keys():
+
+        video = Radio(radio_name, web_data.id, radio_name)
+
+        if position or position == 0:
+            guild[web_data.guild_id].queue.insert(position, video)
+        else:
+            guild[web_data.guild_id].queue.append(video)
+
+        message = f'`{video.title}` added to queue!'
+
+        save_json()
+
+        return [True, message, video]
+
+    else:
+        message = f'Radio station `{radio_name}` does not exist!'
+
+        save_json()
+
+        return [False, message]
+
 # --------------------------------------------- WEB SERVER --------------------------------------------- #
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'secret!'
+app.config['SECRET_KEY'] = config.WEB_SECRET_KEY
 
 @app.route('/')
 async def index_page():
@@ -3193,7 +3177,12 @@ async def guilds_page():
         user = None
         mutual_guild_ids = []
 
-    return render_template('nav/guild_list.html', guild=guild.values(), len=len, user=user, errors=None, mutual_guild_ids=mutual_guild_ids)
+    def sort_list(val_lst, key_lst):
+        if not key_lst:
+            return dict(val_lst)
+        return dict(sorted(val_lst, key=lambda x: key_lst.index(x[0]) if x[0] in key_lst else len(key_lst)))
+
+    return render_template('nav/guild_list.html', guild=sort_list(guild.items(), mutual_guild_ids).values(), len=len, user=user, errors=None, mutual_guild_ids=mutual_guild_ids)
 
 @app.route('/guild/<guild_id>', methods=['GET', 'POST'])
 async def guild_get_key_page(guild_id):
@@ -3236,7 +3225,6 @@ async def guild_get_key_page(guild_id):
 
 @app.route('/guild/<guild_id>&key=<key>', methods=['GET', 'POST'])
 async def guild_page(guild_id, key):
-    errors = []
     if 'discord_user' in session.keys():
         user = session['discord_user']
         user_name, user_id = user['username'], int(user['id'])
@@ -3249,6 +3237,9 @@ async def guild_page(guild_id, key):
         user = None
         user_name, user_id = "WEB", bot_id
         mutual_guild_ids = []
+
+    errors = []
+    messages = []
 
     if request.method == 'POST':
 
@@ -3305,9 +3296,14 @@ async def guild_page(guild_id, key):
         if 'ytURL' in keys:
             print_web(web_data, 'web_add_queue', [request.form['ytURL'], request.form['addPosition']])
             response = await web_queue_from_url(web_data, request.form['ytURL'], request.form['addPosition'])
+        if 'radio-checkbox' in keys:
+            print_web(web_data, 'web_add_queue', [request.form['radio-checkbox'], request.form['addPosition']])
+            response = await web_queue_from_radio(web_data, request.form['radio-checkbox'], request.form['addPosition'])
 
         if not response[0]:
             errors = [response[1]]
+        else:
+            messages = [response[1]]
 
     try:
         guild_object = guild[int(guild_id)]
@@ -3317,12 +3313,10 @@ async def guild_page(guild_id, key):
                 return redirect(f'/guild/{guild_id}&key={guild_object.data.key}')
             return redirect(url_for('guild_get_key_page', guild_id=guild_id))
 
-        return render_template('control/guild.html', guild=guild_object, convert_duration=convert_duration, get_username=get_username, errors=errors, user=user, volume=round(guild_object.options.volume * 100), radios=radio_dict.keys())
+        return render_template('control/guild.html', guild=guild_object, convert_duration=convert_duration, get_username=get_username, errors=errors, messages=messages, user=user, volume=round(guild_object.options.volume * 100), radios=list(radio_dict.values()))
     except (KeyError, ValueError, TypeError):
         return render_template('base/message.html', guild_id=guild_id, user=user, message="That Server doesn't exist or the bot is not in it", errors=None, title='Error')
 
-
-# {'id': '349164237605568513', 'username': 'Tomer27cz', 'global_name': None, 'display_name': None, 'avatar': '7b49a22722306095584e6d8b9973ac13', 'avatar_decoration': None, 'discriminator': '4272', 'public_flags': 4194432, 'flags': 4194432, 'banner': None, 'banner_color': '#ffffff', 'accent_color': 16777215, 'locale': 'en-GB', 'mfa_enabled': True, 'premium_type': 0, 'email': 'tomer19cz@gmail.com', 'verified': True}
 
 @app.route('/login')
 async def login_page():
@@ -3386,6 +3380,10 @@ async def logout_page():
 async def reset_page():
     session.clear()
     return redirect(url_for('index_page'))
+
+@app.route('/invite')
+async def invite_page():
+    return redirect(f"https://discord.com/api/oauth2/authorize?client_id={config.CLIENT_ID}&permissions={config.PERMISSIONS}&scope=bot")
 
 @app.route('/admin', methods=['GET', 'POST'])
 async def admin_page():

@@ -1,13 +1,21 @@
 {% extends "base/base.html" %}
 
-{% block head %}<title>Control Panel</title>{% endblock %}
+{% set title = 'Control Panel' %}
 
 {% block content %}
 
 {% if errors %}
     {% for error in errors %}
-        <div class="alert alert-danger div-align alert-dismissible fade show" role="alert">
+        <div class="alert alert-danger div-align alert-dismissible fade show sticky-top" role="alert">
             {{error}}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+{% endif %}
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-success div-align alert-dismissible fade show sticky-top" role="alert">
+            {{message}}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     {% endfor %}
@@ -43,7 +51,7 @@
                         <tr>
                             <td>
                                 {% if guild.data.icon is not none %}
-                                <img class="d-list-img" src={{guild.data.icon}} alt="Icon">
+                                <img loading="lazy" class="d-list-img" src={{guild.data.icon}} alt="Icon">
                                 {% else %}
                                 None
                                 {% endif %}
@@ -79,7 +87,7 @@
                 {% if guild.last_played is not none %}
                 <table class="table table-dark table-responsive-lg table-borderless">
                     <tr>
-                        <td class="index-align"><img class="d-list-img" src="{{guild.last_played.picture}}" alt="thumbnail"></td>
+                        <td class="index-align"><img loading="lazy" class="d-list-img" src="{{guild.last_played.picture}}" alt="thumbnail"></td>
                         <td>{{convert_duration(guild.last_played.duration)}}</td>
                         <td>{{guild.last_played.type}}</td>
                         <td>{{get_username(guild.last_played.author)}}</td>
@@ -87,8 +95,8 @@
                         <td><a href="{{guild.last_played.channel_link}}">{{guild.last_played.channel_name}}</a></td>
                         <td>
                             <form action="#" method="POST">
-                                <button class="btn btn-outline btn-success btn-sm btn-m" type="submit" name="queue_btn" value="last_played">Add to Queue</button>
-                                <button class="btn btn-outline btn-success btn-sm btn-m" type="submit" name="nextup_btn" value="last_played">Next Up</button>
+                                <button class="btn btn-outline btn-secondary btn-sm btn-m" type="submit" name="queue_btn" value="last_played">Add to Queue</button>
+                                <button class="btn btn-outline btn-secondary btn-sm btn-m" type="submit" name="nextup_btn" value="last_played">Next Up</button>
                             </form>
                         </td>
                     </tr>
@@ -117,7 +125,7 @@
                   {{guild.now_playing.renew()}}
                 <table class="table table-dark table-responsive-lg table-borderless">
                     <tr>
-                        <td class="index-align"><img class="d-list-img" src="{{guild.now_playing.picture}}" alt="thumbnail"></td>
+                        <td class="index-align"><img loading="lazy" class="d-list-img" src="{{guild.now_playing.picture}}" alt="thumbnail"></td>
                         <td>{{convert_duration(guild.now_playing.duration)}}</td>
                         <td>{{guild.now_playing.type}}</td>
                         {% if guild.now_playing.type == "Radio" %}
@@ -128,8 +136,8 @@
                         <td><a href="{{guild.now_playing.channel_link}}">{{guild.now_playing.channel_name}}</a></td>
                         <td>
                             <form action="#" method="POST">
-                                <button class="btn btn-outline btn-success btn-sm btn-m" type="submit" name="queue_btn" value="now_playing">Add to Queue</button>
-                                <button class="btn btn-outline btn-success btn-sm btn-m" type="submit" name="nextup_btn" value="now_playing">Next Up</button>
+                                <button class="btn btn-outline btn-secondary btn-sm btn-m" type="submit" name="queue_btn" value="now_playing">Add to Queue</button>
+                                <button class="btn btn-outline btn-secondary btn-sm btn-m" type="submit" name="nextup_btn" value="now_playing">Next Up</button>
                             </form>
                         </td>
                     </tr>
@@ -150,8 +158,8 @@
     <div class="t-col div-login">
         <form action="#" method="POST">
             <div class="d-flex">
-                <button class="btn btn-outline btn-success btn-sm btn-m flex-fill" type="submit" name="skip_btn">Skip</button>
-                <button class="btn btn-outline btn-success btn-sm btn-m flex-fill" type="submit" name="shuffle_btn">Shuffle</button>
+                <button class="btn btn-outline btn-secondary btn-sm btn-m flex-fill" type="submit" name="skip_btn">Skip</button>
+                <button class="btn btn-outline btn-secondary btn-sm btn-m flex-fill" type="submit" name="shuffle_btn">Shuffle</button>
                 <button class="btn btn-outline btn-danger btn-sm btn-m flex-fill" type="submit" name="clear_btn">Clear</button>
             </div>
         </form>
@@ -159,8 +167,8 @@
     <div class="t-col div-login">
         <form action="#" method="POST">
             <div class="d-flex">
-                <button class="btn btn-outline btn-success btn-sm btn-m flex-fill" type="submit" name="pause_btn">Pause</button>
-                <button class="btn btn-outline btn-success btn-sm btn-m flex-fill" type="submit" name="resume_btn">Resume</button>
+                <button class="btn btn-outline btn-secondary btn-sm btn-m flex-fill" type="submit" name="pause_btn">Pause</button>
+                <button class="btn btn-outline btn-secondary btn-sm btn-m flex-fill" type="submit" name="resume_btn">Resume</button>
                 <button class="btn btn-outline btn-danger btn-sm btn-m flex-fill" type="submit" name="stop_btn">Stop</button>
             </div>
         </form>
@@ -184,6 +192,14 @@
 <div class="div-align">
     <h2>Queue</h2>
 </div>
+
+<div class="d-grid gap-2">
+    <button class="btn btn-primary btn-lg btn-q" data-bs-toggle="modal" data-bs-target="#addToModal">
+        Add to Queue
+    </button>
+</div>
+
+
 <form method="POST" action="#">
     <table class="table table-dark table-responsive-lg table-group-divider">
       <thead>
@@ -203,7 +219,7 @@
         {% for track in guild.queue %}
             <tr>
                 <td class="index-align">{{guild.queue.index(track)}}</td>
-                <td><img class="d-list-img" src="{{track.picture}}" alt="thumbnail"></td>
+                <td><img loading="lazy" class="d-list-img" src="{{track.picture}}" alt="thumbnail"></td>
                 <td>{{convert_duration(track.duration)}}</td>
                 <td>{{track.type}}</td>
                 <td>{{get_username(track.author)}}</td>
@@ -214,8 +230,8 @@
                         Action
                     </button>
                     <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
-                        <li><button class="dropdown-item" type="submit" name="top_btn" value={{guild.queue.index(track)}}>Move to Top</button></li>
-                        <li><button class="dropdown-item" type="submit" name="bottom_btn" value={{guild.queue.index(track)}}>Move to Bottom</button></li>
+                        <li><button class="dropdown-item" type="submit" name="top_btn" value="{{guild.queue.index(track)}}">Move to Top</button></li>
+                        <li><button class="dropdown-item" type="submit" name="bottom_btn" value="{{guild.queue.index(track)}}">Move to Bottom</button></li>
 <!--                            <li><hr class="dropdown-divider"></li>-->
 <!--                            <li><button class="dropdown-item" type="submit" name="play_btn" value={{index}}>Play Now</button></li>-->
                     </ul>
@@ -241,13 +257,6 @@
     </table>
 </form>
 
-<!-- Add Button -->
-<button id="addbutton" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#addToModal">
-    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
-        <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"></path>
-    </svg>
-</button>
-
 <!-- Modal -->
 <div class="modal fade" id="addToModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
@@ -259,10 +268,8 @@
         <form method="POST" id="ytForm">
           <div class="modal-body">
               <div class="mb-3">
-                  <div class="form-floating mb-3">
-                      <input type="url" class="form-control" name="ytURL" id="ytURL" placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ" required>
-                      <label for="ytURL">Youtube URL</label>
-                  </div>
+                  <label for="ytURL" class="btn-m">Youtube URL</label>
+                  <input type="url" class="form-control" name="ytURL" id="ytURL" placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ" required>
               </div>
               <div class="mb-3">
                   <label for="addTo" class="col-form-label">Add to</label>
@@ -284,60 +291,69 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="button" id="addbuttonmodal" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addToModalRadio">Radio</button>
-            <button type="submit" class="btn btn-success">Add</button>
+              <button type="button" id="addbuttonmodal" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#addToModalRadio">Radio</button>
+            <button type="submit" class="btn btn-primary btn-lg">Add</button>
           </div>
         </form>
     </div>
   </div>
 </div>
 
-<div class="modal fade" id="addToModalRadio" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="staticBackdropLabelRadio">Add to Queue</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-        <form method="POST" id="RadioForm">
-          <div class="modal-body">
-              <div class="mb-3">
-                  <div>
-                      <label>Radio</label>
-                      <select class="form-select" aria-label="Default select example" name="radioSelect" id="radioSelect">
+<div class="modal" id="addToModalRadio" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl r-modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="staticBackdropLabelRadio">Add to Queue</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+          <form method="POST" id="RadioForm">
+            <div class="modal-body">
+                <div class="mb-3">
+                    <div class="r-cards">
                         {% for radio in radios %}
-                          <option selected value={{radio}}>{{radio}}</option>
+                            <div class="r-card">
+                                <input type="radio" name='radio-checkbox' id="radio-checkbox{{radios.index(radio)}}" class="radio-checkbox" value="{{radio['name']}}"/>
+                                <label for="radio-checkbox{{radios.index(radio)}}" ondblclick="submitRadioForm()">
+                                    <img loading="lazy" src="/static/radio_svg/svg_radio_{{radios.index(radio)}}.svg" class="r-img">
+                                </label>
+                                <a class="radio-label">{{radio['name']}}</a>
+                            </div>
                         {% endfor %}
-                      </select>
-                  </div>
-              </div>
-              <div class="mb-3">
-                  <label for="addToRadio" class="col-form-label">Add to</label>
-                  <div id="addToRadio">
-                      <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="radio" name="addPosition" value="start" id="flexRadioDefault1Radio">
-                          <label class="form-check-label" for="flexRadioDefault1">
-                              The Start
-                          </label>
-                      </div>
-                      <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="radio" name="addPosition" value="end" id="flexRadioDefault2Radio" checked>
-                          <label class="form-check-label" for="flexRadioDefault2">
-                              The End
-                          </label>
-                      </div>
-                  </div>
-              </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="button" id="addbuttonradio" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addToModal">Video</button>
-            <button type="submit" class="btn btn-success">Add</button>
-          </div>
-        </form>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="addToRadio" class="col-form-label">Add to</label>
+                    <div id="addToRadio">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="addPosition" value="start" id="flexRadioDefault1Radio">
+                            <label class="form-check-label" for="flexRadioDefault1">
+                                The Start
+                            </label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="addPosition" value="end" id="flexRadioDefault2Radio" checked>
+                            <label class="form-check-label" for="flexRadioDefault2">
+                                The End
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" id="addbuttonradio" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#addToModal">Video</button>
+              <button type="submit" class="btn btn-primary btn-lg">Add</button>
+            </div>
+          </form>
+      </div>
     </div>
-  </div>
 </div>
+<script>
+function submitRadioForm(id) {
+    var form = document.getElementById('RadioForm');
+    form.submit();
+}
+</script>
 
 
 

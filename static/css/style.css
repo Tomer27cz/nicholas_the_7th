@@ -3,6 +3,13 @@ body {
     background-color: #313338;
     color: white;
     font-family: 'Consolas';
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+footer {
+  margin-top: auto;
 }
 
 #addbutton {
@@ -27,6 +34,11 @@ pre {
 h1, h2, h3, h4, h5, h6 {
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
+}
+
+.user-color {
+    color: rgba(255, 255, 255, 0.55);
+    text-decoration: None;
 }
 
 .hljs-attr {
@@ -111,6 +123,7 @@ h1, h2, h3, h4, h5, h6 {
 .picker {
   margin: 2rem;
   margin-top: 0;
+  margin-bottom: 0;
   background-color: #1e1f22;
   border-radius: 0.5rem;
 }
@@ -170,6 +183,11 @@ h1, h2, h3, h4, h5, h6 {
   margin: 0.2rem;
 }
 
+.btn-q {
+  margin: 1rem;
+  margin-bottom: 1.5rem;
+}
+
 .btn-xxl {
   --bs-btn-padding-y: 1.5rem;
   --bs-btn-padding-x: 2rem;
@@ -222,13 +240,73 @@ h1, h2, h3, h4, h5, h6 {
   left: 50%;
   transform: translate(-50%);
   margin: 0.7rem;
-  --bs-breakpoint-xl: 1050px;
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1400px) {
     .nav-static-buttons {
         margin: 0.7rem;
         position: inherit;
         transform: none;
         }
 }
+
+input.radio-checkbox[type=radio] {
+    display: none;
+}
+
+input.radio-checkbox[type=radio] + label
+{
+    height: 7rem;
+    width: 7rem;
+    border-radius: 50%;
+    display: inline-block;
+    padding: 0 0 0 0px;
+    margin: 1rem;
+}
+
+.radio-checkbox:checked + label img {
+    border: 0.4rem solid rgb(25, 135, 84);
+}
+
+.r-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  justify-items: center;
+}
+
+.radio-label {
+  margin: 0.5rem;
+  color: inherit;
+  text-decoration: None;
+}
+
+.r-card {
+  display: grid;
+  grid-template-rows: 1fr 0.2fr;
+  justify-items: center;
+  transition: transform 0.3s;
+}
+
+.r-img {
+  border-radius: 50%;
+  width: 7rem;
+  height: 7rem;
+}
+
+.r-modal {
+  --bs-modal-margin: 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

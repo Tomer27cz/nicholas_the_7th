@@ -236,3 +236,1391 @@ Testing Bot
 (CET) 03/04/2023 20:54:25 | M no guild | Logged in as:
 Testing Bot
 1009574748302356581
+(CET) 05/04/2023 20:30:07 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 05/04/2023 20:30:07 | M no guild | Loaded radio.json
+(CET) 05/04/2023 20:30:07 | M no guild | Loaded languages.json
+(CET) 05/04/2023 20:30:07 | M no guild | Loaded other.json
+(CET) 05/04/2023 20:30:07 | M no guild | Bot class initialized
+(CET) 05/04/2023 20:30:07 | M no guild | Loaded guilds.json
+(CET) 05/04/2023 20:30:07 | M no guild | Loaded sound_effects folder
+(CET) 05/04/2023 20:30:10 | M no guild | Trying to sync commands
+(CET) 05/04/2023 20:30:10 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 05/04/2023 20:30:10 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 05/04/2023 22:02:36 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 05/04/2023 22:02:36 | M no guild | Loaded radio.json
+(CET) 05/04/2023 22:02:36 | M no guild | Loaded languages.json
+(CET) 05/04/2023 22:02:36 | M no guild | Loaded other.json
+(CET) 05/04/2023 22:02:36 | M no guild | Bot class initialized
+(CET) 05/04/2023 22:02:36 | M no guild | Loaded guilds.json
+(CET) 05/04/2023 22:02:36 | M no guild | Loaded sound_effects folder
+(CET) 05/04/2023 22:02:41 | M no guild | Trying to sync commands
+(CET) 05/04/2023 22:02:42 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 05/04/2023 22:02:42 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 05/04/2023 22:04:16 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 05/04/2023 22:04:16 | M no guild | Loaded radio.json
+(CET) 05/04/2023 22:04:16 | M no guild | Loaded languages.json
+(CET) 05/04/2023 22:04:16 | M no guild | Loaded other.json
+(CET) 05/04/2023 22:04:16 | M no guild | Bot class initialized
+(CET) 05/04/2023 22:04:16 | M no guild | Loaded guilds.json
+(CET) 05/04/2023 22:04:16 | M no guild | Loaded sound_effects folder
+(CET) 05/04/2023 22:04:19 | M no guild | Trying to sync commands
+(CET) 05/04/2023 22:04:20 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 05/04/2023 22:04:20 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 05/04/2023 22:06:01 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 05/04/2023 22:06:01 | M no guild | Loaded radio.json
+(CET) 05/04/2023 22:06:01 | M no guild | Loaded languages.json
+(CET) 05/04/2023 22:06:01 | M no guild | Loaded other.json
+(CET) 05/04/2023 22:06:01 | M no guild | Bot class initialized
+(CET) 05/04/2023 22:06:01 | M no guild | Loaded guilds.json
+(CET) 05/04/2023 22:06:01 | M no guild | Loaded sound_effects folder
+(CET) 05/04/2023 22:06:04 | M no guild | Trying to sync commands
+(CET) 05/04/2023 22:06:05 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 05/04/2023 22:06:05 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 05/04/2023 22:07:08 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 05/04/2023 22:07:08 | M no guild | Loaded radio.json
+(CET) 05/04/2023 22:07:08 | M no guild | Loaded languages.json
+(CET) 05/04/2023 22:07:08 | M no guild | Loaded other.json
+(CET) 05/04/2023 22:07:08 | M no guild | Bot class initialized
+(CET) 05/04/2023 22:07:08 | M no guild | Loaded guilds.json
+(CET) 05/04/2023 22:07:08 | M no guild | Loaded sound_effects folder
+(CET) 05/04/2023 22:07:11 | M no guild | Trying to sync commands
+(CET) 05/04/2023 22:07:12 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 05/04/2023 22:07:12 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 05/04/2023 22:08:04 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 05/04/2023 22:08:04 | M no guild | Loaded radio.json
+(CET) 05/04/2023 22:08:04 | M no guild | Loaded languages.json
+(CET) 05/04/2023 22:08:04 | M no guild | Loaded other.json
+(CET) 05/04/2023 22:08:04 | M no guild | Bot class initialized
+(CET) 05/04/2023 22:08:04 | M no guild | Loaded guilds.json
+(CET) 05/04/2023 22:08:04 | M no guild | Loaded sound_effects folder
+(CET) 05/04/2023 22:08:08 | M no guild | Trying to sync commands
+(CET) 05/04/2023 22:08:08 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 05/04/2023 22:08:08 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 05/04/2023 22:08:39 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 05/04/2023 22:08:39 | M no guild | Loaded radio.json
+(CET) 05/04/2023 22:08:39 | M no guild | Loaded languages.json
+(CET) 05/04/2023 22:08:39 | M no guild | Loaded other.json
+(CET) 05/04/2023 22:08:39 | M no guild | Bot class initialized
+(CET) 05/04/2023 22:08:39 | M no guild | Loaded guilds.json
+(CET) 05/04/2023 22:08:39 | M no guild | Loaded sound_effects folder
+(CET) 05/04/2023 22:08:42 | M no guild | Trying to sync commands
+(CET) 05/04/2023 22:08:42 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 05/04/2023 22:08:42 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 05/04/2023 22:11:34 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 05/04/2023 22:11:34 | M no guild | Loaded radio.json
+(CET) 05/04/2023 22:11:34 | M no guild | Loaded languages.json
+(CET) 05/04/2023 22:11:34 | M no guild | Loaded other.json
+(CET) 05/04/2023 22:11:34 | M no guild | Bot class initialized
+(CET) 05/04/2023 22:11:34 | M no guild | Loaded guilds.json
+(CET) 05/04/2023 22:11:34 | M no guild | Loaded sound_effects folder
+(CET) 05/04/2023 22:11:37 | M no guild | Trying to sync commands
+(CET) 05/04/2023 22:11:37 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 05/04/2023 22:11:37 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 05/04/2023 22:15:34 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 05/04/2023 22:15:34 | M no guild | Loaded radio.json
+(CET) 05/04/2023 22:15:34 | M no guild | Loaded languages.json
+(CET) 05/04/2023 22:15:34 | M no guild | Loaded other.json
+(CET) 05/04/2023 22:15:34 | M no guild | Bot class initialized
+(CET) 05/04/2023 22:15:34 | M no guild | Loaded guilds.json
+(CET) 05/04/2023 22:15:34 | M no guild | Loaded sound_effects folder
+(CET) 05/04/2023 22:15:37 | M no guild | Trying to sync commands
+(CET) 05/04/2023 22:15:38 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 05/04/2023 22:15:38 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 05/04/2023 22:22:39 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 05/04/2023 22:22:39 | M no guild | Loaded radio.json
+(CET) 05/04/2023 22:22:39 | M no guild | Loaded languages.json
+(CET) 05/04/2023 22:22:39 | M no guild | Loaded other.json
+(CET) 05/04/2023 22:22:39 | M no guild | Bot class initialized
+(CET) 05/04/2023 22:22:39 | M no guild | Loaded guilds.json
+(CET) 05/04/2023 22:22:39 | M no guild | Loaded sound_effects folder
+(CET) 05/04/2023 22:22:42 | M no guild | Trying to sync commands
+(CET) 05/04/2023 22:22:42 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 05/04/2023 22:22:42 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 05/04/2023 22:35:14 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 05/04/2023 22:35:14 | M no guild | Loaded radio.json
+(CET) 05/04/2023 22:35:14 | M no guild | Loaded languages.json
+(CET) 05/04/2023 22:35:14 | M no guild | Loaded other.json
+(CET) 05/04/2023 22:35:14 | M no guild | Bot class initialized
+(CET) 05/04/2023 22:35:14 | M no guild | Loaded guilds.json
+(CET) 05/04/2023 22:35:14 | M no guild | Loaded sound_effects folder
+(CET) 05/04/2023 22:35:17 | M no guild | Trying to sync commands
+(CET) 05/04/2023 22:35:17 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 05/04/2023 22:35:17 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 05/04/2023 22:35:30 | W 1008145667622969397 | Command (web_add_queue) was requested by (Tomer27cz) -> ['Country', 'end']
+(CET) 05/04/2023 22:36:26 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 05/04/2023 22:36:26 | M no guild | Loaded radio.json
+(CET) 05/04/2023 22:36:26 | M no guild | Loaded languages.json
+(CET) 05/04/2023 22:36:26 | M no guild | Loaded other.json
+(CET) 05/04/2023 22:36:26 | M no guild | Bot class initialized
+(CET) 05/04/2023 22:36:26 | M no guild | Loaded guilds.json
+(CET) 05/04/2023 22:36:26 | M no guild | Loaded sound_effects folder
+(CET) 05/04/2023 22:36:29 | M no guild | Trying to sync commands
+(CET) 05/04/2023 22:36:29 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 05/04/2023 22:36:29 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 05/04/2023 22:36:40 | W 1008145667622969397 | Command (web_add_queue) was requested by (Tomer27cz) -> ['Country', 'end']
+(CET) 05/04/2023 22:38:28 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 05/04/2023 22:38:28 | M no guild | Loaded radio.json
+(CET) 05/04/2023 22:38:28 | M no guild | Loaded languages.json
+(CET) 05/04/2023 22:38:28 | M no guild | Loaded other.json
+(CET) 05/04/2023 22:38:28 | M no guild | Bot class initialized
+(CET) 05/04/2023 22:38:28 | M no guild | Loaded guilds.json
+(CET) 05/04/2023 22:38:28 | M no guild | Loaded sound_effects folder
+(CET) 05/04/2023 22:38:31 | M no guild | Trying to sync commands
+(CET) 05/04/2023 22:38:32 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 05/04/2023 22:38:32 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 05/04/2023 22:38:41 | W 1008145667622969397 | Command (web_add_queue) was requested by (Tomer27cz) -> ['Country Radio', 'end']
+(CET) 05/04/2023 22:39:30 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 05/04/2023 22:39:30 | M no guild | Loaded radio.json
+(CET) 05/04/2023 22:39:30 | M no guild | Loaded languages.json
+(CET) 05/04/2023 22:39:30 | M no guild | Loaded other.json
+(CET) 05/04/2023 22:39:30 | M no guild | Bot class initialized
+(CET) 05/04/2023 22:39:30 | M no guild | Loaded guilds.json
+(CET) 05/04/2023 22:39:30 | M no guild | Loaded sound_effects folder
+(CET) 05/04/2023 22:39:33 | M no guild | Trying to sync commands
+(CET) 05/04/2023 22:39:33 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 05/04/2023 22:39:33 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 05/04/2023 22:39:40 | W 1008145667622969397 | Command (web_add_queue) was requested by (Tomer27cz) -> ['Country Radio', 'end']
+(CET) 05/04/2023 22:39:49 | W 1008145667622969397 | Command (web_remove) was requested by (Tomer27cz) -> ['0']
+(CET) 05/04/2023 22:39:49 | F 1008145667622969397 | web_remove -> ['0']
+(CET) 05/04/2023 22:39:50 | W 1008145667622969397 | Command (web_remove) was requested by (Tomer27cz) -> ['0']
+(CET) 05/04/2023 22:39:50 | F 1008145667622969397 | web_remove -> ['0']
+(CET) 05/04/2023 22:39:51 | W 1008145667622969397 | Command (web_remove) was requested by (Tomer27cz) -> ['0']
+(CET) 05/04/2023 22:39:51 | F 1008145667622969397 | web_remove -> ['0']
+(CET) 05/04/2023 22:39:51 | W 1008145667622969397 | Command (web_remove) was requested by (Tomer27cz) -> ['0']
+(CET) 05/04/2023 22:39:51 | F 1008145667622969397 | web_remove -> ['0']
+(CET) 05/04/2023 22:39:51 | W 1008145667622969397 | Command (web_remove) was requested by (Tomer27cz) -> ['0']
+(CET) 05/04/2023 22:39:51 | F 1008145667622969397 | web_remove -> ['0']
+(CET) 05/04/2023 22:39:52 | W 1008145667622969397 | Command (web_remove) was requested by (Tomer27cz) -> ['0']
+(CET) 05/04/2023 22:39:52 | F 1008145667622969397 | web_remove -> ['0']
+(CET) 05/04/2023 22:39:52 | W 1008145667622969397 | Command (web_remove) was requested by (Tomer27cz) -> ['0']
+(CET) 05/04/2023 22:39:52 | F 1008145667622969397 | web_remove -> ['0']
+(CET) 05/04/2023 22:39:53 | W 1008145667622969397 | Command (web_remove) was requested by (Tomer27cz) -> ['0']
+(CET) 05/04/2023 22:39:53 | F 1008145667622969397 | web_remove -> ['0']
+(CET) 05/04/2023 22:39:54 | W 1008145667622969397 | Command (web_remove) was requested by (Tomer27cz) -> ['0']
+(CET) 05/04/2023 22:39:54 | F 1008145667622969397 | web_remove -> ['0']
+(CET) 05/04/2023 22:39:55 | W 1008145667622969397 | Command (web_remove) was requested by (Tomer27cz) -> ['0']
+(CET) 05/04/2023 22:39:55 | F 1008145667622969397 | web_remove -> ['0']
+(CET) 05/04/2023 22:39:56 | W 1008145667622969397 | Command (web_remove) was requested by (Tomer27cz) -> ['0']
+(CET) 05/04/2023 22:39:56 | F 1008145667622969397 | web_remove -> ['0']
+(CET) 05/04/2023 22:39:56 | W 1008145667622969397 | Command (web_remove) was requested by (Tomer27cz) -> ['0']
+(CET) 05/04/2023 22:39:56 | F 1008145667622969397 | web_remove -> ['0']
+(CET) 05/04/2023 22:39:57 | W 1008145667622969397 | Command (web_remove) was requested by (Tomer27cz) -> ['0']
+(CET) 05/04/2023 22:39:57 | F 1008145667622969397 | web_remove -> ['0']
+(CET) 05/04/2023 22:39:57 | W 1008145667622969397 | Command (web_remove) was requested by (Tomer27cz) -> ['0']
+(CET) 05/04/2023 22:39:57 | F 1008145667622969397 | web_remove -> ['0']
+(CET) 05/04/2023 22:39:58 | W 1008145667622969397 | Command (web_remove) was requested by (Tomer27cz) -> ['0']
+(CET) 05/04/2023 22:39:58 | F 1008145667622969397 | web_remove -> ['0']
+(CET) 05/04/2023 22:39:58 | W 1008145667622969397 | Command (web_remove) was requested by (Tomer27cz) -> ['0']
+(CET) 05/04/2023 22:39:58 | F 1008145667622969397 | web_remove -> ['0']
+(CET) 05/04/2023 22:40:00 | W 1008145667622969397 | Command (web_remove) was requested by (Tomer27cz) -> ['0']
+(CET) 05/04/2023 22:40:00 | F 1008145667622969397 | web_remove -> ['0']
+(CET) 05/04/2023 22:40:01 | W 1008145667622969397 | Command (web_remove) was requested by (Tomer27cz) -> ['0']
+(CET) 05/04/2023 22:40:01 | F 1008145667622969397 | web_remove -> ['0']
+(CET) 05/04/2023 22:40:01 | W 1008145667622969397 | Command (web_remove) was requested by (Tomer27cz) -> ['0']
+(CET) 05/04/2023 22:40:01 | F 1008145667622969397 | web_remove -> ['0']
+(CET) 05/04/2023 22:40:02 | W 1008145667622969397 | Command (web_remove) was requested by (Tomer27cz) -> ['0']
+(CET) 05/04/2023 22:40:02 | F 1008145667622969397 | web_remove -> ['0']
+(CET) 05/04/2023 22:40:03 | W 1008145667622969397 | Command (web_remove) was requested by (Tomer27cz) -> ['0']
+(CET) 05/04/2023 22:40:03 | F 1008145667622969397 | web_remove -> ['0']
+(CET) 05/04/2023 22:40:21 | C 1008145667622969397 | Command (play) was requested by (Tomer27cz#4272) -> [None]
+(CET) 05/04/2023 22:40:21 | F 1008145667622969397 | play_def -> [None, False, False]
+(CET) 05/04/2023 22:40:21 | F 1008145667622969397 | join_def -> [None, True]
+(CET) 05/04/2023 22:40:23 | F 1008145667622969397 | volume_command_def -> [100.0, False, True]
+(CET) 05/04/2023 22:40:38 | C 1008145667622969397 | Command (language) was requested by (Tomer27cz#4272) -> ['en']
+(CET) 05/04/2023 22:40:38 | F 1008145667622969397 | language_command_def -> ['en']
+(CET) 05/04/2023 22:43:33 | F 1008145667622969397 | play_def -> ['next', False, False]
+(CET) 05/04/2023 22:43:33 | F 1008145667622969397 | radio_def -> ['Country Radio', None]
+(CET) 05/04/2023 22:43:33 | F 1008145667622969397 | volume_command_def -> [100.0, False, True]
+(CET) 05/04/2023 22:44:28 | W 1008145667622969397 | Command (web_add_queue) was requested by (Tomer27cz) -> ['https://www.youtube.com/watch?v=pICAha0nsb0', 'end']
+(CET) 05/04/2023 22:44:33 | W 1008145667622969397 | Command (web_remove) was requested by (Tomer27cz) -> ['0']
+(CET) 05/04/2023 22:44:33 | F 1008145667622969397 | web_remove -> ['0']
+(CET) 05/04/2023 22:45:49 | W 1008145667622969397 | Command (web_add_queue) was requested by (Tomer27cz) -> ['Country Radio', 'end']
+(CET) 05/04/2023 22:46:01 | W 1008145667622969397 | Command (web_skip) was requested by (Tomer27cz) -> []
+(CET) 05/04/2023 22:46:01 | F 1008145667622969397 | web_skip -> []
+(CET) 05/04/2023 22:46:01 | M 1008145667622969397 | web_skip -> Stopped
+(CET) 05/04/2023 22:46:28 | C 1008145667622969397 | Command (play) was requested by (Tomer27cz#4272) -> [None]
+(CET) 05/04/2023 22:46:28 | F 1008145667622969397 | play_def -> [None, False, False]
+(CET) 05/04/2023 22:46:31 | F 1008145667622969397 | volume_command_def -> [100.0, False, True]
+(CET) 05/04/2023 22:49:30 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 05/04/2023 22:49:30 | M no guild | Loaded radio.json
+(CET) 05/04/2023 22:49:30 | M no guild | Loaded languages.json
+(CET) 05/04/2023 22:49:30 | M no guild | Loaded other.json
+(CET) 05/04/2023 22:49:30 | M no guild | Bot class initialized
+(CET) 05/04/2023 22:49:30 | M no guild | Loaded guilds.json
+(CET) 05/04/2023 22:49:30 | M no guild | Loaded sound_effects folder
+(CET) 05/04/2023 22:49:34 | M no guild | Trying to sync commands
+(CET) 05/04/2023 22:49:35 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 05/04/2023 22:49:35 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 05/04/2023 22:49:55 | W 1008145667622969397 | Command (web_add_queue) was requested by (Tomer27cz) -> ['https://www.youtube.com/watch?v=M-mtdN6R3bQ', 'end']
+(CET) 05/04/2023 22:50:05 | W 1008145667622969397 | Command (web_up) was requested by (Tomer27cz) -> ['1']
+(CET) 05/04/2023 22:50:05 | F 1008145667622969397 | web_up -> ['1']
+(CET) 05/04/2023 22:50:05 | F 1008145667622969397 | web_move -> [1, 0]
+(CET) 05/04/2023 22:50:18 | W 1008145667622969397 | Command (web_add_queue) was requested by (Tomer27cz) -> ['now_playing']
+(CET) 05/04/2023 22:50:18 | F 1008145667622969397 | web_queue -> ['now_playing', None]
+(CET) 05/04/2023 22:50:18 | M 1008145667622969397 | web_queue -> Queued
+(CET) 05/04/2023 22:51:16 | C 1008145667622969397 | Command (play) was requested by (Tomer27cz#4272) -> [None]
+(CET) 05/04/2023 22:51:16 | F 1008145667622969397 | play_def -> [None, False, False]
+(CET) 05/04/2023 22:51:16 | F 1008145667622969397 | join_def -> [None, True]
+(CET) 05/04/2023 22:51:18 | F 1008145667622969397 | volume_command_def -> [100.0, False, True]
+(CET) 05/04/2023 22:51:48 | F 1008145667622969397 | play_def -> ['next', False, False]
+(CET) 05/04/2023 22:51:48 | F 1008145667622969397 | radio_def -> ['Country Radio', None]
+(CET) 05/04/2023 22:51:48 | F 1008145667622969397 | volume_command_def -> [100.0, False, True]
+(CET) 05/04/2023 22:53:34 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 05/04/2023 22:53:34 | M no guild | Loaded radio.json
+(CET) 05/04/2023 22:53:34 | M no guild | Loaded languages.json
+(CET) 05/04/2023 22:53:34 | M no guild | Loaded other.json
+(CET) 05/04/2023 22:53:34 | M no guild | Bot class initialized
+(CET) 05/04/2023 22:53:34 | M no guild | Loaded guilds.json
+(CET) 05/04/2023 22:53:34 | M no guild | Loaded sound_effects folder
+(CET) 06/04/2023 11:16:53 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 06/04/2023 11:16:53 | M no guild | Loaded radio.json
+(CET) 06/04/2023 11:16:53 | M no guild | Loaded languages.json
+(CET) 06/04/2023 11:16:53 | M no guild | Loaded other.json
+(CET) 06/04/2023 11:16:53 | M no guild | Bot class initialized
+(CET) 06/04/2023 11:16:53 | M no guild | Loaded guilds.json
+(CET) 06/04/2023 11:16:53 | M no guild | Loaded sound_effects folder
+(CET) 06/04/2023 11:16:56 | M no guild | Trying to sync commands
+(CET) 06/04/2023 11:16:56 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 06/04/2023 11:16:56 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 06/04/2023 11:27:36 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 06/04/2023 11:27:36 | M no guild | Loaded radio.json
+(CET) 06/04/2023 11:27:36 | M no guild | Loaded languages.json
+(CET) 06/04/2023 11:27:36 | M no guild | Loaded other.json
+(CET) 06/04/2023 11:27:36 | M no guild | Bot class initialized
+(CET) 06/04/2023 11:27:36 | M no guild | Loaded guilds.json
+(CET) 06/04/2023 11:27:36 | M no guild | Loaded sound_effects folder
+(CET) 06/04/2023 11:27:39 | M no guild | Trying to sync commands
+(CET) 06/04/2023 11:27:39 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 06/04/2023 11:27:39 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 06/04/2023 11:29:41 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 06/04/2023 11:29:41 | M no guild | Loaded radio.json
+(CET) 06/04/2023 11:29:41 | M no guild | Loaded languages.json
+(CET) 06/04/2023 11:29:41 | M no guild | Loaded other.json
+(CET) 06/04/2023 11:29:41 | M no guild | Bot class initialized
+(CET) 06/04/2023 11:29:41 | M no guild | Loaded guilds.json
+(CET) 06/04/2023 11:29:41 | M no guild | Loaded sound_effects folder
+(CET) 06/04/2023 11:29:44 | M no guild | Trying to sync commands
+(CET) 06/04/2023 11:29:45 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 06/04/2023 11:29:45 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 06/04/2023 13:19:38 | W 1008145667622969397 | Command (web_add_queue) was requested by (Tomer27cz) -> ['Evropa 2', 'end']
+(CET) 06/04/2023 13:19:43 | W 1008145667622969397 | Command (web_remove) was requested by (Tomer27cz) -> ['0']
+(CET) 06/04/2023 13:19:43 | F 1008145667622969397 | web_remove -> ['0']
+(CET) 06/04/2023 13:19:54 | C 1008145667622969397 | Command (play) was requested by (Tomer27cz#4272) -> [None]
+(CET) 06/04/2023 13:19:54 | F 1008145667622969397 | play_def -> [None, False, False]
+(CET) 06/04/2023 13:19:55 | F 1008145667622969397 | join_def -> [None, True]
+(CET) 06/04/2023 13:19:55 | F 1008145667622969397 | radio_def -> ['Evropa 2', None]
+(CET) 06/04/2023 13:19:55 | F 1008145667622969397 | volume_command_def -> [100.0, False, True]
+(CET) 06/04/2023 13:21:14 | W 1008145667622969397 | Command (web_volume) was requested by (Tomer27cz) -> ['39', '39']
+(CET) 06/04/2023 13:21:14 | F 1008145667622969397 | web_volume -> ['39', '39']
+(CET) 06/04/2023 13:21:14 | M 1008145667622969397 | web_volume -> Changed volume
+(CET) 06/04/2023 13:21:16 | W 1008145667622969397 | Command (web_volume) was requested by (Tomer27cz) -> ['200', '200']
+(CET) 06/04/2023 13:21:16 | F 1008145667622969397 | web_volume -> ['200', '200']
+(CET) 06/04/2023 13:21:16 | M 1008145667622969397 | web_volume -> Changed volume
+(CET) 06/04/2023 13:21:23 | W 1008145667622969397 | Command (web_volume) was requested by (Tomer27cz) -> ['100', '100']
+(CET) 06/04/2023 13:21:23 | F 1008145667622969397 | web_volume -> ['100', '100']
+(CET) 06/04/2023 13:21:23 | M 1008145667622969397 | web_volume -> Changed volume
+(CET) 06/04/2023 13:21:25 | W 1008145667622969397 | Command (web_volume) was requested by (Tomer27cz) -> ['200', '200']
+(CET) 06/04/2023 13:21:25 | F 1008145667622969397 | web_volume -> ['200', '200']
+(CET) 06/04/2023 13:21:25 | M 1008145667622969397 | web_volume -> Changed volume
+(CET) 06/04/2023 13:21:25 | W 1008145667622969397 | Command (web_volume) was requested by (Tomer27cz) -> ['200', '200']
+(CET) 06/04/2023 13:21:25 | F 1008145667622969397 | web_volume -> ['200', '200']
+(CET) 06/04/2023 13:21:25 | M 1008145667622969397 | web_volume -> Changed volume
+(CET) 06/04/2023 13:21:26 | W 1008145667622969397 | Command (web_volume) was requested by (Tomer27cz) -> ['200', '200']
+(CET) 06/04/2023 13:21:26 | F 1008145667622969397 | web_volume -> ['200', '200']
+(CET) 06/04/2023 13:21:26 | M 1008145667622969397 | web_volume -> Changed volume
+(CET) 06/04/2023 13:21:26 | W 1008145667622969397 | Command (web_volume) was requested by (Tomer27cz) -> ['200', '200']
+(CET) 06/04/2023 13:21:26 | F 1008145667622969397 | web_volume -> ['200', '200']
+(CET) 06/04/2023 13:21:26 | M 1008145667622969397 | web_volume -> Changed volume
+(CET) 06/04/2023 13:21:33 | W 1008145667622969397 | Command (web_volume) was requested by (Tomer27cz) -> ['100', '100']
+(CET) 06/04/2023 13:21:33 | F 1008145667622969397 | web_volume -> ['100', '100']
+(CET) 06/04/2023 13:21:33 | M 1008145667622969397 | web_volume -> Changed volume
+(CET) 06/04/2023 13:21:34 | W 1008145667622969397 | Command (web_volume) was requested by (Tomer27cz) -> ['100', '100']
+(CET) 06/04/2023 13:21:34 | F 1008145667622969397 | web_volume -> ['100', '100']
+(CET) 06/04/2023 13:21:34 | M 1008145667622969397 | web_volume -> Changed volume
+(CET) 06/04/2023 13:21:35 | W 1008145667622969397 | Command (web_volume) was requested by (Tomer27cz) -> ['100', '100']
+(CET) 06/04/2023 13:21:35 | F 1008145667622969397 | web_volume -> ['100', '100']
+(CET) 06/04/2023 13:21:35 | M 1008145667622969397 | web_volume -> Changed volume
+(CET) 06/04/2023 13:21:35 | W 1008145667622969397 | Command (web_volume) was requested by (Tomer27cz) -> ['100', '100']
+(CET) 06/04/2023 13:21:35 | F 1008145667622969397 | web_volume -> ['100', '100']
+(CET) 06/04/2023 13:21:35 | M 1008145667622969397 | web_volume -> Changed volume
+(CET) 06/04/2023 13:21:40 | W 1008145667622969397 | Command (web_volume) was requested by (Tomer27cz) -> ['54', '54']
+(CET) 06/04/2023 13:21:40 | F 1008145667622969397 | web_volume -> ['54', '54']
+(CET) 06/04/2023 13:21:40 | M 1008145667622969397 | web_volume -> Changed volume
+(CET) 06/04/2023 13:21:41 | W 1008145667622969397 | Command (web_volume) was requested by (Tomer27cz) -> ['54', '54']
+(CET) 06/04/2023 13:21:41 | F 1008145667622969397 | web_volume -> ['54', '54']
+(CET) 06/04/2023 13:21:41 | M 1008145667622969397 | web_volume -> Changed volume
+(CET) 06/04/2023 13:21:43 | W 1008145667622969397 | Command (web_volume) was requested by (Tomer27cz) -> ['54', '54']
+(CET) 06/04/2023 13:21:43 | F 1008145667622969397 | web_volume -> ['54', '54']
+(CET) 06/04/2023 13:21:43 | M 1008145667622969397 | web_volume -> Changed volume
+(CET) 06/04/2023 13:24:17 | W 1008145667622969397 | Command (web_pause) was requested by (Tomer27cz) -> []
+(CET) 06/04/2023 13:24:17 | F 1008145667622969397 | web_pause -> []
+(CET) 06/04/2023 13:24:17 | M 1008145667622969397 | web_pause -> Paused
+(CET) 06/04/2023 13:24:18 | W 1008145667622969397 | Command (web_resume) was requested by (Tomer27cz) -> []
+(CET) 06/04/2023 13:24:18 | F 1008145667622969397 | web_resume -> []
+(CET) 06/04/2023 13:24:18 | M 1008145667622969397 | web_resume -> Resumed
+(CET) 06/04/2023 13:24:20 | W 1008145667622969397 | Command (web_stop) was requested by (Tomer27cz) -> []
+(CET) 06/04/2023 13:24:20 | F 1008145667622969397 | web_stop -> []
+(CET) 06/04/2023 13:24:20 | M 1008145667622969397 | web_stop -> Stopped
+(CET) 06/04/2023 13:24:32 | M 1008145667622969397 | -->> Disconnecting when last person left <<--
+(CET) 06/04/2023 17:59:16 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 06/04/2023 17:59:16 | M no guild | Loaded radio.json
+(CET) 06/04/2023 17:59:16 | M no guild | Loaded languages.json
+(CET) 06/04/2023 17:59:16 | M no guild | Loaded other.json
+(CET) 06/04/2023 17:59:16 | M no guild | Bot class initialized
+(CET) 06/04/2023 17:59:16 | M no guild | Loaded guilds.json
+(CET) 06/04/2023 17:59:16 | M no guild | Loaded sound_effects folder
+(CET) 06/04/2023 17:59:19 | M no guild | Trying to sync commands
+(CET) 06/04/2023 17:59:20 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 06/04/2023 17:59:20 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 06/04/2023 21:57:21 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 06/04/2023 21:57:21 | M no guild | Loaded radio.json
+(CET) 06/04/2023 21:57:21 | M no guild | Loaded languages.json
+(CET) 06/04/2023 21:57:21 | M no guild | Loaded other.json
+(CET) 06/04/2023 21:57:21 | M no guild | Bot class initialized
+(CET) 06/04/2023 21:57:21 | M no guild | Loaded guilds.json
+(CET) 06/04/2023 21:57:21 | M no guild | Loaded sound_effects folder
+(CET) 06/04/2023 21:57:24 | M no guild | Trying to sync commands
+(CET) 06/04/2023 21:57:24 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 06/04/2023 21:57:24 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 06/04/2023 22:00:25 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 06/04/2023 22:00:25 | M no guild | Loaded radio.json
+(CET) 06/04/2023 22:00:25 | M no guild | Loaded languages.json
+(CET) 06/04/2023 22:00:25 | M no guild | Loaded other.json
+(CET) 06/04/2023 22:00:25 | M no guild | Bot class initialized
+(CET) 06/04/2023 22:00:25 | M no guild | Loaded guilds.json
+(CET) 06/04/2023 22:00:25 | M no guild | Loaded sound_effects folder
+(CET) 06/04/2023 22:00:28 | M no guild | Trying to sync commands
+(CET) 06/04/2023 22:00:29 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 06/04/2023 22:00:29 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 07/04/2023 10:43:20 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 07/04/2023 10:43:20 | M no guild | Loaded radio.json
+(CET) 07/04/2023 10:43:20 | M no guild | Loaded languages.json
+(CET) 07/04/2023 10:43:20 | M no guild | Loaded other.json
+(CET) 07/04/2023 10:43:20 | M no guild | Bot class initialized
+(CET) 07/04/2023 10:43:20 | M no guild | Loaded guilds.json
+(CET) 07/04/2023 10:43:20 | M no guild | Loaded sound_effects folder
+(CET) 07/04/2023 10:43:23 | M no guild | Trying to sync commands
+(CET) 07/04/2023 10:43:23 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 07/04/2023 10:43:23 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 07/04/2023 10:44:03 | W 1008145667622969397 | Command (web_volume) was requested by (WEB) -> ['100', '100']
+(CET) 07/04/2023 10:44:03 | F 1008145667622969397 | web_volume -> ['100', '100']
+(CET) 07/04/2023 10:44:03 | M 1008145667622969397 | web_volume -> Changed volume
+(CET) 07/04/2023 11:12:39 | W 1008145667622969397 | Command (web_add_queue) was requested by (WEB) -> ['Evropa 2', 'end']
+(CET) 07/04/2023 11:12:51 | C 1008145667622969397 | Command (play) was requested by (Tomer27cz#4272) -> [None]
+(CET) 07/04/2023 11:12:51 | F 1008145667622969397 | play_def -> [None, False, False]
+(CET) 07/04/2023 11:12:52 | F 1008145667622969397 | join_def -> [None, True]
+(CET) 07/04/2023 11:12:52 | F 1008145667622969397 | radio_def -> ['Evropa 2', None]
+(CET) 07/04/2023 11:12:52 | F 1008145667622969397 | volume_command_def -> [100.0, False, True]
+(CET) 07/04/2023 11:13:16 | C 1008145667622969397 | Command (disconnect) was requested by (Tomer27cz#4272) -> []
+(CET) 07/04/2023 11:13:16 | F 1008145667622969397 | disconnect_def -> [False]
+(CET) 07/04/2023 11:13:16 | F 1008145667622969397 | stop_def -> [True]
+(CET) 07/04/2023 11:13:36 | C 1008145667622969397 | Command (volume) was requested by (Tomer27cz#4272) -> [None, False]
+(CET) 07/04/2023 11:13:36 | F 1008145667622969397 | volume_command_def -> [None, False, False]
+(CET) 07/04/2023 11:31:03 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 07/04/2023 11:31:03 | M no guild | Loaded radio.json
+(CET) 07/04/2023 11:31:03 | M no guild | Loaded languages.json
+(CET) 07/04/2023 11:31:03 | M no guild | Loaded other.json
+(CET) 07/04/2023 11:31:03 | M no guild | Bot class initialized
+(CET) 07/04/2023 11:31:03 | M no guild | Loaded guilds.json
+(CET) 07/04/2023 11:31:03 | M no guild | Loaded sound_effects folder
+(CET) 07/04/2023 11:31:06 | M no guild | Trying to sync commands
+(CET) 07/04/2023 11:31:07 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 07/04/2023 11:31:07 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 07/04/2023 11:31:19 | W 1008145667622969397 | Command (web_add_queue) was requested by (WEB) -> ['last_played']
+(CET) 07/04/2023 11:31:19 | F 1008145667622969397 | web_queue -> ['last_played', None]
+(CET) 07/04/2023 11:31:19 | M 1008145667622969397 | web_queue -> Queued
+(CET) 07/04/2023 11:31:26 | C 1008145667622969397 | Command (play) was requested by (Tomer27cz#4272) -> [None]
+(CET) 07/04/2023 11:31:26 | F 1008145667622969397 | play_def -> [None, False, False]
+(CET) 07/04/2023 11:31:26 | F 1008145667622969397 | join_def -> [None, True]
+(CET) 07/04/2023 11:31:26 | F 1008145667622969397 | radio_def -> ['Evropa 2', None]
+(CET) 07/04/2023 11:31:26 | F 1008145667622969397 | volume_command_def -> [100.0, False, True]
+(CET) 07/04/2023 11:31:32 | W 1008145667622969397 | Command (web_add_queue) was requested by (WEB) -> ['now_playing']
+(CET) 07/04/2023 11:31:32 | F 1008145667622969397 | web_queue -> ['now_playing', None]
+(CET) 07/04/2023 11:31:32 | M 1008145667622969397 | web_queue -> Queued
+(CET) 07/04/2023 11:32:09 | M 1008145667622969397 | -->> Disconnecting when last person left <<--
+(CET) 07/04/2023 11:32:29 | W 1008145667622969397 | Command (web_pause) was requested by (WEB) -> []
+(CET) 07/04/2023 11:32:29 | F 1008145667622969397 | web_pause -> []
+(CET) 07/04/2023 11:32:29 | M 1008145667622969397 | web_pause -> Not playing
+(CET) 07/04/2023 11:32:30 | W 1008145667622969397 | Command (web_resume) was requested by (WEB) -> []
+(CET) 07/04/2023 11:32:30 | F 1008145667622969397 | web_resume -> []
+(CET) 07/04/2023 11:32:30 | M 1008145667622969397 | web_resume -> Nothing paused
+(CET) 07/04/2023 11:32:34 | C 1008145667622969397 | Command (play) was requested by (Tomer27cz#4272) -> [None]
+(CET) 07/04/2023 11:32:34 | F 1008145667622969397 | play_def -> [None, False, False]
+(CET) 07/04/2023 11:32:34 | F 1008145667622969397 | radio_def -> ['The Idea', None]
+(CET) 07/04/2023 11:32:34 | M 1008145667622969397 | Hybrid command raised an error: Command 'play' raised an exception: KeyError: 'The Idea'
+(CET) 07/04/2023 11:32:58 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 07/04/2023 11:32:58 | M no guild | Loaded radio.json
+(CET) 07/04/2023 11:32:58 | M no guild | Loaded languages.json
+(CET) 07/04/2023 11:32:58 | M no guild | Loaded other.json
+(CET) 07/04/2023 11:32:58 | M no guild | Bot class initialized
+(CET) 07/04/2023 11:32:58 | M no guild | Loaded guilds.json
+(CET) 07/04/2023 11:32:58 | M no guild | Loaded sound_effects folder
+(CET) 07/04/2023 11:33:01 | M no guild | Trying to sync commands
+(CET) 07/04/2023 11:33:01 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 07/04/2023 11:33:01 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 07/04/2023 11:33:06 | W 1008145667622969397 | Command (web_add_queue) was requested by (WEB) -> ['last_played']
+(CET) 07/04/2023 11:33:06 | F 1008145667622969397 | web_queue -> ['last_played', None]
+(CET) 07/04/2023 11:33:06 | M 1008145667622969397 | web_queue -> Queued
+(CET) 07/04/2023 11:33:09 | W 1008145667622969397 | Command (web_remove) was requested by (WEB) -> ['0']
+(CET) 07/04/2023 11:33:09 | F 1008145667622969397 | web_remove -> ['0']
+(CET) 07/04/2023 11:33:13 | C 1008145667622969397 | Command (play) was requested by (Tomer27cz#4272) -> [None]
+(CET) 07/04/2023 11:33:13 | F 1008145667622969397 | play_def -> [None, False, False]
+(CET) 07/04/2023 11:33:13 | F 1008145667622969397 | join_def -> [None, True]
+(CET) 07/04/2023 11:33:14 | F 1008145667622969397 | radio_def -> ['Evropa 2', None]
+(CET) 07/04/2023 11:33:14 | F 1008145667622969397 | volume_command_def -> [100.0, False, True]
+(CET) 07/04/2023 11:33:22 | W 1008145667622969397 | Command (web_nextup) was requested by (WEB) -> ['now_playing', 0]
+(CET) 07/04/2023 11:33:22 | F 1008145667622969397 | web_queue -> ['now_playing', 0]
+(CET) 07/04/2023 11:33:22 | M 1008145667622969397 | web_queue -> Queued
+(CET) 07/04/2023 11:38:21 | W 1008145667622969397 | Command (web_stop) was requested by (WEB) -> []
+(CET) 07/04/2023 11:38:21 | F 1008145667622969397 | web_stop -> []
+(CET) 07/04/2023 11:38:21 | M 1008145667622969397 | web_stop -> Stopped
+(CET) 07/04/2023 11:38:23 | M 1008145667622969397 | -->> Disconnecting when last person left <<--
+(CET) 07/04/2023 12:38:39 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 07/04/2023 12:38:39 | M no guild | Loaded radio.json
+(CET) 07/04/2023 12:38:39 | M no guild | Loaded languages.json
+(CET) 07/04/2023 12:38:39 | M no guild | Loaded other.json
+(CET) 07/04/2023 12:38:39 | M no guild | Bot class initialized
+(CET) 07/04/2023 12:38:39 | M no guild | Loaded guilds.json
+(CET) 07/04/2023 12:38:39 | M no guild | Loaded sound_effects folder
+(CET) 07/04/2023 12:38:42 | M no guild | Trying to sync commands
+(CET) 07/04/2023 12:38:42 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 07/04/2023 12:38:42 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 07/04/2023 14:21:16 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 07/04/2023 14:21:16 | M no guild | Loaded radio.json
+(CET) 07/04/2023 14:21:16 | M no guild | Loaded languages.json
+(CET) 07/04/2023 14:21:16 | M no guild | Loaded other.json
+(CET) 07/04/2023 14:21:16 | M no guild | Bot class initialized
+(CET) 07/04/2023 14:21:16 | M no guild | Loaded guilds.json
+(CET) 07/04/2023 14:21:16 | M no guild | Loaded sound_effects folder
+(CET) 07/04/2023 14:21:20 | M no guild | Trying to sync commands
+(CET) 07/04/2023 14:21:21 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 07/04/2023 14:21:21 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 07/04/2023 14:27:31 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 07/04/2023 14:27:31 | M no guild | Loaded radio.json
+(CET) 07/04/2023 14:27:31 | M no guild | Loaded languages.json
+(CET) 07/04/2023 14:27:31 | M no guild | Loaded other.json
+(CET) 07/04/2023 14:27:31 | M no guild | Bot class initialized
+(CET) 07/04/2023 14:27:31 | M no guild | Loaded guilds.json
+(CET) 07/04/2023 14:27:31 | M no guild | Loaded sound_effects folder
+(CET) 07/04/2023 14:27:34 | M no guild | Trying to sync commands
+(CET) 07/04/2023 14:27:34 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 07/04/2023 14:27:34 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 07/04/2023 14:35:13 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 07/04/2023 14:35:13 | M no guild | Loaded radio.json
+(CET) 07/04/2023 14:35:13 | M no guild | Loaded languages.json
+(CET) 07/04/2023 14:35:13 | M no guild | Loaded other.json
+(CET) 07/04/2023 14:35:13 | M no guild | Bot class initialized
+(CET) 07/04/2023 14:35:13 | M no guild | Loaded guilds.json
+(CET) 07/04/2023 14:35:13 | M no guild | Loaded sound_effects folder
+(CET) 07/04/2023 14:35:17 | M no guild | Trying to sync commands
+(CET) 07/04/2023 14:35:17 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 07/04/2023 14:35:17 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 07/04/2023 15:34:55 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 07/04/2023 15:34:55 | M no guild | Loaded radio.json
+(CET) 07/04/2023 15:34:55 | M no guild | Loaded languages.json
+(CET) 07/04/2023 15:34:55 | M no guild | Loaded other.json
+(CET) 07/04/2023 15:34:55 | M no guild | Bot class initialized
+(CET) 07/04/2023 15:34:55 | M no guild | Loaded guilds.json
+(CET) 07/04/2023 15:34:55 | M no guild | Loaded sound_effects folder
+(CET) 07/04/2023 15:34:58 | M no guild | Trying to sync commands
+(CET) 07/04/2023 15:34:58 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 07/04/2023 15:34:58 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 07/04/2023 15:50:34 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 07/04/2023 15:50:34 | M no guild | Loaded radio.json
+(CET) 07/04/2023 15:50:34 | M no guild | Loaded languages.json
+(CET) 07/04/2023 15:50:34 | M no guild | Loaded other.json
+(CET) 07/04/2023 15:50:34 | M no guild | Bot class initialized
+(CET) 07/04/2023 15:50:34 | M no guild | Loaded guilds.json
+(CET) 07/04/2023 15:50:34 | M no guild | Loaded sound_effects folder
+(CET) 07/04/2023 15:50:37 | M no guild | Trying to sync commands
+(CET) 07/04/2023 15:50:38 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 07/04/2023 15:50:38 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 07/04/2023 15:55:15 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 07/04/2023 15:55:15 | M no guild | Loaded radio.json
+(CET) 07/04/2023 15:55:15 | M no guild | Loaded languages.json
+(CET) 07/04/2023 15:55:15 | M no guild | Loaded other.json
+(CET) 07/04/2023 15:55:15 | M no guild | Bot class initialized
+(CET) 07/04/2023 15:55:15 | M no guild | Loaded guilds.json
+(CET) 07/04/2023 15:55:15 | M no guild | Loaded sound_effects folder
+(CET) 07/04/2023 15:55:18 | M no guild | Trying to sync commands
+(CET) 07/04/2023 15:55:19 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 07/04/2023 15:55:19 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 07/04/2023 15:57:55 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 07/04/2023 15:57:55 | M no guild | Loaded radio.json
+(CET) 07/04/2023 15:57:55 | M no guild | Loaded languages.json
+(CET) 07/04/2023 15:57:55 | M no guild | Loaded other.json
+(CET) 07/04/2023 15:57:55 | M no guild | Bot class initialized
+(CET) 07/04/2023 15:57:55 | M no guild | Loaded guilds.json
+(CET) 07/04/2023 15:57:55 | M no guild | Loaded sound_effects folder
+(CET) 07/04/2023 15:57:58 | M no guild | Trying to sync commands
+(CET) 07/04/2023 15:57:58 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 07/04/2023 15:57:58 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 07/04/2023 15:59:03 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 07/04/2023 15:59:03 | M no guild | Loaded radio.json
+(CET) 07/04/2023 15:59:03 | M no guild | Loaded languages.json
+(CET) 07/04/2023 15:59:03 | M no guild | Loaded other.json
+(CET) 07/04/2023 15:59:03 | M no guild | Bot class initialized
+(CET) 07/04/2023 15:59:03 | M no guild | Loaded guilds.json
+(CET) 07/04/2023 15:59:03 | M no guild | Loaded sound_effects folder
+(CET) 07/04/2023 15:59:06 | M no guild | Trying to sync commands
+(CET) 07/04/2023 15:59:07 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 07/04/2023 15:59:07 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 07/04/2023 16:04:13 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 07/04/2023 16:04:13 | M no guild | Loaded radio.json
+(CET) 07/04/2023 16:04:13 | M no guild | Loaded languages.json
+(CET) 07/04/2023 16:04:13 | M no guild | Loaded other.json
+(CET) 07/04/2023 16:04:13 | M no guild | Bot class initialized
+(CET) 07/04/2023 16:04:13 | M no guild | Loaded guilds.json
+(CET) 07/04/2023 16:04:13 | M no guild | Loaded sound_effects folder
+(CET) 07/04/2023 16:04:16 | M no guild | Trying to sync commands
+(CET) 07/04/2023 16:04:16 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 07/04/2023 16:04:16 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 07/04/2023 16:22:52 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 07/04/2023 16:22:52 | M no guild | Loaded radio.json
+(CET) 07/04/2023 16:22:52 | M no guild | Loaded languages.json
+(CET) 07/04/2023 16:22:52 | M no guild | Loaded other.json
+(CET) 07/04/2023 16:22:52 | M no guild | Bot class initialized
+(CET) 07/04/2023 16:22:52 | M no guild | Loaded guilds.json
+(CET) 07/04/2023 16:22:52 | M no guild | Loaded sound_effects folder
+(CET) 07/04/2023 16:22:55 | M no guild | Trying to sync commands
+(CET) 07/04/2023 16:22:55 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 07/04/2023 16:22:55 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 07/04/2023 16:24:35 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 07/04/2023 16:24:35 | M no guild | Loaded radio.json
+(CET) 07/04/2023 16:24:35 | M no guild | Loaded languages.json
+(CET) 07/04/2023 16:24:35 | M no guild | Loaded other.json
+(CET) 07/04/2023 16:24:35 | M no guild | Bot class initialized
+(CET) 07/04/2023 16:24:35 | M no guild | Loaded guilds.json
+(CET) 07/04/2023 16:24:35 | M no guild | Loaded sound_effects folder
+(CET) 07/04/2023 16:24:38 | M no guild | Trying to sync commands
+(CET) 07/04/2023 16:24:39 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 07/04/2023 16:24:39 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 07/04/2023 16:26:10 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 07/04/2023 16:26:10 | M no guild | Loaded radio.json
+(CET) 07/04/2023 16:26:10 | M no guild | Loaded languages.json
+(CET) 07/04/2023 16:26:10 | M no guild | Loaded other.json
+(CET) 07/04/2023 16:26:10 | M no guild | Bot class initialized
+(CET) 07/04/2023 16:26:10 | M no guild | Loaded guilds.json
+(CET) 07/04/2023 16:26:10 | M no guild | Loaded sound_effects folder
+(CET) 07/04/2023 16:26:13 | M no guild | Trying to sync commands
+(CET) 07/04/2023 16:26:14 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 07/04/2023 16:26:14 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 07/04/2023 16:27:55 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 07/04/2023 16:27:55 | M no guild | Loaded radio.json
+(CET) 07/04/2023 16:27:55 | M no guild | Loaded languages.json
+(CET) 07/04/2023 16:27:55 | M no guild | Loaded other.json
+(CET) 07/04/2023 16:27:55 | M no guild | Bot class initialized
+(CET) 07/04/2023 16:27:55 | M no guild | Loaded guilds.json
+(CET) 07/04/2023 16:27:55 | M no guild | Loaded sound_effects folder
+(CET) 07/04/2023 16:27:58 | M no guild | Trying to sync commands
+(CET) 07/04/2023 16:27:59 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 07/04/2023 16:27:59 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 07/04/2023 16:28:55 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 07/04/2023 16:28:55 | M no guild | Loaded radio.json
+(CET) 07/04/2023 16:28:55 | M no guild | Loaded languages.json
+(CET) 07/04/2023 16:28:55 | M no guild | Loaded other.json
+(CET) 07/04/2023 16:28:55 | M no guild | Bot class initialized
+(CET) 07/04/2023 16:28:55 | M no guild | Loaded guilds.json
+(CET) 07/04/2023 16:28:55 | M no guild | Loaded sound_effects folder
+(CET) 07/04/2023 16:28:58 | M no guild | Trying to sync commands
+(CET) 07/04/2023 16:28:58 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 07/04/2023 16:28:58 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 07/04/2023 16:32:17 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 07/04/2023 16:32:17 | M no guild | Loaded radio.json
+(CET) 07/04/2023 16:32:17 | M no guild | Loaded languages.json
+(CET) 07/04/2023 16:32:17 | M no guild | Loaded other.json
+(CET) 07/04/2023 16:32:17 | M no guild | Bot class initialized
+(CET) 07/04/2023 16:32:17 | M no guild | Loaded guilds.json
+(CET) 07/04/2023 16:32:17 | M no guild | Loaded sound_effects folder
+(CET) 07/04/2023 16:32:20 | M no guild | Trying to sync commands
+(CET) 07/04/2023 16:32:21 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 07/04/2023 16:32:21 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 07/04/2023 16:39:29 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 07/04/2023 16:39:29 | M no guild | Loaded radio.json
+(CET) 07/04/2023 16:39:29 | M no guild | Loaded languages.json
+(CET) 07/04/2023 16:39:29 | M no guild | Loaded other.json
+(CET) 07/04/2023 16:39:29 | M no guild | Bot class initialized
+(CET) 07/04/2023 16:39:29 | M no guild | Loaded guilds.json
+(CET) 07/04/2023 16:39:29 | M no guild | Loaded sound_effects folder
+(CET) 07/04/2023 16:39:32 | M no guild | Trying to sync commands
+(CET) 07/04/2023 16:39:32 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 07/04/2023 16:39:32 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 07/04/2023 16:40:52 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 07/04/2023 16:40:52 | M no guild | Loaded radio.json
+(CET) 07/04/2023 16:40:52 | M no guild | Loaded languages.json
+(CET) 07/04/2023 16:40:52 | M no guild | Loaded other.json
+(CET) 07/04/2023 16:40:52 | M no guild | Bot class initialized
+(CET) 07/04/2023 16:40:52 | M no guild | Loaded guilds.json
+(CET) 07/04/2023 16:40:52 | M no guild | Loaded sound_effects folder
+(CET) 07/04/2023 16:40:55 | M no guild | Trying to sync commands
+(CET) 07/04/2023 16:40:56 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 07/04/2023 16:40:56 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 07/04/2023 16:41:02 | W 1008145667622969397 | Command (web_add_queue) was requested by (WEB) -> ['Alternative Times Radio', 'end']
+(CET) 07/04/2023 16:41:37 | W 1008145667622969397 | Command (web_remove) was requested by (WEB) -> ['1']
+(CET) 07/04/2023 16:41:37 | F 1008145667622969397 | web_remove -> ['1']
+(CET) 07/04/2023 16:41:48 | W 1008145667622969397 | Command (web_remove) was requested by (WEB) -> ['0']
+(CET) 07/04/2023 16:41:48 | F 1008145667622969397 | web_remove -> ['0']
+(CET) 07/04/2023 16:45:35 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 07/04/2023 16:45:35 | M no guild | Loaded radio.json
+(CET) 07/04/2023 16:45:35 | M no guild | Loaded languages.json
+(CET) 07/04/2023 16:45:35 | M no guild | Loaded other.json
+(CET) 07/04/2023 16:45:35 | M no guild | Bot class initialized
+(CET) 07/04/2023 16:45:35 | M no guild | Loaded guilds.json
+(CET) 07/04/2023 16:45:35 | M no guild | Loaded sound_effects folder
+(CET) 07/04/2023 16:45:38 | M no guild | Trying to sync commands
+(CET) 07/04/2023 16:45:39 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 07/04/2023 16:45:39 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 07/04/2023 17:25:21 | W 1008145667622969397 | Command (web_add_queue) was requested by (WEB) -> ['Country Radio', 'end']
+(CET) 07/04/2023 17:25:36 | C 1008145667622969397 | Command (play) was requested by (Tomer27cz#4272) -> [None]
+(CET) 07/04/2023 17:25:36 | F 1008145667622969397 | play_def -> [None, False, False]
+(CET) 07/04/2023 17:25:37 | F 1008145667622969397 | join_def -> [None, True]
+(CET) 07/04/2023 17:25:37 | F 1008145667622969397 | radio_def -> ['Country Radio', None]
+(CET) 07/04/2023 17:25:37 | F 1008145667622969397 | volume_command_def -> [100.0, False, True]
+(CET) 07/04/2023 17:25:50 | W 1008145667622969397 | Command (web_add_queue) was requested by (WEB) -> ['Evropa 2', 'end']
+(CET) 07/04/2023 17:25:56 | W 1008145667622969397 | Command (web_stop) was requested by (WEB) -> []
+(CET) 07/04/2023 17:25:56 | F 1008145667622969397 | web_stop -> []
+(CET) 07/04/2023 17:25:56 | M 1008145667622969397 | web_stop -> Stopped
+(CET) 07/04/2023 17:26:00 | C 1008145667622969397 | Command (play) was requested by (Tomer27cz#4272) -> [None]
+(CET) 07/04/2023 17:26:00 | F 1008145667622969397 | play_def -> [None, False, False]
+(CET) 07/04/2023 17:26:00 | F 1008145667622969397 | radio_def -> ['Evropa 2', None]
+(CET) 07/04/2023 17:26:01 | F 1008145667622969397 | volume_command_def -> [100.0, False, True]
+(CET) 07/04/2023 17:29:31 | C 1008145667622969397 | Command (disconnect) was requested by (Tomer27cz#4272) -> []
+(CET) 07/04/2023 17:29:31 | F 1008145667622969397 | disconnect_def -> [False]
+(CET) 07/04/2023 17:29:31 | F 1008145667622969397 | stop_def -> [True]
+(CET) 07/04/2023 17:45:32 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 07/04/2023 17:45:32 | M no guild | Loaded radio.json
+(CET) 07/04/2023 17:45:32 | M no guild | Loaded languages.json
+(CET) 07/04/2023 17:45:32 | M no guild | Loaded other.json
+(CET) 07/04/2023 17:45:32 | M no guild | Bot class initialized
+(CET) 07/04/2023 17:45:32 | M no guild | Loaded guilds.json
+(CET) 07/04/2023 17:45:32 | M no guild | Loaded sound_effects folder
+(CET) 07/04/2023 17:45:35 | M no guild | Trying to sync commands
+(CET) 07/04/2023 17:45:35 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 07/04/2023 17:45:35 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 07/04/2023 17:47:50 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 07/04/2023 17:47:50 | M no guild | Loaded radio.json
+(CET) 07/04/2023 17:47:50 | M no guild | Loaded languages.json
+(CET) 07/04/2023 17:47:50 | M no guild | Loaded other.json
+(CET) 07/04/2023 17:47:50 | M no guild | Bot class initialized
+(CET) 07/04/2023 17:47:50 | M no guild | Loaded guilds.json
+(CET) 07/04/2023 17:47:50 | M no guild | Loaded sound_effects folder
+(CET) 07/04/2023 17:47:53 | M no guild | Trying to sync commands
+(CET) 07/04/2023 17:47:54 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 07/04/2023 17:47:54 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 07/04/2023 17:48:26 | W 1008145667622969397 | Command (web_add_queue) was requested by (WEB) -> ['Evropa 2', 'end']
+(CET) 07/04/2023 17:54:18 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 07/04/2023 17:54:18 | M no guild | Loaded radio.json
+(CET) 07/04/2023 17:54:18 | M no guild | Loaded languages.json
+(CET) 07/04/2023 17:54:18 | M no guild | Loaded other.json
+(CET) 07/04/2023 17:54:18 | M no guild | Bot class initialized
+(CET) 07/04/2023 17:54:18 | M no guild | Loaded guilds.json
+(CET) 07/04/2023 17:54:18 | M no guild | Loaded sound_effects folder
+(CET) 07/04/2023 17:54:22 | M no guild | Trying to sync commands
+(CET) 07/04/2023 17:54:22 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 07/04/2023 17:54:22 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 07/04/2023 17:56:24 | W 1008145667622969397 | Command (web_add_queue) was requested by (WEB) -> ['https://www.youtube.com/playlist?list=PLjDkdFyoLDDPIc-FwFV1rkK0reJscpyF0', 'end']
+(CET) 07/04/2023 17:57:57 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 07/04/2023 17:57:57 | M no guild | Loaded radio.json
+(CET) 07/04/2023 17:57:57 | M no guild | Loaded languages.json
+(CET) 07/04/2023 17:57:57 | M no guild | Loaded other.json
+(CET) 07/04/2023 17:57:57 | M no guild | Bot class initialized
+(CET) 07/04/2023 17:57:57 | M no guild | Loaded guilds.json
+(CET) 07/04/2023 17:57:57 | M no guild | Loaded sound_effects folder
+(CET) 07/04/2023 17:58:00 | M no guild | Trying to sync commands
+(CET) 07/04/2023 17:58:00 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 07/04/2023 17:58:00 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 07/04/2023 17:58:24 | W 1008145667622969397 | Command (web_add_queue) was requested by (WEB) -> ['Fajn Radio', 'end']
+(CET) 07/04/2023 18:23:50 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 07/04/2023 18:23:50 | M no guild | Loaded radio.json
+(CET) 07/04/2023 18:23:50 | M no guild | Loaded languages.json
+(CET) 07/04/2023 18:23:50 | M no guild | Loaded other.json
+(CET) 07/04/2023 18:23:50 | M no guild | Bot class initialized
+(CET) 07/04/2023 18:23:50 | M no guild | Loaded guilds.json
+(CET) 07/04/2023 18:23:50 | M no guild | Loaded sound_effects folder
+(CET) 07/04/2023 18:23:53 | M no guild | Trying to sync commands
+(CET) 07/04/2023 18:23:54 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 07/04/2023 18:23:54 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 07/04/2023 18:30:26 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 07/04/2023 18:30:26 | M no guild | Loaded radio.json
+(CET) 07/04/2023 18:30:26 | M no guild | Loaded languages.json
+(CET) 07/04/2023 18:30:26 | M no guild | Loaded other.json
+(CET) 07/04/2023 18:30:26 | M no guild | Bot class initialized
+(CET) 07/04/2023 18:30:26 | M no guild | Loaded guilds.json
+(CET) 07/04/2023 18:30:26 | M no guild | Loaded sound_effects folder
+(CET) 07/04/2023 18:30:29 | M no guild | Trying to sync commands
+(CET) 07/04/2023 18:30:29 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 07/04/2023 18:30:29 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 07/04/2023 18:30:36 | C 1008145667622969397 | Command (radio) was requested by (Tomer27cz#4272) -> ['Rádio BLANÍK CZ', None]
+(CET) 07/04/2023 18:30:36 | F 1008145667622969397 | radio_def -> ['Rádio BLANÍK CZ', None]
+(CET) 07/04/2023 18:30:36 | F 1008145667622969397 | join_def -> [None, True]
+(CET) 07/04/2023 18:30:37 | F 1008145667622969397 | volume_command_def -> [100.0, False, True]
+(CET) 07/04/2023 18:30:57 | C 1008145667622969397 | Command (nowplaying) was requested by (Tomer27cz#4272) -> [False]
+(CET) 07/04/2023 18:30:57 | F 1008145667622969397 | now_def -> [False]
+(CET) 07/04/2023 18:52:09 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 07/04/2023 18:52:09 | M no guild | Loaded radio.json
+(CET) 07/04/2023 18:52:09 | M no guild | Loaded languages.json
+(CET) 07/04/2023 18:52:09 | M no guild | Loaded other.json
+(CET) 07/04/2023 18:52:09 | M no guild | Bot class initialized
+(CET) 07/04/2023 18:52:09 | M no guild | Loaded guilds.json
+(CET) 07/04/2023 18:52:09 | M no guild | Loaded sound_effects folder
+(CET) 07/04/2023 18:52:12 | M no guild | Trying to sync commands
+(CET) 07/04/2023 18:52:13 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 07/04/2023 18:52:13 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 07/04/2023 18:53:55 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 07/04/2023 18:53:55 | M no guild | Loaded radio.json
+(CET) 07/04/2023 18:53:55 | M no guild | Loaded languages.json
+(CET) 07/04/2023 18:53:55 | M no guild | Loaded other.json
+(CET) 07/04/2023 18:53:55 | M no guild | Bot class initialized
+(CET) 07/04/2023 18:53:55 | M no guild | Loaded guilds.json
+(CET) 07/04/2023 18:53:55 | M no guild | Loaded sound_effects folder
+(CET) 07/04/2023 18:53:58 | M no guild | Trying to sync commands
+(CET) 07/04/2023 18:53:58 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 07/04/2023 18:53:58 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 07/04/2023 18:57:04 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 07/04/2023 18:57:04 | M no guild | Loaded radio.json
+(CET) 07/04/2023 18:57:04 | M no guild | Loaded languages.json
+(CET) 07/04/2023 18:57:04 | M no guild | Loaded other.json
+(CET) 07/04/2023 18:57:04 | M no guild | Bot class initialized
+(CET) 07/04/2023 18:57:04 | M no guild | Loaded guilds.json
+(CET) 07/04/2023 18:57:04 | M no guild | Loaded sound_effects folder
+(CET) 07/04/2023 18:57:07 | M no guild | Trying to sync commands
+(CET) 07/04/2023 18:57:07 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 07/04/2023 18:57:07 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 07/04/2023 19:04:38 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 07/04/2023 19:04:38 | M no guild | Loaded radio.json
+(CET) 07/04/2023 19:04:38 | M no guild | Loaded languages.json
+(CET) 07/04/2023 19:04:38 | M no guild | Loaded other.json
+(CET) 07/04/2023 19:04:38 | M no guild | Bot class initialized
+(CET) 07/04/2023 19:04:38 | M no guild | Loaded guilds.json
+(CET) 07/04/2023 19:04:38 | M no guild | Loaded sound_effects folder
+(CET) 07/04/2023 19:04:41 | M no guild | Trying to sync commands
+(CET) 07/04/2023 19:04:41 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 07/04/2023 19:04:41 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 07/04/2023 19:08:14 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 07/04/2023 19:08:14 | M no guild | Loaded radio.json
+(CET) 07/04/2023 19:08:14 | M no guild | Loaded languages.json
+(CET) 07/04/2023 19:08:14 | M no guild | Loaded other.json
+(CET) 07/04/2023 19:08:14 | M no guild | Bot class initialized
+(CET) 07/04/2023 19:08:14 | M no guild | Loaded guilds.json
+(CET) 07/04/2023 19:08:14 | M no guild | Loaded sound_effects folder
+(CET) 07/04/2023 19:08:17 | M no guild | Trying to sync commands
+(CET) 07/04/2023 19:08:18 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 07/04/2023 19:08:18 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 07/04/2023 19:09:11 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 07/04/2023 19:09:11 | M no guild | Loaded radio.json
+(CET) 07/04/2023 19:09:11 | M no guild | Loaded languages.json
+(CET) 07/04/2023 19:09:11 | M no guild | Loaded other.json
+(CET) 07/04/2023 19:09:11 | M no guild | Bot class initialized
+(CET) 07/04/2023 19:09:11 | M no guild | Loaded guilds.json
+(CET) 07/04/2023 19:09:11 | M no guild | Loaded sound_effects folder
+(CET) 07/04/2023 19:09:14 | M no guild | Trying to sync commands
+(CET) 07/04/2023 19:09:15 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 07/04/2023 19:09:15 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 07/04/2023 19:27:44 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 07/04/2023 19:27:44 | M no guild | Loaded radio.json
+(CET) 07/04/2023 19:27:44 | M no guild | Loaded languages.json
+(CET) 07/04/2023 19:27:44 | M no guild | Loaded other.json
+(CET) 07/04/2023 19:27:44 | M no guild | Bot class initialized
+(CET) 07/04/2023 19:27:44 | M no guild | Loaded guilds.json
+(CET) 07/04/2023 19:27:44 | M no guild | Loaded sound_effects folder
+(CET) 07/04/2023 19:27:48 | M no guild | Trying to sync commands
+(CET) 07/04/2023 19:27:48 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 07/04/2023 19:27:48 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 07/04/2023 19:37:31 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 07/04/2023 19:37:31 | M no guild | Loaded radio.json
+(CET) 07/04/2023 19:37:31 | M no guild | Loaded languages.json
+(CET) 07/04/2023 19:37:31 | M no guild | Loaded other.json
+(CET) 07/04/2023 19:37:31 | M no guild | Bot class initialized
+(CET) 07/04/2023 19:37:31 | M no guild | Loaded guilds.json
+(CET) 07/04/2023 19:37:31 | M no guild | Loaded sound_effects folder
+(CET) 07/04/2023 19:37:35 | M no guild | Trying to sync commands
+(CET) 07/04/2023 19:37:35 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 07/04/2023 19:37:35 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 07/04/2023 19:41:06 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 07/04/2023 19:41:06 | M no guild | Loaded radio.json
+(CET) 07/04/2023 19:41:06 | M no guild | Loaded languages.json
+(CET) 07/04/2023 19:41:06 | M no guild | Loaded other.json
+(CET) 07/04/2023 19:41:06 | M no guild | Bot class initialized
+(CET) 07/04/2023 19:41:06 | M no guild | Loaded guilds.json
+(CET) 07/04/2023 19:41:06 | M no guild | Loaded sound_effects folder
+(CET) 07/04/2023 19:41:09 | M no guild | Trying to sync commands
+(CET) 07/04/2023 19:41:09 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 07/04/2023 19:41:09 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 07/04/2023 19:41:32 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 07/04/2023 19:41:32 | M no guild | Loaded radio.json
+(CET) 07/04/2023 19:41:32 | M no guild | Loaded languages.json
+(CET) 07/04/2023 19:41:32 | M no guild | Loaded other.json
+(CET) 07/04/2023 19:41:32 | M no guild | Bot class initialized
+(CET) 07/04/2023 19:41:32 | M no guild | Loaded guilds.json
+(CET) 07/04/2023 19:41:32 | M no guild | Loaded sound_effects folder
+(CET) 07/04/2023 19:41:35 | M no guild | Trying to sync commands
+(CET) 07/04/2023 19:42:09 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 07/04/2023 19:42:09 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 07/04/2023 19:43:42 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 07/04/2023 19:43:42 | M no guild | Loaded radio.json
+(CET) 07/04/2023 19:43:42 | M no guild | Loaded languages.json
+(CET) 07/04/2023 19:43:42 | M no guild | Loaded other.json
+(CET) 07/04/2023 19:43:42 | M no guild | Bot class initialized
+(CET) 07/04/2023 19:43:42 | M no guild | Loaded guilds.json
+(CET) 07/04/2023 19:43:42 | M no guild | Loaded sound_effects folder
+(CET) 07/04/2023 19:43:45 | M no guild | Trying to sync commands
+(CET) 07/04/2023 19:43:46 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 07/04/2023 19:43:46 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 07/04/2023 19:47:37 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 07/04/2023 19:47:37 | M no guild | Loaded radio.json
+(CET) 07/04/2023 19:47:37 | M no guild | Loaded languages.json
+(CET) 07/04/2023 19:47:37 | M no guild | Loaded other.json
+(CET) 07/04/2023 19:47:37 | M no guild | Bot class initialized
+(CET) 07/04/2023 19:47:37 | M no guild | Loaded guilds.json
+(CET) 07/04/2023 19:47:37 | M no guild | Loaded sound_effects folder
+(CET) 07/04/2023 19:47:41 | M no guild | Trying to sync commands
+(CET) 07/04/2023 19:47:41 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 07/04/2023 19:47:41 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 07/04/2023 19:49:11 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 07/04/2023 19:49:11 | M no guild | Loaded radio.json
+(CET) 07/04/2023 19:49:11 | M no guild | Loaded languages.json
+(CET) 07/04/2023 19:49:11 | M no guild | Loaded other.json
+(CET) 07/04/2023 19:49:11 | M no guild | Bot class initialized
+(CET) 07/04/2023 19:49:11 | M no guild | Loaded guilds.json
+(CET) 07/04/2023 19:49:11 | M no guild | Loaded sound_effects folder
+(CET) 07/04/2023 19:49:14 | M no guild | Trying to sync commands
+(CET) 07/04/2023 19:49:14 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 07/04/2023 19:49:14 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 07/04/2023 19:51:01 | W 1008145667622969397 | Command (web_add_queue) was requested by (Tomer27cz) -> ['Evropa 2', 'end']
+(CET) 07/04/2023 19:51:11 | W 1008145667622969397 | Command (web_top) was requested by (Tomer27cz) -> ['30']
+(CET) 07/04/2023 19:51:11 | F 1008145667622969397 | web_top -> ['30']
+(CET) 07/04/2023 19:51:11 | F 1008145667622969397 | web_move -> [30, 0]
+(CET) 07/04/2023 19:57:48 | W 1008145667622969397 | Command (web_clear) was requested by (Tomer27cz) -> []
+(CET) 07/04/2023 19:57:48 | F 1008145667622969397 | web_clear -> []
+(CET) 07/04/2023 19:57:48 | M 1008145667622969397 | web_clear -> Cleared queue
+(CET) 07/04/2023 19:58:46 | W 1008145667622969397 | Command (web_stop) was requested by (Tomer27cz) -> []
+(CET) 07/04/2023 19:58:46 | F 1008145667622969397 | web_stop -> []
+(CET) 07/04/2023 19:58:46 | M 1008145667622969397 | web_stop -> Not in a voice channel
+(CET) 07/04/2023 20:03:49 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 07/04/2023 20:03:49 | M no guild | Loaded radio.json
+(CET) 07/04/2023 20:03:49 | M no guild | Loaded languages.json
+(CET) 07/04/2023 20:03:49 | M no guild | Loaded other.json
+(CET) 07/04/2023 20:03:49 | M no guild | Bot class initialized
+(CET) 07/04/2023 20:03:49 | M no guild | Loaded guilds.json
+(CET) 07/04/2023 20:03:49 | M no guild | Loaded sound_effects folder
+(CET) 07/04/2023 20:03:52 | M no guild | Trying to sync commands
+(CET) 07/04/2023 20:03:52 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 07/04/2023 20:03:52 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 08/04/2023 11:31:11 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 08/04/2023 11:31:11 | M no guild | Loaded radio.json
+(CET) 08/04/2023 11:31:11 | M no guild | Loaded languages.json
+(CET) 08/04/2023 11:31:11 | M no guild | Loaded other.json
+(CET) 08/04/2023 11:31:11 | M no guild | Bot class initialized
+(CET) 08/04/2023 11:31:11 | M no guild | Loaded guilds.json
+(CET) 08/04/2023 11:31:11 | M no guild | Loaded sound_effects folder
+(CET) 08/04/2023 11:31:14 | M no guild | Trying to sync commands
+(CET) 08/04/2023 11:31:15 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 08/04/2023 11:31:15 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 08/04/2023 11:48:38 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 08/04/2023 11:48:38 | M no guild | Loaded radio.json
+(CET) 08/04/2023 11:48:38 | M no guild | Loaded languages.json
+(CET) 08/04/2023 11:48:38 | M no guild | Loaded other.json
+(CET) 08/04/2023 11:48:38 | M no guild | Bot class initialized
+(CET) 08/04/2023 11:48:38 | M no guild | Loaded guilds.json
+(CET) 08/04/2023 11:48:38 | M no guild | Loaded sound_effects folder
+(CET) 08/04/2023 11:48:40 | M no guild | Trying to sync commands
+(CET) 08/04/2023 11:48:41 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 08/04/2023 11:48:41 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 08/04/2023 11:49:15 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 08/04/2023 11:49:15 | M no guild | Loaded radio.json
+(CET) 08/04/2023 11:49:15 | M no guild | Loaded languages.json
+(CET) 08/04/2023 11:49:15 | M no guild | Loaded other.json
+(CET) 08/04/2023 11:49:15 | M no guild | Bot class initialized
+(CET) 08/04/2023 11:49:15 | M no guild | Loaded guilds.json
+(CET) 08/04/2023 11:49:15 | M no guild | Loaded sound_effects folder
+(CET) 08/04/2023 11:49:18 | M no guild | Trying to sync commands
+(CET) 08/04/2023 11:49:18 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 08/04/2023 11:49:18 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 08/04/2023 11:49:39 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 08/04/2023 11:49:39 | M no guild | Loaded radio.json
+(CET) 08/04/2023 11:49:39 | M no guild | Loaded languages.json
+(CET) 08/04/2023 11:49:39 | M no guild | Loaded other.json
+(CET) 08/04/2023 11:49:39 | M no guild | Bot class initialized
+(CET) 08/04/2023 11:49:39 | M no guild | Loaded guilds.json
+(CET) 08/04/2023 11:49:39 | M no guild | Loaded sound_effects folder
+(CET) 08/04/2023 11:49:42 | M no guild | Trying to sync commands
+(CET) 08/04/2023 11:50:18 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 08/04/2023 11:50:18 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 08/04/2023 11:51:37 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 08/04/2023 11:51:37 | M no guild | Loaded radio.json
+(CET) 08/04/2023 11:51:37 | M no guild | Loaded languages.json
+(CET) 08/04/2023 11:51:37 | M no guild | Loaded other.json
+(CET) 08/04/2023 11:51:37 | M no guild | Bot class initialized
+(CET) 08/04/2023 11:51:37 | M no guild | Loaded guilds.json
+(CET) 08/04/2023 11:51:37 | M no guild | Loaded sound_effects folder
+(CET) 08/04/2023 11:51:40 | M no guild | Trying to sync commands
+(CET) 08/04/2023 11:51:41 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 08/04/2023 11:51:41 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 08/04/2023 11:58:23 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 08/04/2023 11:58:23 | M no guild | Loaded radio.json
+(CET) 08/04/2023 11:58:23 | M no guild | Loaded languages.json
+(CET) 08/04/2023 11:58:23 | M no guild | Loaded other.json
+(CET) 08/04/2023 11:58:23 | M no guild | Bot class initialized
+(CET) 08/04/2023 11:58:23 | M no guild | Loaded guilds.json
+(CET) 08/04/2023 11:58:23 | M no guild | Loaded sound_effects folder
+(CET) 08/04/2023 11:58:26 | M no guild | Trying to sync commands
+(CET) 08/04/2023 11:58:26 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 08/04/2023 11:58:26 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 08/04/2023 11:59:49 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 08/04/2023 11:59:49 | M no guild | Loaded radio.json
+(CET) 08/04/2023 11:59:49 | M no guild | Loaded languages.json
+(CET) 08/04/2023 11:59:49 | M no guild | Loaded other.json
+(CET) 08/04/2023 11:59:49 | M no guild | Bot class initialized
+(CET) 08/04/2023 11:59:49 | M no guild | Loaded guilds.json
+(CET) 08/04/2023 11:59:49 | M no guild | Loaded sound_effects folder
+(CET) 08/04/2023 11:59:52 | M no guild | Trying to sync commands
+(CET) 08/04/2023 11:59:52 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 08/04/2023 11:59:52 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 08/04/2023 12:01:00 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 08/04/2023 12:01:00 | M no guild | Loaded radio.json
+(CET) 08/04/2023 12:01:00 | M no guild | Loaded languages.json
+(CET) 08/04/2023 12:01:00 | M no guild | Loaded other.json
+(CET) 08/04/2023 12:01:00 | M no guild | Bot class initialized
+(CET) 08/04/2023 12:01:00 | M no guild | Loaded guilds.json
+(CET) 08/04/2023 12:01:00 | M no guild | Loaded sound_effects folder
+(CET) 08/04/2023 12:01:03 | M no guild | Trying to sync commands
+(CET) 08/04/2023 12:01:04 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 08/04/2023 12:01:04 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 08/04/2023 12:01:08 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 08/04/2023 12:01:08 | M no guild | Loaded radio.json
+(CET) 08/04/2023 12:01:08 | M no guild | Loaded languages.json
+(CET) 08/04/2023 12:01:08 | M no guild | Loaded other.json
+(CET) 08/04/2023 12:01:08 | M no guild | Bot class initialized
+(CET) 08/04/2023 12:01:08 | M no guild | Loaded guilds.json
+(CET) 08/04/2023 12:01:08 | M no guild | Loaded sound_effects folder
+(CET) 08/04/2023 12:01:11 | M no guild | Trying to sync commands
+(CET) 08/04/2023 12:02:04 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 08/04/2023 12:02:04 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 08/04/2023 13:10:21 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 08/04/2023 13:10:21 | M no guild | Loaded radio.json
+(CET) 08/04/2023 13:10:21 | M no guild | Loaded languages.json
+(CET) 08/04/2023 13:10:21 | M no guild | Loaded other.json
+(CET) 08/04/2023 13:10:21 | M no guild | Bot class initialized
+(CET) 08/04/2023 13:10:21 | M no guild | Loaded guilds.json
+(CET) 08/04/2023 13:10:21 | M no guild | Loaded sound_effects folder
+(CET) 08/04/2023 13:10:24 | M no guild | Trying to sync commands
+(CET) 08/04/2023 13:10:24 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 08/04/2023 13:10:24 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 08/04/2023 13:11:09 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 08/04/2023 13:11:09 | M no guild | Loaded radio.json
+(CET) 08/04/2023 13:11:09 | M no guild | Loaded languages.json
+(CET) 08/04/2023 13:11:09 | M no guild | Loaded other.json
+(CET) 08/04/2023 13:11:09 | M no guild | Bot class initialized
+(CET) 08/04/2023 13:11:09 | M no guild | Loaded guilds.json
+(CET) 08/04/2023 13:11:09 | M no guild | Loaded sound_effects folder
+(CET) 08/04/2023 13:11:12 | M no guild | Trying to sync commands
+(CET) 08/04/2023 13:11:12 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 08/04/2023 13:11:12 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 08/04/2023 13:14:25 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 08/04/2023 13:14:25 | M no guild | Loaded radio.json
+(CET) 08/04/2023 13:14:25 | M no guild | Loaded languages.json
+(CET) 08/04/2023 13:14:25 | M no guild | Loaded other.json
+(CET) 08/04/2023 13:14:25 | M no guild | Bot class initialized
+(CET) 08/04/2023 13:14:25 | M no guild | Loaded guilds.json
+(CET) 08/04/2023 13:14:25 | M no guild | Loaded sound_effects folder
+(CET) 08/04/2023 13:14:28 | M no guild | Trying to sync commands
+(CET) 08/04/2023 13:14:28 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 08/04/2023 13:14:28 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 08/04/2023 13:15:03 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 08/04/2023 13:15:03 | M no guild | Loaded radio.json
+(CET) 08/04/2023 13:15:03 | M no guild | Loaded languages.json
+(CET) 08/04/2023 13:15:03 | M no guild | Loaded other.json
+(CET) 08/04/2023 13:15:03 | M no guild | Bot class initialized
+(CET) 08/04/2023 13:15:03 | M no guild | Loaded guilds.json
+(CET) 08/04/2023 13:15:03 | M no guild | Loaded sound_effects folder
+(CET) 08/04/2023 13:15:06 | M no guild | Trying to sync commands
+(CET) 08/04/2023 13:15:06 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 08/04/2023 13:15:06 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 08/04/2023 13:18:30 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 08/04/2023 13:18:30 | M no guild | Loaded radio.json
+(CET) 08/04/2023 13:18:30 | M no guild | Loaded languages.json
+(CET) 08/04/2023 13:18:30 | M no guild | Loaded other.json
+(CET) 08/04/2023 13:18:30 | M no guild | Bot class initialized
+(CET) 08/04/2023 13:18:30 | M no guild | Loaded guilds.json
+(CET) 08/04/2023 13:18:30 | M no guild | Loaded sound_effects folder
+(CET) 08/04/2023 13:18:33 | M no guild | Trying to sync commands
+(CET) 08/04/2023 13:18:34 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 08/04/2023 13:18:34 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 08/04/2023 13:22:10 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 08/04/2023 13:22:10 | M no guild | Loaded radio.json
+(CET) 08/04/2023 13:22:10 | M no guild | Loaded languages.json
+(CET) 08/04/2023 13:22:10 | M no guild | Loaded other.json
+(CET) 08/04/2023 13:22:10 | M no guild | Bot class initialized
+(CET) 08/04/2023 13:22:10 | M no guild | Loaded guilds.json
+(CET) 08/04/2023 13:22:10 | M no guild | Loaded sound_effects folder
+(CET) 08/04/2023 13:22:13 | M no guild | Trying to sync commands
+(CET) 08/04/2023 13:22:13 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 08/04/2023 13:22:13 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 08/04/2023 13:29:51 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 08/04/2023 13:29:51 | M no guild | Loaded radio.json
+(CET) 08/04/2023 13:29:51 | M no guild | Loaded languages.json
+(CET) 08/04/2023 13:29:51 | M no guild | Loaded other.json
+(CET) 08/04/2023 13:29:51 | M no guild | Bot class initialized
+(CET) 08/04/2023 13:29:51 | M no guild | Loaded guilds.json
+(CET) 08/04/2023 13:29:51 | M no guild | Loaded sound_effects folder
+(CET) 08/04/2023 13:29:54 | M no guild | Trying to sync commands
+(CET) 08/04/2023 13:29:55 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 08/04/2023 13:29:55 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 08/04/2023 13:31:13 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 08/04/2023 13:31:13 | M no guild | Loaded radio.json
+(CET) 08/04/2023 13:31:13 | M no guild | Loaded languages.json
+(CET) 08/04/2023 13:31:13 | M no guild | Loaded other.json
+(CET) 08/04/2023 13:31:13 | M no guild | Bot class initialized
+(CET) 08/04/2023 13:31:13 | M no guild | Loaded guilds.json
+(CET) 08/04/2023 13:31:13 | M no guild | Loaded sound_effects folder
+(CET) 08/04/2023 13:31:16 | M no guild | Trying to sync commands
+(CET) 08/04/2023 13:31:17 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 08/04/2023 13:31:17 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 08/04/2023 13:33:04 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 08/04/2023 13:33:04 | M no guild | Loaded radio.json
+(CET) 08/04/2023 13:33:04 | M no guild | Loaded languages.json
+(CET) 08/04/2023 13:33:04 | M no guild | Loaded other.json
+(CET) 08/04/2023 13:33:04 | M no guild | Bot class initialized
+(CET) 08/04/2023 13:33:04 | M no guild | Loaded guilds.json
+(CET) 08/04/2023 13:33:04 | M no guild | Loaded sound_effects folder
+(CET) 08/04/2023 13:33:07 | M no guild | Trying to sync commands
+(CET) 08/04/2023 13:33:08 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 08/04/2023 13:33:08 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 08/04/2023 13:34:21 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 08/04/2023 13:34:21 | M no guild | Loaded radio.json
+(CET) 08/04/2023 13:34:21 | M no guild | Loaded languages.json
+(CET) 08/04/2023 13:34:21 | M no guild | Loaded other.json
+(CET) 08/04/2023 13:34:21 | M no guild | Bot class initialized
+(CET) 08/04/2023 13:34:21 | M no guild | Loaded guilds.json
+(CET) 08/04/2023 13:34:21 | M no guild | Loaded sound_effects folder
+(CET) 08/04/2023 13:34:24 | M no guild | Trying to sync commands
+(CET) 08/04/2023 13:34:24 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 08/04/2023 13:34:24 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 08/04/2023 13:34:48 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 08/04/2023 13:34:48 | M no guild | Loaded radio.json
+(CET) 08/04/2023 13:34:48 | M no guild | Loaded languages.json
+(CET) 08/04/2023 13:34:48 | M no guild | Loaded other.json
+(CET) 08/04/2023 13:34:48 | M no guild | Bot class initialized
+(CET) 08/04/2023 13:34:48 | M no guild | Loaded guilds.json
+(CET) 08/04/2023 13:34:48 | M no guild | Loaded sound_effects folder
+(CET) 08/04/2023 13:34:51 | M no guild | Trying to sync commands
+(CET) 08/04/2023 13:35:24 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 08/04/2023 13:35:24 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 08/04/2023 13:35:34 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 08/04/2023 13:35:34 | M no guild | Loaded radio.json
+(CET) 08/04/2023 13:35:34 | M no guild | Loaded languages.json
+(CET) 08/04/2023 13:35:34 | M no guild | Loaded other.json
+(CET) 08/04/2023 13:35:34 | M no guild | Bot class initialized
+(CET) 08/04/2023 13:35:34 | M no guild | Loaded guilds.json
+(CET) 08/04/2023 13:35:34 | M no guild | Loaded sound_effects folder
+(CET) 08/04/2023 13:35:37 | M no guild | Trying to sync commands
+(CET) 08/04/2023 13:35:37 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 08/04/2023 13:35:37 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 08/04/2023 13:36:50 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 08/04/2023 13:36:50 | M no guild | Loaded radio.json
+(CET) 08/04/2023 13:36:50 | M no guild | Loaded languages.json
+(CET) 08/04/2023 13:36:50 | M no guild | Loaded other.json
+(CET) 08/04/2023 13:36:50 | M no guild | Bot class initialized
+(CET) 08/04/2023 13:36:50 | M no guild | Loaded guilds.json
+(CET) 08/04/2023 13:36:50 | M no guild | Loaded sound_effects folder
+(CET) 08/04/2023 13:36:53 | M no guild | Trying to sync commands
+(CET) 08/04/2023 13:36:53 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 08/04/2023 13:36:53 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 08/04/2023 13:38:24 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 08/04/2023 13:38:24 | M no guild | Loaded radio.json
+(CET) 08/04/2023 13:38:24 | M no guild | Loaded languages.json
+(CET) 08/04/2023 13:38:24 | M no guild | Loaded other.json
+(CET) 08/04/2023 13:38:24 | M no guild | Bot class initialized
+(CET) 08/04/2023 13:38:24 | M no guild | Loaded guilds.json
+(CET) 08/04/2023 13:38:24 | M no guild | Loaded sound_effects folder
+(CET) 08/04/2023 13:38:27 | M no guild | Trying to sync commands
+(CET) 08/04/2023 13:38:27 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 08/04/2023 13:38:27 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 08/04/2023 13:39:36 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 08/04/2023 13:39:36 | M no guild | Loaded radio.json
+(CET) 08/04/2023 13:39:36 | M no guild | Loaded languages.json
+(CET) 08/04/2023 13:39:36 | M no guild | Loaded other.json
+(CET) 08/04/2023 13:39:36 | M no guild | Bot class initialized
+(CET) 08/04/2023 13:39:36 | M no guild | Loaded guilds.json
+(CET) 08/04/2023 13:39:36 | M no guild | Loaded sound_effects folder
+(CET) 08/04/2023 13:39:39 | M no guild | Trying to sync commands
+(CET) 08/04/2023 13:39:40 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 08/04/2023 13:39:40 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 08/04/2023 13:42:12 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 08/04/2023 13:42:12 | M no guild | Loaded radio.json
+(CET) 08/04/2023 13:42:12 | M no guild | Loaded languages.json
+(CET) 08/04/2023 13:42:12 | M no guild | Loaded other.json
+(CET) 08/04/2023 13:42:12 | M no guild | Bot class initialized
+(CET) 08/04/2023 13:42:12 | M no guild | Loaded guilds.json
+(CET) 08/04/2023 13:42:12 | M no guild | Loaded sound_effects folder
+(CET) 08/04/2023 13:42:15 | M no guild | Trying to sync commands
+(CET) 08/04/2023 13:42:15 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 08/04/2023 13:42:15 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 08/04/2023 13:46:31 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 08/04/2023 13:46:31 | M no guild | Loaded radio.json
+(CET) 08/04/2023 13:46:31 | M no guild | Loaded languages.json
+(CET) 08/04/2023 13:46:31 | M no guild | Loaded other.json
+(CET) 08/04/2023 13:46:31 | M no guild | Bot class initialized
+(CET) 08/04/2023 13:46:31 | M no guild | Loaded guilds.json
+(CET) 08/04/2023 13:46:31 | M no guild | Loaded sound_effects folder
+(CET) 08/04/2023 13:46:34 | M no guild | Trying to sync commands
+(CET) 08/04/2023 13:46:34 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 08/04/2023 13:46:34 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 08/04/2023 13:51:03 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 08/04/2023 13:51:03 | M no guild | Loaded radio.json
+(CET) 08/04/2023 13:51:03 | M no guild | Loaded languages.json
+(CET) 08/04/2023 13:51:03 | M no guild | Loaded other.json
+(CET) 08/04/2023 13:51:03 | M no guild | Bot class initialized
+(CET) 08/04/2023 13:51:03 | M no guild | Loaded guilds.json
+(CET) 08/04/2023 13:51:03 | M no guild | Loaded sound_effects folder
+(CET) 08/04/2023 13:51:06 | M no guild | Trying to sync commands
+(CET) 08/04/2023 13:51:07 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 08/04/2023 13:51:07 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 08/04/2023 13:59:23 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 08/04/2023 13:59:23 | M no guild | Loaded radio.json
+(CET) 08/04/2023 13:59:23 | M no guild | Loaded languages.json
+(CET) 08/04/2023 13:59:23 | M no guild | Loaded other.json
+(CET) 08/04/2023 13:59:23 | M no guild | Bot class initialized
+(CET) 08/04/2023 13:59:23 | M no guild | Loaded guilds.json
+(CET) 08/04/2023 13:59:23 | M no guild | Loaded sound_effects folder
+(CET) 08/04/2023 13:59:26 | M no guild | Trying to sync commands
+(CET) 08/04/2023 13:59:26 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 08/04/2023 13:59:26 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 08/04/2023 14:03:52 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 08/04/2023 14:03:52 | M no guild | Loaded radio.json
+(CET) 08/04/2023 14:03:52 | M no guild | Loaded languages.json
+(CET) 08/04/2023 14:03:52 | M no guild | Loaded other.json
+(CET) 08/04/2023 14:03:52 | M no guild | Bot class initialized
+(CET) 08/04/2023 14:03:52 | M no guild | Loaded guilds.json
+(CET) 08/04/2023 14:03:52 | M no guild | Loaded sound_effects folder
+(CET) 08/04/2023 14:03:55 | M no guild | Trying to sync commands
+(CET) 08/04/2023 14:03:55 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 08/04/2023 14:03:55 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 08/04/2023 14:04:00 | C 1008145667622969397 | Command (key) was requested by (Tomer27cz#4272) -> []
+(CET) 08/04/2023 14:04:00 | F 1008145667622969397 | key_def -> []
+(CET) 08/04/2023 14:08:39 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 08/04/2023 14:08:39 | M no guild | Loaded radio.json
+(CET) 08/04/2023 14:08:39 | M no guild | Loaded languages.json
+(CET) 08/04/2023 14:08:39 | M no guild | Loaded other.json
+(CET) 08/04/2023 14:08:39 | M no guild | Bot class initialized
+(CET) 08/04/2023 14:08:39 | M no guild | Loaded guilds.json
+(CET) 08/04/2023 14:08:39 | M no guild | Loaded sound_effects folder
+(CET) 08/04/2023 14:08:43 | M no guild | Trying to sync commands
+(CET) 08/04/2023 14:08:43 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 08/04/2023 14:08:43 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 08/04/2023 14:08:46 | C 1008145667622969397 | Command (key) was requested by (Tomer27cz#4272) -> []
+(CET) 08/04/2023 14:08:46 | F 1008145667622969397 | key_def -> []
+(CET) 08/04/2023 14:09:54 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 08/04/2023 14:09:54 | M no guild | Loaded radio.json
+(CET) 08/04/2023 14:09:54 | M no guild | Loaded languages.json
+(CET) 08/04/2023 14:09:54 | M no guild | Loaded other.json
+(CET) 08/04/2023 14:09:54 | M no guild | Bot class initialized
+(CET) 08/04/2023 14:09:54 | M no guild | Loaded guilds.json
+(CET) 08/04/2023 14:09:54 | M no guild | Loaded sound_effects folder
+(CET) 08/04/2023 14:09:57 | M no guild | Trying to sync commands
+(CET) 08/04/2023 14:09:57 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 08/04/2023 14:09:57 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 08/04/2023 14:10:02 | C 1008145667622969397 | Command (key) was requested by (Tomer27cz#4272) -> []
+(CET) 08/04/2023 14:10:02 | F 1008145667622969397 | key_def -> []
+(CET) 08/04/2023 14:10:36 | M no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+(CET) 08/04/2023 14:10:36 | M no guild | Loaded radio.json
+(CET) 08/04/2023 14:10:36 | M no guild | Loaded languages.json
+(CET) 08/04/2023 14:10:36 | M no guild | Loaded other.json
+(CET) 08/04/2023 14:10:36 | M no guild | Bot class initialized
+(CET) 08/04/2023 14:10:36 | M no guild | Loaded guilds.json
+(CET) 08/04/2023 14:10:36 | M no guild | Loaded sound_effects folder
+(CET) 08/04/2023 14:10:39 | M no guild | Trying to sync commands
+(CET) 08/04/2023 14:10:39 | M no guild | Synced slash commands for Testing Bot#3465
+(CET) 08/04/2023 14:10:39 | M no guild | Logged in as:
+Testing Bot
+1009574748302356581
+(CET) 08/04/2023 14:10:46 | C 1008145667622969397 | Command (key) was requested by (Tomer27cz#4272) -> []
+(CET) 08/04/2023 14:10:46 | F 1008145667622969397 | key_def -> []
