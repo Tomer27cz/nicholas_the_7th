@@ -21,7 +21,7 @@ from os import path, listdir
 import sys
 from typing import Literal
 import traceback
-import datetime
+from time import time, strftime, gmtime
 
 from oauth import Oauth
 import config
@@ -204,99 +204,129 @@ class GuildData:
 # ----------------- Video Classes ----------------
 
 # noinspection PyTypeChecker
-class Video:
-    def __init__(self, url, author, title=None, picture=None, duration=None, channel_name=None, channel_link=None):
-        self.url = url
+class VideoClass:
+    def __init__(self, class_type: str, author, url=None, title=None, picture=None, duration=None, channel_name=None, channel_link=None, radio_name=None, radio_website=None, local_number=None, created_at=None):
+        self.class_type = class_type
         self.author = author
+        self.created_at = created_at
 
-        video = None
+        if created_at is None:
+            self.created_at = int(time())
 
-        if title is None and picture is None and duration is None and channel_name is None and channel_link is None:
-            try:
-                video = youtubesearchpython.Video.getInfo(url)  # mode=ResultMode.json
-            except Exception as e:
-                raise ValueError(f"Not a youtube link: {e}")
+        if self.class_type == 'Video':
+            if url is None:
+                raise ValueError("URL is required")
 
-        self.title = title
-        self.picture = picture
-        self.duration = duration
-        self.channel_name = channel_name
-        self.channel_link = channel_link
-        self.type = 'Video'
+            self.url = url
 
-        if video:
-            self.title = video['title']
-            self.picture = 'https://img.youtube.com/vi/' + video['id'] + '/default.jpg'
-            self.duration = video['duration']['secondsText']
-            self.channel_name = video['channel']['name']
-            self.channel_link = video['channel']['link']
+            if title is None:
+                try:
+                    video = youtubesearchpython.Video.getInfo(url)  # mode=ResultMode.json
+                except Exception as e:
+                    raise ValueError(f"Not a youtube link: {e}")
+
+                if not video:
+                    raise ValueError("Not a youtube link")
+
+                self.title = video['title']
+                self.picture = 'https://img.youtube.com/vi/' + video['id'] + '/default.jpg'
+                self.duration = video['duration']['secondsText']
+                self.channel_name = video['channel']['name']
+                self.channel_link = video['channel']['link']
+
+
+            else:
+                self.title = title
+                self.picture = picture
+                self.duration = duration
+                self.channel_name = channel_name
+                self.channel_link = channel_link
+
+            self.radio_name = None
+            self.radio_website = None
+            self.local_number = None
+
+        elif self.class_type == 'Radio':
+            if radio_name is None:
+                raise ValueError("Radio name required")
+
+            self.radio_name = radio_name
+
+            if title is None:
+                self.url = radio_dict[radio_name]['url']
+                self.title = radio_dict[radio_name]['name']
+                self.picture = radio_dict[radio_name]['thumbnail']
+                self.duration = 'Stream'
+                self.channel_name = radio_dict[radio_name]['type']
+                self.channel_link = self.url
+                self.radio_website = radio_dict[radio_name]['type']
+
+
+            else:
+                self.url = url
+                self.title = title
+                self.picture = picture
+                self.duration = duration
+                self.channel_name = channel_name
+                self.channel_link = channel_link
+                self.radio_website = radio_website
+
+            self.local_number = None
+
+        elif self.class_type == 'Local':
+            if local_number is None:
+                raise ValueError("Local number required")
+
+            self.local_number = local_number
+            self.url = None
+            self.title = title
+            self.picture = vlc_logo
+            self.duration = duration
+            self.channel_name = 'Local File'
+            self.channel_link = None
+            self.radio_name = None
+            self.radio_website = None
+
+        elif self.class_type == 'Probe':
+            self.url = url
+            self.title = title
+            self.picture = picture
+            self.duration = duration
+            self.channel_name = channel_name
+            self.channel_link = channel_link
+            self.radio_name = None
+            self.radio_website = None
+            self.local_number = None
+
+        else:
+            raise ValueError("Invalid class type")
+
 
     def renew(self):
-        pass
+        if self.class_type == 'Radio':
+            if self.radio_website == 'radia_cz':
+                html = requests.get(self.url).text
+                soup = BeautifulSoup(html, features="lxml")
+                data1 = soup.find('div', attrs={'class': 'interpret-image'})
+                data2 = soup.find('div', attrs={'class': 'interpret-info'})
 
+                self.picture = data1.find('img')['src']
+                self.channel_name = data2.find('div', attrs={'class': 'nazev'}).text.lstrip().rstrip()
+                self.title = data2.find('div', attrs={'class': 'song'}).text.lstrip().rstrip()
+                self.duration = 'Stream'
 
-class Radio:
-    def __init__(self, name, author, radio_name):
-        self.author = author
-        self.url = radio_dict[radio_name]['url']
+            if self.radio_website == 'actve':
+                r = requests.get(self.url).json()
+                self.picture = r['coverBase']
+                self.channel_name = r['artist']
+                self.title = r['title']
+                self.duration = 'Stream'
 
-        self.picture = radio_dict[radio_name]['thumbnail']
-        self.channel_name = radio_dict[radio_name]['type']
-        self.channel_link = self.url
-        self.title = name
-        self.duration = 'Stream'
-        self.radio_website = radio_dict[radio_name]['type']
-        self.type = 'Radio'
-        self.radio_name = radio_name
+            else:
+                raise ValueError("Invalid radio website")
 
-    def renew(self):
-        if self.radio_website == 'radia_cz':
-            html = requests.get(self.url).text
-            soup = BeautifulSoup(html, features="lxml")
-            data1 = soup.find('div', attrs={'class': 'interpret-image'})
-            data2 = soup.find('div', attrs={'class': 'interpret-info'})
-
-            self.picture = data1.find('img')['src']
-            self.channel_name = data2.find('div', attrs={'class': 'nazev'}).text.lstrip().rstrip()
-            self.title = data2.find('div', attrs={'class': 'song'}).text.lstrip().rstrip()
-            self.duration = 'Stream'
-        if self.radio_website == 'actve':
-            r = requests.get(self.url).json()
-            self.picture = r['coverBase']
-            self.channel_name = r['artist']
-            self.title = r['title']
-            self.duration = 'Stream'
-
-
-class LocalFile:
-    def __init__(self, title, duration, author, number):
-        self.url = None
-        self.author = author
-        self.title = title
-        self.picture = vlc_logo
-        self.duration = duration
-        self.channel_name = 'Local file'
-        self.channel_link = 'Local file'
-        self.number = number
-        self.type = 'LocalFile'
-
-    def renew(self):
-        pass
-
-
-class FromProbe:
-    def __init__(self, url, title, duration, author, channel_name, channel_link):
-        self.url = url
-        self.author = author
-        self.title = title
-        self.picture = vlc_logo
-        self.duration = duration
-        self.channel_name = channel_name
-        self.channel_link = channel_link
-        self.type = 'FromProbe'
-
-    def renew(self):
-        pass
+        else:
+            pass
     
 # ------------ Guild ------------
 
@@ -307,13 +337,14 @@ class Guild:
         self.queue = []
         self.search_list = []
         self.now_playing = None
-        self.last_played = Video(url='https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-                                 author=my_id,
-                                 title='Never gonna give you up',
-                                 picture='https://img.youtube.com/vi/dQw4w9WgXcQ/default.jpg',
-                                 duration='3:33',
-                                 channel_name='Rick Astley',
-                                 channel_link='https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw')
+        self.last_played = VideoClass('Video',
+                                      url='https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+                                      author=my_id,
+                                      title='Never gonna give you up',
+                                      picture='https://img.youtube.com/vi/dQw4w9WgXcQ/default.jpg',
+                                      duration='3:33',
+                                      channel_name='Rick Astley',
+                                      channel_link='https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw')
         self.data = GuildData(guild_id)
 
     def renew(self):
@@ -336,8 +367,7 @@ def load_sound_effects():
 # ------------ PRINT --------------------
 
 def log(guild_id, text_data, options=None, log_type='text', author=None):
-    now_time = datetime.datetime.now(datetime.timezone(datetime.timedelta(seconds=3600), 'CET'))
-    now_time_str = now_time.strftime('(CET) %d/%m/%Y %X')
+    now_time_str = strftime("%m/%d/%Y, %H:%M:%S", gmtime(time()))
     
     if log_type == 'command':
         message = f"{now_time_str} | C {guild_id} | Command ({text_data}) was requested by ({author}) -> {options}"
@@ -357,8 +387,8 @@ def log(guild_id, text_data, options=None, log_type='text', author=None):
 
 
 def collect_data(data):
-    now_time = datetime.datetime.now(datetime.timezone(datetime.timedelta(seconds=3600), 'CET'))
-    message = f"{now_time.strftime('(CET) %d/%m/%Y %X')} | {data}\n"
+    now_time_str = strftime("%m/%d/%Y, %H:%M:%S", gmtime(time()))
+    message = f"{now_time_str} | {data}\n"
 
     with open("data.txt", "a", encoding="utf-8") as f:
         f.write(message)
@@ -408,35 +438,23 @@ def json_to_video(video_dict):
     if not video_dict:
         return None
 
-    video = None
+    class_type = video_dict['class_type']
 
-    if video_dict['type'] == 'Video':
-        video = Video(url=video_dict['url'],
-                      author=video_dict['author'],
-                      title=video_dict['title'],
-                      picture=video_dict['picture'],
-                      duration=video_dict['duration'],
-                      channel_name=video_dict['channel_name'],
-                      channel_link=video_dict['channel_link'])
+    if class_type not in ['Video', 'Radio', 'Local', 'Probe']:
+        raise ValueError('Wrong class_type')
 
-    if video_dict['type'] == 'Radio':
-        video = Radio(author=video_dict['author'],
-                      name=video_dict['title'],
-                      radio_name=video_dict['radio_name'])
-
-    if video_dict['type'] == 'LocalFile':
-        video = LocalFile(author=video_dict['author'],
-                          title=video_dict['title'],
-                          duration=video_dict['duration'],
-                          number=video_dict['number'])
-
-    if video_dict['type'] == 'FromProbe':
-        video = FromProbe(url=video_dict['url'],
-                      author=video_dict['author'],
-                      title=video_dict['title'],
-                      duration=video_dict['duration'],
-                      channel_name=video_dict['channel_name'],
-                      channel_link=video_dict['channel_link'])
+    video = VideoClass(class_type,
+                       created_at=video_dict['created_at'],
+                       url=video_dict['url'],
+                       author=video_dict['author'],
+                       title=video_dict['title'],
+                       picture=video_dict['picture'],
+                       duration=video_dict['duration'],
+                       channel_name=video_dict['channel_name'],
+                       channel_link=video_dict['channel_link'],
+                       radio_name=video_dict['radio_name'],
+                       radio_website=video_dict['radio_website'],
+                       local_number=video_dict['local_number'])
 
     return video
 
@@ -464,7 +482,7 @@ def json_to_guilds(guilds_dict):
 log('no guild', "--------------------------------------- NEW / REBOOTED ----------------------------------------")
 
 
-build_new_guilds = False
+build_new_guilds = True
 
 with open('src/radio.json', 'r') as file:
     radio_dict = json.load(file)
@@ -1384,7 +1402,7 @@ async def queue_command_def(ctx: commands.Context,
             playlist_songs += 1
             # noinspection PyTypeChecker
             url = f"https://www.youtube.com/watch?v={playlist_videos[index]['id']}"
-            video = Video(url, author.id)
+            video = VideoClass('Video', author.id, url)
 
             if position or position == 0: guild[guild_id].queue.insert(position, video)
             else: guild[guild_id].queue.append(video)
@@ -1413,7 +1431,7 @@ async def queue_command_def(ctx: commands.Context,
             return [False, message]
 
         url = f"https://www.youtube.com/watch?v={video_id}"
-        video = Video(url, author.id)
+        video = VideoClass('Video', author.id, url)
 
         if position or position == 0: guild[guild_id].queue.insert(position, video)
         else: guild[guild_id].queue.append(video)
@@ -1623,7 +1641,7 @@ async def search_command_def(ctx: commands.Context,
     for i in range(5):
         # noinspection PyTypeChecker
         url = custom_search.result()['result'][i]['link']
-        video = Video(url, ctx.author.id)
+        video = VideoClass('Video', ctx.author.id, url)
         guild[guild_id].search_list.append(video)
 
         if display_type == 'long':
@@ -1712,15 +1730,15 @@ async def play_def(ctx: commands.Context,
     video = guild[guild_id].queue[0]
     now_to_last(guild_id)
 
-    if type(video) is not Video:
+    if video.class_type != 'Video':
         guild[guild_id].queue.pop(0)
-        if type(video) is Radio:
+        if video.class_type != 'Radio':
             await radio_def(ctx, video.title)
             return
-        if type(video) is LocalFile:
+        if video.class_type != 'Local':
             await ps_def(ctx, video.number)
             return
-        if type(video) is FromProbe:
+        if video.class_type != 'Probe':
             await probe_command_def(ctx, video.url)
             return
 
@@ -1807,12 +1825,12 @@ async def radio_def(ctx: commands.Context,
     if ctx.voice_client.is_playing():
         await stop_def(ctx, True)  # call the stop coroutine if something else is playing, pass True to not send response
 
-    radio_class = Radio(radio_type, ctx.author.id, radio_type)
-    guild[guild_id].now_playing = radio_class
+    video = VideoClass('Radio', ctx.author.id, radio_name=radio_type)
+    guild[guild_id].now_playing = video
 
     guild[guild_id].options.is_radio = True
 
-    embed = create_embed(radio_class, 'Now playing', guild_id)
+    embed = create_embed(video, 'Now playing', guild_id)
 
     source = discord.FFmpegPCMAudio(url, **FFMPEG_OPTIONS)
 
@@ -1846,8 +1864,6 @@ async def ps_def(ctx: commands.Context,
     filename = "sound_effects/" + name + ".mp3"
     if path.exists(filename):
         source = FFmpegPCMAudio(filename)
-        video = LocalFile(name, 'Unknown', ctx.author.id, effect_number)
-        guild[guild_id].now_playing = video
     else:
         filename = "sound_effects/" + name + ".wav"
         if path.exists(filename):
@@ -1857,6 +1873,9 @@ async def ps_def(ctx: commands.Context,
             if not mute_response:
                 await ctx.reply(tg(guild_id, "No such file/website supported"), ephemeral=True)
             return False
+
+    video = VideoClass('Local', ctx.author.id, title=name, duration='Unknown', local_number=effect_number)
+    guild[guild_id].now_playing = video
 
     if not ctx.voice_client:
         await join_def(ctx, None, True)
@@ -2406,7 +2425,7 @@ async def probe_command_def(ctx: commands.Context,
         if ctx.voice_client.is_playing():
             await stop_def(ctx, True)
 
-        guild[guild_id].now_playing = FromProbe(url=url, author=ctx.author.id, title='URL Probe', duration=0, channel_link=url, channel_name='URL Probe')
+        guild[guild_id].now_playing = VideoClass('Probe', url=url, author=ctx.author.id, title='URL Probe', duration=0, channel_link=url, channel_name='URL Probe')
 
         source = discord.FFmpegPCMAudio(url, **FFMPEG_OPTIONS)
 
@@ -2932,15 +2951,6 @@ async def web_queue_from_video(web_data, url, number: int=None):
     elif url == 'now_playing':
         video = guild[guild_id].now_playing
 
-    if type(video) == Video:
-        pass
-    elif type(video) == Radio:
-        video = Radio(name=video.radio_name, author=video.author, radio_name=video.radio_name)
-    elif type(video) == FromProbe:
-        video = FromProbe(url=video.url, title=video.title, duration=video.duration, author=video.author, channel_name=video.channel_name, channel_link=video.channel_link)
-    elif type(video) == LocalFile:
-        video = LocalFile(title=video.title, duration=video.duration, author=video.author, number=video.number)
-
     if video:
         try:
             if not number and number != 0 and number != '0':
@@ -2982,7 +2992,7 @@ async def web_queue_from_url(web_data, url, position=None):
 
             # noinspection PyTypeChecker
             url = f"https://www.youtube.com/watch?v={playlist_videos[index]['id']}"
-            video = Video(url, web_data.id)
+            video = VideoClass('Video', web_data.author_id, url)
 
             if position or position == 0:
                 guild[web_data.guild_id].queue.insert(position, video)
@@ -3005,7 +3015,7 @@ async def web_queue_from_url(web_data, url, position=None):
             return [False, message]
 
         url = f"https://www.youtube.com/watch?v={video_id}"
-        video = Video(url, web_data.author_id)
+        video = VideoClass('Video', web_data.author_id, url)
 
         if position or position == 0:
             guild[web_data.guild_id].queue.insert(position, video)
@@ -3026,7 +3036,7 @@ async def web_queue_from_radio(web_data, radio_name, position=None):
 
     if radio_name in radio_dict.keys():
 
-        video = Radio(radio_name, web_data.id, radio_name)
+        video = VideoClass('Radio', web_data.author_id, radio_name=radio_name)
 
         if position or position == 0:
             guild[web_data.guild_id].queue.insert(position, video)

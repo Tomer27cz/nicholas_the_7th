@@ -3,10 +3,10 @@
         "id": 1008145667622969397,
         "options": {
             "id": 1008145667622969397,
-            "stopped": true,
+            "stopped": false,
             "loop": false,
-            "is_radio": true,
-            "language": "en",
+            "is_radio": false,
+            "language": "cs",
             "response_type": "short",
             "search_query": "Never gonna give you up",
             "buttons": false,
@@ -14,15 +14,15 @@
             "buffer": 600
         },
         "data": {
-            "id": 1008145667622969397,
-            "name": "Tomer27cz's server",
-            "key": "0qzk5v",
-            "member_count": 7,
-            "owner_id": 349164237605568513,
-            "owner_name": "Tomer27cz",
-            "created_at": "13/08/2022 22:50:57",
+            "id": null,
+            "name": null,
+            "key": null,
+            "member_count": null,
+            "owner_id": null,
+            "owner_name": null,
+            "created_at": null,
             "description": null,
-            "large": false,
+            "large": null,
             "icon": null,
             "banner": null,
             "splash": null,
@@ -32,16 +32,18 @@
         "search_list": {},
         "now_playing": {},
         "last_played": {
+            "class_type": "Video",
             "author": 349164237605568513,
-            "url": "https://radia.cz/radio-blanik-cz-playlist",
-            "picture": "https://cdn.discordapp.com/attachments/1008145669946626099/1015643172082286663/radio58.png",
-            "channel_name": "radia_cz",
-            "channel_link": "https://radia.cz/radio-blanik-cz-playlist",
-            "title": "Slav\u00edci z Madridu",
-            "duration": "Stream",
-            "radio_website": "radia_cz",
-            "type": "Radio",
-            "radio_name": "R\u00e1dio BLAN\u00cdK CZ"
+            "created_at": 1681726466,
+            "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+            "title": "Never gonna give you up",
+            "picture": "https://img.youtube.com/vi/dQw4w9WgXcQ/default.jpg",
+            "duration": "3:33",
+            "channel_name": "Rick Astley",
+            "channel_link": "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw",
+            "radio_name": null,
+            "radio_website": null,
+            "local_number": null
         }
     },
     "892403162315644928": {
@@ -59,16 +61,16 @@
             "buffer": 600
         },
         "data": {
-            "id": 892403162315644928,
-            "name": "pog",
-            "key": "0xvskv",
-            "member_count": 6,
-            "owner_id": 349164237605568513,
-            "owner_name": "Tomer27cz",
-            "created_at": "28/09/2021 13:31:33",
+            "id": null,
+            "name": null,
+            "key": null,
+            "member_count": null,
+            "owner_id": null,
+            "owner_name": null,
+            "created_at": null,
             "description": null,
-            "large": false,
-            "icon": "https://cdn.discordapp.com/icons/892403162315644928/ddf21b11faf19f03dafe5d0289996fa1.png?size=1024",
+            "large": null,
+            "icon": null,
             "banner": null,
             "splash": null,
             "discovery_splash": null
@@ -77,14 +79,18 @@
         "search_list": {},
         "now_playing": {},
         "last_played": {
-            "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+            "class_type": "Video",
             "author": 349164237605568513,
+            "created_at": 1681726466,
+            "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
             "title": "Never gonna give you up",
             "picture": "https://img.youtube.com/vi/dQw4w9WgXcQ/default.jpg",
             "duration": "3:33",
             "channel_name": "Rick Astley",
             "channel_link": "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw",
-            "type": "Video"
+            "radio_name": null,
+            "radio_website": null,
+            "local_number": null
         }
     },
     "892404682285256735": {
@@ -102,16 +108,16 @@
             "buffer": 600
         },
         "data": {
-            "id": 892404682285256735,
-            "name": "Jeb\u00e1ci pri pr\u00e1ci",
-            "key": "mddavr",
-            "member_count": 3,
-            "owner_id": 349164237605568513,
-            "owner_name": "Tomer27cz",
-            "created_at": "28/09/2021 13:37:36",
+            "id": null,
+            "name": null,
+            "key": null,
+            "member_count": null,
+            "owner_id": null,
+            "owner_name": null,
+            "created_at": null,
             "description": null,
-            "large": false,
-            "icon": "https://cdn.discordapp.com/icons/892404682285256735/ca21e41d0ff13e3cc8798ed3367495ff.png?size=1024",
+            "large": null,
+            "icon": null,
             "banner": null,
             "splash": null,
             "discovery_splash": null
@@ -120,14 +126,18 @@
         "search_list": {},
         "now_playing": {},
         "last_played": {
-            "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+            "class_type": "Video",
             "author": 349164237605568513,
+            "created_at": 1681726466,
+            "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
             "title": "Never gonna give you up",
             "picture": "https://img.youtube.com/vi/dQw4w9WgXcQ/default.jpg",
             "duration": "3:33",
             "channel_name": "Rick Astley",
             "channel_link": "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw",
-            "type": "Video"
+            "radio_name": null,
+            "radio_website": null,
+            "local_number": null
         }
     },
     "1092207263843880983": {
@@ -145,16 +155,16 @@
             "buffer": 600
         },
         "data": {
-            "id": 1092207263843880983,
-            "name": "\u0431\u043b\u044f\u0442\u044c",
-            "key": "u02gne",
-            "member_count": 3,
-            "owner_id": 349164237605568513,
-            "owner_name": "Tomer27cz",
-            "created_at": "02/04/2023 22:01:43",
+            "id": null,
+            "name": null,
+            "key": null,
+            "member_count": null,
+            "owner_id": null,
+            "owner_name": null,
+            "created_at": null,
             "description": null,
-            "large": false,
-            "icon": "https://cdn.discordapp.com/icons/1092207263843880983/41cd8aab063f81fa57ad014bd1d40c58.png?size=1024",
+            "large": null,
+            "icon": null,
             "banner": null,
             "splash": null,
             "discovery_splash": null
@@ -163,14 +173,18 @@
         "search_list": {},
         "now_playing": {},
         "last_played": {
-            "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+            "class_type": "Video",
             "author": 349164237605568513,
+            "created_at": 1681726466,
+            "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
             "title": "Never gonna give you up",
             "picture": "https://img.youtube.com/vi/dQw4w9WgXcQ/default.jpg",
             "duration": "3:33",
             "channel_name": "Rick Astley",
             "channel_link": "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw",
-            "type": "Video"
+            "radio_name": null,
+            "radio_website": null,
+            "local_number": null
         }
     },
     "1092205538202353764": {
@@ -188,16 +202,16 @@
             "buffer": 600
         },
         "data": {
-            "id": 1092205538202353764,
-            "name": "The Next Level",
-            "key": "3hlfqt",
-            "member_count": 3,
-            "owner_id": 349164237605568513,
-            "owner_name": "Tomer27cz",
-            "created_at": "02/04/2023 21:54:52",
+            "id": null,
+            "name": null,
+            "key": null,
+            "member_count": null,
+            "owner_id": null,
+            "owner_name": null,
+            "created_at": null,
             "description": null,
-            "large": false,
-            "icon": "https://cdn.discordapp.com/icons/1092205538202353764/83215429f288253f5788a6258698a281.png?size=1024",
+            "large": null,
+            "icon": null,
             "banner": null,
             "splash": null,
             "discovery_splash": null
@@ -206,14 +220,18 @@
         "search_list": {},
         "now_playing": {},
         "last_played": {
-            "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+            "class_type": "Video",
             "author": 349164237605568513,
+            "created_at": 1681726466,
+            "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
             "title": "Never gonna give you up",
             "picture": "https://img.youtube.com/vi/dQw4w9WgXcQ/default.jpg",
             "duration": "3:33",
             "channel_name": "Rick Astley",
             "channel_link": "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw",
-            "type": "Video"
+            "radio_name": null,
+            "radio_website": null,
+            "local_number": null
         }
     },
     "1092212185553449023": {
@@ -231,16 +249,16 @@
             "buffer": 600
         },
         "data": {
-            "id": 1092212185553449023,
-            "name": "F1 connoisseurs",
-            "key": "aghskw",
-            "member_count": 4,
-            "owner_id": 349164237605568513,
-            "owner_name": "Tomer27cz",
-            "created_at": "02/04/2023 22:21:17",
+            "id": null,
+            "name": null,
+            "key": null,
+            "member_count": null,
+            "owner_id": null,
+            "owner_name": null,
+            "created_at": null,
             "description": null,
-            "large": false,
-            "icon": "https://cdn.discordapp.com/icons/1092212185553449023/89f6eb38b02fbfd77f2715f77a0aa0ae.png?size=1024",
+            "large": null,
+            "icon": null,
             "banner": null,
             "splash": null,
             "discovery_splash": null
@@ -249,14 +267,18 @@
         "search_list": {},
         "now_playing": {},
         "last_played": {
-            "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+            "class_type": "Video",
             "author": 349164237605568513,
+            "created_at": 1681726466,
+            "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
             "title": "Never gonna give you up",
             "picture": "https://img.youtube.com/vi/dQw4w9WgXcQ/default.jpg",
             "duration": "3:33",
             "channel_name": "Rick Astley",
             "channel_link": "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw",
-            "type": "Video"
+            "radio_name": null,
+            "radio_website": null,
+            "local_number": null
         }
     },
     "837695985625858048": {
@@ -266,7 +288,7 @@
             "stopped": false,
             "loop": false,
             "is_radio": false,
-            "language": "es",
+            "language": "cs",
             "response_type": "short",
             "search_query": "Never gonna give you up",
             "buttons": false,
@@ -274,16 +296,16 @@
             "buffer": 600
         },
         "data": {
-            "id": 837695985625858048,
-            "name": "\u0421\u043e\u0432\u0435\u0442\u0441\u043a\u0438\u0439 \u0421\u043e\u044e\u0437",
-            "key": "g7oins",
-            "member_count": 38,
-            "owner_id": 416254812339044365,
-            "owner_name": "ElClassifido",
-            "created_at": "30/04/2021 14:24:46",
+            "id": null,
+            "name": null,
+            "key": null,
+            "member_count": null,
+            "owner_id": null,
+            "owner_name": null,
+            "created_at": null,
             "description": null,
-            "large": false,
-            "icon": "https://cdn.discordapp.com/icons/837695985625858048/56eef8957d6c9442cefd6308cb653251.png?size=1024",
+            "large": null,
+            "icon": null,
             "banner": null,
             "splash": null,
             "discovery_splash": null
@@ -292,14 +314,18 @@
         "search_list": {},
         "now_playing": {},
         "last_played": {
-            "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+            "class_type": "Video",
             "author": 349164237605568513,
+            "created_at": 1681726466,
+            "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
             "title": "Never gonna give you up",
             "picture": "https://img.youtube.com/vi/dQw4w9WgXcQ/default.jpg",
             "duration": "3:33",
             "channel_name": "Rick Astley",
             "channel_link": "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw",
-            "type": "Video"
+            "radio_name": null,
+            "radio_website": null,
+            "local_number": null
         }
     }
 }
