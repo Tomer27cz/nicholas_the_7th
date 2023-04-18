@@ -73,13 +73,13 @@ class Bot(commands.Bot):
             return
         elif before.channel is None:
             voice = after.channel.guild.voice_client
-            time = 0
+            time_var= 0
             while True:
                 await asyncio.sleep(1)
-                time +=  1
+                time_var +=  1
                 if voice.is_playing() and not voice.is_paused():
-                    time = 0
-                if time >= guild[member.guild.id].options.buffer:  # how many seconds of inactivity to disconnect | 300 = 5min | 600 = 10min
+                    time_var = 0
+                if time_var >= guild[member.guild.id].options.buffer:  # how many seconds of inactivity to disconnect | 300 = 5min | 600 = 10min
                     guild[member.guild.id].options.stopped = True
                     voice.stop()
                     await voice.disconnect()
@@ -106,7 +106,7 @@ class Bot(commands.Bot):
             return
         if not message.guild:
             try:
-                await message.channel.send(f"I'm sorry, but I only work in servers.\n\nIf you want me to join your server, you can invite me with this link: https://discord.com/api/oauth2/authorize?client_id=1007004463933952120&permissions=3198017&scope=bot\n\nIf you have any questions, you can DM my developer <@!{my_id}>#4272")
+                await message.channel.send(f"I'm sorry, but I only work in servers.\n\nIf you want me to join your server, you can invite me with this link: {config.INVITE_URL}\n\nIf you have any questions, you can DM my developer <@!{my_id}>#4272")
             except discord.errors.Forbidden:
                 pass
         else:
@@ -338,6 +338,7 @@ class Guild:
         self.search_list = []
         self.now_playing = None
         self.last_played = VideoClass('Video',
+                                      created_at=1000212400,
                                       url='https://www.youtube.com/watch?v=dQw4w9WgXcQ',
                                       author=my_id,
                                       title='Never gonna give you up',
@@ -482,7 +483,7 @@ def json_to_guilds(guilds_dict):
 log('no guild', "--------------------------------------- NEW / REBOOTED ----------------------------------------")
 
 
-build_new_guilds = True
+build_new_guilds = False
 
 with open('src/radio.json', 'r') as file:
     radio_dict = json.load(file)
@@ -582,7 +583,7 @@ def get_username(user_id: int):
         name = bot.get_user(int(user_id)).name
         return name
     except Exception as e:
-        print(f"get_username failed for ({user_id}) : {e}")
+        log('no guild', f"get_username failed for ({user_id}) : {e}")
         return user_id
 
 
@@ -631,6 +632,7 @@ def create_embed(video, name, guild_id):
     embed.add_field(name=tg(guild_id, 'Author'), value=f'[{video.channel_name}]({video.channel_link})')
     embed.add_field(name=tg(guild_id, 'URL'), value=f'[{video.url}]({video.url})')
     embed.set_thumbnail(url=video.picture)
+    embed.set_footer(text=f'Requested at {strftime("%Y/%m/%d %H:%M:%S", gmtime(video.created_at))}')
 
     return embed
 
@@ -690,26 +692,23 @@ class YTDLSource(discord.PCMVolumeTransformer):
     def __init__(self, ctx: commands.Context, source: discord.FFmpegPCMAudio, *, data: dict):
         super().__init__(source, guild[ctx.guild.id].options.volume)
 
-        self.requester = ctx.author
-        self.channel = ctx.channel
-        self.data = data
-
-        self.uploader = data.get('uploader')
-        self.uploader_url = data.get('uploader_url')
-        date = data.get('upload_date')
-        self.upload_date = date[6:8] + '.' + date[4:6] + '.' + date[0:4]
-        self.title = data.get('title')
-        self.thumbnail = data.get('thumbnail')
-        self.description = data.get('description')
-        self.tags = data.get('tags')
-        self.url = data.get('webpage_url')
-        self.views = data.get('view_count')
-        self.likes = data.get('like_count')
-        self.dislikes = data.get('dislike_count')
-        self.stream_url = data.get('url')
-
-    def __str__(self):
-        return '**{0.title}** by **{0.uploader}**'.format(self)
+        # self.requester = ctx.author
+        # self.channel = ctx.channel
+        # self.data = data
+        #
+        # self.uploader = data.get('uploader')
+        # self.uploader_url = data.get('uploader_url')
+        # date = data.get('upload_date')
+        # self.upload_date = date[6:8] + '.' + date[4:6] + '.' + date[0:4]
+        # self.title = data.get('title')
+        # self.thumbnail = data.get('thumbnail')
+        # self.description = data.get('description')
+        # self.tags = data.get('tags')
+        # self.url = data.get('webpage_url')
+        # self.views = data.get('view_count')
+        # self.likes = data.get('like_count')
+        # self.dislikes = data.get('dislike_count')
+        # self.stream_url = data.get('url')
 
     @classmethod
     async def create_source(cls, ctx: commands.Context, cr_search: str, *, cr_loop: asyncio.BaseEventLoop = None):
@@ -751,24 +750,6 @@ class YTDLSource(discord.PCMVolumeTransformer):
                     raise YTDLError('Couldn\'t retrieve any matches for `{}`'.format(webpage_url))
 
         return cls(ctx, discord.FFmpegPCMAudio(info['url'], **cls.FFMPEG_OPTIONS), data=info)
-
-    @staticmethod
-    def parse_duration(duration: int):
-        minutes, seconds = divmod(duration, 60)
-        hours, minutes = divmod(minutes, 60)
-        days, hours = divmod(hours, 24)
-
-        duration = []
-        if days > 0:
-            duration.append('{} days'.format(days))
-        if hours > 0:
-            duration.append('{} hours'.format(hours))
-        if minutes > 0:
-            duration.append('{} minutes'.format(minutes))
-        if seconds > 0:
-            duration.append('{} seconds'.format(seconds))
-
-        return ', '.join(duration)
 
 
 # ------------------------------------ View Classes --------------------------------------------------------------------
@@ -1442,6 +1423,7 @@ async def queue_command_def(ctx: commands.Context,
             await ctx.reply(message)
 
         save_json()
+        print('returned from queue')
         return [True, message, None]
 
 
@@ -1692,13 +1674,17 @@ async def play_def(ctx: commands.Context,
         if not response[0]:
             return
 
+    print('after response queue')
+
     voice = ctx.voice_client
 
     if not voice or voice is None:
         # noinspection PyUnresolvedReferences
         if not ctx.interaction.response.is_done():
             await ctx.defer()
+        print('after defer')
         response = await join_def(ctx, None, True)
+        print('after join')
         voice = ctx.voice_client
         if not response:
             return
