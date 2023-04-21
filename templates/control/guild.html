@@ -98,7 +98,7 @@
                         <p class="q-text q-3">{{struct_to_time(guild.last_played.created_at, first='time')}}</p>
                     </div>
                     <div class="q-item0 q-wa q-self-center q-items-center">
-                        <form action="#" method="POST">
+                        <form onsubmit="document.location.reload(true)" method="POST">
                             {% if admin == True %}
                             <button class="btn btn-outline btn-primary btn-sm btn-m" type="button" data-bs-toggle="modal" data-bs-target=#videoEditModal_lp>Edit</button>
                             {% endif %}
@@ -142,7 +142,7 @@
                         <p class="q-text q-3">{{struct_to_time(guild.now_playing.created_at, first='time')}}</p>
                     </div>
                     <div class="q-item0 q-wa q-self-center q-items-center">
-                        <form action="#" method="POST">
+                        <form onsubmit="document.location.reload(true)" method="POST">
                             {% if admin == True %}
                             <button class="btn btn-outline btn-primary btn-sm btn-m" type="button" data-bs-toggle="modal" data-bs-target=#videoEditModal_np>Edit</button>
                             {% endif %}
@@ -163,32 +163,33 @@
 </div>
 
 <!-- Control -->
-<div class="t-cols">
-    <div class="t-col div-login">
+<div class="q-div">
+    <div class="q-item1 div-login">
         <form action="#" method="POST">
-            <div class="d-flex">
-                <button class="btn btn-outline btn-secondary btn-sm btn-m flex-fill" type="submit" name="skip_btn">Skip</button>
-                <button class="btn btn-outline btn-secondary btn-sm btn-m flex-fill" type="submit" name="shuffle_btn">Shuffle</button>
-                <button class="btn btn-outline btn-danger btn-sm btn-m flex-fill" type="submit" name="clear_btn">Clear</button>
+            <div class="e-btn-div">
+                <button class="btn btn-outline btn-secondary btn-sm btn-m e-btn" type="submit" name="skip_btn">Skip</button>
+                <button class="btn btn-outline btn-secondary btn-sm btn-m e-btn" type="submit" name="shuffle_btn">Shuffle</button>
+                <button class="btn btn-outline btn-danger btn-sm btn-m e-btn" type="submit" name="clear_btn">Clear</button>
             </div>
         </form>
     </div>
-    <div class="t-col div-login">
+    <div class="q-item1 div-login">
         <form action="#" method="POST">
-            <div class="d-flex">
-                <button class="btn btn-outline btn-secondary btn-sm btn-m flex-fill" type="submit" name="pause_btn">Pause</button>
-                <button class="btn btn-outline btn-secondary btn-sm btn-m flex-fill" type="submit" name="resume_btn">Resume</button>
-                <button class="btn btn-outline btn-danger btn-sm btn-m flex-fill" type="submit" name="stop_btn">Stop</button>
+            <div class="e-btn-div">
+                <button class="btn btn-outline btn-primary btn-sm btn-m e-btn" type="submit" name="play_btn">Play</button>
+                <button class="btn btn-outline btn-secondary btn-sm btn-m e-btn" type="submit" name="pause_btn">Pause</button>
+                <button class="btn btn-outline btn-secondary btn-sm btn-m e-btn" type="submit" name="resume_btn">Resume</button>
+                <button class="btn btn-outline btn-danger btn-sm btn-m e-btn" type="submit" name="stop_btn">Stop</button>
             </div>
         </form>
     </div>
-    <div class="t-col div-login">
+    <div class="q-item1 div-login">
         <form action="#" method="POST">
             <div class="d-flex">
                 <div class="btn-m">
-                    <input type="number" class="form-c form-control btn-m flex-fill" name="volumeInput" min="0" max="200" value={{volume}} oninput="this.form.volumeRange.value=this.value" />
+                    <input type="number" class="form-c form-control btn-m flex-fill" name="volumeInput" min="0" max="200" value="100" oninput="this.form.volumeRange.value=this.value">
                 </div>
-                <input type="range" class="form-r form-range btn-m" name="volumeRange" min="0" max="200" value={{volume}} oninput="this.form.volumeInput.value=this.value" />
+                <input type="range" class="form-r form-range btn-m" name="volumeRange" min="0" max="200" value="100" oninput="this.form.volumeInput.value=this.value">
                 <button class="btn btn-outline btn-primary btn-sm btn-m flex-fill" type="submit" name="volume_btn">Set</button>
             </div>
         </form>
@@ -207,7 +208,7 @@
     </button>
 </div>
 
-<form method="POST" action="#">
+<form method="POST" onsubmit="document.location.reload(true)">
     {% for track in guild.queue %}
         <div class="q-container">
             <div class="q-div">
@@ -291,7 +292,7 @@
                 </div>
                 <div class="info-modal">
                     <br>
-                    <form action="#" method="POST">
+                    <form onsubmit="document.location.reload(true)" method="POST">
                     {% for key, value in track.__dict__.items() %}
                         <div class="e-div">
                             <label for="{{guild.queue.index(track)}}_{{key}}" class="e-label">{{key}}</label>

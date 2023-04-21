@@ -135,7 +135,8 @@
         "Player **already paused!**": "Player **already paused!**",
         "That is not a **guild id!**": "That is not a **guild id!**",
         "That guild doesn't exist or the bot is not in it": "That guild doesn't exist or the bot is not in it",
-        "Nothing selected": "Nothing selected"
+        "Nothing selected": "Nothing selected",
+        "No songs in queue": "No songs in queue"
     },
     "cs": {
         "search": "Vyhledejte na youtube zadan\u00fd dotaz",
@@ -268,9 +269,13 @@
         "last": "Ukazuje posledn\u00ed p\u0159ehr\u00e1vanou p\u00edse\u0148",
         "The commands from": "P\u0159\u00edkazy z",
         "Arguments": "Argumenty",
-        "Player **stopped!**": "Přehr\u00e1va\u010d ** zastaven! **",
-        "Player **paused!**": "Přehrávač ** pozastaven\u00fd! **",
-        "Bot is not connected to a voice channel": "Bot nen\u00ed p\u0159ipojen k hlasov\u00e9mu kan\u00e1lu"
+        "Player **stopped!**": "P\u0159ehr\u00e1va\u010d ** zastaven! **",
+        "Player **paused!**": "P\u0159ehr\u00e1va\u010d ** pozastaven\u00fd! **",
+        "Bot is not connected to a voice channel": "Bot nen\u00ed p\u0159ipojen k hlasov\u00e9mu kan\u00e1lu",
+        "key": "Zobrazuje kl\u00ed\u010d pro server",
+        "Unknown type": "Nezn\u00e1m\u00fd typ",
+        "Player **resumed!**": "Hr\u00e1\u010d ** obnoven! **",
+        "No songs in queue": "\u017d\u00e1dn\u00e9 p\u00edsn\u011b ve front\u011b"
     },
     "de": {
         "search": "Suchen Sie YouTube nach der bereitgestellten Abfrage",
@@ -405,7 +410,11 @@
         "Arguments": "Argumente",
         "Player **stopped!**": "Spieler ** gestoppt! **",
         "Player **paused!**": "Spieler ** Pause! **",
-        "Bot is not connected to a voice channel": "Bot ist nicht mit einem Sprachkanal verbunden"
+        "Bot is not connected to a voice channel": "Bot ist nicht mit einem Sprachkanal verbunden",
+        "key": "Zeigt den Schl\u00fcssel f\u00fcr den Server an",
+        "Unknown type": "Unbekannter Typ",
+        "Player **resumed!**": "Spieler ** wieder aufgenommen! **",
+        "No songs in queue": "Keine Songs in der Warteschlange"
     },
     "eo": {
         "search": "Ser\u0109u YouTube",
@@ -540,7 +549,11 @@
         "Arguments": "Argumentoj",
         "Player **stopped!**": "Ludanto ** haltis! **",
         "Player **paused!**": "Ludanto ** pa\u016dzis! **",
-        "Bot is not connected to a voice channel": "Bot ne estas ligita al vo\u0109a kanalo"
+        "Bot is not connected to a voice channel": "Bot ne estas ligita al vo\u0109a kanalo",
+        "key": "Montras la \u015dlosilon por la servilo",
+        "Unknown type": "Nekonata tipo",
+        "Player **resumed!**": "Ludanto ** rekomencis! **",
+        "No songs in queue": "Neniuj kantoj en vosto"
     },
     "es": {
         "search": "Busque en YouTube la consulta proporcionada",
@@ -675,7 +688,11 @@
         "Arguments": "Argumentos",
         "Player **stopped!**": "\u00a1Jugador ** se detuvo! **",
         "Player **paused!**": "\u00a1Jugador ** Paused! **",
-        "Bot is not connected to a voice channel": "Bot no est\u00e1 conectado a un canal de voz"
+        "Bot is not connected to a voice channel": "Bot no est\u00e1 conectado a un canal de voz",
+        "key": "Muestra la clave para el servidor",
+        "Unknown type": "Tipo desconocido",
+        "Player **resumed!**": "\u00a1Jugador ** reanudado! **",
+        "No songs in queue": "No hay canciones en la cola"
     },
     "fr": {
         "search": "Recherchez YouTube pour la requ\u00eate fournie",
@@ -810,7 +827,11 @@
         "Arguments": "Arguments",
         "Player **stopped!**": "Joueur ** arr\u00eat\u00e9! **",
         "Player **paused!**": "Joueur ** Ust\u00e9! **",
-        "Bot is not connected to a voice channel": "Le bot n'est pas connect\u00e9 \u00e0 un canal vocal"
+        "Bot is not connected to a voice channel": "Le bot n'est pas connect\u00e9 \u00e0 un canal vocal",
+        "key": "Affiche la cl\u00e9 du serveur",
+        "Unknown type": "Type inconnu",
+        "Player **resumed!**": "Joueur ** repris! **",
+        "No songs in queue": "Pas de chansons dans la file d'attente"
     },
     "it": {
         "search": "Cerca YouTube per la query fornita",
@@ -945,7 +966,11 @@
         "Arguments": "argomenti",
         "Player **stopped!**": "Giocatore ** fermato! **",
         "Player **paused!**": "Giocatore ** in pausa! **",
-        "Bot is not connected to a voice channel": "Bot non \u00e8 collegato a un canale vocale"
+        "Bot is not connected to a voice channel": "Bot non \u00e8 collegato a un canale vocale",
+        "key": "Mostra la chiave per il server",
+        "Unknown type": "Tipo sconosciuto",
+        "Player **resumed!**": "Giocatore ** ripreso! **",
+        "No songs in queue": "Nessuna canzone in coda"
     },
     "ja": {
         "search": "YouTube\u3092\u691c\u7d22\u3057\u3066\u304f\u3060\u3055\u3044",
@@ -1080,7 +1105,11 @@
         "Arguments": "\u8b70\u8ad6",
         "Player **stopped!**": "\u30d7\u30ec\u30fc\u30e4\u30fc**\u505c\u6b62\uff01**",
         "Player **paused!**": "\u30d7\u30ec\u30a4\u30e4\u30fc**\u4e00\u6642\u505c\u6b62\uff01**",
-        "Bot is not connected to a voice channel": "\u30dc\u30c3\u30c8\u306f\u97f3\u58f0\u30c1\u30e3\u30cd\u30eb\u306b\u63a5\u7d9a\u3055\u308c\u3066\u3044\u307e\u305b\u3093"
+        "Bot is not connected to a voice channel": "\u30dc\u30c3\u30c8\u306f\u97f3\u58f0\u30c1\u30e3\u30cd\u30eb\u306b\u63a5\u7d9a\u3055\u308c\u3066\u3044\u307e\u305b\u3093",
+        "key": "\u30b5\u30fc\u30d0\u30fc\u306e\u30ad\u30fc\u3092\u8868\u793a\u3057\u307e\u3059",
+        "Unknown type": "\u4e0d\u660e\u306a\u30bf\u30a4\u30d7",
+        "Player **resumed!**": "\u30d7\u30ec\u30a4\u30e4\u30fc**\u518d\u958b\uff01**",
+        "No songs in queue": "\u30ad\u30e5\u30fc\u306b\u66f2\u306f\u3042\u308a\u307e\u305b\u3093"
     },
     "ko": {
         "search": "\uc81c\uacf5\ub41c \ucffc\ub9ac\ub97c \uac80\uc0c9\ud558\uc2ed\uc2dc\uc624",
@@ -1215,7 +1244,11 @@
         "Arguments": "\ub17c\uc7c1",
         "Player **stopped!**": "\ud50c\ub808\uc774\uc5b4 ** \uc911\uc9c0! **",
         "Player **paused!**": "\ud50c\ub808\uc774\uc5b4 ** \uc77c\uc2dc \uc911\uc9c0! **",
-        "Bot is not connected to a voice channel": "\ubd07\uc740 \uc74c\uc131 \ucc44\ub110\uc5d0 \uc5f0\uacb0\ub418\uc5b4 \uc788\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4"
+        "Bot is not connected to a voice channel": "\ubd07\uc740 \uc74c\uc131 \ucc44\ub110\uc5d0 \uc5f0\uacb0\ub418\uc5b4 \uc788\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4",
+        "key": "\uc11c\ubc84\uc758 \ud0a4\ub97c \ubcf4\uc5ec\uc90d\ub2c8\ub2e4",
+        "Unknown type": "\uc54c \uc218\uc5c6\ub294 \uc720\ud615",
+        "Player **resumed!**": "\ud50c\ub808\uc774\uc5b4 ** \uc7ac\uac1c! **",
+        "No songs in queue": "\ub300\uae30\uc5f4\uc5d0\ub294 \ub178\ub798\uac00 \uc5c6\uc2b5\ub2c8\ub2e4"
     },
     "la": {
         "search": "Search YouTube pro provisum query",
@@ -1350,7 +1383,11 @@
         "Arguments": "Rationes",
         "Player **stopped!**": "Ludio ludius ** cessaverunt **",
         "Player **paused!**": "Ludio ludius ** paulum! **",
-        "Bot is not connected to a voice channel": "Bot non pertinet ad vocem alveo"
+        "Bot is not connected to a voice channel": "Bot non pertinet ad vocem alveo",
+        "key": "Monstrat clavem pro servo",
+        "Unknown type": "Ignotum type",
+        "Player **resumed!**": "Ludio ludius ** resumpsit! **",
+        "No songs in queue": "Nemo carmina in queue"
     },
     "zh": {
         "search": "\u641c\u7d22YouTube\u63d0\u4f9b\u7684\u67e5\u8be2",
@@ -1485,7 +1522,11 @@
         "Arguments": "\u4e89\u8bba",
         "Player **stopped!**": "\u73a9\u5bb6**\u505c\u6b62\u4e86\uff01**",
         "Player **paused!**": "\u73a9\u5bb6**\u6682\u505c\uff01**",
-        "Bot is not connected to a voice channel": "\u673a\u5668\u4eba\u672a\u8fde\u63a5\u5230\u8bed\u97f3\u9891\u9053"
+        "Bot is not connected to a voice channel": "\u673a\u5668\u4eba\u672a\u8fde\u63a5\u5230\u8bed\u97f3\u9891\u9053",
+        "key": "\u663e\u793a\u670d\u52a1\u5668\u7684\u5bc6\u94a5",
+        "Unknown type": "\u672a\u77e5\u7c7b\u578b",
+        "Player **resumed!**": "\u7403\u5458**\u6062\u590d\uff01**",
+        "No songs in queue": "\u961f\u5217\u4e2d\u6ca1\u6709\u6b4c\u66f2"
     },
     "nl": {
         "search": "Zoek YouTube naar de verstrekte query",
@@ -1620,7 +1661,11 @@
         "Arguments": "Argumenten",
         "Player **stopped!**": "Speler ** gestopt! **",
         "Player **paused!**": "Speler ** gepauzeerd! **",
-        "Bot is not connected to a voice channel": "Bot is niet verbonden met een spraakkanaal"
+        "Bot is not connected to a voice channel": "Bot is niet verbonden met een spraakkanaal",
+        "key": "Toont de sleutel voor de server",
+        "Unknown type": "Onbekend type",
+        "Player **resumed!**": "Speler ** hervat! **",
+        "No songs in queue": "Geen nummers in wachtrij"
     },
     "pl": {
         "search": "Wyszukaj YouTube, aby uzyska\u0107 dostarczone zapytanie",
@@ -1755,7 +1800,11 @@
         "Arguments": "Argumenty",
         "Player **stopped!**": "Gracz ** zatrzymany! **",
         "Player **paused!**": "Gracz ** Zatrzymany! **",
-        "Bot is not connected to a voice channel": "Bot nie jest pod\u0142\u0105czony do kana\u0142u g\u0142osowego"
+        "Bot is not connected to a voice channel": "Bot nie jest pod\u0142\u0105czony do kana\u0142u g\u0142osowego",
+        "key": "Pokazuje klucz dla serwera",
+        "Unknown type": "Nieznany typ",
+        "Player **resumed!**": "Gracz ** wznowiony! **",
+        "No songs in queue": "Brak piosenek w kolejce"
     },
     "pt": {
         "search": "Pesquise o YouTube pela consulta fornecida",
@@ -1890,7 +1939,11 @@
         "Arguments": "Argumentos",
         "Player **stopped!**": "Jogador ** parou! **",
         "Player **paused!**": "Jogador ** parado! **",
-        "Bot is not connected to a voice channel": "Bot n\u00e3o est\u00e1 conectado a um canal de voz"
+        "Bot is not connected to a voice channel": "Bot n\u00e3o est\u00e1 conectado a um canal de voz",
+        "key": "Mostra a chave para o servidor",
+        "Unknown type": "Tipo desconhecido",
+        "Player **resumed!**": "Jogador ** retomado! **",
+        "No songs in queue": "Sem m\u00fasicas na fila"
     },
     "ru": {
         "search": "\u041f\u043e\u0438\u0441\u043a YouTube \u0434\u043b\u044f \u043f\u0440\u0435\u0434\u043e\u0441\u0442\u0430\u0432\u043b\u0435\u043d\u043d\u043e\u0433\u043e \u0437\u0430\u043f\u0440\u043e\u0441\u0430",
@@ -2025,7 +2078,11 @@
         "Arguments": "\u0410\u0440\u0433\u0443\u043c\u0435\u043d\u0442\u044b",
         "Player **stopped!**": "\u0418\u0433\u0440\u043e\u043a ** \u043e\u0441\u0442\u0430\u043d\u043e\u0432\u0438\u043b\u0441\u044f! **",
         "Player **paused!**": "\u0418\u0433\u0440\u043e\u043a ** \u0441\u0434\u0435\u043b\u0430\u043b \u043f\u0430\u0443\u0437\u0443! **",
-        "Bot is not connected to a voice channel": "\u0411\u043e\u0442 \u043d\u0435 \u043f\u043e\u0434\u043a\u043b\u044e\u0447\u0435\u043d \u043a \u0433\u043e\u043b\u043e\u0441\u043e\u0432\u043e\u043c\u0443 \u043a\u0430\u043d\u0430\u043b\u0443"
+        "Bot is not connected to a voice channel": "\u0411\u043e\u0442 \u043d\u0435 \u043f\u043e\u0434\u043a\u043b\u044e\u0447\u0435\u043d \u043a \u0433\u043e\u043b\u043e\u0441\u043e\u0432\u043e\u043c\u0443 \u043a\u0430\u043d\u0430\u043b\u0443",
+        "key": "\u041f\u043e\u043a\u0430\u0437\u044b\u0432\u0430\u0435\u0442 \u043a\u043b\u044e\u0447 \u0434\u043b\u044f \u0441\u0435\u0440\u0432\u0435\u0440\u0430",
+        "Unknown type": "\u041d\u0435\u0438\u0437\u0432\u0435\u0441\u0442\u043d\u044b\u0439 \u0442\u0438\u043f",
+        "Player **resumed!**": "\u0418\u0433\u0440\u043e\u043a ** \u0432\u043e\u0437\u043e\u0431\u043d\u043e\u0432\u0438\u043b\u0441\u044f! **",
+        "No songs in queue": "\u041d\u0435\u0442 \u043f\u0435\u0441\u0435\u043d \u0432 \u043e\u0447\u0435\u0440\u0435\u0434\u0438"
     },
     "sv": {
         "search": "S\u00f6k YouTube efter den medf\u00f6ljande fr\u00e5gan",
@@ -2160,7 +2217,11 @@
         "Arguments": "Argument",
         "Player **stopped!**": "Spelare ** STOPPED! **",
         "Player **paused!**": "Spelare ** pausade! **",
-        "Bot is not connected to a voice channel": "Bot \u00e4r inte ansluten till en r\u00f6stkanal"
+        "Bot is not connected to a voice channel": "Bot \u00e4r inte ansluten till en r\u00f6stkanal",
+        "key": "Visar nyckeln f\u00f6r servern",
+        "Unknown type": "Ok\u00e4nd typ",
+        "Player **resumed!**": "Spelare ** \u00e5terupptogs! **",
+        "No songs in queue": "Inga l\u00e5tar i k\u00f6"
     },
     "tr": {
         "search": "Verilen sorgu i\u00e7in youtube aray\u0131n",
@@ -2295,6 +2356,10 @@
         "Arguments": "Arg\u00fcmanlar",
         "Player **stopped!**": "Oyuncu ** durdu! **",
         "Player **paused!**": "Oyuncu ** duraklad\u0131! **",
-        "Bot is not connected to a voice channel": "Bot bir ses kanal\u0131na ba\u011fl\u0131 de\u011fil"
+        "Bot is not connected to a voice channel": "Bot bir ses kanal\u0131na ba\u011fl\u0131 de\u011fil",
+        "key": "Sunucunun anahtar\u0131n\u0131 g\u00f6sterir",
+        "Unknown type": "Bilinmeyen T\u00fcr",
+        "Player **resumed!**": "Oyuncu ** Devam Edildi! **",
+        "No songs in queue": "Kuyrukta \u015eark\u0131 Yok"
     }
 }

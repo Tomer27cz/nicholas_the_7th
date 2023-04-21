@@ -90,7 +90,7 @@ class Bot(commands.Bot):
 
     async def on_command_error(self, ctx, error):
         if isinstance(error, commands.CheckFailure):
-            log(ctx.guild.id, f'Error for ({ctx.author}) -> ({ctx.command}) with error ({error})')
+            log(ctx, f'Error for ({ctx.author}) -> ({ctx.command}) with error ({error})')
             await ctx.reply("（ ͡° ͜ʖ ͡°)つ━☆・。\n"
                             "⊂　　 ノ 　　　・゜+.\n"
                             "　しーＪ　　　°。+ ´¨)\n"
@@ -119,6 +119,12 @@ class WebData:
         self.guild_id = guild_id
         self.author = author
         self.author_id = author_id
+
+    async def reply(self, content, **kwargs):
+        pass
+
+    async def send(self, content, **kwargs):
+        pass
 
 
 class Options:
@@ -387,8 +393,16 @@ def struct_to_time(struct_time, first='date'):
 
 # ------------ PRINT --------------------
 
-def log(guild_id, text_data, options=None, log_type='text', author=None):
+def log(ctx, text_data, options=None, log_type='text', author=None):
     now_time_str = struct_to_time(time())
+
+
+    if type(ctx) == commands.Context:
+        guild_id = ctx.guild.id
+    elif type(ctx) == WebData:
+        guild_id = ctx.guild_id
+    else:
+        guild_id = ctx
     
     if log_type == 'command':
         message = f"{now_time_str} | C {guild_id} | Command ({text_data}) was requested by ({author}) -> {options}"
@@ -711,11 +725,11 @@ class YTDLSource(discord.PCMVolumeTransformer):
 
     ytdl = yt_dlp.YoutubeDL(YTDL_OPTIONS)
 
-    def __init__(self, ctx: commands.Context, source: discord.FFmpegPCMAudio):
-        super().__init__(source, guild[ctx.guild.id].options.volume)
+    def __init__(self, guild_id, source: discord.FFmpegPCMAudio):
+        super().__init__(source, guild[guild_id].options.volume)
 
     @classmethod
-    async def create_source(cls, ctx: commands.Context, cr_search: str, *, cr_loop: asyncio.BaseEventLoop = None):
+    async def create_source(cls, guild_id, cr_search: str, *, cr_loop: asyncio.BaseEventLoop = None):
         cr_loop = cr_loop or asyncio.get_event_loop()
 
         partial = functools.partial(cls.ytdl.extract_info, cr_search, download=False, process=False)
@@ -753,7 +767,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
                 except IndexError:
                     raise YTDLError('Couldn\'t retrieve any matches for `{}`'.format(webpage_url))
 
-        return cls(ctx, discord.FFmpegPCMAudio(info['url'], **cls.FFMPEG_OPTIONS))
+        return cls(guild_id, discord.FFmpegPCMAudio(info['url'], **cls.FFMPEG_OPTIONS))
 
 
 # ------------------------------------ View Classes --------------------------------------------------------------------
@@ -763,8 +777,9 @@ class PlayerControlView(View):
 
     def __init__(self, ctx):
         super().__init__(timeout=7200)
-        self.guild = ctx.guild
-        self.guild_id = ctx.guild.id
+        if type(ctx) == commands.Context:
+            self.guild = ctx.guild
+            self.guild_id = ctx.guild.id
 
     @discord.ui.button(emoji=react_dict['play'], style=discord.ButtonStyle.blurple, custom_id='play')
     async def callback(self, interaction, button):
@@ -823,11 +838,13 @@ class SearchOptionView(View):
 
     def __init__(self, ctx, force=False, from_play=False):
         super().__init__(timeout=180)
-        self.ctx = ctx
-        self.guild = ctx.guild
-        self.guild_id = ctx.guild.id
-        self.force = force
-        self.from_play = from_play
+
+        if type(ctx) == commands.Context:
+            self.ctx = ctx
+            self.guild = ctx.guild
+            self.guild_id = ctx.guild.id
+            self.force = force
+            self.from_play = from_play
 
     # noinspection PyUnusedLocal
     @discord.ui.button(emoji=react_dict['1'], style=discord.ButtonStyle.blurple, custom_id='1')
@@ -902,15 +919,16 @@ class SearchOptionView(View):
 
 
 class PlaylistOptionView(View):
-
     def __init__(self, ctx, url, force=False, from_play=False):
         super().__init__(timeout=180)
-        self.ctx = ctx
-        self.url = url
-        self.guild = ctx.guild
-        self.guild_id = ctx.guild.id
-        self.force = force
-        self.from_play = from_play
+
+        if type(ctx) == commands.Context:
+            self.ctx = ctx
+            self.url = url
+            self.guild = ctx.guild
+            self.guild_id = ctx.guild.id
+            self.force = force
+            self.from_play = from_play
 
     # noinspection PyUnusedLocal
     @discord.ui.button(label='Yes', style=discord.ButtonStyle.blurple)
@@ -1345,18 +1363,24 @@ async def probe_command(ctx: commands.Context,
 # --------------------------------------------- COMMAND FUNCTIONS ------------------------------------------------------
 
 
+def ctx_check(ctx):
+    if type(ctx) == commands.Context:
+        return True, ctx.guild.id, ctx.author.id, ctx.guild
+    else:
+        return False, ctx.guild_id, ctx.author_id, bot.get_guild(ctx.guild_id)
+
+
 # --------------------------------------- QUEUE --------------------------------------------------
 
-async def queue_command_def(ctx: commands.Context,
+async def queue_command_def(ctx,
                         url=None,
                         position: int = None,
                         mute_response: bool = False,
                         force: bool = False,
                         from_play: bool = False,
                         ):
-    log(ctx.guild.id, 'queue_command_def', [url, position, mute_response, force, from_play], log_type='function', author=ctx.author)
-    guild_id = ctx.guild.id
-    author = ctx.author
+    log(ctx, 'queue_command_def', [url, position, mute_response, force, from_play], log_type='function', author=ctx.author)
+    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
 
     if not url:
         message = tg(guild_id, "`url` is **required**")
@@ -1368,8 +1392,9 @@ async def queue_command_def(ctx: commands.Context,
     elif url[0:33] == "https://www.youtube.com/playlist?":
         try:
             # noinspection PyUnresolvedReferences
-            if not ctx.interaction.response.is_done():
-                await ctx.defer()
+            if is_ctx:
+                if not ctx.interaction.response.is_done():
+                    await ctx.defer()
             playlist_videos = youtubesearchpython.Playlist.getVideos(url)
         except KeyError:
             log(guild_id, "------------------------------- playlist -------------------------")
@@ -1392,12 +1417,12 @@ async def queue_command_def(ctx: commands.Context,
             playlist_songs += 1
             # noinspection PyTypeChecker
             url = f"https://www.youtube.com/watch?v={playlist_videos[index]['id']}"
-            video = VideoClass('Video', author.id, url)
+            video = VideoClass('Video', author_id, url)
 
             if position or position == 0: guild[guild_id].queue.insert(position, video)
             else: guild[guild_id].queue.append(video)
 
-        message = f"`{playlist_songs}` {tg(guild_id, 'songs from playlist added to queue!')} -> [Control Panel](http://nicholasthe7th.duckdns.org:5420/guild/{ctx.guild.id}&key={guild[ctx.guild.id].data.key})"
+        message = f"`{playlist_songs}` {tg(guild_id, 'songs from playlist added to queue!')} -> [Control Panel](http://nicholasthe7th.duckdns.org:5420/guild/{guild_id}&key={guild[guild_id].data.key})"
         if not mute_response:
             await ctx.reply(message)
 
@@ -1416,17 +1441,17 @@ async def queue_command_def(ctx: commands.Context,
 
         if video_id is None:
             await search_command_def(ctx, url, 'short', force, from_play)
-            message = f'[`{url}`](<{url}>) {tg(guild_id, "is not supported!")} -> [Control Panel](http://nicholasthe7th.duckdns.org:5420/guild/{ctx.guild.id}&key={guild[ctx.guild.id].data.key})'
+            message = f'[`{url}`](<{url}>) {tg(guild_id, "is not supported!")} -> [Control Panel](http://nicholasthe7th.duckdns.org:5420/guild/{guild_id}&key={guild[guild_id].data.key})'
             save_json()
             return [False, message]
 
         url = f"https://www.youtube.com/watch?v={video_id}"
-        video = VideoClass('Video', author.id, url)
+        video = VideoClass('Video', author_id, url)
 
         if position or position == 0: guild[guild_id].queue.insert(position, video)
         else: guild[guild_id].queue.append(video)
 
-        message = f'[`{video.title}`](<{video.url}>) {tg(guild_id, "added to queue!")} -> [Control Panel](http://nicholasthe7th.duckdns.org:5420/guild/{ctx.guild.id}&key={guild[ctx.guild.id].data.key})'
+        message = f'[`{video.title}`](<{video.url}>) {tg(guild_id, "added to queue!")} -> [Control Panel](http://nicholasthe7th.duckdns.org:5420/guild/{guild_id}&key={guild[guild_id].data.key})'
 
         if not mute_response:
             await ctx.reply(message)
@@ -1435,17 +1460,17 @@ async def queue_command_def(ctx: commands.Context,
         return [True, message, None]
 
 
-async def next_up_def(ctx: commands.Context,
+async def next_up_def(ctx,
                  url,
                  ephemeral: bool = False
                  ):
-    log(ctx.guild.id, 'next_up_def', [url, ephemeral], log_type='function', author=ctx.author)
+    log(ctx, 'next_up_def', [url, ephemeral], log_type='function', author=ctx.author)
+    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
     response = await queue_command_def(ctx, url, 0, True, True)
 
     if response[0]:
-
-        if ctx.voice_client:
-            if not ctx.voice_client.is_playing():
+        if guild_object.voice_client:
+            if not guild_object.voice_client.is_playing():
                 await play_def(ctx)
                 return
         else:
@@ -1460,24 +1485,28 @@ async def next_up_def(ctx: commands.Context,
     save_json()
 
 
-async def skip_def(ctx: commands.Context):
-    log(ctx.guild.id, 'skip_def', [], log_type='function', author=ctx.author)
-    guild_id = ctx.guild.id
-    if not ctx.voice_client.is_playing():
-        await ctx.reply(tg(guild_id, "There is **nothing to skip!**"), ephemeral=True)
-    if ctx.voice_client.is_playing():
+async def skip_def(ctx):
+    log(ctx, 'skip_def', [], log_type='function', author=ctx.author)
+    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
+
+    if guild_object.voice_client.is_playing():
         await stop_def(ctx, True)
         await asyncio.sleep(0.5)
         await play_def(ctx)
+        return [True, 'Skipped!']
+
+    message = tg(guild_id, "There is **nothing to skip!**")
+    await ctx.reply(message, ephemeral=True)
+    return [False, message]
 
 
-async def remove_def(ctx: commands.Context,
+async def remove_def(ctx,
                  number: int,
                  display_type: Literal['short', 'long'] = None,
                  ephemeral: bool = False
                  ):
-    log(ctx.guild.id, 'remove_def', [number, display_type, ephemeral], log_type='function', author=ctx.author)
-    guild_id = ctx.guild.id
+    log(ctx, 'remove_def', [number, display_type, ephemeral], log_type='function', author=ctx.author)
+    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
 
     if not display_type:
         display_type = guild[guild_id].options.response_type
@@ -1485,50 +1514,67 @@ async def remove_def(ctx: commands.Context,
     if number or number == 0 or number == '0':
         if number > len(guild[guild_id].queue):
             if not guild[guild_id].queue:
-                await ctx.reply(tg(guild_id, "Nothing to **remove**, queue is **empty!**"), ephemeral=True)
-                return
-            await ctx.reply(tg(guild_id, "Index out of range!"), ephemeral=True)
-            return
+                message = tg(guild_id, "Nothing to **remove**, queue is **empty!**")
+                await ctx.reply(message, ephemeral=True)
+                return [False, message]
+            message = tg(guild_id, "Index out of range!")
+            await ctx.reply(message, ephemeral=True)
+            return [False, message]
 
         video = guild[guild_id].queue[number]
+
+        message = f'REMOVED #{number} : [`{video.title}`](<{video.url}>)'
 
         if display_type == 'long':
             embed = create_embed(video, f'{tg(guild_id, "REMOVED #")}{number}', guild_id)
             await ctx.reply(embed=embed, ephemeral=ephemeral)
         if display_type == 'short':
-            await ctx.reply(f'REMOVED #{number} : [`{video.title}`](<{video.url}>)', ephemeral=ephemeral)
+            await ctx.reply(message, ephemeral=ephemeral)
 
         guild[guild_id].queue.pop(number)
 
+        save_json()
+
+        return [True, message]
+
     save_json()
 
+    return [False, 'No number given!']
 
-async def clear_def(ctx: commands.Context,
+
+
+async def clear_def(ctx,
                  ephemeral: bool = False
                  ):
-    log(ctx.guild.id, 'clear_def', [ephemeral], log_type='function', author=ctx.author)
-    guild_id = ctx.guild.id
+    log(ctx, 'clear_def', [ephemeral], log_type='function', author=ctx.author)
+    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
     guild[guild_id].queue.clear()
-    await ctx.reply(tg(guild_id, 'Removed **all** songs from queue'), ephemeral=ephemeral)
-    return
+    message = tg(guild_id, 'Removed **all** songs from queue')
+    await ctx.reply(message, ephemeral=ephemeral)
+    return [True, message]
 
 
-async def shuffle_def(ctx: commands.Context,
+async def shuffle_def(ctx,
                  ephemeral: bool = False
                  ):
-    log(ctx.guild.id, 'shuffle_def', [ephemeral], log_type='function', author=ctx.author)
-    guild_id = ctx.guild.id
+    log(ctx, 'shuffle_def', [ephemeral], log_type='function', author=ctx.author)
+    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
     random.shuffle(guild[guild_id].queue)
-    await ctx.reply(tg(guild_id, 'Songs in queue shuffled'), ephemeral=ephemeral)
-    return
+    message = tg(guild_id, 'Songs in queue shuffled')
+    await ctx.reply(message, ephemeral=ephemeral)
+    return [True, message]
 
 
-async def show_def(ctx: commands.Context,
+async def show_def(ctx,
                display_type: Literal['short', 'medium', 'long'] = None,
                ephemeral: bool = False
                ):
-    log(ctx.guild.id, 'show_def', [display_type, ephemeral], log_type='function', author=ctx.author)
-    guild_id = ctx.guild.id
+    log(ctx, 'show_def', [display_type, ephemeral], log_type='function', author=ctx.author)
+    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
+
+    if not is_ctx:
+        return [False, 'Cannot use this command in WEB']
+
     max_embed = 5
     if not guild[guild_id].queue:
         await ctx.reply(tg(guild_id, "Nothing to **show**, queue is **empty!**"), ephemeral=ephemeral)
@@ -1597,17 +1643,21 @@ async def show_def(ctx: commands.Context,
     save_json()
 
 
-async def search_command_def(ctx: commands.Context,
+async def search_command_def(ctx,
                          search_query,
                          display_type: Literal['short', 'long'] = None,
                          force: bool = False,
                          from_play: bool = False
                          ):
-    log(ctx.guild.id, 'search_command_def', [search_query, display_type, force, from_play], log_type='function', author=ctx.author)
+    log(ctx, 'search_command_def', [search_query, display_type, force, from_play], log_type='function', author=ctx.author)
+    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
+
+    if not is_ctx:
+        return [False, 'Search command cannot be used in WEB']
+
     # noinspection PyUnresolvedReferences
     if not ctx.interaction.response.is_done():
         await ctx.defer()
-    guild_id = ctx.guild.id
 
     guild[guild_id].options.search_query = search_query
 
@@ -1648,28 +1698,32 @@ async def search_command_def(ctx: commands.Context,
 # --------------------------------------- PLAYER --------------------------------------------------
 
 
-async def play_def(ctx: commands.Context,
+async def play_def(ctx,
                url=None,
                force=False,
                mute_response=False
                ):
-    log(ctx.guild.id, 'play_def', [url, force, mute_response], log_type='function', author=ctx.author)
+    log(ctx, 'play_def', [url, force, mute_response], log_type='function', author=ctx.author)
+    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
     response = []
-    guild_id = ctx.guild.id
 
     if url == 'next':
         if guild[guild_id].options.stopped:
             log(guild_id, "play_def -> stopped play next loop")
             now_to_last(guild_id)
-            return
+            return [False, "Stopped play next loop"]
 
-    voice = ctx.voice_client
+    voice = guild_object.voice_client
 
     if not voice or voice is None:
+        if not is_ctx:
+            return [False, 'Play command cannot be used in WEB when the bot is not connected to a voice channel']
+
         if ctx.author.voice is None:
+            message = tg(guild_id, "You are **not connected** to a voice channel")
             if not mute_response:
-                await ctx.reply(tg(guild_id, "You are **not connected** to a voice channel"))
-            return
+                await ctx.reply(message)
+            return [False, message]
 
     if url and url != 'next':
         if voice:
@@ -1680,42 +1734,52 @@ async def play_def(ctx: commands.Context,
         else:
             response = await queue_command_def(ctx, url=url, position=None, mute_response=True, force=force, from_play=True)
         if not response[0]:
-            return
+            return [False, response[1]]
 
-    voice = ctx.voice_client
+    voice = guild_object.voice_client
 
     if not voice or voice is None:
         # noinspection PyUnresolvedReferences
-        if not ctx.interaction.response.is_done():
-            await ctx.defer()
-        response = await join_def(ctx, None, True)
-        voice = ctx.voice_client
-        if not response:
-            return
+        if not is_ctx:
+            if not ctx.interaction.response.is_done():
+                await ctx.defer()
+        join_response = await join_def(ctx, None, True)
+        voice = guild_object.voice_client
+        if not join_response[0]:
+            return [False, response[1]]
 
     if voice.is_playing():
         if not guild[guild_id].options.is_radio and not force:
             if url and not force:
                 if response:
+                    message = f'{tg(guild_id, "**Already playing**, added to queue")}: [`{response[2].title}`](<{response[2].url}>)'
                     if not mute_response:
-                        await ctx.reply(f'{tg(guild_id, "**Already playing**, added to queue")}: [`{response[2].title}`](<{response[2].url}>)')
-                    return 'already playing, added to queue'
+                        await ctx.reply(message)
+                    return [False, message]
+
+                message = f'{tg(guild_id, "**Already playing**, added to queue")}'
                 if not mute_response:
-                    await ctx.reply(f'{tg(guild_id, "**Already playing**, added to queue")}')
-                return 'already playing, added to queue'
+                    await ctx.reply(message)
+                return [False, message]
+
+            message = tg(guild_id, "**Already playing**")
             if not mute_response:
-                await ctx.reply(tg(guild_id, "**Already playing**"), ephemeral=True)
-            return 'already playing'
+                await ctx.reply(message, ephemeral=True)
+            return [False, message]
+
         voice.stop()
         guild[guild_id].options.stopped = True
         guild[guild_id].options.is_radio = False
 
     if not guild[guild_id].queue:
+        message = tg(guild_id, "There is **nothing** in your **queue**")
+
         if url != 'next':
             if not mute_response:
-                await ctx.reply(tg(guild_id, "There is **nothing** in your **queue**"))
+                await ctx.reply(message)
+
         now_to_last(guild_id)
-        return 'nothing in queue'
+        return [False, message]
 
     video = guild[guild_id].queue[0]
     now_to_last(guild_id)
@@ -1732,15 +1796,16 @@ async def play_def(ctx: commands.Context,
             await probe_command_def(ctx, video.url)
             return
 
+        message = tg(guild_id, "Unknown type")
         if not mute_response:
-            await ctx.reply(tg(guild_id, "Unknown type"))
-        return 'unknown type'
+            await ctx.reply(message)
+        return [False, message]
 
     if not force:
         guild[guild_id].options.stopped = False
 
     try:
-        source = await YTDLSource.create_source(ctx, video.url)  # loop=bot.loop  va_list[0]
+        source = await YTDLSource.create_source(guild_id, video.url)  # loop=bot.loop  va_list[0]
         voice.play(source, after=lambda e: asyncio.run_coroutine_threadsafe(play_def(ctx, 'next'), bot.loop))
 
         await volume_command_def(ctx, guild[guild_id].options.volume * 100, False, True)
@@ -1784,38 +1849,40 @@ async def play_def(ctx: commands.Context,
                         f' {bot.get_user(my_id).mention} ({sys.exc_info()[0]})')
 
 
-async def radio_def(ctx: commands.Context,
+async def radio_def(ctx,
                 favourite_radio: Literal['Rádio BLANÍK','Rádio BLANÍK CZ','Evropa 2','Fajn Radio','Hitrádio PopRock','Český rozhlas Pardubice','Radio Beat','Country Radio','Radio Kiss','Český rozhlas Vltava','Hitrádio Černá Hora'] = None,
                 radio_code: int = None,
                 ):
-    log(ctx.guild.id, 'radio_def', [favourite_radio, radio_code], log_type='function', author=ctx.author)
-    guild_id = ctx.guild.id
+    log(ctx, 'radio_def', [favourite_radio, radio_code], log_type='function', author=ctx.author)
+    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
     radio_type = 'Rádio BLANÍK'
 
     # noinspection PyUnresolvedReferences
-    if not ctx.interaction.response.is_done():
-        await ctx.defer()
+    if is_ctx:
+        if not ctx.interaction.response.is_done():
+            await ctx.defer()
     if favourite_radio and radio_code:
-        await ctx.reply(tg(guild_id, "Only **one** argument possible!"), ephemeral=True)
-        return
+        message = tg(guild_id, "Only **one** argument possible!")
+        await ctx.reply(message, ephemeral=True)
+        return [False, message]
 
     if favourite_radio:
         radio_type = favourite_radio
     elif radio_code:
         radio_type = list(radio_dict.keys())[radio_code]
 
-    if not ctx.voice_client:
+    if not guild_object.voice_client:
         response = await join_def(ctx, None, True)
-        if not response:
-            return
+        if not response[0]:
+            return [False, response[1]]
 
     url = radio_dict[radio_type]['stream']
     # guild[guild_id].queue.clear()
 
-    if ctx.voice_client.is_playing():
+    if guild_object.voice_client.is_playing():
         await stop_def(ctx, True)  # call the stop coroutine if something else is playing, pass True to not send response
 
-    video = VideoClass('Radio', ctx.author.id, radio_name=radio_type)
+    video = VideoClass('Radio', author_id, radio_name=radio_type)
     guild[guild_id].now_playing = video
 
     guild[guild_id].options.is_radio = True
@@ -1824,7 +1891,7 @@ async def radio_def(ctx: commands.Context,
 
     source = discord.FFmpegPCMAudio(url, **FFMPEG_OPTIONS)
 
-    ctx.voice_client.play(source)
+    guild_object.voice_client.play(source)
 
     await volume_command_def(ctx, guild[guild_id].options.volume*100, False, True)
 
@@ -1837,12 +1904,12 @@ async def radio_def(ctx: commands.Context,
     save_json()
 
 
-async def ps_def(ctx: commands.Context,
+async def ps_def(ctx,
              effect_number: app_commands.Range[int, 1, len(all_sound_effects)],
              mute_response: bool = False
              ):
-    log(ctx.guild.id, 'ps_def', [effect_number, mute_response], log_type='function', author=ctx.author)
-    guild_id = ctx.guild.id
+    log(ctx, 'ps_def', [effect_number, mute_response], log_type='function', author=ctx.author)
+    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
     guild[guild_id].options.is_radio = False
     try:
         name = all_sound_effects[effect_number]
@@ -1864,13 +1931,15 @@ async def ps_def(ctx: commands.Context,
                 await ctx.reply(tg(guild_id, "No such file/website supported"), ephemeral=True)
             return False
 
-    video = VideoClass('Local', ctx.author.id, title=name, duration='Unknown', local_number=effect_number)
+    video = VideoClass('Local', author_id, title=name, duration='Unknown', local_number=effect_number)
     guild[guild_id].now_playing = video
 
-    if not ctx.voice_client:
-        await join_def(ctx, None, True)
+    if not guild_object.voice_client:
+        join_response = await join_def(ctx, None, True)
+        if not join_response[0]:
+            return [False, join_response[1]]
 
-    voice = ctx.voice_client
+    voice = guild_object.voice_client
 
     await stop_def(ctx, True)
     voice.play(source)
@@ -1883,11 +1952,14 @@ async def ps_def(ctx: commands.Context,
     return True
 
 
-async def now_def(ctx: commands.Context,
+async def now_def(ctx,
               ephemeral: bool = False
               ):
-    log(ctx.guild.id, 'now_def', [ephemeral], log_type='function', author=ctx.author)
-    guild_id = ctx.guild.id
+    log(ctx, 'now_def', [ephemeral], log_type='function', author=ctx.author)
+    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
+    if not is_ctx:
+        return [False, 'This command cant be used in WEB']
+
     if ctx.voice_client:
         if ctx.voice_client.is_playing():
             guild[guild_id].now_playing.renew()
@@ -1913,11 +1985,14 @@ async def now_def(ctx: commands.Context,
     save_json()
 
 
-async def last_def(ctx: commands.Context,
+async def last_def(ctx,
               ephemeral: bool = False
               ):
-    log(ctx.guild.id, 'last_def', [ephemeral], log_type='function', author=ctx.author)
-    guild_id = ctx.guild.id
+    log(ctx, 'last_def', [ephemeral], log_type='function', author=ctx.author)
+    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
+    if not is_ctx:
+        return [False, 'This command cant be used in WEB']
+
     embed = create_embed(guild[guild_id].last_played, "Last played", guild_id)
 
     view = PlayerControlView(ctx)
@@ -1930,113 +2005,137 @@ async def last_def(ctx: commands.Context,
     save_json()
 
 
-async def loop_command_def(ctx: commands.Context):
-    log(ctx.guild.id, 'loop_command_def', [], log_type='function', author=ctx.author)
-    guild_id = ctx.guild.id
+async def loop_command_def(ctx):
+    log(ctx, 'loop_command_def', [], log_type='function', author=ctx.author)
+    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
+
     if guild[guild_id].options.loop:
         guild[guild_id].options.loop = False
-        await ctx.reply("Loop mode: `False`", ephemeral=True)
-        return
+        message = 'Loop mode: `False`'
+        await ctx.reply(message, ephemeral=True)
+        return [True, message]
     if not guild[guild_id].options.loop:
         guild[guild_id].options.loop = True
-        await ctx.reply("Loop mode: `True`", ephemeral=True)
-        return
+        message = 'Loop mode: `True`'
+        await ctx.reply(message, ephemeral=True)
+        return [True, message]
 
 
-async def loop_this_def(ctx: commands.Context):
-    log(ctx.guild.id, 'loop_this_def', [], log_type='function', author=ctx.author)
-    guild_id = ctx.guild.id
-    if guild[guild_id].now_playing and ctx.voice_client.is_playing:
+async def loop_this_def(ctx):
+    log(ctx, 'loop_this_def', [], log_type='function', author=ctx.author)
+    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
+
+    if guild[guild_id].now_playing and guild_object.voice_client.is_playing:
         guild[guild_id].queue.clear()
         guild[guild_id].queue.append(guild[guild_id].now_playing)
         guild[guild_id].options.loop = True
-        await ctx.reply(f'{tg(guild_id, "Queue **cleared**, Player will now loop **currently** playing song:")}'
-                        f' [`{guild[guild_id].now_playing.title}`](<{guild[guild_id].now_playing.url}>)')
+
+        message = f'{tg(guild_id, "Queue **cleared**, Player will now loop **currently** playing song:")} [`{guild[guild_id].now_playing.title}`](<{guild[guild_id].now_playing.url}>)'
+        await ctx.reply(message)
+        return [True, message]
     else:
-        await ctx.reply(tg(guild_id, "Nothing is playing **right now**"))
+        message = tg(guild_id, "Nothing is playing **right now**")
+        await ctx.reply(message)
+        return [False, message]
 
 
 # --------------------------------------- VOICE --------------------------------------------------
 
 
-async def stop_def(ctx: commands.Context,
+async def stop_def(ctx,
                mute_response: bool = False
                ):
-    log(ctx.guild.id, 'stop_def', [mute_response], log_type='function', author=ctx.author)
-    guild_id = ctx.guild.id
+    log(ctx, 'stop_def', [mute_response], log_type='function', author=ctx.author)
+    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
 
-    voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
+    voice = discord.utils.get(bot.voice_clients, guild=guild_object)
     if voice:
         voice.stop()
     else:
+        message = tg(guild_id, "Bot is not connected to a voice channel")
         if not mute_response:
-            await ctx.reply(tg(guild_id, "Bot is not connected to a voice channel"), ephemeral=True)
-        return
+            await ctx.reply(message, ephemeral=True)
+        return [False, message]
     guild[guild_id].options.stopped = True
     guild[guild_id].options.loop = False
 
+    message = tg(guild_id, "Player **stopped!**")
     if not mute_response:
-        await ctx.reply(f"{tg(guild_id, 'Player **stopped!**')}", ephemeral=True)
+        await ctx.reply(message, ephemeral=True)
 
     now_to_last(guild_id)
     save_json()
+    return [True, message]
 
 
-async def pause_def(ctx: commands.Context,
+async def pause_def(ctx,
                 mute_response: bool = False
                 ):
-    log(ctx.guild.id, 'pause_def', [mute_response], log_type='function', author=ctx.author)
-    guild_id = ctx.guild.id
-    voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
+    log(ctx, 'pause_def', [mute_response], log_type='function', author=ctx.author)
+    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
+    voice = discord.utils.get(bot.voice_clients, guild=guild_object)
 
     if voice:
         if voice.is_playing():
             voice.pause()
-            if not mute_response:
-                await ctx.reply(f"{tg(guild_id, 'Player **paused!**')}", ephemeral=True)
+            message = tg(guild_id, "Player **paused!**")
+            resp = [True, message]
         elif voice.is_paused():
-            if not mute_response:
-                await ctx.reply(f"{tg(guild_id, 'Player **already paused!**')}", ephemeral=True)
+            message = tg(guild_id, "Player **already paused!**")
+            resp = [False, message]
         else:
-            if not mute_response:
-                await ctx.reply(f"{tg(guild_id, 'No audio playing')}", ephemeral=True)
+            message = tg(guild_id, 'No audio playing')
+            resp = [False, message]
     else:
-        if not mute_response:
-            await ctx.reply(tg(ctx.guild.id, "Bot is not connected to a voice channel"), ephemeral=True)
+        message = tg(guild_id, "Bot is not connected to a voice channel")
+        resp = [False, message]
+
+    if not mute_response:
+        await ctx.reply(message, ephemeral=True)
 
     save_json()
 
+    return resp
 
-async def resume_def(ctx: commands.Context,
+
+async def resume_def(ctx,
                  mute_response: bool = False
                  ):
-    log(ctx.guild.id, 'resume_def', [mute_response], log_type='function', author=ctx.author)
-    guild_id = ctx.guild.id
-    voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
+    log(ctx, 'resume_def', [mute_response], log_type='function', author=ctx.author)
+    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
+    voice = discord.utils.get(bot.voice_clients, guild=guild_object)
     if voice:
         if voice.is_paused():
             voice.resume()
-            if not mute_response:
-                await ctx.reply(f"{tg(guild_id, 'Player **resumed!**')}", ephemeral=True)
+            message = tg(guild_id, "Player **resumed!**")
+            resp = [True, message]
         elif voice.is_playing():
-            if not mute_response:
-                await ctx.reply(f"{tg(guild_id, 'Player **already resumed!**')}", ephemeral=True)
+            message = tg(guild_id, "Player **already resumed!**")
+            resp = [False, message]
         else:
-            if not mute_response:
-                await ctx.reply(f"{tg(guild_id, 'No audio playing')}", ephemeral=True)
+            message = tg(guild_id, 'No audio playing')
+            resp = [False, message]
     else:
-        if not mute_response:
-            await ctx.reply(tg(guild_id, "Bot is not connected to a voice channel"), ephemeral=True)
+        message = tg(guild_id, "Bot is not connected to a voice channel")
+        resp = [False, message]
+
+    if not mute_response:
+        await ctx.reply(message, ephemeral=True)
 
     save_json()
 
+    return resp
 
-async def join_def(ctx: commands.Context,
+
+async def join_def(ctx,
                channel_id=None,
                mute_response: bool = False
                ):
-    log(ctx.guild.id, 'join_def', [channel_id, mute_response], log_type='function', author=ctx.author)
-    guild_id = ctx.guild.id
+    log(ctx, 'join_def', [channel_id, mute_response], log_type='function', author=ctx.author)
+    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
+
+    if not is_ctx:
+        return [False, 'Command cannot be used in WEB']
 
     now_to_last(guild_id)
 
@@ -2047,17 +2146,22 @@ async def join_def(ctx: commands.Context,
                 if ctx.voice_client.channel != channel:
                     await ctx.voice_client.disconnect(force=True)
                 else:
+
+                    message = tg(guild_id, "I'm already in this channel")
                     if not mute_response:
-                        await ctx.reply(tg(guild_id, "I'm already in this channel"), ephemeral=True)
-                    return True
+                        await ctx.reply(message, ephemeral=True)
+                    return [True, message]
             await channel.connect()
             await ctx.guild.change_voice_state(channel=channel, self_deaf=True)
-            if not mute_response:
-                await ctx.reply(f"{tg(guild_id, 'Joined voice channel:')}  `{channel.name}`", ephemeral=True)
-            return True
 
-        await ctx.reply(tg(guild_id, "You are **not connected** to a voice channel"), ephemeral=True)
-        return False
+            message = f"{tg(guild_id, 'Joined voice channel:')}  `{channel.name}`"
+            if not mute_response:
+                await ctx.reply(message, ephemeral=True)
+            return [True, message]
+
+        message = tg(guild_id, "You are **not connected** to a voice channel")
+        await ctx.reply(message, ephemeral=True)
+        return [False, message]
 
     try:
         voice_channel = bot.get_channel(int(channel_id))
@@ -2065,25 +2169,33 @@ async def join_def(ctx: commands.Context,
             await ctx.voice_client.disconnect(force=True)
         await voice_channel.connect()
         await ctx.guild.change_voice_state(channel=voice_channel, self_deaf=True)
+
+        message = f"{tg(guild_id, 'Joined voice channel:')}  `{voice_channel.name}`"
         if not mute_response:
-            await ctx.reply(f"{tg(guild_id, 'Joined voice channel:')}  `{voice_channel.name}`", ephemeral=True)
-        return True
+            await ctx.reply(message, ephemeral=True)
+        return [True, message]
+
     except (discord.ext.commands.errors.CommandInvokeError, discord.errors.ClientException, AttributeError):
 
         log(guild_id, "------------------------------- join -------------------------")
         tb = traceback.format_exc()
         log(guild_id, tb)
         log(guild_id, "--------------------------------------------------------------")
-        await ctx.reply(tg(guild_id, "Channel **doesn't exist** or bot doesn't have"
-                                             " **sufficient permission** to join"), ephemeral=True)
-        return False
+
+        message = tg(guild_id,"Channel **doesn't exist** or bot doesn't have **sufficient permission** to join")
+        await ctx.reply(message, ephemeral=True)
+        return [False, message]
 
 
-async def disconnect_def(ctx: commands.Context,
+async def disconnect_def(ctx,
                          mute_response: bool = False
                          ):
-    log(ctx.guild.id, 'disconnect_def', [mute_response], log_type='function', author=ctx.author)
-    guild_id = ctx.guild.id
+    log(ctx, 'disconnect_def', [mute_response], log_type='function', author=ctx.author)
+    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
+
+    if not is_ctx:
+        return [False, 'Command cannot be used in WEB']
+
     if ctx.voice_client:
         await stop_def(ctx, True)
         #guild[guild_id].queue.clear()
@@ -2099,19 +2211,19 @@ async def disconnect_def(ctx: commands.Context,
     save_json()
 
 
-async def volume_command_def(ctx: commands.Context,
+async def volume_command_def(ctx,
                          volume = None,
                          ephemeral: bool = False,
                          mute_response: bool = False
                          ):
-    log(ctx.guild.id, 'volume_command_def', [volume, ephemeral, mute_response], log_type='function', author=ctx.author)
-    guild_id = ctx.guild.id
+    log(ctx, 'volume_command_def', [volume, ephemeral, mute_response], log_type='function', author=ctx.author)
+    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
 
     if volume:
         new_volume = int(volume) / 100
 
         guild[guild_id].options.volume = new_volume
-        voice = ctx.voice_client
+        voice = guild_object.voice_client
         if voice:
             try:
                 if voice.source:
@@ -2120,39 +2232,51 @@ async def volume_command_def(ctx: commands.Context,
             except AttributeError:
                 pass
 
-        if not mute_response:
-            await ctx.reply(f'{tg(guild_id, "Changed the volume for this server to:")} `{guild[guild_id].options.volume*100}%`', ephemeral=ephemeral)
+        message = f'{tg(guild_id, "Changed the volume for this server to:")} `{guild[guild_id].options.volume*100}%`'
     else:
-        if not mute_response:
-            await ctx.reply(f'{tg(guild_id, "The volume for this server is:")} `{guild[guild_id].options.volume*100}%`', ephemeral=ephemeral)
+        message = f'{tg(guild_id, "The volume for this server is:")} `{guild[guild_id].options.volume*100}%`'
+
+    if not mute_response:
+        await ctx.reply(message, ephemeral=ephemeral)
 
     save_json()
+
+    return [True, message]
 
 
 # --------------------------------------- GENERAL --------------------------------------------------
 
 
-async def ping_def(ctx: commands.Context):
-    log(ctx.guild.id, 'ping_def', [], log_type='function', author=ctx.author)
-    await ctx.reply(f'**Pong!** Latency: {round(bot.latency * 1000)}ms')
+async def ping_def(ctx):
+    log(ctx, 'ping_def', [], log_type='function', author=ctx.author)
+    message = f'**Pong!** Latency: {round(bot.latency * 1000)}ms'
+    await ctx.reply(message)
     save_json()
+    return [True, message]
 
 
 # noinspection PyTypeHints
-async def language_command_def(ctx: commands.Context,
+async def language_command_def(ctx,
                    country_code: Literal[tuple(languages_dict.keys())]
                    ):
-    log(ctx.guild.id, 'language_command_def', [country_code], log_type='function', author=ctx.author)
-    guild_id = ctx.guild.id
+    log(ctx, 'language_command_def', [country_code], log_type='function', author=ctx.author)
+    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
     guild[guild_id].options.language = country_code
-    await ctx.reply(f'{tg(guild_id, "Changed the language for this server to: ")} `{guild[guild_id].options.language}`')
+    message = f'{tg(guild_id, "Changed the language for this server to: ")} `{guild[guild_id].options.language}`'
+    await ctx.reply(message)
     save_json()
+    return [True, message]
 
 
-async def sound_effects_def(ctx: commands.Context,
+async def sound_effects_def(ctx,
                 ephemeral: bool = True
                 ):
-    log(ctx.guild.id, 'sound_effects_def', [ephemeral], log_type='function', author=ctx.author)
+    log(ctx, 'sound_effects_def', [ephemeral], log_type='function', author=ctx.author)
+    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
+
+    if not is_ctx:
+        return [False, 'Command cannot be used in WEB']
+
     embed = discord.Embed(title="Sound Effects", colour=discord.Colour.from_rgb(241, 196, 15))
     message = ''
     for index, val in enumerate(all_sound_effects):
@@ -2169,10 +2293,15 @@ async def sound_effects_def(ctx: commands.Context,
     await ctx.send(embed=embed, ephemeral=ephemeral)
 
 
-async def list_radios_def(ctx: commands.Context,
+async def list_radios_def(ctx,
                       ephemeral: bool = True
                       ):
-    log(ctx.guild.id, 'list_radios_def', [ephemeral], log_type='function', author=ctx.author)
+    log(ctx, 'list_radios_def', [ephemeral], log_type='function', author=ctx.author)
+    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
+
+    if not is_ctx:
+        return [False, 'Command cannot be used in WEB']
+
     embed = discord.Embed(title="Radio List")
     message = ''
     for index, (name, val) in enumerate(radio_dict.items()):
@@ -2190,9 +2319,11 @@ async def list_radios_def(ctx: commands.Context,
 
 
 async def key_def(ctx: commands.Context):
-    log(ctx.guild.id, 'key_def', [], log_type='function', author=ctx.author)
-    await ctx.reply(f'Key: `{guild[ctx.guild.id].data.key}` -> [Control Panel](http://nicholasthe7th.duckdns.org:5420/guild/{ctx.guild.id}&key={guild[ctx.guild.id].data.key})')
+    log(ctx, 'key_def', [], log_type='function', author=ctx.author)
+    message = f'Key: `{guild[ctx.guild.id].data.key}` -> [Control Panel](http://nicholasthe7th.duckdns.org:5420/guild/{ctx.guild.id}&key={guild[ctx.guild.id].data.key})'
+    await ctx.reply(message)
     save_json()
+    return [True, message]
 
 # ---------------------------------------- ADMIN --------------------------------------------------
 
@@ -2217,15 +2348,15 @@ async def rape_play_command_def(ctx: commands.Context,
         effect_number = 1
 
     if not channel_id:
-        response = await join_def(ctx, None, True)
-        if response:
+        join_response = await join_def(ctx, None, True)
+        if join_response[0]:
             pass
         else:
             await ctx.reply(f'You need to be in a voice channel to use this command', ephemeral=True)
             return
     else:
-        response = await join_def(ctx, channel_id, True)
-        if response:
+        join_response = await join_def(ctx, channel_id, True)
+        if join_response[0]:
             pass
         else:
             await ctx.reply(f'An error occurred when connecting to the voice channel', ephemeral=True)
@@ -2408,9 +2539,9 @@ async def probe_command_def(ctx: commands.Context,
 
     try:
         if not ctx.voice_client:
-            response = await join_def(ctx, None, True)
-            if not response:
-                return
+            join_response = await join_def(ctx, None, True)
+            if not join_response[0]:
+                return [False, join_response[1]]
 
         if ctx.voice_client.is_playing():
             await stop_def(ctx, True)
@@ -2615,52 +2746,18 @@ async def help_command(ctx: commands.Context,
 
     await ctx.reply(embed=embed, ephemeral=True)
 
+# ---------------------------- WEB FUNCTIONS ---------------------------- #
 
-# --------------------------------------------- WEB COMMANDS -----------------------------------------------------------
-
-
-async def web_remove(web_data, number):
-    log(web_data.guild_id, 'web_remove', [number], log_type='function', author=web_data.author)
-    guild_id = web_data.guild_id
+async def move_def(ctx, org_number, destination_number, ephemeral=True):
+    log(ctx, 'web_move', [org_number, destination_number], log_type='function', author=ctx.author)
+    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
     queue_length = len(guild[guild_id].queue)
 
     if queue_length == 0:
-        log(guild_id, "web_remove -> No songs in queue")
-        return [False, 'No songs in queue']
-
-    # if not number.isdigit():
-    #     log(guild_id, "web_remove -> Number must be an integer")
-    #     return [False, 'Number must be an integer (Internal web error -> contact developer)']
-
-    number = int(number)
-
-    if queue_length-1 >= number >= 0:
-        video = guild[guild_id].queue[number]
-        guild[guild_id].queue.pop(number)
-
-        save_json()
-
-        return [True, f"Removed #{number} : {video.title}"]
-
-    log(guild_id, "web_remove -> Number must be between 0 and {queue_length - 1}")
-    return [False, f'Number must be between 0 and {queue_length - 1}']
-
-async def web_move(web_data, org_number, destination_number):
-    log(web_data.guild_id, 'web_move', [org_number, destination_number], log_type='function', author=web_data.author)
-    guild_id = web_data.guild_id
-    queue_length = len(guild[guild_id].queue)
-
-    if queue_length == 0:
-        log(guild_id, "web_move -> No songs in queue")
-        return [False, 'No songs in queue']
-
-    # if not org_number.isdigit():
-    #     log(guild_id, "web_move -> Original number must be an integer")
-    #     return [False, 'Original number must be an integer (Internal web error -> contact developer)']
-    #
-    # if not destination_number.isdigit():
-    #     log(guild_id, "web_move -> Destination number must be an integer")
-    #     return [False, 'Destination number must be an integer (Internal web error -> contact developer)']
+        log(guild_id, "move_def -> No songs in queue")
+        message = tg(guild_id, "No songs in queue")
+        await ctx.reply(message, ephemeral=ephemeral)
+        return [False, message]
 
     org_number = int(org_number)
     destination_number = int(destination_number)
@@ -2672,23 +2769,24 @@ async def web_move(web_data, org_number, destination_number):
 
             save_json()
 
-            return [True, f"Moved #{org_number} to #{destination_number} : {video.title}"]
+            message = f"Moved #{org_number} to #{destination_number} : {video.title}"
+            await ctx.reply(message, ephemeral=ephemeral)
+            return [True, message]
 
-        log(guild_id, "web_move -> Destination number must be between 0 and {queue_length - 1}")
-        return [False, f'Destination number must be between 0 and {queue_length - 1}']
-    log(guild_id, "web_move -> Original number must be between 0 and {queue_length - 1}")
-    return [False, f'Original number must be between 0 and {queue_length - 1}']
+        message = f'Destination number must be between 0 and {queue_length - 1}'
+        log(guild_id, f"move_def -> {message}")
+        await ctx.reply(message, ephemeral=ephemeral)
+        return [False, message]
+
+    message = f'Original number must be between 0 and {queue_length - 1}'
+    log(guild_id, f"move_def -> {message}")
+    await ctx.reply(message, ephemeral=ephemeral)
+    return [False, message]
 
 async def web_up(web_data, number):
-    log(web_data.guild_id, 'web_up', [number], log_type='function', author=web_data.author)
+    log(web_data, 'web_up', [number], log_type='function', author=web_data.author)
     guild_id = web_data.guild_id
     queue_length = len(guild[guild_id].queue)
-
-    # if type(number) != int:
-    #     if not number.isdigit():
-    #         log(guild_id, "web_up -> Number must be an integer")
-    #         return [False, 'Number must be an integer (Internal web error -> contact developer)']
-
     number = int(number)
 
     if queue_length == 0:
@@ -2696,19 +2794,14 @@ async def web_up(web_data, number):
         return [False, 'No songs in queue']
 
     if number == 0:
-        return await web_move(web_data, 0, queue_length-1)
+        return await move_def(web_data, 0, queue_length-1)
 
-    return await web_move(web_data, number, number-1)
+    return await move_def(web_data, number, number-1)
 
 async def web_down(web_data, number):
-    log(web_data.guild_id, 'web_down', [number], log_type='function', author=web_data.author)
+    log(web_data, 'web_down', [number], log_type='function', author=web_data.author)
     guild_id = web_data.guild_id
     queue_length = len(guild[guild_id].queue)
-
-    # if not number.isdigit():
-    #     log(guild_id, "web_down -> Number must be an integer")
-    #     return [False, 'Number must be an integer (Internal web error -> contact developer)']
-
     number = int(number)
 
     if queue_length == 0:
@@ -2716,19 +2809,14 @@ async def web_down(web_data, number):
         return [False, 'No songs in queue']
 
     if number == queue_length-1:
-        return await web_move(web_data, number, 0)
+        return await move_def(web_data, number, 0)
 
-    return await web_move(web_data, number, number+1)
+    return await move_def(web_data, number, number+1)
 
 async def web_top(web_data, number):
-    log(web_data.guild_id, 'web_top', [number], log_type='function', author=web_data.author)
+    log(web_data, 'web_top', [number], log_type='function', author=web_data.author)
     guild_id = web_data.guild_id
     queue_length = len(guild[guild_id].queue)
-
-    # if not number.isdigit():
-    #     log(guild_id, "web_top -> Number must be an integer")
-    #     return [False, 'Number must be an integer (Internal web error -> contact developer)']
-
     number = int(number)
 
     if queue_length == 0:
@@ -2739,17 +2827,12 @@ async def web_top(web_data, number):
         log(guild_id, "web_top -> Already at the top")
         return [False, 'Already at the top']
 
-    return await web_move(web_data, number, 0)
+    return await move_def(web_data, number, 0)
 
 async def web_bottom(web_data, number):
-    log(web_data.guild_id, 'web_bottom', [number], log_type='function', author=web_data.author)
+    log(web_data, 'web_bottom', [number], log_type='function', author=web_data.author)
     guild_id = web_data.guild_id
     queue_length = len(guild[guild_id].queue)
-
-    # if not number.isdigit():
-    #     log(guild_id, "web_bottom -> Number must be an integer")
-    #     return [False, 'Number must be an integer (Internal web error -> contact developer)']
-
     number = int(number)
 
     if queue_length == 0:
@@ -2760,293 +2843,59 @@ async def web_bottom(web_data, number):
         log(guild_id, "web_bottom -> Already at the bottom")
         return [False, 'Already at the bottom']
 
-    return await web_move(web_data, number, queue_length-1)
+    return await move_def(web_data, number, queue_length-1)
 
-async def web_stop(web_data):
-    log(web_data.guild_id, 'web_stop', [], log_type='function', author=web_data.author)
-    guild_id = web_data.guild_id
-    guild_object = bot.get_guild(int(guild_id))
-    voice = guild_object.voice_client
-
-    now_to_last(guild_id)
-
-    if voice is None:
-        log(guild_id, "web_stop -> Not in a voice channel")
-        return [False, 'Not in a voice channel']
-
-    if not voice.is_playing():
-        log(guild_id, "web_stop -> Not playing")
-        return [False, 'Not playing']
-
-    if voice.is_playing():
-        guild[guild_id].options.stopped = True
-        voice.stop()
-        save_json()
-        log(guild_id, "web_stop -> Stopped")
-        return [True, 'Stopped playing']
-
-    log(guild_id, "web_stop -> Unknown error")
-    return [False, 'Unknown error']
-
-async def web_pause(web_data):
-    log(web_data.guild_id, 'web_pause', [], log_type='function', author=web_data.author)
-    guild_id = web_data.guild_id
-    guild_object = bot.get_guild(int(guild_id))
-    voice = guild_object.voice_client
-
-    if voice is None:
-        log(guild_id, "web_pause -> Not in a voice channel")
-        return [False, 'Not in a voice channel']
-
-    if not voice.is_playing():
-        log(guild_id, "web_pause -> Not playing")
-        return [False, 'Not playing']
-
-    if voice.is_playing():
-        voice.pause()
-        save_json()
-        log(guild_id, "web_pause -> Paused")
-        return [True, 'Paused playing']
-
-    log(guild_id, "web_pause -> Unknown error")
-    return [False, 'Unknown error']
-
-async def web_resume(web_data):
-    log(web_data.guild_id, 'web_resume', [], log_type='function', author=web_data.author)
-    guild_id = web_data.guild_id
-    guild_object = bot.get_guild(int(guild_id))
-    voice = guild_object.voice_client
-
-    if voice is None:
-        log(guild_id, "web_resume -> Not in a voice channel")
-        return [False, 'Not in a voice channel']
-
-    if not voice.is_playing():
-        if voice.is_paused():
-            voice.resume()
-            save_json()
-            log(guild_id, "web_resume -> Resumed")
-            return [True, 'Resumed playing']
-        log(guild_id, "web_resume -> Nothing paused")
-        return [False, 'Nothing paused']
-
-    if voice.is_playing():
-        save_json()
-        log(guild_id, "web_resume -> Nothing paused")
-        return [False, 'Nothing paused']
-
-
-
-    log(guild_id, "web_resume -> Unknown error")
-    return [False, 'Unknown error']
-
-async def web_skip(web_data):
-    log(web_data.guild_id, 'web_skip', [], log_type='function', author=web_data.author)
-    guild_id = web_data.guild_id
-    guild_object = bot.get_guild(int(guild_id))
-    voice = guild_object.voice_client
-
-    now_to_last(guild_id)
-
-    if voice is None:
-        log(guild_id, "web_skip -> Not in a voice channel")
-        return [False, 'Not in a voice channel']
-
-    if not voice.is_playing():
-        log(guild_id, "web_skip -> Not playing")
-        return [False, 'Not playing']
-
-    if voice.is_playing():
-        voice.stop()
-        save_json()
-        log(guild_id, "web_skip -> Stopped")
-        return [True, 'Stopped playing']
-
-    log(guild_id, "web_skip -> Unknown error")
-    return [False, 'Unknown error']
-
-async def web_shuffle(web_data):
-    log(web_data.guild_id, 'web_shuffle', [], log_type='function', author=web_data.author)
+async def web_queue(web_data, video_type, position=None):
+    log(web_data, 'web_queue', [video_type, position], log_type='function', author=web_data.author)
     guild_id = web_data.guild_id
 
-    if len(guild[guild_id].queue) == 0:
-        log(guild_id, "web_shuffle -> No songs in queue")
-        return [False, 'No songs in queue']
-
-    random.shuffle(guild[guild_id].queue)
-    save_json()
-
-    log(guild_id, "web_shuffle -> Shuffled queue")
-    return [True, 'Shuffled queue']
-
-async def web_clear(web_data):
-    log(web_data.guild_id, 'web_clear', [], log_type='function', author=web_data.author)
-    guild_id = web_data.guild_id
-
-    if len(guild[guild_id].queue) == 0:
-        log(guild_id, "web_clear -> No songs in queue")
-        return [False, 'No songs in queue']
-
-    guild[guild_id].queue.clear()
-    save_json()
-    log(guild_id, "web_clear -> Cleared queue")
-    return [True, 'Cleared queue']
-
-async def web_volume(web_data, vol_range, vol_input):
-    log(web_data.guild_id, 'web_volume', [vol_range, vol_input], log_type='function', author=web_data.author)
-    guild_id = web_data.guild_id
-    guild_object = bot.get_guild(int(guild_id))
-    voice = guild_object.voice_client
-
-    if int(vol_range) != int(vol_input):
-        log(guild_id, "web_volume -> Mismatched range and input")
-        return [False, 'Mismatched range and input (Internal web error -> contact developer)']
-    else:
-        number = int(vol_input)
-
-    if number:
-        new_volume = int(number) / 100
-
-        guild[guild_id].options.volume = new_volume
-        if voice:
-            try:
-                if voice.source:
-                    voice.source.volume = new_volume
-                    voice.source = discord.PCMVolumeTransformer(voice.source, volume=new_volume)
-            except AttributeError:
-                pass
-
-        save_json()
-
-        log(guild_id, "web_volume -> Changed volume")
-        return [True, f'Changed volume to {guild[guild_id].options.volume * 100}%']
-
-    log(guild_id, "web_volume -> No number given")
-    return [False, 'No number given (Internal web error -> contact developer)']
-
-async def web_queue_from_video(web_data, url, position=None):
-    log(web_data.guild_id, 'web_queue', [url, position], log_type='function', author=web_data.author)
-    guild_id = web_data.guild_id
-    video = None
-
-    if url == 'last_played':
+    if video_type == 'last_played':
         video = guild[guild_id].last_played
-    elif url == 'now_playing':
+    elif video_type == 'now_playing':
         video = guild[guild_id].now_playing
-
-    if video:
-        if video.class_type == 'Radio':
-            return await web_queue_from_radio(web_data, video.radio_name, position)
-
-        try:
-            if position == 0:
-                guild[guild_id].queue.insert(0, video)
-            else:
-                guild[guild_id].queue.append(video)
-
-            save_json()
-            log(guild_id, "web_queue -> Queued")
-            return [True, f'Queued {video.title}', video]
-
-        except Exception as e:
-            log(guild_id, f"web_queue -> Error while queuing: {e}")
-            return [False, 'Error while queuing (Internal web error -> contact developer)']
     else:
-        log(guild_id, "web_queue -> Error while getting video")
-        return [False, 'Error while getting video (Internal web error -> contact developer)']
+        log(guild_id, "web_queue -> Invalid video type")
+        return [False, 'Invalid video type (Internal web error -> contact developer)']
 
-async def web_queue_from_url(web_data, url, position=None):
-    log(web_data.guild_id, 'web_queue_from_url', [url, position], log_type='function', author=web_data.author)
-    if position:
-        if position == "start":
-            position = 0
-        elif position == "end":
-            position = None
+    if video.class_type == 'Radio':
+        return await web_queue_from_radio(web_data, video.radio_name, position)
 
-    if url[0:33] == "https://www.youtube.com/playlist?":
-        try:
-            playlist_videos = youtubesearchpython.Playlist.getVideos(url)
-        except KeyError:
-            message = f'This playlist is unviewable: `{url}`'
-            return [False, message]
-        playlist_songs = 0
-
-        playlist_videos = playlist_videos['videos']
-        if position or position == 0:
-            playlist_videos = list(reversed(playlist_videos))
-
-        for index, val in enumerate(playlist_videos):
-            playlist_songs += 1
-
-            # noinspection PyTypeChecker
-            url = f"https://www.youtube.com/watch?v={playlist_videos[index]['id']}"
-            video = VideoClass('Video', web_data.author_id, url)
-
-            if position or position == 0:
-                guild[web_data.guild_id].queue.insert(position, video)
-            else:
-                guild[web_data.guild_id].queue.append(video)
-
-        message = f"`{playlist_songs}` songs from playlist added to queue!"
-
-        save_json()
-
-        return [True, message, None]
-
-    elif url:
-
-        video_id = extract_yt_id(url)
-
-        if video_id is None:
-            message = f'Invalid URL: `{url}`'
-            save_json()
-            return [False, message]
-
-        url = f"https://www.youtube.com/watch?v={video_id}"
-        video = VideoClass('Video', web_data.author_id, url)
-
-        if position or position == 0:
-            guild[web_data.guild_id].queue.insert(position, video)
+    try:
+        if position == 0:
+            guild[guild_id].queue.insert(0, video)
         else:
-            guild[web_data.guild_id].queue.append(video)
-
-        message = f'{video.title} added to queue!'
+            guild[guild_id].queue.append(video)
 
         save_json()
-        return [True, message, None]
+        log(guild_id, "web_queue -> Queued")
+        return [True, f'Queued {video.title}', video]
 
-async def web_queue_from_radio(web_data, radio_name, position=None):
-    log(web_data.guild_id, 'web_queue_from_radio', [radio_name, position], log_type='function', author=web_data.author)
-    if position:
-        if position == "start":
-            position = 0
-        elif position == "end":
-            position = None
+    except Exception as e:
+        log(guild_id, f"web_queue -> Error while queuing: {e}")
+        return [False, 'Error while queuing (Internal web error -> contact developer)']
+
+async def web_queue_from_radio(web_data, radio_name, position=None):1
+    log(web_data, 'web_queue_from_radio', [radio_name, position], log_type='function', author=web_data.author)
 
     if radio_name in radio_dict.keys():
-
         video = VideoClass('Radio', web_data.author_id, radio_name=radio_name)
 
-        if position or position == 0:
-            guild[web_data.guild_id].queue.insert(position, video)
+        if position == 'start':
+            guild[web_data.guild_id].queue.insert(0, video)
         else:
             guild[web_data.guild_id].queue.append(video)
 
         message = f'`{video.title}` added to queue!'
-
         save_json()
-
         return [True, message, video]
 
     else:
         message = f'Radio station `{radio_name}` does not exist!'
-
         save_json()
-
         return [False, message]
 
 async def web_edit(web_data, form):
-    log(web_data.guild_id, 'web_edit', [form], log_type='function', author=web_data.author)
+    log(web_data, 'web_edit', [form], log_type='function', author=web_data.author)
     guild_id = web_data.guild_id
     q_index = form['edit_btn']
 
@@ -3200,7 +3049,7 @@ async def guild_page(guild_id, key):
     log(request.remote_addr, f'/guild/{guild_id}&key={key}', log_type='ip')
     admin = False
     user = None
-    user_name, user_id = "WEB", bot_id
+    user_name, user_id = request.remote_addr, bot_id
     errors = []
     messages = []
 
@@ -3222,66 +3071,71 @@ async def guild_page(guild_id, key):
 
         keys = request.form.keys()
         if 'del_btn' in keys:
-            log(web_data.guild_id, 'web_remove', [request.form['del_btn']], log_type='web', author=web_data.author)
-            response = await web_remove(web_data, request.form['del_btn'])
+            log(web_data, 'remove', [request.form['del_btn']], log_type='web', author=web_data.author)
+            response = await remove_def(web_data, int(request.form['del_btn']))
         if 'up_btn' in keys:
-            log(web_data.guild_id, 'web_up', [request.form['up_btn']], log_type='web', author=web_data.author)
+            log(web_data, 'up', [request.form['up_btn']], log_type='web', author=web_data.author)
             response = await web_up(web_data, request.form['up_btn'])
         if 'down_btn' in keys:
-            log(web_data.guild_id, 'web_down', [request.form['down_btn']], log_type='web', author=web_data.author)
+            log(web_data, 'down', [request.form['down_btn']], log_type='web', author=web_data.author)
             response = await web_down(web_data, request.form['down_btn'])
         if 'top_btn' in keys:
-            log(web_data.guild_id, 'web_top', [request.form['top_btn']], log_type='web', author=web_data.author)
+            log(web_data, 'top', [request.form['top_btn']], log_type='web', author=web_data.author)
             response = await web_top(web_data, request.form['top_btn'])
         if 'bottom_btn' in keys:
-            log(web_data.guild_id, 'web_bottom', [request.form['bottom_btn']], log_type='web', author=web_data.author)
+            log(web_data, 'bottom', [request.form['bottom_btn']], log_type='web', author=web_data.author)
             response = await web_bottom(web_data, request.form['bottom_btn'])
         if 'stop_btn' in keys:
-            log(web_data.guild_id, 'web_stop', [], log_type='web', author=web_data.author)
-            response = await web_stop(web_data)
+            log(web_data, 'stop', [], log_type='web', author=web_data.author)
+            response = await stop_def(web_data)
         if 'pause_btn' in keys:
-            log(web_data.guild_id, 'web_pause', [], log_type='web', author=web_data.author)
-            response = await web_pause(web_data)
+            log(web_data, 'pause', [], log_type='web', author=web_data.author)
+            response = await pause_def(web_data)
         if 'resume_btn' in keys:
-            log(web_data.guild_id, 'web_resume', [], log_type='web', author=web_data.author)
-            response = await web_resume(web_data)
+            log(web_data, 'resume', [], log_type='web', author=web_data.author)
+            response = await resume_def(web_data)
 
         if 'skip_btn' in keys:
-            log(web_data.guild_id, 'web_skip', [], log_type='web', author=web_data.author)
-            response = await web_skip(web_data)
+            log(web_data, 'wskip', [], log_type='web', author=web_data.author)
+            response = await skip_def(web_data)
         if 'shuffle_btn' in keys:
-            log(web_data.guild_id, 'web_shuffle', [], log_type='web', author=web_data.author)
-            response = await web_shuffle(web_data)
+            log(web_data, 'shuffle', [], log_type='web', author=web_data.author)
+            response = await shuffle_def(web_data)
         if 'clear_btn' in keys:
-            log(web_data.guild_id, 'web_clear', [], log_type='web', author=web_data.author)
-            response = await web_clear(web_data)
+            log(web_data, 'clear', [], log_type='web', author=web_data.author)
+            response = await clear_def(web_data)
+
+        if 'play_btn' in keys:
+            log(web_data, 'play', [], log_type='web', author=web_data.author)
+            response = await play_def(web_data)
 
         if 'queue_btn' in keys:
-            log(web_data.guild_id, 'web_add_queue', [request.form['queue_btn']], log_type='web', author=web_data.author)
-            response = await web_queue_from_video(web_data, request.form['queue_btn'])
+            log(web_data, 'queue', [request.form['queue_btn']], log_type='web', author=web_data.author)
+            response = await web_queue(web_data, request.form['queue_btn'])
         if 'nextup_btn' in keys:
-            log(web_data.guild_id, 'web_nextup', [request.form['nextup_btn'], 0], log_type='web', author=web_data.author)
-            response = await web_queue_from_video(web_data, request.form['nextup_btn'], 0)
+            log(web_data, 'nextup', [request.form['nextup_btn'], 0], log_type='web', author=web_data.author)
+            response = await web_queue(web_data, request.form['nextup_btn'], 0)
 
         if 'edit_btn' in keys:
-            log(web_data.guild_id, 'web_edit', [request.form['edit_btn']], log_type='web', author=web_data.author)
+            log(web_data, 'web_edit', [request.form['edit_btn']], log_type='web', author=web_data.author)
             response = await web_edit(web_data, request.form)
 
         if 'volume_btn' in keys:
-            log(web_data.guild_id, 'web_volume', [request.form['volumeRange'], request.form['volumeInput']], log_type='web', author=web_data.author)
-            response = await web_volume(web_data, request.form['volumeRange'], request.form['volumeInput'])
+            log(web_data, 'volume_command_def', [request.form['volumeRange'], request.form['volumeInput']], log_type='web', author=web_data.author)
+            response = await volume_command_def(web_data, request.form['volumeRange'], request.form['volumeInput'])
 
         if 'ytURL' in keys:
-            log(web_data.guild_id, 'web_add_queue', [request.form['ytURL'], request.form['addPosition']], log_type='web', author=web_data.author)
-            response = await web_queue_from_url(web_data, request.form['ytURL'], request.form['addPosition'])
+            log(web_data, 'queue_command_def', [request.form['ytURL'], request.form['addPosition']], log_type='web', author=web_data.author)
+            response = await queue_command_def(web_data, request.form['ytURL'], 0 if request.form['addPosition'] == 'start' else None)
         if 'radio-checkbox' in keys:
-            log(web_data.guild_id, 'web_add_queue', [request.form['radio-checkbox'], request.form['addPosition']], log_type='web', author=web_data.author)
+            log(web_data, 'web_queue_from_radio', [request.form['radio-checkbox'], request.form['addPosition']], log_type='web', author=web_data.author)
             response = await web_queue_from_radio(web_data, request.form['radio-checkbox'], request.form['addPosition'])
 
-        if not response[0]:
-            errors = [response[1]]
-        else:
-            messages = [response[1]]
+        if response:
+            if not response[0]:
+                errors = [response[1]]
+            else:
+                messages = [response[1]]
 
     try:
         guild_object = guild[int(guild_id)]
@@ -3388,7 +3242,7 @@ async def admin_page():
         try:
             if 'download_btn' in keys:
                 file_name = request.form['download_file']
-                log(web_data.guild_id, 'download file', [file_name], log_type='web', author=web_data.author)
+                log(web_data, 'download file', [file_name], log_type='web', author=web_data.author)
                 try:
                     if file_name == 'log.txt' or file_name == 'data.txt' or file_name == 'activity.log':
                         return send_file(f'{file_name}', as_attachment=True)
@@ -3399,7 +3253,7 @@ async def admin_page():
             if 'upload_btn' in keys:
                 f = request.files['file']
                 file_name = request.form['download_file']
-                log(web_data.guild_id, 'upload file', [f.filename, file_name], log_type='web', author=web_data.author)
+                log(web_data, 'upload file', [f.filename, file_name], log_type='web', author=web_data.author)
                 if not f:
                     errors = ['No file']
                 elif file_name != f.filename:
@@ -3417,38 +3271,38 @@ async def admin_page():
             if 'update_stopped_btn' in keys:
                 guild[guild_id].options.stopped = bool(request.form['stoppedSelect'])
                 messages = ['stopped updated']
-                log(web_data.guild_id, 'update stopped', [guild[guild_id].options.stopped], log_type='web', author=web_data.author)
+                log(web_data, 'update stopped', [guild[guild_id].options.stopped], log_type='web', author=web_data.author)
             if 'update_loop_btn' in keys:
                 guild[guild_id].options.loop = bool(request.form['loopSelect'])
                 messages = ['loop updated']
-                log(web_data.guild_id, 'update loop', [guild[guild_id].options.loop], log_type='web', author=web_data.author)
+                log(web_data, 'update loop', [guild[guild_id].options.loop], log_type='web', author=web_data.author)
             if 'update_is_radio_btn' in keys:
                 guild[guild_id].options.is_radio = bool(request.form['is_radioSelect'])
                 messages = ['is_radio updated']
-                log(web_data.guild_id, 'update is_radio', [guild[guild_id].options.is_radio], log_type='web', author=web_data.author)
+                log(web_data, 'update is_radio', [guild[guild_id].options.is_radio], log_type='web', author=web_data.author)
             if 'update_buttons_btn' in keys:
                 guild[guild_id].options.buttons = bool(request.form['buttonsSelect'])
                 messages = ['buttons updated']
-                log(web_data.guild_id, 'update buttons', [guild[guild_id].options.buttons], log_type='web', author=web_data.author)
+                log(web_data, 'update buttons', [guild[guild_id].options.buttons], log_type='web', author=web_data.author)
             if 'update_language_btn' in keys:
                 guild[guild_id].options.language = request.form['languageSelect']
                 messages = ['language updated']
-                log(web_data.guild_id, 'update language', [guild[guild_id].options.language], log_type='web', author=web_data.author)
+                log(web_data, 'update language', [guild[guild_id].options.language], log_type='web', author=web_data.author)
             if 'update_response_type_btn' in keys:
                 guild[guild_id].options.response_type = request.form['response_typeSelect']
                 messages = ['response_type updated']
-                log(web_data.guild_id, 'update response_type', [guild[guild_id].options.response_type], log_type='web', author=web_data.author)
+                log(web_data, 'update response_type', [guild[guild_id].options.response_type], log_type='web', author=web_data.author)
             if 'update_buffer_btn' in keys:
                 guild[guild_id].options.buffer = int(request.form['bufferSelect'])
                 messages = ['buffer updated']
-                log(web_data.guild_id, 'update buffer', [guild[guild_id].options.buffer], log_type='web', author=web_data.author)
+                log(web_data, 'update buffer', [guild[guild_id].options.buffer], log_type='web', author=web_data.author)
             if 'update_volume_btn' in keys:
                 guild[guild_id].options.volume = int(request.form['volumeSelect'])
                 messages = ['volume updated']
-                log(web_data.guild_id, 'update volume', [guild[guild_id].options.volume], log_type='web', author=web_data.author)
+                log(web_data, 'update volume', [guild[guild_id].options.volume], log_type='web', author=web_data.author)
         except Exception as e:
             errors = [str(e)]
-            log(web_data.guild_id, 'error', [str(e)], log_type='web', author=web_data.author)
+            log(web_data, 'error', [str(e)], log_type='web', author=web_data.author)
 
     if 'discord_user' in session.keys():
         user = session['discord_user']

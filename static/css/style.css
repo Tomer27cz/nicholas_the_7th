@@ -267,32 +267,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 
-/* t cols */
-
-.t-cols {
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: center;
-}
-
-.t-col {
-  flex: 1;
-}
-
-@media screen and (max-width: 980px) {
-  .t-cols .t-col {
-    flex-basis: 40%;
-  }
-  .t-cols .t-col:last-child {
-    flex-basis: 100%;
-  }
-}
-
-@media screen and (max-width: 680px) {
-  .t-cols .t-col {
-    flex-basis: 100%;
-  }
-}
+/* nav static button (refresh data) */
 
 .nav-static-buttons {
   position: fixed;
@@ -379,7 +354,7 @@ input.radio-checkbox[type=radio] + label
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
-  justify-content: space-between;
+  justify-content: space-evenly;
 }
 
 
@@ -398,9 +373,6 @@ input.radio-checkbox[type=radio] + label
 .q-self-center {
     align-self: center;
 }
-/*.q-wa {
-    width: auto;
-}*/
 .q-wd {
     width: 50%;
 }
@@ -441,7 +413,9 @@ input.radio-checkbox[type=radio] + label
   color: var(--json-green);
 }
 
+
 /* Edit modal */
+
 .e-label {
   margin-bottom: 0.5rem;
   color: var(--json-purple);
@@ -472,10 +446,12 @@ input.radio-checkbox[type=radio] + label
   box-shadow: 0 0 0 0.25rem var(--json-green-alpha25);
 }
 
+
+/* button row */
+
 .e-btn-div {
   display: flex;
-  justify-content: space-between;
-  padding: 0.5rem 1rem 0 1rem;
+  justify-content: space-evenly;
 }
 
 .e-btn {
