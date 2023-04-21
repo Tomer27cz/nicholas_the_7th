@@ -2874,7 +2874,7 @@ async def web_queue(web_data, video_type, position=None):
         log(guild_id, f"web_queue -> Error while queuing: {e}")
         return [False, 'Error while queuing (Internal web error -> contact developer)']
 
-async def web_queue_from_radio(web_data, radio_name, position=None):1
+async def web_queue_from_radio(web_data, radio_name, position=None):
     log(web_data, 'web_queue_from_radio', [radio_name, position], log_type='function', author=web_data.author)
 
     if radio_name in radio_dict.keys():
