@@ -35,36 +35,36 @@
                 </div>
             </div>
             <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-                <table class="table table-dark table-responsive table-group-divider table-borderless">
-                    <thead class="table-group-divider">
-                        <tr>
-                            <th scope="col">Icon</th>
-                            <th scope="col">Member Count</th>
-                            <th scope="col">ID</th>
-                            <th scope="col">Owner</th>
-                            <th scope="col">Owner ID</th>
-                            <th scope="col">Created at</th>
-                            <th scope="col">Description</th>
-                        </tr>
-                    </thead>
-                    <tbody class="div-align">
-                        <tr>
-                            <td>
-                                {% if guild.data.icon is not none %}
-                                <img loading="lazy" class="d-list-img" src={{guild.data.icon}} alt="Icon">
-                                {% else %}
-                                None
-                                {% endif %}
-                            </td>
-                            <td>{{guild.data.member_count}}</td>
-                            <td>{{guild.data.id}}</td>
-                            <td>{{guild.data.owner_name}}</td>
-                            <td>{{guild.data.owner_id}}</td>
-                            <td>{{guild.data.created_at}}</td>
-                            <td>{{guild.data.description}}</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="q-container">
+                    <div class="q-div">
+                        {% if guild.data.icon is not none %}
+                        <img loading="lazy" class="q-img" src="{{guild.data.icon}}" alt="thumbnail">
+                        {% else %}
+                        None
+                        {% endif %}
+                        <div class="q-item1 q-wa">
+                            <p class="q-text q-1">Member Count</p>
+                            <p class="q-text q-2">{{guild.data.member_count}}</p>
+                        </div>
+                        <div class="q-item1 q-wa">
+                            <p class="q-text q-1">ID</p>
+                            <p class="q-text q-2">{{guild.data.id}}}</p>
+                        </div>
+                        <div class="q-item1 q-items-center">
+                            <p class="q-text q-1">Server Owner</p>
+                            <p class="q-text q-2"><a class="q-2" target="_blank" rel="noopener noreferrer" href="https://discordapp.com/users/{{guild.data.owner_id}}">{{guild.data.owner_name}}</a></p>
+                            <p class="q-text q-3">{{guild.data.owner_id}}</p>
+                        </div>
+                        <div class="q-item1 q-wa">
+                            <p class="q-text q-1">Created at</p>
+                            <p class="q-text q-2">{{struct_to_time(guild.data.created_at)}}</p>
+                        </div>
+                        <div class="q-item1 q-wa">
+                            <p class="q-text q-1">Description</p>
+                            <p class="q-text q-2">{{guild.data.description}}</p>
+                        </div>
+                    </div>
+                </div>
             </div>
           </div>
         </div>
@@ -83,30 +83,36 @@
       </div>
       <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse">
           <div class="accordion-body">
-              <div>
-                {% if guild.last_played is not none %}
-                <table class="table table-dark table-responsive-lg table-borderless">
-                    <tr>
-                        <td class="index-align"><img loading="lazy" class="d-list-img" src="{{guild.last_played.picture}}" alt="thumbnail"></td>
-                        <td>{{convert_duration(guild.last_played.duration)}}</td>
-                        <td>{{guild.last_played.type}}</td>
-                        <td>{{get_username(guild.last_played.author)}}</td>
-                        <td><a href="{{guild.last_played.url}}">{{guild.last_played.title}}</a></td>
-                        <td><a href="{{guild.last_played.channel_link}}">{{guild.last_played.channel_name}}</a></td>
-                        <td>
-                            <form action="#" method="POST">
-                                <button class="btn btn-outline btn-secondary btn-sm btn-m" type="submit" name="queue_btn" value="last_played">Add to Queue</button>
-                                <button class="btn btn-outline btn-secondary btn-sm btn-m" type="submit" name="nextup_btn" value="last_played">Next Up</button>
-                            </form>
-                        </td>
-                    </tr>
-                </table>
-                {% else %}
-                <div class="div-align">
-                    <p>Nothing has been played yet</p>
-                </div>
-                {% endif %}
+            {% if guild.last_played is not none %}
+              <div class="q-container">
+                  <div class="q-div">
+                    <img loading="lazy" class="q-img" src="{{guild.last_played.picture}}" alt="thumbnail">
+                    <div class="q-item1 q-wd">
+                        <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="{{guild.last_played.url}}">{{guild.last_played.title}}</a></p>
+                        <p class="q-text"><a class="q-2" target="_blank" rel="noopener noreferrer" href="{{guild.last_played.channel_link}}">{{guild.last_played.channel_name}}</a></p>
+                        <p class="q-text q-3">{{convert_duration(guild.last_played.duration)}}</p>
+                    </div>
+                    <div class="q-item2 q-items-center">
+                        <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://discordapp.com/users/{{guild.last_played.author}}">{{get_username(guild.last_played.author)}}</a></p>
+                        <p class="q-text q-2">{{guild.last_played.author}}</p>
+                        <p class="q-text q-3">{{struct_to_time(guild.last_played.created_at, first='time')}}</p>
+                    </div>
+                    <div class="q-item0 q-wa q-self-center q-items-center">
+                        <form action="#" method="POST">
+                            {% if admin == True %}
+                            <button class="btn btn-outline btn-primary btn-sm btn-m" type="button" data-bs-toggle="modal" data-bs-target=#videoEditModal_lp>Edit</button>
+                            {% endif %}
+                            <button class="btn btn-outline btn-secondary btn-sm btn-m" type="submit" name="queue_btn" value="last_played">Add to Queue</button>
+                            <button class="btn btn-outline btn-secondary btn-sm btn-m" type="submit" name="nextup_btn" value="last_played">Next Up</button>
+                        </form>
+                    </div>
+                  </div>
+              </div>
+            {% else %}
+            <div class="div-align">
+                <p>Nothing has been played yet</p>
             </div>
+            {% endif %}
           </div>
       </div>
   </div>
@@ -120,34 +126,37 @@
       </div>
       <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse show">
           <div class="accordion-body">
-              <div>
-                {% if guild.now_playing is not none %}
-                  {{guild.now_playing.renew()}}
-                <table class="table table-dark table-responsive-lg table-borderless">
-                    <tr>
-                        <td class="index-align"><img loading="lazy" class="d-list-img" src="{{guild.now_playing.picture}}" alt="thumbnail"></td>
-                        <td>{{convert_duration(guild.now_playing.duration)}}</td>
-                        <td>{{guild.now_playing.type}}</td>
-                        {% if guild.now_playing.type == "Radio" %}
-                            <td>{{guild.now_playing.radio_name}}</td>
-                        {% endif %}
-                        <td>{{get_username(guild.now_playing.author)}}</td>
-                        <td><a href="{{guild.now_playing.url}}">{{guild.now_playing.title}}</a></td>
-                        <td><a href="{{guild.now_playing.channel_link}}">{{guild.now_playing.channel_name}}</a></td>
-                        <td>
-                            <form action="#" method="POST">
-                                <button class="btn btn-outline btn-secondary btn-sm btn-m" type="submit" name="queue_btn" value="now_playing">Add to Queue</button>
-                                <button class="btn btn-outline btn-secondary btn-sm btn-m" type="submit" name="nextup_btn" value="now_playing">Next Up</button>
-                            </form>
-                        </td>
-                    </tr>
-                </table>
-                {% else %}
-                <div class="div-align">
-                    <p>Nothing is playing right now</p>
+              {% if guild.now_playing is not none %}
+              {{guild.now_playing.renew()}}
+              <div class="q-container">
+                <div class="q-div">
+                    <img loading="lazy" class="q-img" src="{{guild.now_playing.picture}}" alt="thumbnail">
+                    <div class="q-item1 q-wd">
+                        <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="{{guild.now_playing.url}}">{{guild.now_playing.title}}</a></p>
+                        <p class="q-text"><a class="q-2" target="_blank" rel="noopener noreferrer" href="{{guild.now_playing.channel_link}}">{{guild.now_playing.channel_name}}</a></p>
+                        <p class="q-text q-3">{{convert_duration(guild.now_playing.duration)}}</p>
+                    </div>
+                    <div class="q-item2 q-items-center">
+                        <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://discordapp.com/users/{{guild.now_playing.author}}">{{get_username(guild.now_playing.author)}}</a></p>
+                        <p class="q-text q-2">{{guild.now_playing.author}}</p>
+                        <p class="q-text q-3">{{struct_to_time(guild.now_playing.created_at, first='time')}}</p>
+                    </div>
+                    <div class="q-item0 q-wa q-self-center q-items-center">
+                        <form action="#" method="POST">
+                            {% if admin == True %}
+                            <button class="btn btn-outline btn-primary btn-sm btn-m" type="button" data-bs-toggle="modal" data-bs-target=#videoEditModal_np>Edit</button>
+                            {% endif %}
+                            <button class="btn btn-outline btn-secondary btn-sm btn-m" type="submit" name="queue_btn" value="now_playing">Add to Queue</button>
+                            <button class="btn btn-outline btn-secondary btn-sm btn-m" type="submit" name="nextup_btn" value="now_playing">Next Up</button>
+                        </form>
+                    </div>
                 </div>
-                {% endif %}
-            </div>
+              </div>
+              {% else %}
+              <div class="div-align">
+                  <p>Nothing is playing right now</p>
+              </div>
+              {% endif %}
           </div>
       </div>
   </div>
@@ -187,7 +196,6 @@
 </div>
 
 
-
 <!-- Queue -->
 <div class="div-align">
     <h2>Queue</h2>
@@ -199,65 +207,141 @@
     </button>
 </div>
 
-
 <form method="POST" action="#">
-    <table class="table table-dark table-responsive-lg table-group-divider">
-      <thead>
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col">Thumbnail</th>
-            <th scope="col">Duration</th>
-            <th scope="col">Type</th>
-            <th scope="col">Requested by</th>
-            <th scope="col">Name</th>
-            <th scope="col">Author</th>
-            <th scope="col">Actions</th>
-            <th scope="col">Move</th>
-        </tr>
-      </thead>
-      <tbody class="table-group-divider">
-        {% for track in guild.queue %}
-            <tr>
-                <td class="index-align">{{guild.queue.index(track)}}</td>
-                <td><img loading="lazy" class="d-list-img" src="{{track.picture}}" alt="thumbnail"></td>
-                <td>{{convert_duration(track.duration)}}</td>
-                <td>{{track.type}}</td>
-                <td>{{get_username(track.author)}}</td>
-                <td><a href="{{track.url}}">{{track.title}}</a></td>
-                <td><a href="{{track.channel_link}}">{{track.channel_name}}</a></td>
-                <td>
-                    <button type="button" class="btn btn-secondary btn-sm dropdown-toggle btn-m" data-bs-toggle="dropdown" aria-expanded="false">
-                        Action
-                    </button>
+    {% for track in guild.queue %}
+        <div class="q-container">
+            <div class="q-div">
+                <img loading="lazy" class="q-img" src="{{track.picture}}" alt="thumbnail">
+                <div class="q-item1 q-wd">
+                    <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="{{track.url}}">{{track.title}}</a></p>
+                    <p class="q-text"><a class="q-2" target="_blank" rel="noopener noreferrer" href="{{track.channel_link}}">{{track.channel_name}}</a></p>
+                    <p class="q-text q-3">{{convert_duration(track.duration)}}</p>
+                </div>
+                <div class="q-item2 q-items-center">
+                    <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://discordapp.com/users/{{track.author}}">{{get_username(track.author)}}</a></p>
+                    <p class="q-text q-2">{{track.author}}</p>
+                    <p class="q-text q-3">{{struct_to_time(track.created_at, first='time')}}</p>
+                </div>
+                <div class="q-item0 q-wa q-self-center q-items-center">
+                    {% if admin == True %}
+                    <button class="btn btn-outline btn-primary btn-sm btn-m" type="button" data-bs-toggle="modal" data-bs-target=#videoEditModal_{{guild.queue.index(track)}}>Edit</button>
+                    {% endif %}
+                    <button type="button" class="btn btn-secondary btn-sm dropdown-toggle btn-m" data-bs-toggle="dropdown" aria-expanded="false">More</button>
                     <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
-                        <li><button class="dropdown-item" type="submit" name="top_btn" value="{{guild.queue.index(track)}}">Move to Top</button></li>
-                        <li><button class="dropdown-item" type="submit" name="bottom_btn" value="{{guild.queue.index(track)}}">Move to Bottom</button></li>
-<!--                            <li><hr class="dropdown-divider"></li>-->
-<!--                            <li><button class="dropdown-item" type="submit" name="play_btn" value={{index}}>Play Now</button></li>-->
+                        <li><button class="dropdown-item" type="submit" name="top_btn" value={{guild.queue.index(track)}}>Move to Top</button></li>
+                        <li><button class="dropdown-item" type="submit" name="bottom_btn" value={{guild.queue.index(track)}}>Move to Bottom</button></li>
+                        <li><button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target=#videoModal_{{guild.queue.index(track)}}>Info</button>
+                    </li>
                     </ul>
-                    <button class="btn btn-outline btn-danger btn-sm btn-m" type="submit" name="del_btn" value={{guild.queue.index(track)}}>Remove</button>
-                </td>
-                <td>
-                    <div class="btn-group-vertical">
-                        <button class="btn btn-dark" name="up_btn" value={{guild.queue.index(track)}}>
+                    <button class="btn btn-outline btn-danger btn-sm btn-m" type="submit" name="del_btn" value="{{guild.queue.index(track)}}">Remove</button>
+                </div>
+            </div>
+            <div class="q-item0 q-wa q-self-center q-items-center">
+                <div class="btn-group-vertical">
+                    <button class="btn btn-dark" name="up_btn" value={{guild.queue.index(track)}}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-up" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/>
+                            <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"></path>
                         </svg>
                     </button>
-                        <button class="btn btn-dark" name="down_btn" value={{guild.queue.index(track)}}>
+                    <button class="btn btn-dark" name="down_btn" value={{guild.queue.index(track)}}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"/>
+                            <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"></path>
                         </svg>
                     </button>
-                    </div>
-                </td>
-            </tr>
-      {% endfor %}
-      </tbody>
-    </table>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
 </form>
 
-<!-- Modal -->
+
+<!-- Video Modals -->
+
+{% for track in guild.queue %}
+<div class="modal fade" id="videoModal_{{guild.queue.index(track)}}" data-bs-keyboard="false" tabindex="-1" aria-labelledby="videoLabel_{{guild.queue.index(track)}}" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="videoLabel_{{guild.queue.index(track)}}">Video {{guild.queue.index(track)}} Info</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="info-modal">
+                <br>
+                <p>index: <span class="v-info">{{guild.queue.index(track)}}</span></p>
+                {% for key, value in track.__dict__.items() %}
+                    <p>{{key}}: <span class="v-info">{{value}}</span></p>
+                {% endfor %}
+                <br>
+            </div>
+        </div>
+      </div>
+    </div>
+{% endfor %}
+
+<!-- Video Edit Modals -->
+
+{% if admin == True %}
+    {% for track in guild.queue %}
+        <div class="modal fade" id="videoEditModal_{{guild.queue.index(track)}}" data-bs-keyboard="false" tabindex="-1" aria-labelledby="videoEditLabel{{guild.queue.index(track)}}" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="videoEditLabel{{guild.queue.index(track)}}">Video {{guild.queue.index(track)}} Edit</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="info-modal">
+                    <br>
+                    <form action="#" method="POST">
+                    {% for key, value in track.__dict__.items() %}
+                        <div class="e-div">
+                            <label for="{{guild.queue.index(track)}}_{{key}}" class="e-label">{{key}}</label>
+                            <input type="text" id="{{guild.queue.index(track)}}_{{key}}" name="{{key}}" value="{{value}}" class="e-input">
+                        </div>
+                    {% endfor %}
+                        <div class="e-btn-div">
+                            <button class="btn e-btn btn-secondary btn-lg btn-m" type="button" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+                            <button class="btn e-btn btn-primary btn-lg btn-m" type="submit" name="edit_btn" value="{{guild.queue.index(track)}}">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+          </div>
+        </div>
+    {% endfor %}
+    <div class="modal fade" id="videoEditModal_lp" data-bs-keyboard="false" tabindex="-1" aria-labelledby="videoEditLabel_lp" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="videoEditLabel_lp">Last Played Video Edit</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="info-modal">
+                <br>
+
+                <br>
+            </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="videoEditModal_np" data-bs-keyboard="false" tabindex="-1" aria-labelledby="videoEditLabel_np" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="videoEditLabel_np">Now playing Video Edit</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="info-modal">
+                <br>
+
+                <br>
+            </div>
+        </div>
+      </div>
+    </div>
+{% endif %}
+
+
+<!-- Modals -->
 <div class="modal fade" id="addToModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
@@ -348,13 +432,12 @@
       </div>
     </div>
 </div>
+
 <script>
 function submitRadioForm(id) {
     var form = document.getElementById('RadioForm');
     form.submit();
 }
 </script>
-
-
 
 {% endblock %}

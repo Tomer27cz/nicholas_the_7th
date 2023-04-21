@@ -1,6 +1,5 @@
-
 body {
-    background-color: #313338;
+    background-color: var(--d-g1);
     color: white;
     font-family: 'Consolas';
     min-height: 100vh;
@@ -8,18 +7,34 @@ body {
     flex-direction: column;
 }
 
-footer {
-  margin-top: auto;
+:root {
+    --d-g1: #313338;
+    --d-g2: #2b2d31;
+    --d-g3: #1e1f22;
+    --d-g4: #111214;
+
+    --json-green: #6a8759;
+    --json-green-alpha25: #6a87593F;
+    --json-purple: #9876aa;
 }
 
-#addbutton {
-    position: fixed;
-    bottom: 0px;
-    right: 0px;
-    margin: 3rem;
-    border-radius: 50%;
-    width: 4rem;
-    height: 4rem;
+/*
+discord colors
+background : #313338
+dark grey : #2b2d31
+darker grey : #1e1f22
+black : #111214
+
+json colors
+green : #6a8759
+purple : #9876aa
+
+*/
+
+
+
+footer {
+  margin-top: auto;
 }
 
 td {
@@ -36,10 +51,61 @@ h1, h2, h3, h4, h5, h6 {
     margin-bottom: 0.5rem;
 }
 
+
+/* Bootstrap override */
+
+.row>* {
+    padding-left: 0rem;
+    padding-right: 0rem;
+}
+
+.accordion-button {
+  --bs-accordion-active-bg: None;
+  --bs-accordion-active-color: None;
+  --bs-accordion-btn-focus-border-color: None;
+  --bs-accordion-btn-focus-box-shadow: None;
+}
+
+.accordion {
+  --bs-accordion-bg: var(--d-g3);
+}
+
+.btn-dark {
+    --bs-btn-bg: None;
+    --bs-btn-border-color: None;
+}
+
+.modal-content {
+    background-color: var(--d-g2);
+}
+
+
+/* id  */
+
+#addbutton {
+    position: fixed;
+    bottom: 0px;
+    right: 0px;
+    margin: 3rem;
+    border-radius: 50%;
+    width: 4rem;
+    height: 4rem;
+}
+
+
+/* nav */
+
 .user-color {
     color: rgba(255, 255, 255, 0.55);
     text-decoration: None;
 }
+
+.nav-discord {
+    background-color: var(--d-g2);
+}
+
+
+/* about */
 
 .hljs-attr {
     color: #e8bf6a;
@@ -54,7 +120,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .code {
     border-radius: 1rem;
-    background-color: #313338;
+    background-color: var(--d-g1);
     padding: 1rem;
 }
 
@@ -62,12 +128,12 @@ h1, h2, h3, h4, h5, h6 {
     padding: 1rem;
     margin: 1rem;
     border-radius: 1rem;
-    background-color: #1e1f22;
+    background-color: var(--d-g3);
 }
 
 .code-d {
     border-radius: 0.3rem;
-    background-color: #2b2d31;
+    background-color: var(--d-g2);
     padding: 0.3rem;
 }
 
@@ -75,21 +141,14 @@ h1, h2, h3, h4, h5, h6 {
     margin-top: 1rem;
 }
 
+
+/* divs */
+
 .div-code {
     padding: 1rem;
     margin: 1rem;
     border-radius: 1rem;
-    background-color: #2b2d31;
-}
-
-.d-list-img {
-    max-width: 160px;
-    max-height: 90px;
-}
-
-.index-align {
-    text-align: center;
-    font-size: 20px;
+    background-color: var(--d-g2);
 }
 
 .div-align {
@@ -109,22 +168,32 @@ h1, h2, h3, h4, h5, h6 {
     padding: 1rem;
     margin: 1rem;
     border-radius: 1rem;
-    background-color: #2b2d31;
+    background-color: var(--d-g2);
 }
 
 .div-login h1 {
     margin-bottom: 3rem;
 }
 
-.nav-discord {
-    background-color: #2b2d31;
+
+/* form */
+
+.form-r {
+  height: auto;
 }
+
+.form-c {
+  width: auto;
+}
+
+
+/* server picker */
 
 .picker {
   margin: 2rem;
   margin-top: 0;
   margin-bottom: 0;
-  background-color: #1e1f22;
+  background-color: var(--d-g3);
   border-radius: 0.5rem;
 }
 
@@ -172,12 +241,8 @@ h1, h2, h3, h4, h5, h6 {
   border: 4px solid rgb(220, 53, 69);
 }
 
-.accordion-button {
-  --bs-accordion-active-bg: None;
-  --bs-accordion-active-color: None;
-  --bs-accordion-btn-focus-border-color: None;
-  --bs-accordion-btn-focus-box-shadow: None;
-}
+
+/* btn */
 
 .btn-m {
   margin: 0.2rem;
@@ -201,13 +266,8 @@ h1, h2, h3, h4, h5, h6 {
   transform: scale(1.1);
 }
 
-.form-r {
-  height: auto;
-}
 
-.form-c {
-  width: auto;
-}
+/* t cols */
 
 .t-cols {
   display: flex;
@@ -249,6 +309,9 @@ h1, h2, h3, h4, h5, h6 {
         transform: none;
         }
 }
+
+
+/* radio modal*/
 
 input.radio-checkbox[type=radio] {
     display: none;
@@ -299,7 +362,127 @@ input.radio-checkbox[type=radio] + label
 
 
 
+/* queue */
 
+.q-container {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  padding: 1rem;
+  margin: 0.75rem;
+  border-radius: 1rem;
+  background-color: var(--d-g3);
+}
+
+.q-div {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+
+.q-item1 {
+    flex: 1 1 auto;
+}
+.q-item2 {
+    flex: 0 0 20%;
+}
+.q-item0 {
+    flex: 0 0 auto;
+}
+.q-items-center {
+    align-items: center;
+}
+.q-self-center {
+    align-self: center;
+}
+/*.q-wa {
+    width: auto;
+}*/
+.q-wd {
+    width: 50%;
+}
+
+
+
+.q-img {
+    width: 120px;
+    height: 90px;
+    border-radius: 0.5rem;
+}
+.q-text {
+    flex: 1 1 auto;
+    margin-bottom: 0.4rem;
+    width: auto;
+    align-self: end;
+}
+.q-1 {
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: #fff;
+}
+.q-2 {
+    color: #bababa;
+}
+.q-3 {
+    color: #808080;
+}
+
+
+/* info modal*/
+
+.info-modal p {
+  margin-bottom: 0.5rem;
+  color: var(--json-purple);
+}
+.v-info {
+  color: var(--json-green);
+}
+
+/* Edit modal */
+.e-label {
+  margin-bottom: 0.5rem;
+  color: var(--json-purple);
+  flex: 0 0 20%;
+}
+
+.e-div {
+  display: flex;
+  padding: 0.5rem 1rem 0 1rem;
+}
+
+.e-input {
+  flex: 1;
+  margin-left: 0.5rem;
+  border-radius: 0.4rem;
+  padding: 0.375rem 0.75rem;
+  color: var(--json-green);
+  background-color: var(--d-g3);
+  border: 1px solid var(--d-g2);
+  transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+.e-input:focus {
+  color: var(--json-green);
+  background-color: var(--d-g4);
+  border: 1px solid;
+  outline: 0;
+  box-shadow: 0 0 0 0.25rem var(--json-green-alpha25);
+}
+
+.e-btn-div {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 1rem 0 1rem;
+}
+
+.e-btn {
+  flex: 1;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
 
 
 

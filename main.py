@@ -39,11 +39,11 @@ class Bot(commands.Bot):
     async def on_ready(self):
         await self.wait_until_ready()
         if not self.synced:
-            log('no guild', "Trying to sync commands")
+            log(None, "Trying to sync commands")
             await self.tree.sync()
-            log('no guild', f"Synced slash commands for {self.user}")
+            log(None, f"Synced slash commands for {self.user}")
         await bot.change_presence(activity=discord.Game(name=f"/help"))
-        log('no guild', 'Logged in as:\n{0.user.name}\n{0.user.id}'.format(bot))
+        log(None, 'Logged in as:\n{0.user.name}\n{0.user.id}'.format(bot))
 
     async def on_guild_join(self, guild_object):
         log(guild_object.id, f"Joined guild {guild_object.name} with {guild_object.member_count} members and {len(guild_object.voice_channels)} voice channels")
@@ -301,7 +301,6 @@ class VideoClass:
         else:
             raise ValueError("Invalid class type")
 
-
     def renew(self):
         if self.class_type == 'Radio':
             if self.radio_website == 'radia_cz':
@@ -315,7 +314,7 @@ class VideoClass:
                 self.title = data2.find('div', attrs={'class': 'song'}).text.lstrip().rstrip()
                 self.duration = 'Stream'
 
-            if self.radio_website == 'actve':
+            elif self.radio_website == 'actve':
                 r = requests.get(self.url).json()
                 self.picture = r['coverBase']
                 self.channel_name = r['artist']
@@ -327,6 +326,8 @@ class VideoClass:
 
         else:
             pass
+
+        return
     
 # ------------ Guild ------------
 
@@ -363,12 +364,31 @@ def load_sound_effects():
             all_sound_effects[file_index] = all_sound_effects[file_index][:len(file_val) - 4]
     except FileNotFoundError:
         all_sound_effects = ["No sound effects found"]
-    log('no guild', 'Loaded sound_effects folder')
+    log(None, 'Loaded sound_effects folder')
+
+# ----------- TIME ---------------------
+
+def struct_to_time(struct_time, first='date'):
+    if type(struct_time) != int:
+        try:
+            struct_time = int(struct_time)
+        except ValueError:
+            return struct_time
+
+    if first == 'date':
+        return strftime("%d/%m/%Y %H:%M:%S", gmtime(struct_time))
+
+    if first == 'time':
+        return strftime("%H:%M:%S %d/%m/%Y", gmtime(struct_time))
+
+    return strftime("%H:%M:%S %d/%m/%Y", gmtime(struct_time))
+
+
 
 # ------------ PRINT --------------------
 
 def log(guild_id, text_data, options=None, log_type='text', author=None):
-    now_time_str = strftime("%m/%d/%Y, %H:%M:%S", gmtime(time()))
+    now_time_str = struct_to_time(time())
     
     if log_type == 'command':
         message = f"{now_time_str} | C {guild_id} | Command ({text_data}) was requested by ({author}) -> {options}"
@@ -378,6 +398,8 @@ def log(guild_id, text_data, options=None, log_type='text', author=None):
         message = f"{now_time_str} | W {guild_id} | Command ({text_data}) was requested by ({author}) -> {options}"
     elif log_type == 'text':
         message = f"{now_time_str} | T {guild_id} | {text_data}"
+    elif log_type == 'ip':
+        message = f"{now_time_str} | I {guild_id} | Requested: {text_data}"
     else:
         raise ValueError('Wrong log_type')
     
@@ -388,7 +410,7 @@ def log(guild_id, text_data, options=None, log_type='text', author=None):
 
 
 def collect_data(data):
-    now_time_str = strftime("%m/%d/%Y, %H:%M:%S", gmtime(time()))
+    now_time_str = struct_to_time(time())
     message = f"{now_time_str} | {data}\n"
 
     with open("data.txt", "a", encoding="utf-8") as f:
@@ -480,20 +502,20 @@ def json_to_guilds(guilds_dict):
     return guilds_object
 
 # ---------------------------------------------- LOAD -------------------------------------------------------------
-log('no guild', "--------------------------------------- NEW / REBOOTED ----------------------------------------")
+log(None, "--------------------------------------- NEW / REBOOTED ----------------------------------------")
 
 
 build_new_guilds = False
 
 with open('src/radio.json', 'r') as file:
     radio_dict = json.load(file)
-log('no guild', 'Loaded radio.json')
+log(None, 'Loaded radio.json')
 
 
 with open('src/languages.json', 'r') as file:
     languages_dict = json.load(file)
     text = languages_dict['en']
-log('no guild', 'Loaded languages.json')
+log(None, 'Loaded languages.json')
 
 
 with open('src/other.json', 'r') as file:
@@ -504,20 +526,20 @@ with open('src/other.json', 'r') as file:
     bot_id = other['bot_id']
     vlc_logo = other['logo']
     authorized_users = other['authorized']
-log('no guild', 'Loaded other.json')
+log(None, 'Loaded other.json')
 
 
 # ---------------------------------------------- BOT -------------------------------------------------------------------
 
 bot = Bot()
 
-log('no guild', 'Bot class initialized')
+log(None, 'Bot class initialized')
 
 # ----------------------------------------------------------------------------------------------------------------------
 
 
 if build_new_guilds:
-    log('no guild', 'Building new guilds.json ...')
+    log(None, 'Building new guilds.json ...')
     with open('src/guilds.json', 'r') as file:
         jf = json.load(file)
     guild = dict(zip(jf.keys(), [Guild(int(guild)) for guild in jf.keys()]))
@@ -535,7 +557,7 @@ if build_new_guilds:
 
 with open('src/guilds.json', 'r') as file:
     guild = json_to_guilds(json.load(file))
-log('no guild', 'Loaded guilds.json')
+log(None, 'Loaded guilds.json')
 
 
 all_sound_effects = ["No sound effects found"]
@@ -583,7 +605,7 @@ def get_username(user_id: int):
         name = bot.get_user(int(user_id)).name
         return name
     except Exception as e:
-        log('no guild', f"get_username failed for ({user_id}) : {e}")
+        log(None, f"get_username failed for ({user_id}) : {e}")
         return user_id
 
 
@@ -632,7 +654,7 @@ def create_embed(video, name, guild_id):
     embed.add_field(name=tg(guild_id, 'Author'), value=f'[{video.channel_name}]({video.channel_link})')
     embed.add_field(name=tg(guild_id, 'URL'), value=f'[{video.url}]({video.url})')
     embed.set_thumbnail(url=video.picture)
-    embed.set_footer(text=f'Requested at {strftime("%Y/%m/%d %H:%M:%S", gmtime(video.created_at))}')
+    embed.set_footer(text=f'Requested at {struct_to_time(video.created_at, "time")}')
 
     return embed
 
@@ -689,26 +711,8 @@ class YTDLSource(discord.PCMVolumeTransformer):
 
     ytdl = yt_dlp.YoutubeDL(YTDL_OPTIONS)
 
-    def __init__(self, ctx: commands.Context, source: discord.FFmpegPCMAudio, *, data: dict):
+    def __init__(self, ctx: commands.Context, source: discord.FFmpegPCMAudio):
         super().__init__(source, guild[ctx.guild.id].options.volume)
-
-        # self.requester = ctx.author
-        # self.channel = ctx.channel
-        # self.data = data
-        #
-        # self.uploader = data.get('uploader')
-        # self.uploader_url = data.get('uploader_url')
-        # date = data.get('upload_date')
-        # self.upload_date = date[6:8] + '.' + date[4:6] + '.' + date[0:4]
-        # self.title = data.get('title')
-        # self.thumbnail = data.get('thumbnail')
-        # self.description = data.get('description')
-        # self.tags = data.get('tags')
-        # self.url = data.get('webpage_url')
-        # self.views = data.get('view_count')
-        # self.likes = data.get('like_count')
-        # self.dislikes = data.get('dislike_count')
-        # self.stream_url = data.get('url')
 
     @classmethod
     async def create_source(cls, ctx: commands.Context, cr_search: str, *, cr_loop: asyncio.BaseEventLoop = None):
@@ -749,7 +753,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
                 except IndexError:
                     raise YTDLError('Couldn\'t retrieve any matches for `{}`'.format(webpage_url))
 
-        return cls(ctx, discord.FFmpegPCMAudio(info['url'], **cls.FFMPEG_OPTIONS), data=info)
+        return cls(ctx, discord.FFmpegPCMAudio(info['url'], **cls.FFMPEG_OPTIONS))
 
 
 # ------------------------------------ View Classes --------------------------------------------------------------------
@@ -833,6 +837,7 @@ class SearchOptionView(View):
             guild[self.guild_id].queue.insert(0, video)
         else:
             guild[self.guild_id].queue.append(video)
+        save_json()
         await interaction.response.edit_message(content=f'[`{video.title}`](<{video.url}>) '
                                                         f'{tg(self.guild_id, "added to queue!")}', view=None)
         if self.from_play:
@@ -847,6 +852,7 @@ class SearchOptionView(View):
             guild[self.guild_id].queue.insert(0, video)
         else:
             guild[self.guild_id].queue.append(video)
+        save_json()
         await interaction.response.edit_message(content=f'[`{video.title}`](<{video.url}>) '
                                                         f'{tg(self.guild_id, "added to queue!")}', view=None)
         if self.from_play:
@@ -860,6 +866,7 @@ class SearchOptionView(View):
             guild[self.guild_id].queue.insert(0, video)
         else:
             guild[self.guild_id].queue.append(video)
+        save_json()
         await interaction.response.edit_message(content=f'[`{video.title}`](<{video.url}>) '
                                                         f'{tg(self.guild_id, "added to queue!")}', view=None)
         if self.from_play:
@@ -873,6 +880,7 @@ class SearchOptionView(View):
             guild[self.guild_id].queue.insert(0, video)
         else:
             guild[self.guild_id].queue.append(video)
+        save_json()
         await interaction.response.edit_message(content=f'[`{video.title}`](<{video.url}>) '
                                                         f'{tg(self.guild_id, "added to queue!")}', view=None)
         if self.from_play:
@@ -886,6 +894,7 @@ class SearchOptionView(View):
             guild[self.guild_id].queue.insert(0, video)
         else:
             guild[self.guild_id].queue.append(video)
+        save_json()
         await interaction.response.edit_message(content=f'[`{video.title}`](<{video.url}>) '
                                                         f'{tg(self.guild_id, "added to queue!")}', view=None)
         if self.from_play:
@@ -1423,7 +1432,6 @@ async def queue_command_def(ctx: commands.Context,
             await ctx.reply(message)
 
         save_json()
-        print('returned from queue')
         return [True, message, None]
 
 
@@ -1674,17 +1682,13 @@ async def play_def(ctx: commands.Context,
         if not response[0]:
             return
 
-    print('after response queue')
-
     voice = ctx.voice_client
 
     if not voice or voice is None:
         # noinspection PyUnresolvedReferences
         if not ctx.interaction.response.is_done():
             await ctx.defer()
-        print('after defer')
         response = await join_def(ctx, None, True)
-        print('after join')
         voice = ctx.voice_client
         if not response:
             return
@@ -1718,13 +1722,13 @@ async def play_def(ctx: commands.Context,
 
     if video.class_type != 'Video':
         guild[guild_id].queue.pop(0)
-        if video.class_type != 'Radio':
+        if video.class_type == 'Radio':
             await radio_def(ctx, video.title)
             return
-        if video.class_type != 'Local':
-            await ps_def(ctx, video.number)
+        if video.class_type == 'Local':
+            await ps_def(ctx, video.local_number)
             return
-        if video.class_type != 'Probe':
+        if video.class_type == 'Probe':
             await probe_command_def(ctx, video.url)
             return
 
@@ -2284,7 +2288,7 @@ async def config_command_def(ctx: commands.Context,
         f.write(content)
 
     if config_type == 'guilds':
-        log('no guild', 'Loading guilds.json ...')
+        log(None, 'Loading guilds.json ...')
         with open('src/guilds.json', 'r') as f:
             globals()['guild'] = json_to_guilds(json.load(f))
 
@@ -2624,12 +2628,11 @@ async def web_remove(web_data, number):
         log(guild_id, "web_remove -> No songs in queue")
         return [False, 'No songs in queue']
 
-    if type(number) is not int:
-        try:
-            number = int(number)
-        except ValueError:
-            log(guild_id, "web_remove -> Number must be an integer")
-            return [False, 'Number must be an integer (Internal web error -> contact developer)']
+    # if not number.isdigit():
+    #     log(guild_id, "web_remove -> Number must be an integer")
+    #     return [False, 'Number must be an integer (Internal web error -> contact developer)']
+
+    number = int(number)
 
     if queue_length-1 >= number >= 0:
         video = guild[guild_id].queue[number]
@@ -2651,19 +2654,16 @@ async def web_move(web_data, org_number, destination_number):
         log(guild_id, "web_move -> No songs in queue")
         return [False, 'No songs in queue']
 
-    if type(org_number) is not int:
-        try:
-            org_number = int(org_number)
-        except ValueError:
-            log(guild_id, "web_move -> Original number must be an integer")
-            return [False, 'Original number must be an integer (Internal web error -> contact developer)']
+    # if not org_number.isdigit():
+    #     log(guild_id, "web_move -> Original number must be an integer")
+    #     return [False, 'Original number must be an integer (Internal web error -> contact developer)']
+    #
+    # if not destination_number.isdigit():
+    #     log(guild_id, "web_move -> Destination number must be an integer")
+    #     return [False, 'Destination number must be an integer (Internal web error -> contact developer)']
 
-    if type(destination_number) is not int:
-        try:
-            destination_number = int(destination_number)
-        except ValueError:
-            log(guild_id, "web_move -> Destination number must be an integer")
-            return [False, 'Destination number must be an integer (Internal web error -> contact developer)']
+    org_number = int(org_number)
+    destination_number = int(destination_number)
 
     if queue_length-1 >= org_number >= 0:
         if queue_length-1 >= destination_number >= 0:
@@ -2684,12 +2684,12 @@ async def web_up(web_data, number):
     guild_id = web_data.guild_id
     queue_length = len(guild[guild_id].queue)
 
-    if type(number) is not int:
-        try:
-            number = int(number)
-        except ValueError:
-            log(guild_id, "web_up -> Number must be an integer")
-            return [False, 'Number must be an integer (Internal web error -> contact developer)']
+    # if type(number) != int:
+    #     if not number.isdigit():
+    #         log(guild_id, "web_up -> Number must be an integer")
+    #         return [False, 'Number must be an integer (Internal web error -> contact developer)']
+
+    number = int(number)
 
     if queue_length == 0:
         log(guild_id, "web_up -> No songs in queue")
@@ -2705,12 +2705,11 @@ async def web_down(web_data, number):
     guild_id = web_data.guild_id
     queue_length = len(guild[guild_id].queue)
 
-    if type(number) is not int:
-        try:
-            number = int(number)
-        except ValueError:
-            log(guild_id, "web_down -> Number must be an integer")
-            return [False, 'Number must be an integer (Internal web error -> contact developer)']
+    # if not number.isdigit():
+    #     log(guild_id, "web_down -> Number must be an integer")
+    #     return [False, 'Number must be an integer (Internal web error -> contact developer)']
+
+    number = int(number)
 
     if queue_length == 0:
         log(guild_id, "web_down -> No songs in queue")
@@ -2726,12 +2725,11 @@ async def web_top(web_data, number):
     guild_id = web_data.guild_id
     queue_length = len(guild[guild_id].queue)
 
-    if type(number) is not int:
-        try:
-            number = int(number)
-        except ValueError:
-            log(guild_id, "web_top -> Number must be an integer")
-            return [False, 'Number must be an integer (Internal web error -> contact developer)']
+    # if not number.isdigit():
+    #     log(guild_id, "web_top -> Number must be an integer")
+    #     return [False, 'Number must be an integer (Internal web error -> contact developer)']
+
+    number = int(number)
 
     if queue_length == 0:
         log(guild_id, "web_top -> No songs in queue")
@@ -2748,12 +2746,11 @@ async def web_bottom(web_data, number):
     guild_id = web_data.guild_id
     queue_length = len(guild[guild_id].queue)
 
-    if type(number) is not int:
-        try:
-            number = int(number)
-        except ValueError:
-            log(guild_id, "web_bottom -> Number must be an integer")
-            return [False, 'Number must be an integer (Internal web error -> contact developer)']
+    # if not number.isdigit():
+    #     log(guild_id, "web_bottom -> Number must be an integer")
+    #     return [False, 'Number must be an integer (Internal web error -> contact developer)']
+
+    number = int(number)
 
     if queue_length == 0:
         log(guild_id, "web_bottom -> No songs in queue")
@@ -2927,8 +2924,8 @@ async def web_volume(web_data, vol_range, vol_input):
     log(guild_id, "web_volume -> No number given")
     return [False, 'No number given (Internal web error -> contact developer)']
 
-async def web_queue_from_video(web_data, url, number: int=None):
-    log(web_data.guild_id, 'web_queue', [url, number], log_type='function', author=web_data.author)
+async def web_queue_from_video(web_data, url, position=None):
+    log(web_data.guild_id, 'web_queue', [url, position], log_type='function', author=web_data.author)
     guild_id = web_data.guild_id
     video = None
 
@@ -2938,23 +2935,28 @@ async def web_queue_from_video(web_data, url, number: int=None):
         video = guild[guild_id].now_playing
 
     if video:
+        if video.class_type == 'Radio':
+            return await web_queue_from_radio(web_data, video.radio_name, position)
+
         try:
-            if not number and number != 0 and number != '0':
-                guild[guild_id].queue.append(video)
+            if position == 0:
+                guild[guild_id].queue.insert(0, video)
             else:
-                guild[guild_id].queue.insert(number, video)
+                guild[guild_id].queue.append(video)
+
             save_json()
             log(guild_id, "web_queue -> Queued")
             return [True, f'Queued {video.title}', video]
+
         except Exception as e:
-            print(e)
-            log(guild_id, "web_queue -> Error while queuing")
+            log(guild_id, f"web_queue -> Error while queuing: {e}")
             return [False, 'Error while queuing (Internal web error -> contact developer)']
     else:
         log(guild_id, "web_queue -> Error while getting video")
         return [False, 'Error while getting video (Internal web error -> contact developer)']
 
 async def web_queue_from_url(web_data, url, position=None):
+    log(web_data.guild_id, 'web_queue_from_url', [url, position], log_type='function', author=web_data.author)
     if position:
         if position == "start":
             position = 0
@@ -3014,6 +3016,7 @@ async def web_queue_from_url(web_data, url, position=None):
         return [True, message, None]
 
 async def web_queue_from_radio(web_data, radio_name, position=None):
+    log(web_data.guild_id, 'web_queue_from_radio', [radio_name, position], log_type='function', author=web_data.author)
     if position:
         if position == "start":
             position = 0
@@ -3042,6 +3045,70 @@ async def web_queue_from_radio(web_data, radio_name, position=None):
 
         return [False, message]
 
+async def web_edit(web_data, form):
+    log(web_data.guild_id, 'web_edit', [form], log_type='function', author=web_data.author)
+    guild_id = web_data.guild_id
+    q_index = form['edit_btn']
+
+    if not q_index.isdigit():
+        return [False, 'Invalid index (not a number)']
+
+    q_index = int(q_index)
+
+    if q_index < 0 or q_index >= len(guild[guild_id].queue):
+        return [False, 'Invalid index (out of range)']
+
+    class_type = form['class_type']
+    author = form['author']
+    created_at = form['created_at']
+    url = form['url']
+    title = form['title']
+    picture = form['picture']
+    duration = form['duration']
+    channel_name = form['channel_name']
+    channel_link = form['channel_link']
+    radio_name = form['radio_name']
+    radio_website = form['radio_website']
+    local_number = form['local_number']
+
+    none_list = ['None', '']
+
+    if author in none_list: author = None
+    if url in none_list: url = None
+    if title in none_list: title = None
+    if picture in none_list: picture = None
+    if duration in none_list: duration = None
+    if channel_name in none_list: channel_name = None
+    if channel_link in none_list: channel_link = None
+    if radio_name in none_list: radio_name = None
+    if radio_website in none_list: radio_website = None
+    if local_number in none_list: local_number = None
+
+    if class_type not in ['Video', 'Radio', 'Local', 'Probe']:
+        return [False, f'Invalid class type: {class_type}']
+
+    if created_at:
+        if not created_at.isdigit():
+            return [False, f'Invalid struct time: {created_at}']
+        created_at = int(created_at)
+
+    if local_number:
+        if not local_number.isdigit():
+            return [False, f'Invalid local number: {local_number}']
+        local_number = int(local_number)
+
+    if author and author.isdigit():
+        author = int(author)
+
+    if duration and duration.isdigit():
+        duration = int(duration)
+
+    guild[guild_id].queue[q_index] = VideoClass(class_type, author, url, title, picture, duration, channel_name, channel_link, radio_name, radio_website, local_number, created_at)
+
+    save_json()
+
+    return [True, f'Edited queue item {q_index} successfully!']
+
 # --------------------------------------------- WEB SERVER --------------------------------------------- #
 
 app = Flask(__name__)
@@ -3049,6 +3116,7 @@ app.config['SECRET_KEY'] = config.WEB_SECRET_KEY
 
 @app.route('/')
 async def index_page():
+    log(request.remote_addr, '/index', log_type='ip')
     if 'discord_user' in session.keys(): user = session['discord_user']
     else: user = None
 
@@ -3056,6 +3124,7 @@ async def index_page():
 
 @app.route('/about')
 async def about_page():
+    log(request.remote_addr, '/about', log_type='ip')
     if 'discord_user' in session.keys():
         user = session['discord_user']
     else:
@@ -3065,6 +3134,7 @@ async def about_page():
 
 @app.route('/guild')
 async def guilds_page():
+    log(request.remote_addr, '/guild', log_type='ip')
     if 'discord_user' in session.keys():
         user = session['discord_user']
         mutual_guild_ids = session['mutual_guild_ids']
@@ -3087,6 +3157,7 @@ async def guilds_page():
 
 @app.route('/guild/<guild_id>', methods=['GET', 'POST'])
 async def guild_get_key_page(guild_id):
+    log(request.remote_addr, f'/guild/{guild_id}', log_type='ip')
     if 'discord_user' in session.keys():
         user = session['discord_user']
         mutual_guild_ids = session['mutual_guild_ids']
@@ -3126,24 +3197,26 @@ async def guild_get_key_page(guild_id):
 
 @app.route('/guild/<guild_id>&key=<key>', methods=['GET', 'POST'])
 async def guild_page(guild_id, key):
+    log(request.remote_addr, f'/guild/{guild_id}&key={key}', log_type='ip')
+    admin = False
+    user = None
+    user_name, user_id = "WEB", bot_id
+    errors = []
+    messages = []
+
     if 'discord_user' in session.keys():
         user = session['discord_user']
         user_name, user_id = user['username'], int(user['id'])
         mutual_guild_ids = session['mutual_guild_ids']
     elif 'mutual_guild_ids' in session.keys():
         mutual_guild_ids = session['mutual_guild_ids']
-        user = None
-        user_name, user_id = "WEB", bot_id
     else:
-        user = None
-        user_name, user_id = "WEB", bot_id
         mutual_guild_ids = []
 
-    errors = []
-    messages = []
+    if user_id == my_id or user_id == config.OWNER_ID:
+        admin = True
 
     if request.method == 'POST':
-
         web_data = WebData(int(guild_id), user_name, user_id)
         response = [True, '']
 
@@ -3190,6 +3263,10 @@ async def guild_page(guild_id, key):
             log(web_data.guild_id, 'web_nextup', [request.form['nextup_btn'], 0], log_type='web', author=web_data.author)
             response = await web_queue_from_video(web_data, request.form['nextup_btn'], 0)
 
+        if 'edit_btn' in keys:
+            log(web_data.guild_id, 'web_edit', [request.form['edit_btn']], log_type='web', author=web_data.author)
+            response = await web_edit(web_data, request.form)
+
         if 'volume_btn' in keys:
             log(web_data.guild_id, 'web_volume', [request.form['volumeRange'], request.form['volumeInput']], log_type='web', author=web_data.author)
             response = await web_volume(web_data, request.form['volumeRange'], request.form['volumeInput'])
@@ -3208,19 +3285,21 @@ async def guild_page(guild_id, key):
 
     try:
         guild_object = guild[int(guild_id)]
-
-        if key != guild_object.data.key:
-            if guild_object.id in mutual_guild_ids:
-                return redirect(f'/guild/{guild_id}&key={guild_object.data.key}')
-            return redirect(url_for('guild_get_key_page', guild_id=guild_id))
-
-        return render_template('control/guild.html', guild=guild_object, convert_duration=convert_duration, get_username=get_username, errors=errors, messages=messages, user=user, volume=round(guild_object.options.volume * 100), radios=list(radio_dict.values()))
     except (KeyError, ValueError, TypeError):
         return render_template('base/message.html', guild_id=guild_id, user=user, message="That Server doesn't exist or the bot is not in it", errors=None, title='Error')
+
+    if key != guild_object.data.key:
+        if guild_object.id in mutual_guild_ids:
+            return redirect(f'/guild/{guild_id}&key={guild_object.data.key}')
+
+        return redirect(url_for('guild_get_key_page', guild_id=guild_id))
+
+    return render_template('control/guild.html', guild=guild_object, struct_to_time=struct_to_time, convert_duration=convert_duration, get_username=get_username, errors=errors, messages=messages, user=user, admin=admin, volume=round(guild_object.options.volume * 100), radios=list(radio_dict.values()))
 
 
 @app.route('/login')
 async def login_page():
+    log(request.remote_addr, '/login', log_type='web')
     admin = False
     if 'discord_user' in session.keys():
         user = Oauth.get_user(session['access_token'])
@@ -3267,27 +3346,29 @@ async def login_page():
 
 @app.route('/logout')
 async def logout_page():
+    log(request.remote_addr, '/logout', log_type='ip')
     if 'discord_user' in session.keys():
         user = session['discord_user']
         username = user['username']
         discriminator = user['discriminator']
-        session.pop('access_token')
-        session.pop('discord_user')
-        session.pop('mutual_guild_ids')
+        session.clear()
         return render_template('base/message.html', message=f"Logged out as {username}#{discriminator}", errors=None, user=None, title='Logout Success')
     return redirect(url_for('index_page'))
 
 @app.route('/reset')
 async def reset_page():
+    log(request.remote_addr, '/reset', log_type='ip')
     session.clear()
     return redirect(url_for('index_page'))
 
 @app.route('/invite')
 async def invite_page():
-    return redirect(f"https://discord.com/api/oauth2/authorize?client_id={config.CLIENT_ID}&permissions={config.PERMISSIONS}&scope=bot")
+    log(request.remote_addr, '/invite', log_type='ip')
+    return redirect(config.INVITE_URL)
 
 @app.route('/admin', methods=['GET', 'POST'])
 async def admin_page():
+    log(request.remote_addr, '/admin', log_type='ip')
     if 'discord_user' in session.keys():
         user = session['discord_user']
         user_name = user['username']
