@@ -419,7 +419,7 @@ def log(ctx, text_data, options=None, log_type='text', author=None):
     
     print(message)
 
-    with open("log.txt", "a", encoding="utf-8") as f:
+    with open("log/log.txt", "a", encoding="utf-8") as f:
         f.write(message + "\n")
 
 
@@ -427,7 +427,7 @@ def collect_data(data):
     now_time_str = struct_to_time(time())
     message = f"{now_time_str} | {data}\n"
 
-    with open("data.txt", "a", encoding="utf-8") as f:
+    with open("log/data.txt", "a", encoding="utf-8") as f:
         f.write(message)
 
 
@@ -2434,9 +2434,9 @@ async def log_command_def(ctx: commands.Context,
     log(ctx.guild.id, 'log_command_def', [log_type], log_type='function', author=ctx.author)
     save_json()
     if log_type == 'log.txt':
-        file_to_send = discord.File('log.txt')
+        file_to_send = discord.File('log/log.txt')
     elif log_type == 'data.txt':
-        file_to_send = discord.File('data.txt')
+        file_to_send = discord.File('log/data.txt')
     elif log_type == 'other.json':
         file_to_send = discord.File('src/other.json')
     elif log_type == 'radio.json':
@@ -2447,12 +2447,12 @@ async def log_command_def(ctx: commands.Context,
         file_to_send = discord.File('src/guilds.json')
     elif log_type == 'activity.log':
         try:
-            file_to_send = discord.File('activity.log')
+            file_to_send = discord.File('log/activity.log')
         except FileNotFoundError:
             await ctx.reply(f'`activity.log` does not exist', ephemeral=True)
             return
     else:
-        file_to_send = discord.File('log.txt')
+        file_to_send = discord.File('log/log.txt')
     await ctx.reply(file=file_to_send, ephemeral=True)
 
 
@@ -3245,7 +3245,7 @@ async def admin_page():
                 log(web_data, 'download file', [file_name], log_type='web', author=web_data.author)
                 try:
                     if file_name == 'log.txt' or file_name == 'data.txt' or file_name == 'activity.log':
-                        return send_file(f'{file_name}', as_attachment=True)
+                        return send_file(f'log/{file_name}', as_attachment=True)
                     else:
                         return send_file(f'src/{file_name}', as_attachment=True)
                 except Exception as e:
@@ -3261,7 +3261,7 @@ async def admin_page():
                 else:
                     try:
                         if file_name == 'log.txt' or file_name == 'data.txt' or file_name == 'activity.log':
-                            f.save(f.filename)
+                            f.save(f"log/{f.filename}")
                             messages = ['File uploaded']
                         else:
                             f.save(f"src/{f.filename}")

@@ -2,7 +2,6 @@
 __pycache__/
 .idea/
 api_keys.py
-testing.py
 config.py
 config_real.py
 *.py[cod]

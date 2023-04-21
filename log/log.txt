@@ -1624,3 +1624,1048 @@ Testing Bot
 1009574748302356581
 (CET) 08/04/2023 14:10:46 | C 1008145667622969397 | Command (key) was requested by (Tomer27cz#4272) -> []
 (CET) 08/04/2023 14:10:46 | F 1008145667622969397 | key_def -> []
+04/18/2023, 20:58:47 | T no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+04/18/2023, 20:58:47 | T no guild | Loaded radio.json
+04/18/2023, 20:58:47 | T no guild | Loaded languages.json
+04/18/2023, 20:58:47 | T no guild | Loaded other.json
+04/18/2023, 20:58:47 | T no guild | Bot class initialized
+04/18/2023, 20:58:47 | T no guild | Loaded guilds.json
+04/18/2023, 20:58:47 | T no guild | Loaded sound_effects folder
+04/18/2023, 20:58:50 | T no guild | Trying to sync commands
+04/18/2023, 20:58:51 | T no guild | Synced slash commands for Testing Bot#3465
+04/18/2023, 20:58:51 | T no guild | Logged in as:
+Testing Bot
+1009574748302356581
+04/18/2023, 20:59:05 | C 1008145667622969397 | Command (last) was requested by (Tomer27cz#4272) -> [False]
+04/18/2023, 20:59:05 | F 1008145667622969397 | last_def -> [False]
+04/19/2023, 12:57:53 | T no guild | --------------------------------------- NEW / REBOOTED ----------------------------------------
+04/19/2023, 12:57:53 | T no guild | Loaded radio.json
+04/19/2023, 12:57:53 | T no guild | Loaded languages.json
+04/19/2023, 12:57:53 | T no guild | Loaded other.json
+04/19/2023, 12:57:53 | T no guild | Bot class initialized
+04/19/2023, 12:57:53 | T no guild | Loaded guilds.json
+04/19/2023, 12:57:53 | T no guild | Loaded sound_effects folder
+04/19/2023, 12:57:57 | T no guild | Trying to sync commands
+04/19/2023, 12:57:57 | T no guild | Synced slash commands for Testing Bot#3465
+04/19/2023, 12:57:57 | T no guild | Logged in as:
+Testing Bot
+1009574748302356581
+04/19/2023, 12:58:14 | C 1008145667622969397 | Command (play) was requested by (Tomer27cz#4272) -> ['https://www.youtube.com/watch?v=dQw4w9WgXcQ', False]
+04/19/2023, 12:58:14 | F 1008145667622969397 | play_def -> ['https://www.youtube.com/watch?v=dQw4w9WgXcQ', False, False]
+04/19/2023, 12:58:14 | F 1008145667622969397 | queue_command_def -> ['https://www.youtube.com/watch?v=dQw4w9WgXcQ', None, True, False, True]
+04/19/2023, 12:58:15 | F 1008145667622969397 | join_def -> [None, True]
+04/19/2023, 12:58:18 | F 1008145667622969397 | volume_command_def -> [100.0, False, True]
+04/19/2023, 12:58:30 | C 1008145667622969397 | Command (skip) was requested by (Tomer27cz#4272) -> []
+04/19/2023, 12:58:30 | F 1008145667622969397 | skip_def -> []
+04/19/2023, 12:58:30 | F 1008145667622969397 | stop_def -> [True]
+04/19/2023, 12:58:30 | F 1008145667622969397 | play_def -> ['next', False, False]
+04/19/2023, 12:58:30 | T 1008145667622969397 | play_def -> stopped play next loop
+04/19/2023, 12:58:31 | F 1008145667622969397 | play_def -> [None, False, False]
+04/19/2023, 12:58:33 | F 1008145667622969397 | volume_command_def -> [100.0, False, True]
+04/19/2023, 13:02:05 | F 1008145667622969397 | play_def -> ['next', False, False]
+04/19/2023, 13:05:57 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+04/19/2023, 13:05:57 | T None | Loaded radio.json
+04/19/2023, 13:05:57 | T None | Loaded languages.json
+04/19/2023, 13:05:57 | T None | Loaded other.json
+04/19/2023, 13:05:57 | T None | Bot class initialized
+04/19/2023, 13:05:57 | T None | Loaded guilds.json
+04/19/2023, 13:05:57 | T None | Loaded sound_effects folder
+04/19/2023, 13:06:00 | T None | Trying to sync commands
+04/19/2023, 13:06:01 | T None | Synced slash commands for Testing Bot#3465
+04/19/2023, 13:06:01 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+04/19/2023, 13:14:42 | C 1008145667622969397 | Command (queue) was requested by (Tomer27cz#4272) -> ['song', None]
+04/19/2023, 13:14:42 | F 1008145667622969397 | queue_command_def -> ['song', None, False, False, False]
+04/19/2023, 13:14:42 | F 1008145667622969397 | search_command_def -> ['song', 'short', False, False]
+19/04/2023 17:25:28 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+19/04/2023 17:25:28 | T None | Loaded radio.json
+19/04/2023 17:25:28 | T None | Loaded languages.json
+19/04/2023 17:25:28 | T None | Loaded other.json
+19/04/2023 17:25:28 | T None | Bot class initialized
+19/04/2023 17:25:28 | T None | Loaded guilds.json
+19/04/2023 17:25:28 | T None | Loaded sound_effects folder
+19/04/2023 17:25:31 | T None | Trying to sync commands
+19/04/2023 17:25:31 | T None | Synced slash commands for Testing Bot#3465
+19/04/2023 17:25:31 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+19/04/2023 17:27:27 | C 1008145667622969397 | Command (queue) was requested by (Tomer27cz#4272) -> ['song', None]
+19/04/2023 17:27:27 | F 1008145667622969397 | queue_command_def -> ['song', None, False, False, False]
+19/04/2023 17:27:27 | F 1008145667622969397 | search_command_def -> ['song', 'short', False, False]
+19/04/2023 17:31:30 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+19/04/2023 17:31:30 | T None | Loaded radio.json
+19/04/2023 17:31:30 | T None | Loaded languages.json
+19/04/2023 17:31:30 | T None | Loaded other.json
+19/04/2023 17:31:30 | T None | Bot class initialized
+19/04/2023 17:31:30 | T None | Loaded guilds.json
+19/04/2023 17:31:30 | T None | Loaded sound_effects folder
+19/04/2023 17:31:33 | T None | Trying to sync commands
+19/04/2023 17:31:33 | T None | Synced slash commands for Testing Bot#3465
+19/04/2023 17:31:33 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+19/04/2023 17:36:23 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+19/04/2023 17:36:23 | T None | Loaded radio.json
+19/04/2023 17:36:23 | T None | Loaded languages.json
+19/04/2023 17:36:23 | T None | Loaded other.json
+19/04/2023 17:36:23 | T None | Bot class initialized
+19/04/2023 17:36:23 | T None | Loaded guilds.json
+19/04/2023 17:36:23 | T None | Loaded sound_effects folder
+19/04/2023 17:36:26 | T None | Trying to sync commands
+19/04/2023 17:36:26 | T None | Synced slash commands for Testing Bot#3465
+19/04/2023 17:36:26 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+19/04/2023 17:36:30 | C 1008145667622969397 | Command (queue) was requested by (Tomer27cz#4272) -> ['song', None]
+19/04/2023 17:36:30 | F 1008145667622969397 | queue_command_def -> ['song', None, False, False, False]
+19/04/2023 17:36:30 | F 1008145667622969397 | search_command_def -> ['song', 'short', False, False]
+19/04/2023 17:38:08 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+19/04/2023 17:38:08 | T None | Loaded radio.json
+19/04/2023 17:38:08 | T None | Loaded languages.json
+19/04/2023 17:38:08 | T None | Loaded other.json
+19/04/2023 17:38:08 | T None | Bot class initialized
+19/04/2023 17:38:08 | T None | Loaded guilds.json
+19/04/2023 17:38:08 | T None | Loaded sound_effects folder
+19/04/2023 17:38:11 | T None | Trying to sync commands
+19/04/2023 17:38:11 | T None | Synced slash commands for Testing Bot#3465
+19/04/2023 17:38:11 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+19/04/2023 17:39:43 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+19/04/2023 17:39:43 | T None | Loaded radio.json
+19/04/2023 17:39:43 | T None | Loaded languages.json
+19/04/2023 17:39:43 | T None | Loaded other.json
+19/04/2023 17:39:43 | T None | Bot class initialized
+19/04/2023 17:39:43 | T None | Loaded guilds.json
+19/04/2023 17:39:43 | T None | Loaded sound_effects folder
+19/04/2023 17:39:46 | T None | Trying to sync commands
+19/04/2023 17:39:47 | T None | Synced slash commands for Testing Bot#3465
+19/04/2023 17:39:47 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+19/04/2023 17:41:22 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+19/04/2023 17:41:22 | T None | Loaded radio.json
+19/04/2023 17:41:22 | T None | Loaded languages.json
+19/04/2023 17:41:22 | T None | Loaded other.json
+19/04/2023 17:41:22 | T None | Bot class initialized
+19/04/2023 17:41:22 | T None | Loaded guilds.json
+19/04/2023 17:41:22 | T None | Loaded sound_effects folder
+19/04/2023 17:41:25 | T None | Trying to sync commands
+19/04/2023 17:41:26 | T None | Synced slash commands for Testing Bot#3465
+19/04/2023 17:41:26 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+19/04/2023 17:48:30 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+19/04/2023 17:48:30 | T None | Loaded radio.json
+19/04/2023 17:48:30 | T None | Loaded languages.json
+19/04/2023 17:48:30 | T None | Loaded other.json
+19/04/2023 17:48:30 | T None | Bot class initialized
+19/04/2023 17:48:30 | T None | Loaded guilds.json
+19/04/2023 17:48:30 | T None | Loaded sound_effects folder
+19/04/2023 17:48:33 | T None | Trying to sync commands
+19/04/2023 17:48:34 | T None | Synced slash commands for Testing Bot#3465
+19/04/2023 17:48:34 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+19/04/2023 17:49:37 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+19/04/2023 17:49:37 | T None | Loaded radio.json
+19/04/2023 17:49:37 | T None | Loaded languages.json
+19/04/2023 17:49:37 | T None | Loaded other.json
+19/04/2023 17:49:37 | T None | Bot class initialized
+19/04/2023 17:49:37 | T None | Loaded guilds.json
+19/04/2023 17:49:37 | T None | Loaded sound_effects folder
+19/04/2023 17:49:40 | T None | Trying to sync commands
+19/04/2023 17:49:42 | T None | Synced slash commands for Testing Bot#3465
+19/04/2023 17:49:42 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+19/04/2023 17:51:28 | W 1008145667622969397 | Command (web_add_queue) was requested by (WEB) -> ['Evropa 2', 'end']
+19/04/2023 17:52:15 | W 1008145667622969397 | Command (web_remove) was requested by (WEB) -> ['1']
+19/04/2023 17:52:15 | F 1008145667622969397 | web_remove -> ['1']
+19/04/2023 17:53:04 | W 1008145667622969397 | Command (web_remove) was requested by (WEB) -> ['0']
+19/04/2023 17:53:04 | F 1008145667622969397 | web_remove -> ['0']
+19/04/2023 18:48:05 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+19/04/2023 18:48:05 | T None | Loaded radio.json
+19/04/2023 18:48:05 | T None | Loaded languages.json
+19/04/2023 18:48:05 | T None | Loaded other.json
+19/04/2023 18:48:05 | T None | Bot class initialized
+19/04/2023 18:48:05 | T None | Loaded guilds.json
+19/04/2023 18:48:05 | T None | Loaded sound_effects folder
+19/04/2023 18:48:08 | T None | Trying to sync commands
+19/04/2023 18:48:08 | T None | Synced slash commands for Testing Bot#3465
+19/04/2023 18:48:08 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+19/04/2023 18:49:00 | W 1008145667622969397 | Command (web_add_queue) was requested by (WEB) -> ['Alternative Times Radio', 'end']
+19/04/2023 18:49:40 | W 1008145667622969397 | Command (web_add_queue) was requested by (WEB) -> ['Evropa 2', 'end']
+19/04/2023 18:49:44 | W 1008145667622969397 | Command (web_up) was requested by (WEB) -> ['1']
+19/04/2023 18:49:44 | F 1008145667622969397 | web_up -> ['1']
+19/04/2023 18:49:44 | F 1008145667622969397 | web_move -> [1, 0]
+20/04/2023 07:41:23 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+20/04/2023 07:41:23 | T None | Loaded radio.json
+20/04/2023 07:41:23 | T None | Loaded languages.json
+20/04/2023 07:41:23 | T None | Loaded other.json
+20/04/2023 07:41:23 | T None | Bot class initialized
+20/04/2023 07:41:23 | T None | Loaded guilds.json
+20/04/2023 07:41:23 | T None | Loaded sound_effects folder
+20/04/2023 07:41:26 | T None | Trying to sync commands
+20/04/2023 07:41:27 | T None | Synced slash commands for Testing Bot#3465
+20/04/2023 07:41:27 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+20/04/2023 07:45:00 | W 1008145667622969397 | Command (web_add_queue) was requested by (WEB) -> ['https://www.youtube.com/watch?v=TmIzOnq2R1M&t=836s', 'end']
+20/04/2023 07:47:09 | W 1008145667622969397 | Command (web_add_queue) was requested by (WEB) -> ['https://www.youtube.com/watch?v=phWxA89Dy94', 'end']
+20/04/2023 08:00:17 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+20/04/2023 08:00:17 | T None | Loaded radio.json
+20/04/2023 08:00:17 | T None | Loaded languages.json
+20/04/2023 08:00:17 | T None | Loaded other.json
+20/04/2023 08:00:17 | T None | Bot class initialized
+20/04/2023 08:00:17 | T None | Loaded guilds.json
+20/04/2023 08:00:17 | T None | Loaded sound_effects folder
+20/04/2023 08:00:20 | T None | Trying to sync commands
+20/04/2023 08:00:21 | T None | Synced slash commands for Testing Bot#3465
+20/04/2023 08:00:21 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+20/04/2023 14:17:23 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+20/04/2023 14:17:23 | T None | Loaded radio.json
+20/04/2023 14:17:23 | T None | Loaded languages.json
+20/04/2023 14:17:23 | T None | Loaded other.json
+20/04/2023 14:17:23 | T None | Bot class initialized
+20/04/2023 14:17:23 | T None | Loaded guilds.json
+20/04/2023 14:17:23 | T None | Loaded sound_effects folder
+20/04/2023 14:17:26 | T None | Trying to sync commands
+20/04/2023 14:17:26 | T None | Synced slash commands for Testing Bot#3465
+20/04/2023 14:17:26 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+20/04/2023 14:19:54 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+20/04/2023 14:19:54 | T None | Loaded radio.json
+20/04/2023 14:19:54 | T None | Loaded languages.json
+20/04/2023 14:19:54 | T None | Loaded other.json
+20/04/2023 14:19:54 | T None | Bot class initialized
+20/04/2023 14:19:54 | T None | Loaded guilds.json
+20/04/2023 14:19:54 | T None | Loaded sound_effects folder
+20/04/2023 14:19:58 | T None | Trying to sync commands
+20/04/2023 14:19:58 | T None | Synced slash commands for Testing Bot#3465
+20/04/2023 14:19:58 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+20/04/2023 14:22:15 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+20/04/2023 14:22:15 | T None | Loaded radio.json
+20/04/2023 14:22:15 | T None | Loaded languages.json
+20/04/2023 14:22:15 | T None | Loaded other.json
+20/04/2023 14:22:15 | T None | Bot class initialized
+20/04/2023 14:22:15 | T None | Loaded guilds.json
+20/04/2023 14:22:15 | T None | Loaded sound_effects folder
+20/04/2023 14:22:18 | T None | Trying to sync commands
+20/04/2023 14:22:18 | T None | Synced slash commands for Testing Bot#3465
+20/04/2023 14:22:18 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+20/04/2023 14:22:49 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+20/04/2023 14:22:49 | T None | Loaded radio.json
+20/04/2023 14:22:49 | T None | Loaded languages.json
+20/04/2023 14:22:49 | T None | Loaded other.json
+20/04/2023 14:22:49 | T None | Bot class initialized
+20/04/2023 14:22:49 | T None | Loaded guilds.json
+20/04/2023 14:22:49 | T None | Loaded sound_effects folder
+20/04/2023 14:22:52 | T None | Trying to sync commands
+20/04/2023 14:22:52 | T None | Synced slash commands for Testing Bot#3465
+20/04/2023 14:22:52 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+20/04/2023 14:25:08 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+20/04/2023 14:25:08 | T None | Loaded radio.json
+20/04/2023 14:25:08 | T None | Loaded languages.json
+20/04/2023 14:25:08 | T None | Loaded other.json
+20/04/2023 14:25:08 | T None | Bot class initialized
+20/04/2023 14:25:08 | T None | Loaded guilds.json
+20/04/2023 14:25:08 | T None | Loaded sound_effects folder
+20/04/2023 14:25:11 | T None | Trying to sync commands
+20/04/2023 14:25:11 | T None | Synced slash commands for Testing Bot#3465
+20/04/2023 14:25:11 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+20/04/2023 14:27:09 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+20/04/2023 14:27:09 | T None | Loaded radio.json
+20/04/2023 14:27:09 | T None | Loaded languages.json
+20/04/2023 14:27:09 | T None | Loaded other.json
+20/04/2023 14:27:09 | T None | Bot class initialized
+20/04/2023 14:27:09 | T None | Loaded guilds.json
+20/04/2023 14:27:09 | T None | Loaded sound_effects folder
+20/04/2023 14:27:13 | T None | Trying to sync commands
+20/04/2023 14:27:13 | T None | Synced slash commands for Testing Bot#3465
+20/04/2023 14:27:13 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+20/04/2023 14:38:55 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+20/04/2023 14:38:55 | T None | Loaded radio.json
+20/04/2023 14:38:55 | T None | Loaded languages.json
+20/04/2023 14:38:55 | T None | Loaded other.json
+20/04/2023 14:38:55 | T None | Bot class initialized
+20/04/2023 14:38:55 | T None | Loaded guilds.json
+20/04/2023 14:38:55 | T None | Loaded sound_effects folder
+20/04/2023 14:38:58 | T None | Trying to sync commands
+20/04/2023 14:38:58 | T None | Synced slash commands for Testing Bot#3465
+20/04/2023 14:38:58 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+20/04/2023 14:58:51 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+20/04/2023 14:58:51 | T None | Loaded radio.json
+20/04/2023 14:58:51 | T None | Loaded languages.json
+20/04/2023 14:58:51 | T None | Loaded other.json
+20/04/2023 14:58:51 | T None | Bot class initialized
+20/04/2023 14:58:51 | T None | Loaded guilds.json
+20/04/2023 14:58:51 | T None | Loaded sound_effects folder
+20/04/2023 14:58:54 | T None | Trying to sync commands
+20/04/2023 14:58:54 | T None | Synced slash commands for Testing Bot#3465
+20/04/2023 14:58:54 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+20/04/2023 15:00:36 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+20/04/2023 15:00:36 | T None | Loaded radio.json
+20/04/2023 15:00:36 | T None | Loaded languages.json
+20/04/2023 15:00:36 | T None | Loaded other.json
+20/04/2023 15:00:36 | T None | Bot class initialized
+20/04/2023 15:00:36 | T None | Loaded guilds.json
+20/04/2023 15:00:36 | T None | Loaded sound_effects folder
+20/04/2023 15:00:39 | T None | Trying to sync commands
+20/04/2023 15:00:40 | T None | Synced slash commands for Testing Bot#3465
+20/04/2023 15:00:40 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+20/04/2023 18:09:44 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+20/04/2023 18:09:44 | T None | Loaded radio.json
+20/04/2023 18:09:44 | T None | Loaded languages.json
+20/04/2023 18:09:44 | T None | Loaded other.json
+20/04/2023 18:09:44 | T None | Bot class initialized
+20/04/2023 18:09:44 | T None | Loaded guilds.json
+20/04/2023 18:09:44 | T None | Loaded sound_effects folder
+20/04/2023 18:09:47 | T None | Trying to sync commands
+20/04/2023 18:09:48 | T None | Synced slash commands for Testing Bot#3465
+20/04/2023 18:09:48 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+20/04/2023 18:10:57 | W 1008145667622969397 | Command (web_edit) was requested by (Tomer27cz) -> ['0']
+20/04/2023 18:10:57 | F 1008145667622969397 | web_edit -> [ImmutableMultiDict([('class_type', 'Radio'), ('author', '1007004463933952120'), ('created_at', '1681930180'), ('radio_name', 'Evropa 2'), ('url', 'https://rds.actve.net/v1/metadata/channel/evropa2'), ('title', 'Evropa 3'), ('picture', 'https://static.mytuner.mobi/media/tvos_radios/4eYJ2UArA8.png'), ('duration', 'Stream of piss'), ('channel_name', 'actve pog'), ('channel_link', 'https://rds.actve.net/v1/metadata/channel/evropa2'), ('radio_website', 'actve'), ('local_number', 'None'), ('edit_btn', '0')])]
+20/04/2023 18:25:00 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+20/04/2023 18:25:00 | T None | Loaded radio.json
+20/04/2023 18:25:00 | T None | Loaded languages.json
+20/04/2023 18:25:00 | T None | Loaded other.json
+20/04/2023 18:25:00 | T None | Bot class initialized
+20/04/2023 18:25:00 | T None | Loaded guilds.json
+20/04/2023 18:25:00 | T None | Loaded sound_effects folder
+20/04/2023 18:25:04 | T None | Trying to sync commands
+20/04/2023 18:25:04 | T None | Synced slash commands for Testing Bot#3465
+20/04/2023 18:25:04 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+20/04/2023 18:25:35 | W 1008145667622969397 | Command (web_edit) was requested by (Tomer27cz) -> ['0']
+20/04/2023 18:25:35 | F 1008145667622969397 | web_edit -> [ImmutableMultiDict([('class_type', 'Radio'), ('author', '1007004463933952120'), ('created_at', '1681930180'), ('radio_name', 'Evropa 2'), ('url', 'https://rds.actve.net/v1/metadata/channel/evropa2'), ('title', 'Evropa 3'), ('picture', 'https://static.mytuner.mobi/media/tvos_radios/4eYJ2UArA8.png'), ('duration', 'Stream of piss'), ('channel_name', 'actve pog'), ('channel_link', 'https://rds.actve.net/v1/metadata/channel/evropa2'), ('radio_website', 'actve'), ('local_number', 'None'), ('edit_btn', '0')])]
+20/04/2023 18:26:54 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+20/04/2023 18:26:54 | T None | Loaded radio.json
+20/04/2023 18:26:54 | T None | Loaded languages.json
+20/04/2023 18:26:54 | T None | Loaded other.json
+20/04/2023 18:26:54 | T None | Bot class initialized
+20/04/2023 18:26:54 | T None | Loaded guilds.json
+20/04/2023 18:26:54 | T None | Loaded sound_effects folder
+20/04/2023 18:26:58 | T None | Trying to sync commands
+20/04/2023 18:26:58 | T None | Synced slash commands for Testing Bot#3465
+20/04/2023 18:26:58 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+20/04/2023 18:27:05 | W 1008145667622969397 | Command (web_edit) was requested by (Tomer27cz) -> ['0']
+20/04/2023 18:27:05 | F 1008145667622969397 | web_edit -> [ImmutableMultiDict([('class_type', 'Radio'), ('author', '1007004463933952120'), ('created_at', '1681930180'), ('radio_name', 'Evropa 2'), ('url', 'https://rds.actve.net/v1/metadata/channel/evropa2'), ('title', 'Evropa 3'), ('picture', 'https://static.mytuner.mobi/media/tvos_radios/4eYJ2UArA8.png'), ('duration', 'Stream'), ('channel_name', 'actve'), ('channel_link', 'https://rds.actve.net/v1/metadata/channel/evropa2'), ('radio_website', 'actve'), ('local_number', 'None'), ('edit_btn', '0')])]
+20/04/2023 18:32:42 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+20/04/2023 18:32:42 | T None | Loaded radio.json
+20/04/2023 18:32:42 | T None | Loaded languages.json
+20/04/2023 18:32:42 | T None | Loaded other.json
+20/04/2023 18:32:42 | T None | Bot class initialized
+20/04/2023 18:32:42 | T None | Loaded guilds.json
+20/04/2023 18:32:42 | T None | Loaded sound_effects folder
+20/04/2023 18:32:45 | T None | Trying to sync commands
+20/04/2023 18:32:45 | T None | Synced slash commands for Testing Bot#3465
+20/04/2023 18:32:45 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+20/04/2023 18:32:52 | W 1008145667622969397 | Command (web_edit) was requested by (Tomer27cz) -> ['0']
+20/04/2023 18:32:52 | F 1008145667622969397 | web_edit -> [ImmutableMultiDict([('class_type', 'Radio'), ('author', '1007004463933952120'), ('created_at', '1681930180'), ('radio_name', 'Evropa 2'), ('url', 'https://rds.actve.net/v1/metadata/channel/evropa2'), ('title', 'Evropa 3'), ('picture', 'https://static.mytuner.mobi/media/tvos_radios/4eYJ2UArA8.png'), ('duration', 'Stream'), ('channel_name', 'actve'), ('channel_link', 'https://rds.actve.net/v1/metadata/channel/evropa2'), ('radio_website', 'actve'), ('local_number', 'None'), ('edit_btn', '0')])]
+20/04/2023 18:34:37 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+20/04/2023 18:34:37 | T None | Loaded radio.json
+20/04/2023 18:34:37 | T None | Loaded languages.json
+20/04/2023 18:34:37 | T None | Loaded other.json
+20/04/2023 18:34:37 | T None | Bot class initialized
+20/04/2023 18:34:37 | T None | Loaded guilds.json
+20/04/2023 18:34:37 | T None | Loaded sound_effects folder
+20/04/2023 18:34:42 | T None | get_username failed for (349164237605568513) : 'NoneType' object has no attribute 'name'
+20/04/2023 18:34:42 | T None | get_username failed for (1007004463933952120) : 'NoneType' object has no attribute 'name'
+20/04/2023 18:34:42 | T None | get_username failed for (1007004463933952120) : 'NoneType' object has no attribute 'name'
+20/04/2023 18:34:42 | T None | get_username failed for (1007004463933952120) : 'NoneType' object has no attribute 'name'
+20/04/2023 18:34:42 | T None | get_username failed for (1007004463933952120) : 'NoneType' object has no attribute 'name'
+20/04/2023 18:34:46 | T None | Trying to sync commands
+20/04/2023 18:34:47 | T None | Synced slash commands for Testing Bot#3465
+20/04/2023 18:34:47 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+20/04/2023 18:34:49 | W 1008145667622969397 | Command (web_edit) was requested by (Tomer27cz) -> ['0']
+20/04/2023 18:34:49 | F 1008145667622969397 | web_edit -> [ImmutableMultiDict([('class_type', 'Radio'), ('author', '1007004463933952120'), ('created_at', '1681930180'), ('radio_name', 'Evropa 2'), ('url', 'https://rds.actve.net/v1/metadata/channel/evropa2'), ('title', 'Evropa 3'), ('picture', 'https://static.mytuner.mobi/media/tvos_radios/4eYJ2UArA8.png'), ('duration', 'Stream'), ('channel_name', 'actve'), ('channel_link', 'https://rds.actve.net/v1/metadata/channel/evropa2'), ('radio_website', 'actve'), ('local_number', 'None'), ('edit_btn', '0')])]
+20/04/2023 18:35:43 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+20/04/2023 18:35:43 | T None | Loaded radio.json
+20/04/2023 18:35:43 | T None | Loaded languages.json
+20/04/2023 18:35:43 | T None | Loaded other.json
+20/04/2023 18:35:43 | T None | Bot class initialized
+20/04/2023 18:35:43 | T None | Loaded guilds.json
+20/04/2023 18:35:43 | T None | Loaded sound_effects folder
+20/04/2023 18:35:46 | T None | Trying to sync commands
+20/04/2023 18:35:46 | T None | Synced slash commands for Testing Bot#3465
+20/04/2023 18:35:46 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+20/04/2023 18:35:55 | W 1008145667622969397 | Command (web_edit) was requested by (Tomer27cz) -> ['0']
+20/04/2023 18:35:55 | F 1008145667622969397 | web_edit -> [ImmutableMultiDict([('class_type', 'Radio'), ('author', '1007004463933952120'), ('created_at', '1681930180'), ('radio_name', 'Evropa 2'), ('url', 'https://rds.actve.net/v1/metadata/channel/evropa2'), ('title', 'Evropa 3'), ('picture', 'https://static.mytuner.mobi/media/tvos_radios/4eYJ2UArA8.png'), ('duration', 'Stream'), ('channel_name', 'actve'), ('channel_link', 'https://rds.actve.net/v1/metadata/channel/evropa2'), ('radio_website', 'actve'), ('local_number', 'None'), ('edit_btn', '0')])]
+20/04/2023 18:37:23 | W 1008145667622969397 | Command (web_edit) was requested by (Tomer27cz) -> ['2']
+20/04/2023 18:37:23 | F 1008145667622969397 | web_edit -> [ImmutableMultiDict([('class_type', 'Video'), ('author', '100700446393395212'), ('created_at', '1681976700'), ('url', 'https://www.youtube.com/watch?v=TmIzOnq2R1M'), ('title', 'ASMR | Professionally Removing Your Anxiety & Stress in 2023'), ('picture', 'https://img.youtube.com/vi/TmIzOnq2R1M/default.jpg'), ('duration', '2490'), ('channel_name', 'Gibi ASMR'), ('channel_link', 'https://www.youtube.com/channel/UCE6acMV3m35znLcf0JGNn7Q'), ('radio_name', 'None'), ('radio_website', 'None'), ('local_number', 'None'), ('edit_btn', '2')])]
+20/04/2023 18:37:23 | T None | get_username failed for (100700446393395212) : 'NoneType' object has no attribute 'name'
+20/04/2023 18:37:46 | W 1008145667622969397 | Command (web_edit) was requested by (Tomer27cz) -> ['2']
+20/04/2023 18:37:46 | F 1008145667622969397 | web_edit -> [ImmutableMultiDict([('class_type', 'Video'), ('author', '100700446393395212'), ('created_at', '1681976700'), ('url', 'https://www.youtube.com/watch?v=TmIzOnq2R1M'), ('title', 'ASMR | Professionally Removing Your Anxiety & Stress in 2023'), ('picture', 'https://img.youtube.com/vi/TmIzOnq2R1M/default.jpg'), ('duration', '2490'), ('channel_name', 'Gibi ASMR'), ('channel_link', 'https://www.youtube.com/channel/UCE6acMV3m35znLcf0JGNn7Q'), ('radio_name', 'Nonefgdfg'), ('radio_website', 'Nonegdfg'), ('local_number', 'Nonedfgdf'), ('edit_btn', '2')])]
+20/04/2023 18:37:46 | T None | get_username failed for (100700446393395212) : 'NoneType' object has no attribute 'name'
+20/04/2023 18:37:59 | W 1008145667622969397 | Command (web_clear) was requested by (Tomer27cz) -> []
+20/04/2023 18:37:59 | F 1008145667622969397 | web_clear -> []
+20/04/2023 18:37:59 | T 1008145667622969397 | web_clear -> Cleared queue
+20/04/2023 18:38:21 | W 1008145667622969397 | Command (web_add_queue) was requested by (Tomer27cz) -> ['Country Radio', 'end']
+20/04/2023 18:38:21 | F 1008145667622969397 | web_queue_from_radio -> ['Country Radio', 'end']
+20/04/2023 18:39:36 | C 1008145667622969397 | Command (play) was requested by (Tomer27cz#4272) -> [None, False]
+20/04/2023 18:39:36 | F 1008145667622969397 | play_def -> [None, False, False]
+20/04/2023 18:39:36 | F 1008145667622969397 | join_def -> [None, True]
+20/04/2023 18:39:37 | T 1008145667622969397 | Hybrid command raised an error: Command 'play' raised an exception: AttributeError: 'VideoClass' object has no attribute 'number'
+20/04/2023 18:41:26 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+20/04/2023 18:41:26 | T None | Loaded radio.json
+20/04/2023 18:41:26 | T None | Loaded languages.json
+20/04/2023 18:41:26 | T None | Loaded other.json
+20/04/2023 18:41:26 | T None | Bot class initialized
+20/04/2023 18:41:26 | T None | Loaded guilds.json
+20/04/2023 18:41:26 | T None | Loaded sound_effects folder
+20/04/2023 18:41:29 | T None | Trying to sync commands
+20/04/2023 18:41:29 | T None | Synced slash commands for Testing Bot#3465
+20/04/2023 18:41:29 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+20/04/2023 18:41:31 | C 1008145667622969397 | Command (play) was requested by (Tomer27cz#4272) -> [None, False]
+20/04/2023 18:41:31 | F 1008145667622969397 | play_def -> [None, False, False]
+20/04/2023 18:41:32 | F 1008145667622969397 | join_def -> [None, True]
+20/04/2023 18:41:32 | F 1008145667622969397 | radio_def -> ['Country Radio', None]
+20/04/2023 18:41:32 | T 1008145667622969397 | Hybrid command raised an error: Command 'play' raised an exception: AttributeError: 'VideoClass' object has no attribute 'requested_at'
+20/04/2023 18:43:57 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+20/04/2023 18:43:57 | T None | Loaded radio.json
+20/04/2023 18:43:57 | T None | Loaded languages.json
+20/04/2023 18:43:57 | T None | Loaded other.json
+20/04/2023 18:43:57 | T None | Bot class initialized
+20/04/2023 18:43:57 | T None | Loaded guilds.json
+20/04/2023 18:43:57 | T None | Loaded sound_effects folder
+20/04/2023 18:44:00 | T None | Trying to sync commands
+20/04/2023 18:44:00 | T None | Synced slash commands for Testing Bot#3465
+20/04/2023 18:44:00 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+20/04/2023 18:44:01 | C 1008145667622969397 | Command (play) was requested by (Tomer27cz#4272) -> [None, False]
+20/04/2023 18:44:01 | F 1008145667622969397 | play_def -> [None, False, False]
+20/04/2023 18:44:02 | F 1008145667622969397 | join_def -> [None, True]
+20/04/2023 18:44:02 | F 1008145667622969397 | radio_def -> ['Country Radio', None]
+20/04/2023 18:44:02 | F 1008145667622969397 | volume_command_def -> [100.0, False, True]
+20/04/2023 18:50:32 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+20/04/2023 18:50:32 | T None | Loaded radio.json
+20/04/2023 18:50:32 | T None | Loaded languages.json
+20/04/2023 18:50:32 | T None | Loaded other.json
+20/04/2023 18:50:32 | T None | Bot class initialized
+20/04/2023 18:50:32 | T None | Loaded guilds.json
+20/04/2023 18:50:32 | T None | Loaded sound_effects folder
+20/04/2023 18:50:35 | T None | Trying to sync commands
+20/04/2023 18:50:36 | T None | Synced slash commands for Testing Bot#3465
+20/04/2023 18:50:36 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+20/04/2023 18:52:28 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+20/04/2023 18:52:28 | T None | Loaded radio.json
+20/04/2023 18:52:28 | T None | Loaded languages.json
+20/04/2023 18:52:28 | T None | Loaded other.json
+20/04/2023 18:52:28 | T None | Bot class initialized
+20/04/2023 18:52:28 | T None | Loaded guilds.json
+20/04/2023 18:52:28 | T None | Loaded sound_effects folder
+20/04/2023 18:52:31 | T None | Trying to sync commands
+20/04/2023 18:52:31 | T None | Synced slash commands for Testing Bot#3465
+20/04/2023 18:52:31 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+20/04/2023 18:52:41 | W 1008145667622969397 | Command (web_add_queue) was requested by (Tomer27cz) -> ['now_playing']
+20/04/2023 18:52:41 | F 1008145667622969397 | web_queue -> ['now_playing', None]
+20/04/2023 18:52:41 | T 1008145667622969397 | web_queue -> Queued
+20/04/2023 19:07:41 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+20/04/2023 19:07:41 | T None | Loaded radio.json
+20/04/2023 19:07:41 | T None | Loaded languages.json
+20/04/2023 19:07:41 | T None | Loaded other.json
+20/04/2023 19:07:41 | T None | Bot class initialized
+20/04/2023 19:07:41 | T None | Loaded guilds.json
+20/04/2023 19:07:41 | T None | Loaded sound_effects folder
+20/04/2023 19:07:44 | T None | Trying to sync commands
+20/04/2023 19:07:45 | T None | Synced slash commands for Testing Bot#3465
+20/04/2023 19:07:45 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+20/04/2023 19:07:56 | W 1008145667622969397 | Command (web_add_queue) was requested by (Tomer27cz) -> ['now_playing']
+20/04/2023 19:07:56 | F 1008145667622969397 | web_queue -> ['now_playing', None]
+20/04/2023 19:07:56 | F 1008145667622969397 | web_queue_from_radio -> ['Country Radio', None]
+20/04/2023 21:25:26 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+20/04/2023 21:25:26 | T None | Loaded radio.json
+20/04/2023 21:25:26 | T None | Loaded languages.json
+20/04/2023 21:25:26 | T None | Loaded other.json
+20/04/2023 21:25:26 | T None | Bot class initialized
+20/04/2023 21:25:26 | T None | Loaded guilds.json
+20/04/2023 21:25:26 | T None | Loaded sound_effects folder
+20/04/2023 21:25:30 | T None | Trying to sync commands
+20/04/2023 21:25:31 | T None | Synced slash commands for Testing Bot#3465
+20/04/2023 21:25:31 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+20/04/2023 21:25:33 | W 1008145667622969397 | Command (web_up) was requested by (Tomer27cz) -> ['1']
+20/04/2023 21:25:33 | F 1008145667622969397 | web_up -> ['1']
+20/04/2023 21:25:33 | F 1008145667622969397 | web_move -> [1, 0]
+20/04/2023 21:29:15 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+20/04/2023 21:29:15 | T None | Loaded radio.json
+20/04/2023 21:29:15 | T None | Loaded languages.json
+20/04/2023 21:29:15 | T None | Loaded other.json
+20/04/2023 21:29:15 | T None | Bot class initialized
+20/04/2023 21:29:15 | T None | Loaded guilds.json
+20/04/2023 21:29:15 | T None | Loaded sound_effects folder
+20/04/2023 21:29:18 | T None | Trying to sync commands
+20/04/2023 21:29:18 | T None | Synced slash commands for Testing Bot#3465
+20/04/2023 21:29:18 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+20/04/2023 21:29:26 | W 1008145667622969397 | Command (web_up) was requested by (Tomer27cz) -> ['1']
+20/04/2023 21:29:26 | F 1008145667622969397 | web_up -> ['1']
+20/04/2023 21:29:26 | F 1008145667622969397 | web_move -> [1, 0]
+20/04/2023 21:31:42 | C 1008145667622969397 | Command (play) was requested by (Tomer27cz#4272) -> ['song', False]
+20/04/2023 21:31:42 | F 1008145667622969397 | play_def -> ['song', False, False]
+20/04/2023 21:31:42 | F 1008145667622969397 | queue_command_def -> ['song', None, True, False, True]
+20/04/2023 21:31:42 | F 1008145667622969397 | search_command_def -> ['song', 'short', False, True]
+20/04/2023 21:31:53 | F 1008145667622969397 | play_def -> [None, False, False]
+20/04/2023 21:31:53 | F 1008145667622969397 | join_def -> [None, True]
+20/04/2023 21:31:53 | F 1008145667622969397 | radio_def -> ['Country Radio', None]
+20/04/2023 21:31:53 | F 1008145667622969397 | volume_command_def -> [100.0, False, True]
+20/04/2023 21:32:31 | W 1008145667622969397 | Command (web_remove) was requested by (Tomer27cz) -> ['0']
+20/04/2023 21:32:31 | F 1008145667622969397 | web_remove -> ['0']
+20/04/2023 21:32:34 | W 1008145667622969397 | Command (web_skip) was requested by (Tomer27cz) -> []
+20/04/2023 21:32:34 | F 1008145667622969397 | web_skip -> []
+20/04/2023 21:32:34 | T 1008145667622969397 | web_skip -> Stopped
+20/04/2023 21:32:43 | C 1008145667622969397 | Command (play) was requested by (Tomer27cz#4272) -> [None, False]
+20/04/2023 21:32:43 | F 1008145667622969397 | play_def -> [None, False, False]
+20/04/2023 21:32:44 | F 1008145667622969397 | volume_command_def -> [100.0, False, True]
+20/04/2023 21:34:20 | F 1008145667622969397 | play_def -> ['next', False, False]
+20/04/2023 21:36:02 | C 1008145667622969397 | Command (play) was requested by (Tomer27cz#4272) -> ['song', False]
+20/04/2023 21:36:02 | F 1008145667622969397 | play_def -> ['song', False, False]
+20/04/2023 21:36:02 | F 1008145667622969397 | queue_command_def -> ['song', 0, True, True, True]
+20/04/2023 21:36:02 | F 1008145667622969397 | search_command_def -> ['song', 'short', True, True]
+20/04/2023 21:36:29 | F 1008145667622969397 | play_def -> [None, False, False]
+20/04/2023 21:36:31 | F 1008145667622969397 | volume_command_def -> [100.0, False, True]
+20/04/2023 21:37:00 | W 1008145667622969397 | Command (web_stop) was requested by (Tomer27cz) -> []
+20/04/2023 21:37:00 | F 1008145667622969397 | web_stop -> []
+20/04/2023 21:37:00 | T 1008145667622969397 | web_stop -> Stopped
+20/04/2023 21:37:01 | F 1008145667622969397 | play_def -> ['next', False, False]
+20/04/2023 21:37:01 | T 1008145667622969397 | play_def -> stopped play next loop
+20/04/2023 21:37:32 | W 1008145667622969397 | Command (web_add_queue) was requested by (Tomer27cz) -> ['https://www.youtube.com/watch?v=QzcvRDWgRIE', 'end']
+20/04/2023 21:37:32 | F 1008145667622969397 | web_queue_from_url -> ['https://www.youtube.com/watch?v=QzcvRDWgRIE', 'end']
+20/04/2023 21:37:44 | W 1008145667622969397 | Command (web_add_queue) was requested by (Tomer27cz) -> ['https://www.youtube.com/watch?v=dvgZkm1xWPE', 'end']
+20/04/2023 21:37:44 | F 1008145667622969397 | web_queue_from_url -> ['https://www.youtube.com/watch?v=dvgZkm1xWPE', 'end']
+20/04/2023 21:38:17 | C 1008145667622969397 | Command (play) was requested by (Tomer27cz#4272) -> [None, False]
+20/04/2023 21:38:17 | F 1008145667622969397 | play_def -> [None, False, False]
+20/04/2023 21:38:19 | F 1008145667622969397 | volume_command_def -> [100.0, False, True]
+20/04/2023 21:38:25 | C 1008145667622969397 | Command (nowplaying) was requested by (Tomer27cz#4272) -> [False]
+20/04/2023 21:38:25 | F 1008145667622969397 | now_def -> [False]
+20/04/2023 21:38:43 | W 1008145667622969397 | Command (web_volume) was requested by (Tomer27cz) -> ['153', '153']
+20/04/2023 21:38:43 | F 1008145667622969397 | web_volume -> ['153', '153']
+20/04/2023 21:38:43 | T 1008145667622969397 | web_volume -> Changed volume
+20/04/2023 21:38:52 | W 1008145667622969397 | Command (web_volume) was requested by (Tomer27cz) -> ['153', '153']
+20/04/2023 21:38:52 | F 1008145667622969397 | web_volume -> ['153', '153']
+20/04/2023 21:38:52 | T 1008145667622969397 | web_volume -> Changed volume
+20/04/2023 21:38:52 | W 1008145667622969397 | Command (web_volume) was requested by (Tomer27cz) -> ['153', '153']
+20/04/2023 21:38:52 | F 1008145667622969397 | web_volume -> ['153', '153']
+20/04/2023 21:38:52 | T 1008145667622969397 | web_volume -> Changed volume
+20/04/2023 21:38:57 | W 1008145667622969397 | Command (web_volume) was requested by (Tomer27cz) -> ['99', '99']
+20/04/2023 21:38:57 | F 1008145667622969397 | web_volume -> ['99', '99']
+20/04/2023 21:38:57 | T 1008145667622969397 | web_volume -> Changed volume
+20/04/2023 21:38:59 | W 1008145667622969397 | Command (web_volume) was requested by (Tomer27cz) -> ['99', '99']
+20/04/2023 21:38:59 | F 1008145667622969397 | web_volume -> ['99', '99']
+20/04/2023 21:38:59 | T 1008145667622969397 | web_volume -> Changed volume
+20/04/2023 21:39:00 | W 1008145667622969397 | Command (web_volume) was requested by (Tomer27cz) -> ['99', '99']
+20/04/2023 21:39:00 | F 1008145667622969397 | web_volume -> ['99', '99']
+20/04/2023 21:39:00 | T 1008145667622969397 | web_volume -> Changed volume
+20/04/2023 21:39:02 | W 1008145667622969397 | Command (web_volume) was requested by (Tomer27cz) -> ['73', '73']
+20/04/2023 21:39:02 | F 1008145667622969397 | web_volume -> ['73', '73']
+20/04/2023 21:39:02 | T 1008145667622969397 | web_volume -> Changed volume
+20/04/2023 21:39:03 | W 1008145667622969397 | Command (web_volume) was requested by (Tomer27cz) -> ['73', '73']
+20/04/2023 21:39:03 | F 1008145667622969397 | web_volume -> ['73', '73']
+20/04/2023 21:39:03 | T 1008145667622969397 | web_volume -> Changed volume
+20/04/2023 21:39:09 | W 1008145667622969397 | Command (web_volume) was requested by (Tomer27cz) -> ['100', '100']
+20/04/2023 21:39:09 | F 1008145667622969397 | web_volume -> ['100', '100']
+20/04/2023 21:39:09 | T 1008145667622969397 | web_volume -> Changed volume
+20/04/2023 21:41:24 | F 1008145667622969397 | play_def -> ['next', False, False]
+20/04/2023 21:41:26 | F 1008145667622969397 | volume_command_def -> [100.0, False, True]
+20/04/2023 21:43:38 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+20/04/2023 21:43:38 | T None | Loaded radio.json
+20/04/2023 21:43:38 | T None | Loaded languages.json
+20/04/2023 21:43:38 | T None | Loaded other.json
+20/04/2023 21:43:38 | T None | Bot class initialized
+20/04/2023 21:43:38 | T None | Loaded guilds.json
+20/04/2023 21:43:38 | T None | Loaded sound_effects folder
+20/04/2023 21:43:41 | T None | Trying to sync commands
+20/04/2023 21:43:41 | T None | Synced slash commands for Testing Bot#3465
+20/04/2023 21:43:41 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+20/04/2023 21:44:44 | W 1008145667622969397 | Command (web_add_queue) was requested by (Tomer27cz) -> ['last_played']
+20/04/2023 21:44:44 | F 1008145667622969397 | web_queue -> ['last_played', None]
+20/04/2023 21:44:44 | T 1008145667622969397 | web_queue -> Queued
+21/04/2023 12:28:18 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+21/04/2023 12:28:18 | T None | Loaded radio.json
+21/04/2023 12:28:18 | T None | Loaded languages.json
+21/04/2023 12:28:18 | T None | Loaded other.json
+21/04/2023 12:28:18 | T None | Bot class initialized
+21/04/2023 12:28:18 | T None | Loaded guilds.json
+21/04/2023 12:28:18 | T None | Loaded sound_effects folder
+21/04/2023 12:28:21 | T None | Trying to sync commands
+21/04/2023 12:28:21 | T None | Synced slash commands for Testing Bot#3465
+21/04/2023 12:28:21 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+21/04/2023 12:28:38 | C 1008145667622969397 | Command (play) was requested by (Tomer27cz#4272) -> [None, False]
+21/04/2023 12:28:38 | F 1008145667622969397 | play_def -> [None, False, False]
+21/04/2023 12:28:38 | F 1008145667622969397 | join_def -> [None, True]
+21/04/2023 12:28:40 | F 1008145667622969397 | volume_command_def -> [100.0, False, True]
+21/04/2023 12:29:54 | W 1008145667622969397 | Command (web_add_queue) was requested by (WEB) -> ['last_played']
+21/04/2023 12:29:54 | F 1008145667622969397 | web_queue -> ['last_played', None]
+21/04/2023 12:29:54 | T 1008145667622969397 | web_queue -> Queued
+21/04/2023 12:31:45 | F 1008145667622969397 | play_def -> ['next', False, False]
+21/04/2023 12:31:46 | F 1008145667622969397 | volume_command_def -> [100.0, False, True]
+21/04/2023 12:35:48 | F 1008145667622969397 | play_def -> ['next', False, False]
+21/04/2023 12:45:52 | T 1008145667622969397 | -->> Disconnecting after 600 seconds of nothing playing <<--
+21/04/2023 12:48:15 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+21/04/2023 12:48:15 | T None | Loaded radio.json
+21/04/2023 12:48:15 | T None | Loaded languages.json
+21/04/2023 12:48:15 | T None | Loaded other.json
+21/04/2023 12:48:15 | T None | Bot class initialized
+21/04/2023 12:48:15 | T None | Loaded guilds.json
+21/04/2023 12:48:15 | T None | Loaded sound_effects folder
+21/04/2023 12:48:18 | T None | Trying to sync commands
+21/04/2023 12:48:18 | T None | Synced slash commands for Testing Bot#3465
+21/04/2023 12:48:18 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+21/04/2023 12:48:25 | I 10.0.0.1 | Accessed: /index
+21/04/2023 12:49:20 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+21/04/2023 12:49:20 | T None | Loaded radio.json
+21/04/2023 12:49:20 | T None | Loaded languages.json
+21/04/2023 12:49:20 | T None | Loaded other.json
+21/04/2023 12:49:20 | T None | Bot class initialized
+21/04/2023 12:49:20 | T None | Loaded guilds.json
+21/04/2023 12:49:20 | T None | Loaded sound_effects folder
+21/04/2023 12:49:23 | T None | Trying to sync commands
+21/04/2023 12:49:23 | T None | Synced slash commands for Testing Bot#3465
+21/04/2023 12:49:23 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+21/04/2023 12:49:26 | I 10.0.0.1 | Requested: /guild
+21/04/2023 12:49:29 | I 10.0.0.1 | Requested: /guild/1008145667622969397
+21/04/2023 12:49:29 | I 10.0.0.1 | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 12:49:53 | I 10.0.0.1 | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 12:49:53 | W 1008145667622969397 | Command (web_pause) was requested by (WEB) -> []
+21/04/2023 12:49:53 | F 1008145667622969397 | web_pause -> []
+21/04/2023 12:49:53 | T 1008145667622969397 | web_pause -> Not in a voice channel
+21/04/2023 13:51:38 | C 1008145667622969397 | Command (radio) was requested by (Tomer27cz#4272) -> [None, 95]
+21/04/2023 13:51:38 | F 1008145667622969397 | radio_def -> [None, 95]
+21/04/2023 13:51:38 | F 1008145667622969397 | join_def -> [None, True]
+21/04/2023 13:51:39 | F 1008145667622969397 | volume_command_def -> [100.0, False, True]
+21/04/2023 13:59:35 | I 10.0.0.1 | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 13:59:37 | I 10.0.0.1 | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 13:59:58 | C 1008145667622969397 | Command (nowplaying) was requested by (Tomer27cz#4272) -> [False]
+21/04/2023 13:59:58 | F 1008145667622969397 | now_def -> [False]
+21/04/2023 14:00:04 | I 10.0.0.1 | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 14:01:47 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+21/04/2023 14:01:47 | T None | Loaded radio.json
+21/04/2023 14:01:47 | T None | Loaded languages.json
+21/04/2023 14:01:47 | T None | Loaded other.json
+21/04/2023 14:01:47 | T None | Bot class initialized
+21/04/2023 14:01:47 | T None | Loaded guilds.json
+21/04/2023 14:01:47 | T None | Loaded sound_effects folder
+21/04/2023 14:01:50 | T None | Trying to sync commands
+21/04/2023 14:01:51 | T None | Synced slash commands for Testing Bot#3465
+21/04/2023 14:01:51 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+21/04/2023 14:01:52 | I 10.0.0.1 | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 14:01:52 | W 1008145667622969397 | Command (web_add_queue) was requested by (WEB) -> ['now_playing']
+21/04/2023 14:01:52 | F 1008145667622969397 | web_queue -> ['now_playing', None]
+21/04/2023 14:01:52 | F 1008145667622969397 | web_queue_from_radio -> ['Evropa 2', None]
+21/04/2023 14:01:54 | I 10.0.0.1 | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 14:02:00 | C 1008145667622969397 | Command (play) was requested by (Tomer27cz#4272) -> [None, False]
+21/04/2023 14:02:00 | F 1008145667622969397 | play_def -> [None, False, False]
+21/04/2023 14:02:00 | F 1008145667622969397 | join_def -> [None, True]
+21/04/2023 14:02:00 | F 1008145667622969397 | radio_def -> ['Evropa 2', None]
+21/04/2023 14:02:00 | F 1008145667622969397 | volume_command_def -> [100.0, False, True]
+21/04/2023 14:02:03 | I 10.0.0.1 | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 14:02:24 | I 10.0.0.1 | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 14:02:30 | C 1008145667622969397 | Command (nowplaying) was requested by (Tomer27cz#4272) -> [False]
+21/04/2023 14:02:30 | F 1008145667622969397 | now_def -> [False]
+21/04/2023 14:05:15 | I 10.0.0.1 | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 14:08:02 | I 10.0.0.1 | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 14:12:39 | I 10.0.0.1 | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 14:14:42 | I 10.0.0.1 | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 14:19:14 | I 10.0.0.1 | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 14:20:09 | I 10.0.0.1 | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 14:20:09 | W 1008145667622969397 | Command (web_add_queue) was requested by (WEB) -> ['Country Radio', 'end']
+21/04/2023 14:20:09 | F 1008145667622969397 | web_queue_from_radio -> ['Country Radio', 'end']
+21/04/2023 14:20:12 | I 10.0.0.1 | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 14:20:12 | W 1008145667622969397 | Command (web_skip) was requested by (WEB) -> []
+21/04/2023 14:20:12 | F 1008145667622969397 | web_skip -> []
+21/04/2023 14:20:12 | T 1008145667622969397 | web_skip -> Stopped
+21/04/2023 14:21:49 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+21/04/2023 14:21:49 | T None | Loaded radio.json
+21/04/2023 14:21:49 | T None | Loaded languages.json
+21/04/2023 14:21:49 | T None | Loaded other.json
+21/04/2023 14:21:49 | T None | Bot class initialized
+21/04/2023 14:21:49 | T None | Loaded guilds.json
+21/04/2023 14:21:49 | T None | Loaded sound_effects folder
+21/04/2023 14:21:52 | T None | Trying to sync commands
+21/04/2023 14:21:52 | T None | Synced slash commands for Testing Bot#3465
+21/04/2023 14:21:52 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+21/04/2023 14:22:05 | I 10.0.0.1 | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 14:22:05 | W 1008145667622969397 | Command (web_skip) was requested by (WEB) -> []
+21/04/2023 14:22:05 | F 1008145667622969397 | web_skip -> []
+21/04/2023 14:22:05 | T 1008145667622969397 | web_skip -> Not in a voice channel
+21/04/2023 14:22:14 | C 1008145667622969397 | Command (play) was requested by (Tomer27cz#4272) -> [None, False]
+21/04/2023 14:22:14 | F 1008145667622969397 | play_def -> [None, False, False]
+21/04/2023 14:22:14 | F 1008145667622969397 | join_def -> [None, True]
+21/04/2023 14:22:15 | F 1008145667622969397 | radio_def -> ['Country Radio', None]
+21/04/2023 14:22:15 | F 1008145667622969397 | volume_command_def -> [100.0, False, True]
+21/04/2023 14:22:32 | I 10.0.0.1 | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 14:25:39 | C 1008145667622969397 | Command (radio) was requested by (Tomer27cz#4272) -> ['Evropa 2', None]
+21/04/2023 14:25:39 | F 1008145667622969397 | radio_def -> ['Evropa 2', None]
+21/04/2023 14:25:39 | F 1008145667622969397 | stop_def -> [True]
+21/04/2023 14:25:39 | F 1008145667622969397 | volume_command_def -> [100.0, False, True]
+21/04/2023 16:03:00 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+21/04/2023 16:03:00 | T None | Loaded radio.json
+21/04/2023 16:03:00 | T None | Loaded languages.json
+21/04/2023 16:03:00 | T None | Loaded other.json
+21/04/2023 16:03:00 | T None | Bot class initialized
+21/04/2023 16:03:00 | T None | Loaded guilds.json
+21/04/2023 16:03:00 | T None | Loaded sound_effects folder
+21/04/2023 16:03:03 | T None | Trying to sync commands
+21/04/2023 16:03:04 | T None | Synced slash commands for Testing Bot#3465
+21/04/2023 16:03:04 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+21/04/2023 16:03:14 | C None | Command (play) was requested by (Tomer27cz#4272) -> ['song', False]
+21/04/2023 16:03:14 | F 1008145667622969397 | play_def -> ['song', False, False]
+21/04/2023 16:03:14 | F 1008145667622969397 | queue_command_def -> ['song', None, True, False, True]
+21/04/2023 16:03:14 | F 1008145667622969397 | search_command_def -> ['song', 'short', False, True]
+21/04/2023 16:03:20 | F 1008145667622969397 | play_def -> [None, False, False]
+21/04/2023 16:03:20 | F 1008145667622969397 | join_def -> [None, True]
+21/04/2023 16:04:29 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+21/04/2023 16:04:29 | T None | Loaded radio.json
+21/04/2023 16:04:29 | T None | Loaded languages.json
+21/04/2023 16:04:29 | T None | Loaded other.json
+21/04/2023 16:04:29 | T None | Bot class initialized
+21/04/2023 16:04:29 | T None | Loaded guilds.json
+21/04/2023 16:04:29 | T None | Loaded sound_effects folder
+21/04/2023 16:04:32 | T None | Trying to sync commands
+21/04/2023 16:04:32 | T None | Synced slash commands for Testing Bot#3465
+21/04/2023 16:04:32 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+21/04/2023 16:04:36 | C None | Command (play) was requested by (Tomer27cz#4272) -> ['song', False]
+21/04/2023 16:04:36 | F 1008145667622969397 | play_def -> ['song', False, False]
+21/04/2023 16:04:36 | F 1008145667622969397 | queue_command_def -> ['song', None, True, False, True]
+21/04/2023 16:04:36 | F 1008145667622969397 | search_command_def -> ['song', 'short', False, True]
+21/04/2023 16:04:43 | F 1008145667622969397 | play_def -> [None, False, False]
+21/04/2023 16:04:43 | F 1008145667622969397 | join_def -> [None, True]
+21/04/2023 16:04:44 | F 1008145667622969397 | volume_command_def -> [100.0, False, True]
+21/04/2023 16:07:42 | I None | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 16:07:47 | I None | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 16:08:16 | I None | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 16:08:39 | I None | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 16:08:39 | W None | Command (web_add_queue) was requested by (WEB) -> ['now_playing']
+21/04/2023 16:08:39 | F None | web_queue -> ['now_playing', None]
+21/04/2023 16:08:39 | T None | web_queue -> Queued
+21/04/2023 16:08:42 | I None | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 16:08:42 | W None | Command (web_add_queue) was requested by (WEB) -> ['now_playing']
+21/04/2023 16:08:42 | F None | web_queue -> ['now_playing', None]
+21/04/2023 16:08:42 | T None | web_queue -> Queued
+21/04/2023 16:08:45 | F 1008145667622969397 | play_def -> ['next', False, False]
+21/04/2023 16:08:47 | F 1008145667622969397 | volume_command_def -> [100.0, False, True]
+21/04/2023 16:08:50 | I None | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 16:08:58 | I None | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 16:08:58 | W None | Command (web_stop) was requested by (WEB) -> []
+21/04/2023 16:08:58 | F None | web_stop -> []
+21/04/2023 16:08:58 | T None | web_stop -> Stopped
+21/04/2023 16:08:58 | F 1008145667622969397 | play_def -> ['next', False, False]
+21/04/2023 16:08:58 | T None | play_def -> stopped play next loop
+21/04/2023 16:09:05 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+21/04/2023 16:09:05 | T None | Loaded radio.json
+21/04/2023 16:09:05 | T None | Loaded languages.json
+21/04/2023 16:09:05 | T None | Loaded other.json
+21/04/2023 16:09:05 | T None | Bot class initialized
+21/04/2023 16:09:05 | T None | Loaded guilds.json
+21/04/2023 16:09:05 | T None | Loaded sound_effects folder
+21/04/2023 16:09:08 | T None | Trying to sync commands
+21/04/2023 16:09:08 | T None | Synced slash commands for Testing Bot#3465
+21/04/2023 16:09:08 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+21/04/2023 16:09:12 | I None | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 16:09:20 | I None | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 16:09:20 | W None | Command (web_add_queue) was requested by (WEB) -> ['last_played']
+21/04/2023 16:09:20 | F None | web_queue -> ['last_played', None]
+21/04/2023 16:09:20 | T None | web_queue -> Queued
+21/04/2023 16:09:22 | I None | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 16:09:22 | W None | Command (web_up) was requested by (WEB) -> ['2']
+21/04/2023 16:09:22 | F None | web_up -> ['2']
+21/04/2023 16:09:22 | F None | web_move -> [2, 1]
+21/04/2023 16:09:28 | I None | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 16:09:28 | W None | Command (web_remove) was requested by (WEB) -> ['0']
+21/04/2023 16:09:28 | F 1008145667622969397 | remove_def -> ['0', None, False]
+21/04/2023 17:08:52 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+21/04/2023 17:08:52 | T None | Loaded radio.json
+21/04/2023 17:09:26 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+21/04/2023 17:09:26 | T None | Loaded radio.json
+21/04/2023 17:09:26 | T None | Loaded languages.json
+21/04/2023 17:09:26 | T None | Loaded other.json
+21/04/2023 17:09:26 | T None | Bot class initialized
+21/04/2023 17:09:26 | T None | Loaded guilds.json
+21/04/2023 17:09:26 | T None | Loaded sound_effects folder
+21/04/2023 17:09:29 | T None | Trying to sync commands
+21/04/2023 17:09:30 | T None | Synced slash commands for Testing Bot#3465
+21/04/2023 17:09:30 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+21/04/2023 17:09:30 | I None | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 17:09:38 | I None | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 17:09:38 | W None | Command (web_remove) was requested by (WEB) -> ['0']
+21/04/2023 17:09:38 | F 1008145667622969397 | remove_def -> [0, None, False]
+21/04/2023 17:13:48 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+21/04/2023 17:13:48 | T None | Loaded radio.json
+21/04/2023 17:13:48 | T None | Loaded languages.json
+21/04/2023 17:13:48 | T None | Loaded other.json
+21/04/2023 17:13:48 | T None | Bot class initialized
+21/04/2023 17:13:48 | T None | Loaded guilds.json
+21/04/2023 17:13:48 | T None | Loaded sound_effects folder
+21/04/2023 17:13:51 | T None | Trying to sync commands
+21/04/2023 17:13:51 | T None | Synced slash commands for Testing Bot#3465
+21/04/2023 17:13:51 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+21/04/2023 17:13:54 | I None | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 17:13:57 | I None | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 17:13:57 | W None | Command (web_remove) was requested by (WEB) -> ['0']
+21/04/2023 17:13:57 | F 1008145667622969397 | remove_def -> [0, None, False]
+21/04/2023 17:20:02 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+21/04/2023 17:20:02 | T None | Loaded radio.json
+21/04/2023 17:20:02 | T None | Loaded languages.json
+21/04/2023 17:20:02 | T None | Loaded other.json
+21/04/2023 17:20:02 | T None | Bot class initialized
+21/04/2023 17:20:02 | T None | Loaded guilds.json
+21/04/2023 17:20:02 | T None | Loaded sound_effects folder
+21/04/2023 17:20:05 | T None | Trying to sync commands
+21/04/2023 17:20:06 | T None | Synced slash commands for Testing Bot#3465
+21/04/2023 17:20:06 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+21/04/2023 17:20:07 | I None | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 17:20:12 | I None | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 17:20:12 | W None | Command (web_remove) was requested by (WEB) -> ['0']
+21/04/2023 17:20:12 | F 1008145667622969397 | remove_def -> [0, None, False]
+21/04/2023 17:20:31 | I None | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 17:20:31 | W None | Command (web_add_queue) was requested by (WEB) -> ['Fajn Radio', 'end']
+21/04/2023 17:20:31 | F 1008145667622969397 | web_queue_from_radio -> ['Fajn Radio', 'end']
+21/04/2023 17:20:34 | I None | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 17:20:34 | W None | Command (web_up) was requested by (WEB) -> ['1']
+21/04/2023 17:20:34 | F 1008145667622969397 | web_up -> ['1']
+21/04/2023 17:20:34 | F 1008145667622969397 | web_move -> [1, 0]
+21/04/2023 17:20:56 | I None | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 17:20:56 | W None | Command (web_add_queue) was requested by (WEB) -> ['last_played']
+21/04/2023 17:20:56 | F None | web_queue -> ['last_played', None]
+21/04/2023 17:20:56 | T None | web_queue -> Queued
+21/04/2023 17:23:14 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+21/04/2023 17:23:14 | T None | Loaded radio.json
+21/04/2023 17:23:14 | T None | Loaded languages.json
+21/04/2023 17:23:14 | T None | Loaded other.json
+21/04/2023 17:23:14 | T None | Bot class initialized
+21/04/2023 17:23:14 | T None | Loaded guilds.json
+21/04/2023 17:23:14 | T None | Loaded sound_effects folder
+21/04/2023 17:23:17 | T None | Trying to sync commands
+21/04/2023 17:23:18 | T None | Synced slash commands for Testing Bot#3465
+21/04/2023 17:23:18 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+21/04/2023 17:23:19 | I None | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 17:23:25 | I None | Requested: /guild/window.location.reload();
+21/04/2023 17:25:52 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+21/04/2023 17:25:52 | T None | Loaded radio.json
+21/04/2023 17:25:52 | T None | Loaded languages.json
+21/04/2023 17:25:52 | T None | Loaded other.json
+21/04/2023 17:25:52 | T None | Bot class initialized
+21/04/2023 17:25:52 | T None | Loaded guilds.json
+21/04/2023 17:25:52 | T None | Loaded sound_effects folder
+21/04/2023 17:25:55 | T None | Trying to sync commands
+21/04/2023 17:25:55 | T None | Synced slash commands for Testing Bot#3465
+21/04/2023 17:25:55 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+21/04/2023 17:26:03 | I None | Requested: /guild
+21/04/2023 17:26:04 | I None | Requested: /guild/1008145667622969397
+21/04/2023 17:26:04 | I None | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 17:26:08 | I None | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 17:26:08 | W None | Command (web_remove) was requested by (WEB) -> ['0']
+21/04/2023 17:26:08 | F 1008145667622969397 | remove_def -> [0, None, False]
+21/04/2023 17:27:41 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+21/04/2023 17:27:41 | T None | Loaded radio.json
+21/04/2023 17:27:41 | T None | Loaded languages.json
+21/04/2023 17:27:41 | T None | Loaded other.json
+21/04/2023 17:27:41 | T None | Bot class initialized
+21/04/2023 17:27:41 | T None | Loaded guilds.json
+21/04/2023 17:27:41 | T None | Loaded sound_effects folder
+21/04/2023 17:27:44 | T None | Trying to sync commands
+21/04/2023 17:27:44 | T None | Synced slash commands for Testing Bot#3465
+21/04/2023 17:27:44 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+21/04/2023 17:27:46 | I None | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 17:27:52 | I None | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 17:27:52 | W None | Command (web_remove) was requested by (WEB) -> ['0']
+21/04/2023 17:27:52 | F 1008145667622969397 | remove_def -> [0, None, False]
+21/04/2023 17:28:07 | I None | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 17:28:07 | W None | Command (web_add_queue) was requested by (WEB) -> ['last_played']
+21/04/2023 17:28:07 | F None | web_queue -> ['last_played', None]
+21/04/2023 17:28:07 | T None | web_queue -> Queued
+21/04/2023 17:28:08 | I None | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 17:28:08 | W None | Command (web_add_queue) was requested by (WEB) -> ['last_played']
+21/04/2023 17:28:08 | F None | web_queue -> ['last_played', None]
+21/04/2023 17:28:08 | T None | web_queue -> Queued
+21/04/2023 17:28:09 | I None | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 17:28:09 | W None | Command (web_add_queue) was requested by (WEB) -> ['last_played']
+21/04/2023 17:28:09 | F None | web_queue -> ['last_played', None]
+21/04/2023 17:28:09 | T None | web_queue -> Queued
+21/04/2023 17:28:10 | I None | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 17:28:10 | W None | Command (web_add_queue) was requested by (WEB) -> ['last_played']
+21/04/2023 17:28:10 | F None | web_queue -> ['last_played', None]
+21/04/2023 17:28:10 | T None | web_queue -> Queued
+21/04/2023 17:30:32 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+21/04/2023 17:30:32 | T None | Loaded radio.json
+21/04/2023 17:30:32 | T None | Loaded languages.json
+21/04/2023 17:30:32 | T None | Loaded other.json
+21/04/2023 17:30:32 | T None | Bot class initialized
+21/04/2023 17:30:32 | T None | Loaded guilds.json
+21/04/2023 17:30:32 | T None | Loaded sound_effects folder
+21/04/2023 17:30:35 | T None | Trying to sync commands
+21/04/2023 17:30:36 | T None | Synced slash commands for Testing Bot#3465
+21/04/2023 17:30:36 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+21/04/2023 17:30:44 | I 10.0.0.1 | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 17:30:57 | I 10.0.0.1 | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 17:30:57 | W 1008145667622969397 | Command (web_remove) was requested by (WEB) -> ['0']
+21/04/2023 17:30:57 | F 1008145667622969397 | remove_def -> [0, None, False]
+21/04/2023 18:12:09 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+21/04/2023 18:12:09 | T None | Loaded radio.json
+21/04/2023 18:12:09 | T None | Loaded languages.json
+21/04/2023 18:12:09 | T None | Loaded other.json
+21/04/2023 18:12:09 | T None | Bot class initialized
+21/04/2023 18:12:09 | T None | Loaded guilds.json
+21/04/2023 18:12:09 | T None | Loaded sound_effects folder
+21/04/2023 18:12:12 | T None | Trying to sync commands
+21/04/2023 18:12:13 | T None | Synced slash commands for Testing Bot#3465
+21/04/2023 18:12:13 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+21/04/2023 18:12:17 | I 10.0.0.1 | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 18:12:54 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+21/04/2023 18:12:54 | T None | Loaded radio.json
+21/04/2023 18:12:54 | T None | Loaded languages.json
+21/04/2023 18:12:54 | T None | Loaded other.json
+21/04/2023 18:12:54 | T None | Bot class initialized
+21/04/2023 18:12:54 | T None | Loaded guilds.json
+21/04/2023 18:12:54 | T None | Loaded sound_effects folder
+21/04/2023 18:12:57 | T None | Trying to sync commands
+21/04/2023 18:12:57 | T None | Synced slash commands for Testing Bot#3465
+21/04/2023 18:12:57 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+21/04/2023 18:13:28 | I 10.0.0.1 | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 18:13:40 | C 1008145667622969397 | Command (play) was requested by (Tomer27cz#4272) -> ['song', False]
+21/04/2023 18:13:40 | F 1008145667622969397 | play_def -> ['song', False, False]
+21/04/2023 18:13:40 | F 1008145667622969397 | queue_command_def -> ['song', None, True, False, True]
+21/04/2023 18:13:40 | F 1008145667622969397 | search_command_def -> ['song', 'short', False, True]
+21/04/2023 18:13:52 | F 1008145667622969397 | play_def -> [None, False, False]
+21/04/2023 18:13:52 | F 1008145667622969397 | join_def -> [None, True]
+21/04/2023 18:13:54 | F 1008145667622969397 | volume_command_def -> [100.0, False, True]
+21/04/2023 18:13:56 | I 10.0.0.1 | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 18:14:04 | I 10.0.0.1 | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 18:14:04 | W 1008145667622969397 | Command (remove) was requested by (10.0.0.1) -> ['2']
+21/04/2023 18:14:04 | F 1008145667622969397 | remove_def -> [2, None, False]
+21/04/2023 18:14:05 | I 10.0.0.1 | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 18:14:05 | W 1008145667622969397 | Command (remove) was requested by (10.0.0.1) -> ['1']
+21/04/2023 18:14:05 | F 1008145667622969397 | remove_def -> [1, None, False]
+21/04/2023 18:14:09 | I 10.0.0.1 | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 18:14:09 | W 1008145667622969397 | Command (bottom) was requested by (10.0.0.1) -> ['0']
+21/04/2023 18:14:09 | F 1008145667622969397 | web_bottom -> ['0']
+21/04/2023 18:14:09 | F 1008145667622969397 | web_move -> [0, 1]
+21/04/2023 18:14:18 | I 10.0.0.1 | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 18:14:18 | W 1008145667622969397 | Command (stop) was requested by (10.0.0.1) -> []
+21/04/2023 18:14:18 | F 1008145667622969397 | stop_def -> [False]
+21/04/2023 18:14:18 | F 1008145667622969397 | play_def -> ['next', False, False]
+21/04/2023 18:14:18 | T 1008145667622969397 | play_def -> stopped play next loop
+21/04/2023 18:14:22 | I 10.0.0.1 | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 18:14:22 | W 1008145667622969397 | Command (play) was requested by (10.0.0.1) -> []
+21/04/2023 18:14:22 | F 1008145667622969397 | play_def -> [None, False, False]
+21/04/2023 18:14:24 | F 1008145667622969397 | volume_command_def -> [100.0, False, True]
+21/04/2023 18:15:15 | I 10.0.0.1 | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 18:15:15 | W 1008145667622969397 | Command (web_queue_from_radio) was requested by (10.0.0.1) -> ['Alternative Times Radio', 'end']
+21/04/2023 18:15:15 | F 1008145667622969397 | web_queue_from_radio -> ['Alternative Times Radio', 'end']
+21/04/2023 18:16:24 | I 10.0.0.1 | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 18:16:24 | W 1008145667622969397 | Command (pause) was requested by (10.0.0.1) -> []
+21/04/2023 18:16:24 | F 1008145667622969397 | pause_def -> [False]
+21/04/2023 18:16:29 | I 10.0.0.1 | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 18:16:29 | W 1008145667622969397 | Command (resume) was requested by (10.0.0.1) -> []
+21/04/2023 18:16:29 | F 1008145667622969397 | resume_def -> [False]
+21/04/2023 18:17:15 | I 10.0.0.1 | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 18:17:17 | I 10.0.0.1 | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 18:17:17 | W 1008145667622969397 | Command (pause) was requested by (10.0.0.1) -> []
+21/04/2023 18:17:17 | F 1008145667622969397 | pause_def -> [False]
+21/04/2023 18:27:22 | F 1008145667622969397 | play_def -> ['next', False, False]
+21/04/2023 18:27:22 | T 1008145667622969397 | play_def -> stopped play next loop
+21/04/2023 18:27:22 | T 1008145667622969397 | -->> Disconnecting after 600 seconds of nothing playing <<--
+21/04/2023 18:35:59 | I 10.0.0.1 | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 18:35:59 | W 1008145667622969397 | Command (resume) was requested by (10.0.0.1) -> []
+21/04/2023 18:35:59 | F 1008145667622969397 | resume_def -> [False]
+21/04/2023 18:36:08 | I 10.0.0.1 | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 18:36:08 | W 1008145667622969397 | Command (remove) was requested by (10.0.0.1) -> ['0']
+21/04/2023 18:36:08 | F 1008145667622969397 | remove_def -> [0, None, False]
+21/04/2023 18:36:12 | I 10.0.0.1 | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 18:36:12 | W 1008145667622969397 | Command (web_queue_from_radio) was requested by (10.0.0.1) -> ['Evropa 2', 'end']
+21/04/2023 18:36:12 | F 1008145667622969397 | web_queue_from_radio -> ['Evropa 2', 'end']
+21/04/2023 18:36:16 | I 10.0.0.1 | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 18:36:16 | W 1008145667622969397 | Command (remove) was requested by (10.0.0.1) -> ['0']
+21/04/2023 18:36:16 | F 1008145667622969397 | remove_def -> [0, None, False]
+21/04/2023 18:36:20 | C 1008145667622969397 | Command (play) was requested by (Tomer27cz#4272) -> [None, False]
+21/04/2023 18:36:20 | F 1008145667622969397 | play_def -> [None, False, False]
+21/04/2023 18:36:20 | F 1008145667622969397 | join_def -> [None, True]
+21/04/2023 18:36:20 | F 1008145667622969397 | radio_def -> ['Evropa 2', None]
+21/04/2023 18:36:21 | F 1008145667622969397 | volume_command_def -> [100.0, False, True]
+21/04/2023 18:44:08 | I 10.0.0.1 | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 18:44:12 | I 10.0.0.1 | Requested: /guild/1008145667622969397&key=0qzk5v
+21/04/2023 18:44:12 | W 1008145667622969397 | Command (queue) was requested by (10.0.0.1) -> ['now_playing']
+21/04/2023 18:44:12 | F 1008145667622969397 | web_queue -> ['now_playing', None]
+21/04/2023 18:44:12 | F 1008145667622969397 | web_queue_from_radio -> ['Evropa 2', None]
+21/04/2023 18:59:13 | I 10.0.0.1 | Requested: /guild/1008145667622969397&key=0qzk5v
