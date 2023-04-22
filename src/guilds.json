@@ -8,7 +8,7 @@
             "is_radio": true,
             "language": "cs",
             "response_type": "short",
-            "search_query": "song",
+            "search_query": "Never gonna give you up",
             "buttons": false,
             "volume": 1.0,
             "buffer": 600
@@ -26,122 +26,41 @@
             "icon": null,
             "banner": null,
             "splash": null,
-            "discovery_splash": null
+            "discovery_splash": null,
+            "voice_channels": [
+                {
+                    "name": "Bol\u00edvia accidental",
+                    "id": 1008145669946626106
+                },
+                {
+                    "name": "Immernachtreich voice \u0161anel",
+                    "id": 1008145669946626107
+                },
+                {
+                    "name": "Mazda showroom in Iwo Jima idk",
+                    "id": 1008145670206664795
+                },
+                {
+                    "name": "\ud06c\ub9bd\ud1a0 \uba54\uc778\uc758 \uc740\uc2e0\ucc98",
+                    "id": 1008145670206664796
+                }
+            ]
         },
-        "queue": {
-            "0": {
-                "class_type": "Radio",
-                "author": 1007004463933952120,
-                "created_at": 1682102652,
-                "radio_name": "Evropa 2",
-                "url": "https://rds.actve.net/v1/metadata/channel/evropa2",
-                "title": "Evropa 2",
-                "picture": "https://static.mytuner.mobi/media/tvos_radios/4eYJ2UArA8.png",
-                "duration": "Stream",
-                "channel_name": "actve",
-                "channel_link": "https://rds.actve.net/v1/metadata/channel/evropa2",
-                "radio_website": "actve",
-                "local_number": null
-            }
-        },
-        "search_list": {
-            "0": {
-                "class_type": "Video",
-                "author": 349164237605568513,
-                "created_at": 1682100822,
-                "url": "https://www.youtube.com/watch?v=6ePfuvBbObo",
-                "title": "Best tiktok songs \ud83e\uddc1 Tiktok viral songs 2023 ~ Trending tiktok songs",
-                "picture": "https://img.youtube.com/vi/6ePfuvBbObo/default.jpg",
-                "duration": "2888",
-                "channel_name": "Love Life Lyrics",
-                "channel_link": "https://www.youtube.com/channel/UCvt5p3A11M8zd8iJPCC5XvQ",
-                "radio_name": null,
-                "radio_website": null,
-                "local_number": null
-            },
-            "1": {
-                "class_type": "Video",
-                "author": 349164237605568513,
-                "created_at": 1682100822,
-                "url": "https://www.youtube.com/watch?v=dMoFcvfd5t4",
-                "title": "The Weeknd ft. Future - Double Fantasy (Official Music Video)",
-                "picture": "https://img.youtube.com/vi/dMoFcvfd5t4/default.jpg",
-                "duration": "269",
-                "channel_name": "TheWeekndVEVO",
-                "channel_link": "https://www.youtube.com/channel/UCF_fDSgPpBQuh1MsUTgIARQ",
-                "radio_name": null,
-                "radio_website": null,
-                "local_number": null
-            },
-            "2": {
-                "class_type": "Video",
-                "author": 349164237605568513,
-                "created_at": 1682100822,
-                "url": "https://www.youtube.com/watch?v=pov0FfWgZ9o",
-                "title": "Prakash Saput New Song Sakambari [ Phoolmaya ] Sunil Thapa | Kusum Sharma | Official MV 2023",
-                "picture": "https://img.youtube.com/vi/pov0FfWgZ9o/default.jpg",
-                "duration": "915",
-                "channel_name": "Prakash Saput",
-                "channel_link": "https://www.youtube.com/channel/UCLjMHtCwaTy4aCs-EVudqYQ",
-                "radio_name": null,
-                "radio_website": null,
-                "local_number": null
-            },
-            "3": {
-                "class_type": "Video",
-                "author": 349164237605568513,
-                "created_at": 1682100822,
-                "url": "https://www.youtube.com/watch?v=lDnAKCIKluw",
-                "title": "Let's Build a Pillow Fort | CoComelon Nursery Rhymes & Kids Songs",
-                "picture": "https://img.youtube.com/vi/lDnAKCIKluw/default.jpg",
-                "duration": "174",
-                "channel_name": "Cocomelon - Nursery Rhymes",
-                "channel_link": "https://www.youtube.com/channel/UCbCmjCuTUZos6Inko4u57UQ",
-                "radio_name": null,
-                "radio_website": null,
-                "local_number": null
-            },
-            "4": {
-                "class_type": "Video",
-                "author": 349164237605568513,
-                "created_at": 1682100822,
-                "url": "https://www.youtube.com/watch?v=5j-MyoUG4BE",
-                "title": "Best Romantic Love Songs 2023 - Love Songs 80s 90s Playlist English - Old Love Songs 80's 90's",
-                "picture": "https://img.youtube.com/vi/5j-MyoUG4BE/default.jpg",
-                "duration": "42899",
-                "channel_name": "Sweet Music",
-                "channel_link": "https://www.youtube.com/channel/UCII8iUOjp5oe1vtOmX_J7Nw",
-                "radio_name": null,
-                "radio_website": null,
-                "local_number": null
-            }
-        },
-        "now_playing": {
+        "queue": {},
+        "search_list": {},
+        "now_playing": {},
+        "last_played": {
             "class_type": "Radio",
             "author": 349164237605568513,
-            "created_at": 1682102181,
-            "radio_name": "Evropa 2",
-            "url": "https://rds.actve.net/v1/metadata/channel/evropa2",
-            "title": "It Ain't Me",
-            "picture": "https://c.actve.net/76157",
+            "created_at": 1682201638,
+            "radio_name": "Fajn Radio",
+            "url": "https://radia.cz/radio-fajn-radio-playlist",
+            "title": "All By Myself",
+            "picture": "https://cdb.radia.cz/content/covers/66/dc/thumbnails/66dc262ecfe588ca4e48a5ea1d22dd40-image(image400).jpg",
             "duration": "Stream",
-            "channel_name": "KYGO & SELENA GOMEZ",
-            "channel_link": "https://rds.actve.net/v1/metadata/channel/evropa2",
-            "radio_website": "actve",
-            "local_number": null
-        },
-        "last_played": {
-            "class_type": "Video",
-            "author": 349164237605568513,
-            "created_at": 1682100822,
-            "url": "https://www.youtube.com/watch?v=6ePfuvBbObo",
-            "title": "Best tiktok songs \ud83e\uddc1 Tiktok viral songs 2023 ~ Trending tiktok songs",
-            "picture": "https://img.youtube.com/vi/6ePfuvBbObo/default.jpg",
-            "duration": "2888",
-            "channel_name": "Love Life Lyrics",
-            "channel_link": "https://www.youtube.com/channel/UCvt5p3A11M8zd8iJPCC5XvQ",
-            "radio_name": null,
-            "radio_website": null,
+            "channel_name": "ALOK & SIGALA & ELLIE GOULDING",
+            "channel_link": "https://radia.cz/radio-fajn-radio-playlist",
+            "radio_website": "radia_cz",
             "local_number": null
         }
     },
@@ -172,7 +91,17 @@
             "icon": "https://cdn.discordapp.com/icons/892403162315644928/ddf21b11faf19f03dafe5d0289996fa1.png?size=1024",
             "banner": null,
             "splash": null,
-            "discovery_splash": null
+            "discovery_splash": null,
+            "voice_channels": [
+                {
+                    "name": "Obecn\u00e9",
+                    "id": 892403162315644932
+                },
+                {
+                    "name": "test channel",
+                    "id": 1008100735973609562
+                }
+            ]
         },
         "queue": {},
         "search_list": {},
@@ -219,7 +148,13 @@
             "icon": "https://cdn.discordapp.com/icons/892404682285256735/ca21e41d0ff13e3cc8798ed3367495ff.png?size=1024",
             "banner": null,
             "splash": null,
-            "discovery_splash": null
+            "discovery_splash": null,
+            "voice_channels": [
+                {
+                    "name": "Obecn\u00e9",
+                    "id": 892404682784399363
+                }
+            ]
         },
         "queue": {},
         "search_list": {},
@@ -266,7 +201,13 @@
             "icon": "https://cdn.discordapp.com/icons/1092207263843880983/41cd8aab063f81fa57ad014bd1d40c58.png?size=1024",
             "banner": null,
             "splash": null,
-            "discovery_splash": null
+            "discovery_splash": null,
+            "voice_channels": [
+                {
+                    "name": "General",
+                    "id": 1092207265580327085
+                }
+            ]
         },
         "queue": {},
         "search_list": {},
@@ -313,7 +254,13 @@
             "icon": "https://cdn.discordapp.com/icons/1092205538202353764/83215429f288253f5788a6258698a281.png?size=1024",
             "banner": null,
             "splash": null,
-            "discovery_splash": null
+            "discovery_splash": null,
+            "voice_channels": [
+                {
+                    "name": "General",
+                    "id": 1092205539104145522
+                }
+            ]
         },
         "queue": {},
         "search_list": {},
@@ -360,7 +307,13 @@
             "icon": "https://cdn.discordapp.com/icons/1092212185553449023/89f6eb38b02fbfd77f2715f77a0aa0ae.png?size=1024",
             "banner": null,
             "splash": null,
-            "discovery_splash": null
+            "discovery_splash": null,
+            "voice_channels": [
+                {
+                    "name": "General",
+                    "id": 1092212188745314387
+                }
+            ]
         },
         "queue": {},
         "search_list": {},
@@ -407,7 +360,8 @@
             "icon": null,
             "banner": null,
             "splash": null,
-            "discovery_splash": null
+            "discovery_splash": null,
+            "voice_channels": null
         },
         "queue": {},
         "search_list": {},

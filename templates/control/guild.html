@@ -98,7 +98,8 @@
                         <p class="q-text q-3">{{struct_to_time(guild.last_played.created_at, first='time')}}</p>
                     </div>
                     <div class="q-item0 q-wa q-self-center q-items-center">
-                        <form onsubmit="document.location.reload(true)" method="POST">
+                        <form method="POST" action="" onsubmit="setScroll();">
+                            <input type="hidden" name="scroll" value="0" id="scrollPos1">
                             {% if admin == True %}
                             <button class="btn btn-outline btn-primary btn-sm btn-m" type="button" data-bs-toggle="modal" data-bs-target=#videoEditModal_lp>Edit</button>
                             {% endif %}
@@ -142,7 +143,8 @@
                         <p class="q-text q-3">{{struct_to_time(guild.now_playing.created_at, first='time')}}</p>
                     </div>
                     <div class="q-item0 q-wa q-self-center q-items-center">
-                        <form onsubmit="document.location.reload(true)" method="POST">
+                        <form method="POST" action="" onsubmit="setScroll();">
+                            <input type="hidden" name="scroll" value="0" id="scrollPos2">
                             {% if admin == True %}
                             <button class="btn btn-outline btn-primary btn-sm btn-m" type="button" data-bs-toggle="modal" data-bs-target=#videoEditModal_np>Edit</button>
                             {% endif %}
@@ -163,38 +165,41 @@
 </div>
 
 <!-- Control -->
-<div class="q-div">
+<form action="" method="POST" onsubmit="setScroll();">
+    <input type="hidden" name="scroll" value="0" id="scrollPos3">
+  <div class="q-div">
     <div class="q-item1 div-login">
-        <form action="#" method="POST">
-            <div class="e-btn-div">
-                <button class="btn btn-outline btn-secondary btn-sm btn-m e-btn" type="submit" name="skip_btn">Skip</button>
-                <button class="btn btn-outline btn-secondary btn-sm btn-m e-btn" type="submit" name="shuffle_btn">Shuffle</button>
-                <button class="btn btn-outline btn-danger btn-sm btn-m e-btn" type="submit" name="clear_btn">Clear</button>
-            </div>
-        </form>
+      <div class="e-div">
+          <button class="btn btn-outline btn-primary btn-sm btn-m e-item1" type="submit" name="skip_btn">Skip</button>
+          <button class="btn btn-outline btn-secondary btn-sm btn-m e-item1" type="submit" name="shuffle_btn">Shuffle</button>
+          <button class="btn btn-outline btn-danger btn-sm btn-m e-item1" type="submit" name="clear_btn">Clear</button>
+      </div>
     </div>
     <div class="q-item1 div-login">
-        <form action="#" method="POST">
-            <div class="e-btn-div">
-                <button class="btn btn-outline btn-primary btn-sm btn-m e-btn" type="submit" name="play_btn">Play</button>
-                <button class="btn btn-outline btn-secondary btn-sm btn-m e-btn" type="submit" name="pause_btn">Pause</button>
-                <button class="btn btn-outline btn-secondary btn-sm btn-m e-btn" type="submit" name="resume_btn">Resume</button>
-                <button class="btn btn-outline btn-danger btn-sm btn-m e-btn" type="submit" name="stop_btn">Stop</button>
-            </div>
-        </form>
+      <div class="e-div">
+          <button class="btn btn-outline btn-primary btn-sm btn-m e-item1" type="button" data-bs-toggle="modal" data-bs-target="#joinModal">Join</button>
+          <button class="btn btn-outline btn-danger btn-sm btn-m e-item1" type="submit" name="disconnect_btn">Disconnect</button>
+      </div>
     </div>
     <div class="q-item1 div-login">
-        <form action="#" method="POST">
-            <div class="d-flex">
-                <div class="btn-m">
-                    <input type="number" class="form-c form-control btn-m flex-fill" name="volumeInput" min="0" max="200" value="100" oninput="this.form.volumeRange.value=this.value">
-                </div>
-                <input type="range" class="form-r form-range btn-m" name="volumeRange" min="0" max="200" value="100" oninput="this.form.volumeInput.value=this.value">
-                <button class="btn btn-outline btn-primary btn-sm btn-m flex-fill" type="submit" name="volume_btn">Set</button>
-            </div>
-        </form>
+      <div class="e-div">
+          <button class="btn btn-outline btn-primary btn-sm btn-m e-item1" type="submit" name="play_btn">Play</button>
+          <button class="btn btn-outline btn-secondary btn-sm btn-m e-item1" type="submit" name="pause_btn">Pause</button>
+          <button class="btn btn-outline btn-secondary btn-sm btn-m e-item1" type="submit" name="resume_btn">Resume</button>
+          <button class="btn btn-outline btn-danger btn-sm btn-m e-item1" type="submit" name="stop_btn">Stop</button>
+      </div>
     </div>
-</div>
+    <div class="q-item1 div-login">
+      <div class="d-flex">
+          <div class="btn-m">
+              <input type="number" class="form-c form-control btn-m flex-fill" name="volumeInput" min="0" max="200" value="100" oninput="this.form.volumeRange.value=this.value">
+          </div>
+          <input type="range" class="form-r form-range btn-m" name="volumeRange" min="0" max="200" value="100" oninput="this.form.volumeInput.value=this.value">
+          <button class="btn btn-outline btn-primary btn-sm btn-m flex-fill" type="submit" name="volume_btn">Set</button>
+      </div>
+    </div>
+  </div>
+</form>
 
 
 <!-- Queue -->
@@ -208,7 +213,8 @@
     </button>
 </div>
 
-<form method="POST" onsubmit="document.location.reload(true)">
+<form method="POST" action="" onsubmit="setScroll();">
+    <input type="hidden" name="scroll" value="0" id="scrollPos4">
     {% for track in guild.queue %}
         <div class="q-container">
             <div class="q-div">
@@ -257,7 +263,6 @@
 
 
 <!-- Video Modals -->
-
 {% for track in guild.queue %}
 <div class="modal fade" id="videoModal_{{guild.queue.index(track)}}" data-bs-keyboard="false" tabindex="-1" aria-labelledby="videoLabel_{{guild.queue.index(track)}}" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
@@ -280,7 +285,6 @@
 {% endfor %}
 
 <!-- Video Edit Modals -->
-
 {% if admin == True %}
     {% for track in guild.queue %}
         <div class="modal fade" id="videoEditModal_{{guild.queue.index(track)}}" data-bs-keyboard="false" tabindex="-1" aria-labelledby="videoEditLabel{{guild.queue.index(track)}}" aria-hidden="true">
@@ -292,16 +296,17 @@
                 </div>
                 <div class="info-modal">
                     <br>
-                    <form onsubmit="document.location.reload(true)" method="POST">
+                    <form method="POST" onsubmit="setScroll();">
+                        <input type="hidden" name="scroll" value="0" id="scrollPos5">
                     {% for key, value in track.__dict__.items() %}
                         <div class="e-div">
                             <label for="{{guild.queue.index(track)}}_{{key}}" class="e-label">{{key}}</label>
                             <input type="text" id="{{guild.queue.index(track)}}_{{key}}" name="{{key}}" value="{{value}}" class="e-input">
                         </div>
                     {% endfor %}
-                        <div class="e-btn-div">
-                            <button class="btn e-btn btn-secondary btn-lg btn-m" type="button" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
-                            <button class="btn e-btn btn-primary btn-lg btn-m" type="submit" name="edit_btn" value="{{guild.queue.index(track)}}">Submit</button>
+                        <div class="e-div">
+                            <button class="btn e-item1 btn-secondary btn-lg btn-m" type="button" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+                            <button class="btn e-item1 btn-primary btn-lg btn-m" type="submit" name="edit_btn" value="{{guild.queue.index(track)}}">Submit</button>
                         </div>
                     </form>
                 </div>
@@ -341,8 +346,44 @@
     </div>
 {% endif %}
 
-
 <!-- Modals -->
+<div class="modal fade" id="joinModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="joinLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h1 class="modal-title fs-5" id="joinLabel">Join</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form method="POST" action="" onsubmit="setScroll();">
+            <input type="hidden" name="scroll" value="0" id="scrollPos6">
+            <div class="j-text">
+                This may take a while -> Recommended /join in discord
+            </div>
+            <div class="j-div">
+                <label class="btn-m j-label">Channel ID</label>
+                <div class="e-item2">
+                    <input type="number" class="form-control" name="channel_id">
+                </div>
+                <button type="submit" class="btn btn-primary" name="join_btn" value="id">Join</button>
+            </div>
+            {% if guild.data.voice_channels %}
+            <div class="j-div">
+                <label class="btn-m j-label">Channel</label>
+                <div class="e-item2">
+                    <select class="form-select" aria-label="channel_name" name="channel_name">
+                        {% for channel in guild.data.voice_channels %}
+                            <option value="{{channel['id']}}">{{channel['name']}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary" name="join_btn" value="name">Join</button>
+            </div>
+            {% endif %}
+        </form>
+    </div>
+  </div>
+</div>
+
 <div class="modal fade" id="addToModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
@@ -350,34 +391,18 @@
         <h1 class="modal-title fs-5" id="staticBackdropLabel">Add to Queue</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-        <form method="POST" id="ytForm">
+        <form method="POST" id="ytForm" action="" onsubmit="setScroll();">
+            <input type="hidden" name="scroll" value="0" id="scrollPos7">
           <div class="modal-body">
               <div class="mb-3">
                   <label for="ytURL" class="btn-m">Youtube URL</label>
-                  <input type="url" class="form-control" name="ytURL" id="ytURL" placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ" required>
-              </div>
-              <div class="mb-3">
-                  <label for="addTo" class="col-form-label">Add to</label>
-                  <div id="addTo">
-                      <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="radio" name="addPosition" value="start" id="flexRadioDefault1">
-                          <label class="form-check-label" for="flexRadioDefault1">
-                              The Start
-                          </label>
-                      </div>
-                      <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="radio" name="addPosition" value="end" id="flexRadioDefault2" checked>
-                          <label class="form-check-label" for="flexRadioDefault2">
-                              The End
-                          </label>
-                      </div>
-                  </div>
+                  <input type="url" class="form-control" name="ytURL" id="ytURL" required>
               </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="button" id="addbuttonmodal" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#addToModalRadio">Radio</button>
-            <button type="submit" class="btn btn-primary btn-lg">Add</button>
+              <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#addToModalRadio">Radio</button>
+              <button type="submit" class="btn btn-primary">Add</button>
           </div>
         </form>
     </div>
@@ -391,14 +416,20 @@
           <h1 class="modal-title fs-5" id="staticBackdropLabelRadio">Add to Queue</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-          <form method="POST" id="RadioForm">
+          <form method="POST" id="RadioForm" action="" onsubmit="setScroll();">
+              <input type="hidden" name="scroll" value="0" id="scrollPos8">
+            <div class="e-div e-wrap">
+                <button type="button" class="btn btn-dark e-item1" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary e-item1" data-bs-toggle="modal" data-bs-target="#addToModal">Video</button>
+                <!--                <button type="submit" class="btn btn-primary e-item1">Add</button>-->
+            </div>
             <div class="modal-body">
                 <div class="mb-3">
                     <div class="r-cards">
                         {% for radio in radios %}
                             <div class="r-card">
                                 <input type="radio" name='radio-checkbox' id="radio-checkbox{{radios.index(radio)}}" class="radio-checkbox" value="{{radio['name']}}"/>
-                                <label for="radio-checkbox{{radios.index(radio)}}" ondblclick="submitRadioForm()">
+                                <label for="radio-checkbox{{radios.index(radio)}}" onclick="submitRadioForm()">
                                     <img loading="lazy" src="/static/radio_svg/svg_radio_{{radios.index(radio)}}.svg" class="r-img">
                                 </label>
                                 <a class="radio-label">{{radio['name']}}</a>
@@ -406,39 +437,33 @@
                         {% endfor %}
                     </div>
                 </div>
-                <div class="mb-3">
-                    <label for="addToRadio" class="col-form-label">Add to</label>
-                    <div id="addToRadio">
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="addPosition" value="start" id="flexRadioDefault1Radio">
-                            <label class="form-check-label" for="flexRadioDefault1">
-                                The Start
-                            </label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="addPosition" value="end" id="flexRadioDefault2Radio" checked>
-                            <label class="form-check-label" for="flexRadioDefault2">
-                                The End
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" id="addbuttonradio" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#addToModal">Video</button>
-              <button type="submit" class="btn btn-primary btn-lg">Add</button>
             </div>
           </form>
       </div>
     </div>
 </div>
 
-<script>
+<script defer>
 function submitRadioForm(id) {
     var form = document.getElementById('RadioForm');
-    form.submit();
+    var delayInMilliseconds = 100; //0.1 second
+
+    setTimeout(function() {
+      form.submit();
+    }, delayInMilliseconds);
 }
+function setScroll() {
+    document.getElementById("scrollPos1").value = window.scrollY;
+    document.getElementById("scrollPos2").value = window.scrollY;
+    document.getElementById("scrollPos3").value = window.scrollY;
+    document.getElementById("scrollPos4").value = window.scrollY;
+    document.getElementById("scrollPos5").value = window.scrollY;
+    document.getElementById("scrollPos6").value = window.scrollY;
+    document.getElementById("scrollPos7").value = window.scrollY;
+    document.getElementById("scrollPos8").value = window.scrollY;
+}
+
+window.scrollTo({ top:{{scroll_position}}, left:0, behavior: "instant"})
 </script>
 
 {% endblock %}

@@ -120,10 +120,10 @@ class WebData:
         self.author = author
         self.author_id = author_id
 
-    async def reply(self, content, **kwargs):
+    async def reply(self, content=None,  **kwargs):
         pass
 
-    async def send(self, content, **kwargs):
+    async def send(self, content=None, **kwargs):
         pass
 
 
@@ -172,6 +172,11 @@ class GuildData:
             if guild_object.discovery_splash is not None: self.discovery_splash = guild_object.discovery_splash.url
             else:self.discovery_splash = None
 
+            if guild_object.voice_channels:
+                self.voice_channels = [{'name': channel.name, 'id': channel.id} for channel in guild_object.voice_channels]
+            else:
+                self.voice_channels = None
+
         else:
             if 'guild' in globals():
                 if guild:
@@ -190,6 +195,7 @@ class GuildData:
                             self.banner = guild[guild_id].data.banner
                             self.splash = guild[guild_id].data.splash
                             self.discovery_splash = guild[guild_id].data.discovery_splash
+                            self.voice_channels = guild[guild_id].data.voice_channels
                             return
 
             self.name = None
@@ -205,6 +211,7 @@ class GuildData:
             self.banner = None
             self.splash = None
             self.discovery_splash = None
+            self.voice_channels = None
 
 
 # ----------------- Video Classes ----------------
@@ -1489,11 +1496,12 @@ async def skip_def(ctx):
     log(ctx, 'skip_def', [], log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
 
-    if guild_object.voice_client.is_playing():
-        await stop_def(ctx, True)
-        await asyncio.sleep(0.5)
-        await play_def(ctx)
-        return [True, 'Skipped!']
+    if guild_object.voice_client:
+        if guild_object.voice_client.is_playing():
+            await stop_def(ctx, True)
+            await asyncio.sleep(0.5)
+            await play_def(ctx)
+            return [True, 'Skipped!']
 
     message = tg(guild_id, "There is **nothing to skip!**")
     await ctx.reply(message, ephemeral=True)
@@ -1587,7 +1595,7 @@ async def show_def(ctx,
             display_type = 'medium'
 
     if display_type == 'long':
-        await ctx.send(f"**THE QUEUE**\n **Loop** mode  `{guild[guild_id].options.loop}`,  **Display** type `{display_type}`", ephemeral=ephemeral, mention_author=False)
+        await ctx.send(f"**THE QUEUE**\n **Loop** mode  `{guild[guild_id].options.loop}`,  **Display** type `{display_type}`, [Control Panel](http://nicholasthe7th.duckdns.org:5420/guild/{guild_id}&key={guild[guild_id].data.key})", ephemeral=ephemeral, mention_author=False)
 
         for index, val in enumerate(guild[guild_id].queue):
             embed = create_embed(val, f'{tg(guild_id, "Queue #")}{index}', guild_id)
@@ -1596,7 +1604,7 @@ async def show_def(ctx,
 
 
     if display_type == 'medium':
-        embed = discord.Embed(title="Song Queue", description=f'Loop: {guild[guild_id].options.loop} | Display type: {display_type}', color=0x00ff00)
+        embed = discord.Embed(title="Song Queue", description=f'Loop: {guild[guild_id].options.loop} | Display type: {display_type} | [Control Panel](http://nicholasthe7th.duckdns.org:5420/guild/{guild_id}&key={guild[guild_id].data.key})', color=0x00ff00)
 
         message = ''
         for index, val in enumerate(guild[guild_id].queue):
@@ -1618,7 +1626,7 @@ async def show_def(ctx,
 
 
     if display_type == 'short':
-        send = f"**THE QUEUE**\n **Loop** mode  `{guild[guild_id].options.loop}`,  **Display** type `{display_type}`"
+        send = f"**THE QUEUE**\n **Loop** mode  `{guild[guild_id].options.loop}`,  **Display** type `{display_type}`, [Control Panel](http://nicholasthe7th.duckdns.org:5420/guild/{guild_id}&key={guild[guild_id].data.key})"
         # noinspection PyUnresolvedReferences
         if ctx.interaction.response.is_done(): await ctx.send(send, ephemeral=ephemeral, mention_author=False)
         else: await ctx.reply(send, ephemeral=ephemeral, mention_author=False)
@@ -1707,6 +1715,8 @@ async def play_def(ctx,
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
     response = []
 
+    notif = f'\n{tg(guild_id, "Check out the new")} [Control Panel](http://nicholasthe7th.duckdns.org:5420/guild/{guild_id}&key={guild[guild_id].data.key})'
+
     if url == 'next':
         if guild[guild_id].options.stopped:
             log(guild_id, "play_def -> stopped play next loop")
@@ -1717,7 +1727,7 @@ async def play_def(ctx,
 
     if not voice or voice is None:
         if not is_ctx:
-            return [False, 'Play command cannot be used in WEB when the bot is not connected to a voice channel']
+            return [False, 'Bot is not connected to a voice channel']
 
         if ctx.author.voice is None:
             message = tg(guild_id, "You are **not connected** to a voice channel")
@@ -1752,17 +1762,17 @@ async def play_def(ctx,
         if not guild[guild_id].options.is_radio and not force:
             if url and not force:
                 if response:
-                    message = f'{tg(guild_id, "**Already playing**, added to queue")}: [`{response[2].title}`](<{response[2].url}>)'
+                    message = f'{tg(guild_id, "**Already playing**, added to queue")}: [`{response[2].title}`](<{response[2].url}>) {notif}'
                     if not mute_response:
                         await ctx.reply(message)
                     return [False, message]
 
-                message = f'{tg(guild_id, "**Already playing**, added to queue")}'
+                message = f'{tg(guild_id, "**Already playing**, added to queue")} {notif}'
                 if not mute_response:
                     await ctx.reply(message)
                 return [False, message]
 
-            message = tg(guild_id, "**Already playing**")
+            message = f'{tg(guild_id, "**Already playing**")} {notif}'
             if not mute_response:
                 await ctx.reply(message, ephemeral=True)
             return [False, message]
@@ -1772,7 +1782,7 @@ async def play_def(ctx,
         guild[guild_id].options.is_radio = False
 
     if not guild[guild_id].queue:
-        message = tg(guild_id, "There is **nothing** in your **queue**")
+        message = f'{tg(guild_id, "There is **nothing** in your **queue**")} {notif}'
 
         if url != 'next':
             if not mute_response:
@@ -1832,10 +1842,10 @@ async def play_def(ctx,
         if guild[guild_id].options.response_type == 'short':
             if guild[guild_id].options.buttons:
                 if not mute_response:
-                    await ctx.reply(f'{tg(guild_id, "Now playing")} [`{video.title}`](<{video.url}>)', view=view)
+                    await ctx.reply(f'{tg(guild_id, "Now playing")} [`{video.title}`](<{video.url}>) {notif}', view=view)
             else:
                 if not mute_response:
-                    await ctx.reply(f'{tg(guild_id, "Now playing")} [`{video.title}`](<{video.url}>)')
+                    await ctx.reply(f'{tg(guild_id, "Now playing")} [`{video.title}`](<{video.url}>) {notif}')
 
         save_json()
 
@@ -2134,19 +2144,17 @@ async def join_def(ctx,
     log(ctx, 'join_def', [channel_id, mute_response], log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
 
-    if not is_ctx:
-        return [False, 'Command cannot be used in WEB']
-
     now_to_last(guild_id)
 
     if not channel_id:
+        if not is_ctx:
+            return [False, 'No channel_id provided']
         if ctx.author.voice:
             channel = ctx.message.author.voice.channel
             if ctx.voice_client:
                 if ctx.voice_client.channel != channel:
                     await ctx.voice_client.disconnect(force=True)
                 else:
-
                     message = tg(guild_id, "I'm already in this channel")
                     if not mute_response:
                         await ctx.reply(message, ephemeral=True)
@@ -2165,17 +2173,17 @@ async def join_def(ctx,
 
     try:
         voice_channel = bot.get_channel(int(channel_id))
-        if ctx.voice_client:
-            await ctx.voice_client.disconnect(force=True)
+        if guild_object.voice_client:
+            await guild_object.voice_client.disconnect(force=True)
         await voice_channel.connect()
-        await ctx.guild.change_voice_state(channel=voice_channel, self_deaf=True)
+        await guild_object.change_voice_state(channel=voice_channel, self_deaf=True)
 
         message = f"{tg(guild_id, 'Joined voice channel:')}  `{voice_channel.name}`"
         if not mute_response:
             await ctx.reply(message, ephemeral=True)
         return [True, message]
 
-    except (discord.ext.commands.errors.CommandInvokeError, discord.errors.ClientException, AttributeError):
+    except (discord.ext.commands.errors.CommandInvokeError, discord.errors.ClientException, AttributeError, ValueError, TypeError):
 
         log(guild_id, "------------------------------- join -------------------------")
         tb = traceback.format_exc()
@@ -2193,22 +2201,27 @@ async def disconnect_def(ctx,
     log(ctx, 'disconnect_def', [mute_response], log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
 
-    if not is_ctx:
-        return [False, 'Command cannot be used in WEB']
-
-    if ctx.voice_client:
+    if guild_object.voice_client:
         await stop_def(ctx, True)
-        #guild[guild_id].queue.clear()
-        channel = ctx.voice_client.channel
-        await ctx.guild.voice_client.disconnect(force=True)
-        if not mute_response:
-            await ctx.reply(f"{tg(guild_id, 'Left voice channel:')} `{channel}`", ephemeral=True)
-    else:
-        if not mute_response:
-            await ctx.reply(tg(guild_id, "Bot is **not** in a voice channel"), ephemeral=True, mention_author=False)
+        guild[guild_id].queue.clear()
+        channel = guild_object.voice_client.channel
+        await guild_object.voice_client.disconnect(force=True)
 
-    now_to_last(guild_id)
-    save_json()
+        now_to_last(guild_id)
+        save_json()
+
+        message = f"{tg(guild_id, 'Left voice channel:')} `{channel}`"
+        if not mute_response:
+            await ctx.reply(message, ephemeral=True)
+        return [True, message]
+    else:
+        now_to_last(guild_id)
+        save_json()
+
+        message = tg(guild_id, "Bot is **not** in a voice channel")
+        if not mute_response:
+            await ctx.reply(message, ephemeral=True)
+        return [False, message]
 
 
 async def volume_command_def(ctx,
@@ -2320,6 +2333,7 @@ async def list_radios_def(ctx,
 
 async def key_def(ctx: commands.Context):
     log(ctx, 'key_def', [], log_type='function', author=ctx.author)
+    save_json()
     message = f'Key: `{guild[ctx.guild.id].data.key}` -> [Control Panel](http://nicholasthe7th.duckdns.org:5420/guild/{ctx.guild.id}&key={guild[ctx.guild.id].data.key})'
     await ctx.reply(message)
     save_json()
@@ -2894,6 +2908,38 @@ async def web_queue_from_radio(web_data, radio_name, position=None):
         save_json()
         return [False, message]
 
+async def web_join(web_data, form):
+    log(web_data, 'web_join', [form], log_type='function', author=web_data.author)
+
+    if form['join_btn'] == 'id':
+        channel_id = form['channel_id']
+    elif form['join_btn'] == 'name':
+        channel_id = form['channel_name']
+    else:
+        return [False, 'Invalid channel id (Internal web error -> contact developer)']
+
+    try:
+        channel_id = int(channel_id)
+    except ValueError:
+        return [False, f'Invalid channel id: {channel_id}']
+
+    task = bot.loop.create_task(join_def(web_data, channel_id))
+
+    while not task.done():
+        await asyncio.sleep(0.1)
+
+    return task.result()
+
+async def web_disconnect(web_data):
+    log(web_data, 'web_disconnect', [], log_type='function', author=web_data.author)
+
+    task = bot.loop.create_task(disconnect_def(web_data))
+
+    while not task.done():
+        await asyncio.sleep(0.1)
+
+    return task.result()
+
 async def web_edit(web_data, form):
     log(web_data, 'web_edit', [form], log_type='function', author=web_data.author)
     guild_id = web_data.guild_id
@@ -3052,6 +3098,7 @@ async def guild_page(guild_id, key):
     user_name, user_id = request.remote_addr, bot_id
     errors = []
     messages = []
+    scroll_position = 0
 
     if 'discord_user' in session.keys():
         user = session['discord_user']
@@ -3067,7 +3114,7 @@ async def guild_page(guild_id, key):
 
     if request.method == 'POST':
         web_data = WebData(int(guild_id), user_name, user_id)
-        response = [True, '']
+        response = None
 
         keys = request.form.keys()
         if 'del_btn' in keys:
@@ -3085,6 +3132,10 @@ async def guild_page(guild_id, key):
         if 'bottom_btn' in keys:
             log(web_data, 'bottom', [request.form['bottom_btn']], log_type='web', author=web_data.author)
             response = await web_bottom(web_data, request.form['bottom_btn'])
+
+        if 'play_btn' in keys:
+            log(web_data, 'play', [], log_type='web', author=web_data.author)
+            response = await play_def(web_data)
         if 'stop_btn' in keys:
             log(web_data, 'stop', [], log_type='web', author=web_data.author)
             response = await stop_def(web_data)
@@ -3105,9 +3156,12 @@ async def guild_page(guild_id, key):
             log(web_data, 'clear', [], log_type='web', author=web_data.author)
             response = await clear_def(web_data)
 
-        if 'play_btn' in keys:
-            log(web_data, 'play', [], log_type='web', author=web_data.author)
-            response = await play_def(web_data)
+        if 'disconnect_btn' in keys:
+            log(web_data, 'disconnect', [], log_type='web', author=web_data.author)
+            response = await web_disconnect(web_data)
+        if 'join_btn' in keys:
+            log(web_data, 'join', [], log_type='web', author=web_data.author)
+            response = await web_join(web_data, request.form)
 
         if 'queue_btn' in keys:
             log(web_data, 'queue', [request.form['queue_btn']], log_type='web', author=web_data.author)
@@ -3125,11 +3179,14 @@ async def guild_page(guild_id, key):
             response = await volume_command_def(web_data, request.form['volumeRange'], request.form['volumeInput'])
 
         if 'ytURL' in keys:
-            log(web_data, 'queue_command_def', [request.form['ytURL'], request.form['addPosition']], log_type='web', author=web_data.author)
-            response = await queue_command_def(web_data, request.form['ytURL'], 0 if request.form['addPosition'] == 'start' else None)
+            log(web_data, 'queue_command_def', [request.form['ytURL']], log_type='web', author=web_data.author)
+            response = await queue_command_def(web_data, request.form['ytURL'])
         if 'radio-checkbox' in keys:
-            log(web_data, 'web_queue_from_radio', [request.form['radio-checkbox'], request.form['addPosition']], log_type='web', author=web_data.author)
-            response = await web_queue_from_radio(web_data, request.form['radio-checkbox'], request.form['addPosition'])
+            log(web_data, 'web_queue_from_radio', [request.form['radio-checkbox']], log_type='web', author=web_data.author)
+            response = await web_queue_from_radio(web_data, request.form['radio-checkbox'])
+
+        if 'scroll' in keys:
+            scroll_position = int(request.form['scroll'])
 
         if response:
             if not response[0]:
@@ -3148,7 +3205,7 @@ async def guild_page(guild_id, key):
 
         return redirect(url_for('guild_get_key_page', guild_id=guild_id))
 
-    return render_template('control/guild.html', guild=guild_object, struct_to_time=struct_to_time, convert_duration=convert_duration, get_username=get_username, errors=errors, messages=messages, user=user, admin=admin, volume=round(guild_object.options.volume * 100), radios=list(radio_dict.values()))
+    return render_template('control/guild.html', guild=guild_object, struct_to_time=struct_to_time, convert_duration=convert_duration, get_username=get_username, errors=errors, messages=messages, user=user, admin=admin, volume=round(guild_object.options.volume * 100), radios=list(radio_dict.values()), scroll_position=scroll_position)
 
 
 @app.route('/login')

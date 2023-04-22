@@ -422,11 +422,6 @@ input.radio-checkbox[type=radio] + label
   flex: 0 0 20%;
 }
 
-.e-div {
-  display: flex;
-  padding: 0.5rem 1rem 0 1rem;
-}
-
 .e-input {
   flex: 1;
   margin-left: 0.5rem;
@@ -448,16 +443,48 @@ input.radio-checkbox[type=radio] + label
 
 
 /* button row */
-
-.e-btn-div {
-  display: flex;
-  justify-content: space-evenly;
+.e-wrap {
+    flex-wrap: wrap;
+    gap: 1rem;
 }
 
-.e-btn {
+.e-div {
+  display: flex;
+  justify-content: space-between;
+}
+
+.e-item1 {
   flex: 1;
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
+}
+
+.e-item11 {
+  flex: 1 1 auto;
+}
+
+.e-item2 {
+  flex: 1 1 45%;
+}
+
+
+/* join modal*/
+
+.j-div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+}
+.j-label {
+  flex: 0 0 20%;
+}
+.j-text {
+  text-align: center;
+  padding: 0.5rem;
+  color: #808080;
 }
 
 

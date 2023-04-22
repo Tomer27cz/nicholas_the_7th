@@ -9,7 +9,7 @@ and then saves the new .json file
 """
 
 
-with open('src/languages.json') as f:
+with open('../src/languages.json') as f:
     x = json.load(f)
 
 languages = x.keys()
@@ -55,7 +55,7 @@ for lang in languages:
 print("----------------------------------------------")
 print("Writing to file...")
 
-with open('src/languages.json', 'w') as f:
+with open('../src/languages.json', 'w') as f:
     f.write(json.dumps(x, indent=4))
 
 print("----------------------------------------------")
