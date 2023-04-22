@@ -3205,6 +3205,9 @@ async def guild_page(guild_id, key):
 
         return redirect(url_for('guild_get_key_page', guild_id=guild_id))
 
+    mutual_guild_ids.append(guild_object.id)
+    session['mutual_guild_ids'] = mutual_guild_ids
+
     return render_template('control/guild.html', guild=guild_object, struct_to_time=struct_to_time, convert_duration=convert_duration, get_username=get_username, errors=errors, messages=messages, user=user, admin=admin, volume=round(guild_object.options.volume * 100), radios=list(radio_dict.values()), scroll_position=scroll_position)
 
 
