@@ -776,6 +776,23 @@ class YTDLSource(discord.PCMVolumeTransformer):
 
         return cls(guild_id, discord.FFmpegPCMAudio(info['url'], **cls.FFMPEG_OPTIONS))
 
+class YTDLSource2(discord.PCMVolumeTransformer):
+    ytdl = yt_dlp.YoutubeDL(YTDL_OPTIONS)
+
+    def __init__(self, guild_id, source):
+        super().__init__(source, guild[guild_id].options.volume)
+
+    @classmethod
+    async def create_source(cls, guild_id, url):
+        loop = asyncio.get_event_loop()
+        data = await loop.run_in_executor(None, lambda: cls.ytdl.extract_info(url, download=False))
+
+        if 'entries' in data:
+            data = data['entries'][0]
+
+        url = data['url']
+
+        return cls(guild_id, discord.FFmpegPCMAudio(url, **FFMPEG_OPTIONS))
 
 # ------------------------------------ View Classes --------------------------------------------------------------------
 
@@ -1712,19 +1729,26 @@ async def play_def(ctx,
                mute_response=False
                ):
     log(ctx, 'play_def', [url, force, mute_response], log_type='function', author=ctx.author)
+    start_ctx =  time()
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
+    print(f'ctx_check -> {time() - start_ctx} seconds')
     response = []
 
     notif = f'\n{tg(guild_id, "Check out the new")} [Control Panel](http://nicholasthe7th.duckdns.org:5420/guild/{guild_id}&key={guild[guild_id].data.key})'
 
+    start_url_next = time()
     if url == 'next':
         if guild[guild_id].options.stopped:
             log(guild_id, "play_def -> stopped play next loop")
             now_to_last(guild_id)
             return [False, "Stopped play next loop"]
+    print(f'url_next -> {time() - start_url_next} seconds')
 
+    start_voice = time()
     voice = guild_object.voice_client
+    print(f'voice -> {time() - start_voice} seconds')
 
+    start_check = time()
     if not voice or voice is None:
         if not is_ctx:
             return [False, 'Bot is not connected to a voice channel']
@@ -1734,7 +1758,9 @@ async def play_def(ctx,
             if not mute_response:
                 await ctx.reply(message)
             return [False, message]
+    print(f'voice check -> {time() - start_check} seconds')
 
+    start_queue = time()
     if url and url != 'next':
         if voice:
             if not voice.is_playing():
@@ -1745,9 +1771,11 @@ async def play_def(ctx,
             response = await queue_command_def(ctx, url=url, position=None, mute_response=True, force=force, from_play=True)
         if not response[0]:
             return [False, response[1]]
+    print(f'queue -> {time() - start_queue} seconds')
 
     voice = guild_object.voice_client
 
+    start_check2 = time()
     if not voice or voice is None:
         # noinspection PyUnresolvedReferences
         if not is_ctx:
@@ -1757,7 +1785,9 @@ async def play_def(ctx,
         voice = guild_object.voice_client
         if not join_response[0]:
             return [False, response[1]]
+    print(f'voice check 2 -> {time() - start_check2} seconds')
 
+    start_check3 = time()
     if voice.is_playing():
         if not guild[guild_id].options.is_radio and not force:
             if url and not force:
@@ -1781,6 +1811,9 @@ async def play_def(ctx,
         guild[guild_id].options.stopped = True
         guild[guild_id].options.is_radio = False
 
+    print(f'voice check 3 -> {time() - start_check3} seconds')
+
+    start_check4 = time()
     if not guild[guild_id].queue:
         message = f'{tg(guild_id, "There is **nothing** in your **queue**")} {notif}'
 
@@ -1790,10 +1823,12 @@ async def play_def(ctx,
 
         now_to_last(guild_id)
         return [False, message]
+    print(f'voice check 4 -> {time() - start_check4} seconds')
 
     video = guild[guild_id].queue[0]
     now_to_last(guild_id)
 
+    start_check5 = time()
     if video.class_type != 'Video':
         guild[guild_id].queue.pop(0)
         if video.class_type == 'Radio':
@@ -1810,16 +1845,24 @@ async def play_def(ctx,
         if not mute_response:
             await ctx.reply(message)
         return [False, message]
+    print(f'voice check 5 -> {time() - start_check5} seconds')
 
     if not force:
         guild[guild_id].options.stopped = False
 
     try:
-        source = await YTDLSource.create_source(guild_id, video.url)  # loop=bot.loop  va_list[0]
+        start_source = time()
+        source = await YTDLSource2.create_source(guild_id, video.url)  # loop=bot.loop  va_list[0]
+        print(f'source -> {time() - start_source} seconds')
+        start_play = time()
         voice.play(source, after=lambda e: asyncio.run_coroutine_threadsafe(play_def(ctx, 'next'), bot.loop))
+        print(f'play -> {time() - start_play} seconds')
 
+        start_volume = time()
         await volume_command_def(ctx, guild[guild_id].options.volume * 100, False, True)
+        print(f'volume -> {time() - start_volume} seconds')
 
+        start_options = time()
         guild[guild_id].options.stopped = False
         guild[guild_id].now_playing = video
 
@@ -1827,9 +1870,13 @@ async def play_def(ctx,
             guild[guild_id].queue.append(video)
 
         guild[guild_id].queue.pop(0)
+        print(f'options -> {time() - start_options} seconds')
 
+        start_view = time()
         view = PlayerControlView(ctx)
+        print(f'view -> {time() - start_view} seconds')
 
+        start_embed = time()
         if guild[guild_id].options.response_type == 'long':
             embed = create_embed(video, "Now playing", guild_id)
             if guild[guild_id].options.buttons:
@@ -1838,7 +1885,9 @@ async def play_def(ctx,
             else:
                 if not mute_response:
                     await ctx.reply(embed=embed)
+        print(f'embed -> {time() - start_embed} seconds')
 
+        start_short = time()
         if guild[guild_id].options.response_type == 'short':
             if guild[guild_id].options.buttons:
                 if not mute_response:
@@ -1846,8 +1895,11 @@ async def play_def(ctx,
             else:
                 if not mute_response:
                     await ctx.reply(f'{tg(guild_id, "Now playing")} [`{video.title}`](<{video.url}>) {notif}')
+        print(f'short -> {time() - start_short} seconds')
 
+        start_save = time()
         save_json()
+        print(f'save -> {time() - start_save} seconds')
 
     except (discord.ext.commands.errors.CommandInvokeError, IndexError, TypeError, discord.errors.ClientException,
             YTDLError, discord.errors.NotFound):
@@ -3369,7 +3421,6 @@ async def admin_page():
         if int(user['id']) == my_id:
             return render_template('nav/admin.html', user=user, guild=guild.values(), languages_dict=languages_dict, errors=errors, messages=messages)
     return redirect(url_for('index_page'))
-
 
 def application():
     web_thread = threading.Thread(target=app.run, kwargs={'debug': False, 'host': '0.0.0.0', 'port': int(os.environ.get('PORT', config.PORT))})
