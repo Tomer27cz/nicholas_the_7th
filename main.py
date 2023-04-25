@@ -26,8 +26,6 @@ from time import time, strftime, gmtime
 from oauth import Oauth
 import config
 
-import functools
-
 # ---------------- Bot class ------------
 
 class Bot(commands.Bot):
@@ -68,7 +66,7 @@ class Bot(commands.Bot):
             voice_state.stop()
             await voice_state.disconnect()
             log(member.guild.id, "-->> Disconnecting when last person left <<--")
-            now_to_last(member.guild.id)
+            now_to_history(member.guild.id)
         if not member.id == self.user.id:
             return
         elif before.channel is None:
@@ -84,7 +82,7 @@ class Bot(commands.Bot):
                     voice.stop()
                     await voice.disconnect()
                     log(member.guild.id, f"-->> Disconnecting after {guild[member.guild.id].options.buffer} seconds of nothing playing <<--")
-                    now_to_last(member.guild.id)
+                    now_to_history(member.guild.id)
                 if not voice.is_connected():
                     break
 
@@ -218,13 +216,15 @@ class GuildData:
 
 # noinspection PyTypeChecker
 class VideoClass:
-    def __init__(self, class_type: str, author, url=None, title=None, picture=None, duration=None, channel_name=None, channel_link=None, radio_name=None, radio_website=None, local_number=None, created_at=None):
+    def __init__(self, class_type: str, author, url=None, title=None, picture=None, duration=None, channel_name=None, channel_link=None, radio_name=None, radio_website=None, local_number=None, created_at=None, played_at=None):
         self.class_type = class_type
         self.author = author
         self.created_at = created_at
 
         if created_at is None:
             self.created_at = int(time())
+
+        self.played_at = played_at
 
         if self.class_type == 'Video':
             if url is None:
@@ -351,7 +351,7 @@ class Guild:
         self.queue = []
         self.search_list = []
         self.now_playing = None
-        self.last_played = VideoClass('Video',
+        self.history = [VideoClass('Video',
                                       created_at=1000212400,
                                       url='https://www.youtube.com/watch?v=dQw4w9WgXcQ',
                                       author=my_id,
@@ -359,7 +359,7 @@ class Guild:
                                       picture='https://img.youtube.com/vi/dQw4w9WgXcQ/default.jpg',
                                       duration='3:33',
                                       channel_name='Rick Astley',
-                                      channel_link='https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw')
+                                      channel_link='https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw')]
         self.data = GuildData(guild_id)
 
     def renew(self):
@@ -385,7 +385,7 @@ def struct_to_time(struct_time, first='date'):
     if type(struct_time) != int:
         try:
             struct_time = int(struct_time)
-        except ValueError:
+        except (ValueError, TypeError):
             return struct_time
 
     if first == 'date':
@@ -395,8 +395,6 @@ def struct_to_time(struct_time, first='date'):
         return strftime("%H:%M:%S %d/%m/%Y", gmtime(struct_time))
 
     return strftime("%H:%M:%S %d/%m/%Y", gmtime(struct_time))
-
-
 
 # ------------ PRINT --------------------
 
@@ -445,6 +443,8 @@ def guild_to_json(guild_object):
     guild_dict = {}
     search_dict = {}
     queue_dict = {}
+    history_dict = {}
+
     if guild_object.search_list:
         for index, video in enumerate(guild_object.search_list):
             search_dict[index] = video.__dict__
@@ -453,19 +453,20 @@ def guild_to_json(guild_object):
         for index, video in enumerate(guild_object.queue):
             queue_dict[index] = video.__dict__
 
+    if guild_object.history:
+        for index, video in enumerate(guild_object.history):
+            history_dict[index] = video.__dict__
+
     guild_dict['id'] = guild_object.id
     guild_dict['options'] = guild_object.options.__dict__
     guild_dict['data'] = GuildData(guild_object.id).__dict__
     guild_dict['queue'] = queue_dict
     guild_dict['search_list'] = search_dict
+    guild_dict['history'] = history_dict
     if guild_object.now_playing:
         guild_dict['now_playing'] = guild_object.now_playing.__dict__
     else:
         guild_dict['now_playing'] = {}
-    if guild_object.last_played:
-        guild_dict['last_played'] = guild_object.last_played.__dict__
-    else:
-        guild_dict['last_played'] = {}
 
     return guild_dict
 
@@ -489,6 +490,7 @@ def json_to_video(video_dict):
 
     video = VideoClass(class_type,
                        created_at=video_dict['created_at'],
+                       played_at=video_dict['played_at'],
                        url=video_dict['url'],
                        author=video_dict['author'],
                        title=video_dict['title'],
@@ -509,8 +511,8 @@ def json_to_guild(guild_dict):
     guild_object.data.__dict__ = guild_dict['data']
     guild_object.queue = [json_to_video(video_dict) for video_dict in guild_dict['queue'].values()]
     guild_object.search_list = [json_to_video(video_dict) for video_dict in guild_dict['search_list'].values()]
+    guild_object.history = [json_to_video(video_dict) for video_dict in guild_dict['history'].values()]
     guild_object.now_playing = json_to_video(guild_dict['now_playing'])
-    guild_object.last_played = json_to_video(guild_dict['last_played'])
 
     return guild_object
 
@@ -619,23 +621,30 @@ def extract_yt_id(url_string: str):
         return None
     return results.group(1)
 
+async def get_url_probe_data(url: str):
+    codec, bitrate = await discord.FFmpegOpusAudio.probe(url)
+    if codec is None and bitrate is None:
+        return None
+
+    return codec, bitrate
+
 # -------------- convert / get -----------
 
 def get_username(user_id: int):
+    # noinspection PyBroadException
     try:
-        name = bot.get_user(int(user_id)).name
-        return name
-    except Exception as e:
-        log(None, f"get_username failed for ({user_id}) : {e}")
+        return bot.get_user(int(user_id)).name
+    except:
         return user_id
 
-
-def now_to_last(guild_id: int):
+def now_to_history(guild_id: int):
     if guild[guild_id].now_playing is not None:
-        guild[guild_id].last_played = guild[guild_id].now_playing
+        if len(guild[guild_id].history) >= 10:
+            while len(guild[guild_id].history) >= 10:
+                guild[guild_id].history.pop(0)
+        guild[guild_id].history.append(guild[guild_id].now_playing)
         guild[guild_id].now_playing = None
         save_json()
-
 
 def convert_duration(duration):
     try:
@@ -681,7 +690,6 @@ def create_embed(video, name, guild_id):
 
 # ------------- Youtube DL classes -----------
 
-
 YTDL_OPTIONS = {
         'format': 'bestaudio/best',
         'extractaudio': True,
@@ -703,94 +711,93 @@ FFMPEG_OPTIONS = {
     'options': '-vn',
 }
 
+# class YTDLError(Exception):
+#     pass
+#
+# class YTDLSource(discord.PCMVolumeTransformer):
+#     YTDL_OPTIONS = {
+#         'format': 'bestaudio/best',
+#         'extractaudio': True,
+#         'audioformat': 'mp3',
+#         'outtmpl': '%(extractor)s-%(id)s-%(title)s.%(ext)s',
+#         'restrictfilenames': True,
+#         'noplaylist': True,
+#         'nocheckcertificate': True,
+#         'ignoreerrors': False,
+#         'logtostderr': False,
+#         'quiet': True,
+#         'no_warnings': True,
+#         'default_search': 'auto',
+#         'source_address': '0.0.0.0',
+#     }
+#
+#     FFMPEG_OPTIONS = {
+#         'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
+#         'options': '-vn',
+#     }
+#
+#     ytdl = yt_dlp.YoutubeDL(YTDL_OPTIONS)
+#
+#     def __init__(self, guild_id, source: discord.FFmpegPCMAudio):
+#         super().__init__(source, guild[guild_id].options.volume)
+#
+#     @classmethod
+#     async def create_source(cls, guild_id, cr_search: str, *, cr_loop: asyncio.BaseEventLoop = None):
+#         cr_loop = cr_loop or asyncio.get_event_loop()
+#
+#         partial = functools.partial(cls.ytdl.extract_info, cr_search, download=False, process=False)
+#         data = await cr_loop.run_in_executor(None, partial)
+#
+#         if data is None:
+#             raise YTDLError('Couldn\'t find anything that matches `{}`'.format(cr_search))
+#
+#         if 'entries' not in data:
+#             process_info = data
+#         else:
+#             process_info = None
+#             for entry in data['entries']:
+#                 if entry:
+#                     process_info = entry
+#                     break
+#
+#             if process_info is None:
+#                 raise YTDLError('Couldn\'t find anything that matches `{}`'.format(cr_search))
+#
+#         webpage_url = process_info['webpage_url']
+#         partial = functools.partial(cls.ytdl.extract_info, webpage_url, download=False)
+#         processed_info = await cr_loop.run_in_executor(None, partial)
+#
+#         if processed_info is None:
+#             raise YTDLError('Couldn\'t fetch `{}`'.format(webpage_url))
+#
+#         if 'entries' not in processed_info:
+#             info = processed_info
+#         else:
+#             info = None
+#             while info is None:
+#                 try:
+#                     info = processed_info['entries'].pop(0)
+#                 except IndexError:
+#                     raise YTDLError('Couldn\'t retrieve any matches for `{}`'.format(webpage_url))
+#
+#         return cls(guild_id, discord.FFmpegPCMAudio(info['url'], **cls.FFMPEG_OPTIONS))
 
-class YTDLError(Exception):
-    pass
-
-
-class YTDLSource(discord.PCMVolumeTransformer):
-    YTDL_OPTIONS = {
-        'format': 'bestaudio/best',
-        'extractaudio': True,
-        'audioformat': 'mp3',
-        'outtmpl': '%(extractor)s-%(id)s-%(title)s.%(ext)s',
-        'restrictfilenames': True,
-        'noplaylist': True,
-        'nocheckcertificate': True,
-        'ignoreerrors': False,
-        'logtostderr': False,
-        'quiet': True,
-        'no_warnings': True,
-        'default_search': 'auto',
-        'source_address': '0.0.0.0',
-    }
-
-    FFMPEG_OPTIONS = {
-        'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
-        'options': '-vn',
-    }
-
-    ytdl = yt_dlp.YoutubeDL(YTDL_OPTIONS)
-
-    def __init__(self, guild_id, source: discord.FFmpegPCMAudio):
-        super().__init__(source, guild[guild_id].options.volume)
-
-    @classmethod
-    async def create_source(cls, guild_id, cr_search: str, *, cr_loop: asyncio.BaseEventLoop = None):
-        cr_loop = cr_loop or asyncio.get_event_loop()
-
-        partial = functools.partial(cls.ytdl.extract_info, cr_search, download=False, process=False)
-        data = await cr_loop.run_in_executor(None, partial)
-
-        if data is None:
-            raise YTDLError('Couldn\'t find anything that matches `{}`'.format(cr_search))
-
-        if 'entries' not in data:
-            process_info = data
-        else:
-            process_info = None
-            for entry in data['entries']:
-                if entry:
-                    process_info = entry
-                    break
-
-            if process_info is None:
-                raise YTDLError('Couldn\'t find anything that matches `{}`'.format(cr_search))
-
-        webpage_url = process_info['webpage_url']
-        partial = functools.partial(cls.ytdl.extract_info, webpage_url, download=False)
-        processed_info = await cr_loop.run_in_executor(None, partial)
-
-        if processed_info is None:
-            raise YTDLError('Couldn\'t fetch `{}`'.format(webpage_url))
-
-        if 'entries' not in processed_info:
-            info = processed_info
-        else:
-            info = None
-            while info is None:
-                try:
-                    info = processed_info['entries'].pop(0)
-                except IndexError:
-                    raise YTDLError('Couldn\'t retrieve any matches for `{}`'.format(webpage_url))
-
-        return cls(guild_id, discord.FFmpegPCMAudio(info['url'], **cls.FFMPEG_OPTIONS))
-
-class YTDLSource2(discord.PCMVolumeTransformer):
+class GetSource(discord.PCMVolumeTransformer):
     ytdl = yt_dlp.YoutubeDL(YTDL_OPTIONS)
 
     def __init__(self, guild_id, source):
         super().__init__(source, guild[guild_id].options.volume)
 
     @classmethod
-    async def create_source(cls, guild_id, url):
-        loop = asyncio.get_event_loop()
-        data = await loop.run_in_executor(None, lambda: cls.ytdl.extract_info(url, download=False))
+    async def create_source(cls, guild_id, url, source_type='Video'):
+        if source_type == 'Video':
+            loop = asyncio.get_event_loop()
+            data = await loop.run_in_executor(None, lambda: cls.ytdl.extract_info(url, download=False))
 
-        if 'entries' in data:
-            data = data['entries'][0]
+            if 'entries' in data:
+                data = data['entries'][0]
 
-        url = data['url']
+            url = data['url']
 
         return cls(guild_id, discord.FFmpegPCMAudio(url, **FFMPEG_OPTIONS))
 
@@ -960,9 +967,9 @@ class PlaylistOptionView(View):
         playlist_url = get_playlist_from_url(self.url)
         await interaction.response.edit_message(content=tg(self.guild_id, "Adding playlist to queue..."), view=None)
         if self.force:
-            response = await queue_command_def(self.ctx, playlist_url, 0, True, self.force)
+            response = await queue_command_def(self.ctx, playlist_url, position=0, mute_response=True, force=self.force)
         else:
-            response = await queue_command_def(self.ctx, playlist_url, None, True, self.force)
+            response = await queue_command_def(self.ctx, playlist_url, mute_response=True, force=self.force)
 
         msg = await interaction.original_response()
         await msg.edit(content=response[1])
@@ -975,9 +982,9 @@ class PlaylistOptionView(View):
     async def callback_2(self, interaction, button):
         pure_url = self.url[:self.url.index('&list=')]
         if self.force:
-            response = await queue_command_def(self.ctx, pure_url, 0, True, self.force)
+            response = await queue_command_def(self.ctx, pure_url, position=0, mute_response=True, force=self.force)
         else:
-            response = await queue_command_def(self.ctx, pure_url, None, True, self.force)
+            response = await queue_command_def(self.ctx, pure_url, mute_response=True, force=self.force)
         await interaction.response.edit_message(content=response[1], view=None)
         if self.from_play:
             await play_def(self.ctx)
@@ -994,7 +1001,7 @@ async def queue_command(ctx: commands.Context,
                         ):
     log(ctx.guild.id, 'queue', [url, position], log_type='command', author=ctx.author)
 
-    await queue_command_def(ctx, url, position)
+    await queue_command_def(ctx, url, position=position)
 
 
 @bot.hybrid_command(name='next_up', with_app_command=True, description=text['next_up'], help=text['next_up'])
@@ -1191,8 +1198,20 @@ async def volume_command(ctx: commands.Context,
 @bot.tree.context_menu(name='Add to queue')
 async def add_to_queue(inter, message: discord.Message):
     ctx = await bot.get_context(inter)
-    log(ctx.guild.id, 'add_to_queue', [message.content], log_type='command', author=ctx.author)
-    response = await queue_command_def(ctx, message.content, None, True)
+    log(ctx.guild.id, 'add_to_queue', [message], log_type='command', author=ctx.author)
+
+    if message.attachments:
+        url = message.attachments[0].url
+        filename = message.attachments[0].filename
+        message_author = f"Message by {get_username(message.author.id)}"
+        message_link = message.jump_url
+
+        probe_data = [filename, message_author, message_link]
+    else:
+        url = message.content
+        probe_data = None
+
+    response = await queue_command_def(ctx, url, mute_response=True, probe_data=probe_data)
     if not inter.response.is_done():
         await inter.response.send_message(content=response[1], ephemeral=True)
 
@@ -1200,7 +1219,8 @@ async def add_to_queue(inter, message: discord.Message):
 @bot.tree.context_menu(name='Show Profile')
 async def show_profile(inter, member: discord.Member):
     ctx = await bot.get_context(inter)
-    log(ctx.guild.id, 'show_profile', [member.name], log_type='command', author=ctx.author)
+    log(ctx.guild.id, 'show_profile', [member], log_type='command', author=ctx.author)
+
     embed = discord.Embed(title=f"{member.name}#{member.discriminator}", description=f"ID: `{member.id}` | Name: `{member.display_name}` | Nickname: `{member.nick}`")
     embed.add_field(name="Created at", value=member.created_at.strftime("%d/%m/%Y %H:%M:%S"), inline=True)
     embed.add_field(name="Joined at", value=member.joined_at.strftime("%d/%m/%Y %H:%M:%S"), inline=True)
@@ -1397,13 +1417,14 @@ def ctx_check(ctx):
 # --------------------------------------- QUEUE --------------------------------------------------
 
 async def queue_command_def(ctx,
-                        url=None,
-                        position: int = None,
-                        mute_response: bool = False,
-                        force: bool = False,
-                        from_play: bool = False,
-                        ):
-    log(ctx, 'queue_command_def', [url, position, mute_response, force, from_play], log_type='function', author=ctx.author)
+                            url=None,
+                            position: int = None,
+                            mute_response: bool = False,
+                            force: bool = False,
+                            from_play: bool = False,
+                            probe_data: list = None
+                            ):
+    log(ctx, 'queue_command_def', [url, position, mute_response, force, from_play, probe_data], log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
 
     if not url:
@@ -1412,13 +1433,12 @@ async def queue_command_def(ctx,
             await ctx.reply(message, ephemeral=True)
         return [False, message]
 
+    if '/playlist?list=' in url:
+        if is_ctx:
+            if not ctx.interaction.response.is_done():
+                await ctx.defer()
 
-    elif url[0:33] == "https://www.youtube.com/playlist?":
         try:
-            # noinspection PyUnresolvedReferences
-            if is_ctx:
-                if not ctx.interaction.response.is_done():
-                    await ctx.defer()
             playlist_videos = youtubesearchpython.Playlist.getVideos(url)
         except KeyError:
             log(guild_id, "------------------------------- playlist -------------------------")
@@ -1434,54 +1454,65 @@ async def queue_command_def(ctx,
         playlist_songs = 0
         playlist_videos = playlist_videos['videos']
 
-        if position or position == 0:
+        if position is not None:
             playlist_videos = list(reversed(playlist_videos))
 
         for index, val in enumerate(playlist_videos):
             playlist_songs += 1
-            # noinspection PyTypeChecker
             url = f"https://www.youtube.com/watch?v={playlist_videos[index]['id']}"
             video = VideoClass('Video', author_id, url)
 
-            if position or position == 0: guild[guild_id].queue.insert(position, video)
-            else: guild[guild_id].queue.append(video)
+            if position or position == 0:
+                guild[guild_id].queue.insert(position, video)
+            else:
+                guild[guild_id].queue.append(video)
+
+        save_json()
 
         message = f"`{playlist_songs}` {tg(guild_id, 'songs from playlist added to queue!')} -> [Control Panel](http://nicholasthe7th.duckdns.org:5420/guild/{guild_id}&key={guild[guild_id].data.key})"
         if not mute_response:
             await ctx.reply(message)
-
-        save_json()
         return [True, message, None]
 
-    elif url:
-        if 'index=' in url or 'list=' in url:
-            view = PlaylistOptionView(ctx, url, force, from_play)
+    if any(param in url for param in {'index=', 'list='}) and is_ctx:
+        view = PlaylistOptionView(ctx, url, force, from_play)
+        message = tg(guild_id, 'This video is from a **playlist**, do you want to add the playlist to **queue?**')
+        await ctx.reply(message, view=view)
+        return [False, message]
 
-            message = tg(guild_id, 'This video is from a **playlist**, do you want to add the playlist to **queue?**')
-            await ctx.reply(message, view=view)
-            return [False, message]
+    video_id = extract_yt_id(url)
 
-        video_id = extract_yt_id(url)
+    if video_id is None:
+        probe = await get_url_probe_data(url)
 
-        if video_id is None:
-            await search_command_def(ctx, url, 'short', force, from_play)
+        if probe is None:
+            if is_ctx:
+                await search_command_def(ctx, url, 'short', force, from_play)
+
             message = f'[`{url}`](<{url}>) {tg(guild_id, "is not supported!")} -> [Control Panel](http://nicholasthe7th.duckdns.org:5420/guild/{guild_id}&key={guild[guild_id].data.key})'
             save_json()
             return [False, message]
+        else:
+            if probe_data:
+                video = VideoClass('Probe', author_id, url=url, title=probe_data[0], picture=vlc_logo, duration='Unknown', channel_name=probe_data[1], channel_link=probe_data[2])
+            else:
+                video = VideoClass('Probe', author_id, url=url, title='URL Probe', picture=vlc_logo, duration='Unknown', channel_name='URL Probe', channel_link=url)
 
+    else:
         url = f"https://www.youtube.com/watch?v={video_id}"
         video = VideoClass('Video', author_id, url)
 
-        if position or position == 0: guild[guild_id].queue.insert(position, video)
-        else: guild[guild_id].queue.append(video)
+    if position is not None:
+        guild[guild_id].queue.insert(position, video)
+    else:
+        guild[guild_id].queue.append(video)
 
-        message = f'[`{video.title}`](<{video.url}>) {tg(guild_id, "added to queue!")} -> [Control Panel](http://nicholasthe7th.duckdns.org:5420/guild/{guild_id}&key={guild[guild_id].data.key})'
+    save_json()
 
-        if not mute_response:
-            await ctx.reply(message)
-
-        save_json()
-        return [True, message, None]
+    message = f'[`{video.title}`](<{video.url}>) {tg(guild_id, "added to queue!")} -> [Control Panel](http://nicholasthe7th.duckdns.org:5420/guild/{guild_id}&key={guild[guild_id].data.key})'
+    if not mute_response:
+        await ctx.reply(message)
+    return [True, message, None]
 
 
 async def next_up_def(ctx,
@@ -1490,7 +1521,7 @@ async def next_up_def(ctx,
                  ):
     log(ctx, 'next_up_def', [url, ephemeral], log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
-    response = await queue_command_def(ctx, url, 0, True, True)
+    response = await queue_command_def(ctx, url, position=0, mute_response=True, force=True)
 
     if response[0]:
         if guild_object.voice_client:
@@ -1526,46 +1557,80 @@ async def skip_def(ctx):
 
 
 async def remove_def(ctx,
-                 number: int,
-                 display_type: Literal['short', 'long'] = None,
-                 ephemeral: bool = False
-                 ):
+                     number: int,
+                     display_type: Literal['short', 'long'] = None,
+                     ephemeral: bool = False,
+                     list_type: Literal['queue', 'history'] = 'queue'
+                     ):
     log(ctx, 'remove_def', [number, display_type, ephemeral], log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
 
     if not display_type:
         display_type = guild[guild_id].options.response_type
 
-    if number or number == 0 or number == '0':
-        if number > len(guild[guild_id].queue):
-            if not guild[guild_id].queue:
-                message = tg(guild_id, "Nothing to **remove**, queue is **empty!**")
+    if list_type == 'queue':
+        if number or number == 0 or number == '0':
+            if number > len(guild[guild_id].queue):
+                if not guild[guild_id].queue:
+                    message = tg(guild_id, "Nothing to **remove**, queue is **empty!**")
+                    await ctx.reply(message, ephemeral=True)
+                    return [False, message]
+                message = tg(guild_id, "Index out of range!")
                 await ctx.reply(message, ephemeral=True)
                 return [False, message]
-            message = tg(guild_id, "Index out of range!")
-            await ctx.reply(message, ephemeral=True)
-            return [False, message]
 
-        video = guild[guild_id].queue[number]
+            video = guild[guild_id].queue[number]
 
-        message = f'REMOVED #{number} : [`{video.title}`](<{video.url}>)'
+            message = f'REMOVED #{number} : [`{video.title}`](<{video.url}>)'
 
-        if display_type == 'long':
-            embed = create_embed(video, f'{tg(guild_id, "REMOVED #")}{number}', guild_id)
-            await ctx.reply(embed=embed, ephemeral=ephemeral)
-        if display_type == 'short':
-            await ctx.reply(message, ephemeral=ephemeral)
+            if display_type == 'long':
+                embed = create_embed(video, f'{tg(guild_id, "REMOVED #")}{number}', guild_id)
+                await ctx.reply(embed=embed, ephemeral=ephemeral)
+            if display_type == 'short':
+                await ctx.reply(message, ephemeral=ephemeral)
 
-        guild[guild_id].queue.pop(number)
+            guild[guild_id].queue.pop(number)
 
+            save_json()
+
+            return [True, message]
+
+    elif list_type == 'history':
+        if number or number == 0 or number == '0':
+            if number > len(guild[guild_id].history):
+                if not guild[guild_id].history:
+                    message = tg(guild_id, "Nothing to **remove**, history is **empty!**")
+                    await ctx.reply(message, ephemeral=True)
+                    return [False, message]
+                message = tg(guild_id, "Index out of range!")
+                await ctx.reply(message, ephemeral=True)
+                return [False, message]
+
+            video = guild[guild_id].history[number]
+
+            message = f'REMOVED #{number} : [`{video.title}`](<{video.url}>)'
+
+            if display_type == 'long':
+                embed = create_embed(video, f'{tg(guild_id, "REMOVED #")}{number}', guild_id)
+                await ctx.reply(embed=embed, ephemeral=ephemeral)
+            if display_type == 'short':
+                await ctx.reply(message, ephemeral=ephemeral)
+
+            guild[guild_id].history.pop(number)
+
+            save_json()
+
+            return [True, message]
+
+    else:
         save_json()
-
-        return [True, message]
+        message = 'Invalid list type!'
+        await ctx.reply(message, ephemeral=True)
+        return [False, message]
 
     save_json()
 
     return [False, 'No number given!']
-
 
 
 async def clear_def(ctx,
@@ -1729,26 +1794,19 @@ async def play_def(ctx,
                mute_response=False
                ):
     log(ctx, 'play_def', [url, force, mute_response], log_type='function', author=ctx.author)
-    start_ctx =  time()
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
-    print(f'ctx_check -> {time() - start_ctx} seconds')
     response = []
 
     notif = f'\n{tg(guild_id, "Check out the new")} [Control Panel](http://nicholasthe7th.duckdns.org:5420/guild/{guild_id}&key={guild[guild_id].data.key})'
 
-    start_url_next = time()
     if url == 'next':
         if guild[guild_id].options.stopped:
             log(guild_id, "play_def -> stopped play next loop")
-            now_to_last(guild_id)
+            now_to_history(guild_id)
             return [False, "Stopped play next loop"]
-    print(f'url_next -> {time() - start_url_next} seconds')
 
-    start_voice = time()
     voice = guild_object.voice_client
-    print(f'voice -> {time() - start_voice} seconds')
 
-    start_check = time()
     if not voice or voice is None:
         if not is_ctx:
             return [False, 'Bot is not connected to a voice channel']
@@ -1758,9 +1816,7 @@ async def play_def(ctx,
             if not mute_response:
                 await ctx.reply(message)
             return [False, message]
-    print(f'voice check -> {time() - start_check} seconds')
 
-    start_queue = time()
     if url and url != 'next':
         if voice:
             if not voice.is_playing():
@@ -1771,11 +1827,9 @@ async def play_def(ctx,
             response = await queue_command_def(ctx, url=url, position=None, mute_response=True, force=force, from_play=True)
         if not response[0]:
             return [False, response[1]]
-    print(f'queue -> {time() - start_queue} seconds')
 
     voice = guild_object.voice_client
 
-    start_check2 = time()
     if not voice or voice is None:
         # noinspection PyUnresolvedReferences
         if not is_ctx:
@@ -1785,9 +1839,7 @@ async def play_def(ctx,
         voice = guild_object.voice_client
         if not join_response[0]:
             return [False, response[1]]
-    print(f'voice check 2 -> {time() - start_check2} seconds')
 
-    start_check3 = time()
     if voice.is_playing():
         if not guild[guild_id].options.is_radio and not force:
             if url and not force:
@@ -1811,9 +1863,6 @@ async def play_def(ctx,
         guild[guild_id].options.stopped = True
         guild[guild_id].options.is_radio = False
 
-    print(f'voice check 3 -> {time() - start_check3} seconds')
-
-    start_check4 = time()
     if not guild[guild_id].queue:
         message = f'{tg(guild_id, "There is **nothing** in your **queue**")} {notif}'
 
@@ -1821,15 +1870,13 @@ async def play_def(ctx,
             if not mute_response:
                 await ctx.reply(message)
 
-        now_to_last(guild_id)
+        now_to_history(guild_id)
         return [False, message]
-    print(f'voice check 4 -> {time() - start_check4} seconds')
 
     video = guild[guild_id].queue[0]
-    now_to_last(guild_id)
+    now_to_history(guild_id)
 
-    start_check5 = time()
-    if video.class_type != 'Video':
+    if video.class_type not in ['Video', 'Probe']:
         guild[guild_id].queue.pop(0)
         if video.class_type == 'Radio':
             await radio_def(ctx, video.title)
@@ -1837,72 +1884,62 @@ async def play_def(ctx,
         if video.class_type == 'Local':
             await ps_def(ctx, video.local_number)
             return
-        if video.class_type == 'Probe':
-            await probe_command_def(ctx, video.url)
-            return
 
         message = tg(guild_id, "Unknown type")
         if not mute_response:
             await ctx.reply(message)
         return [False, message]
-    print(f'voice check 5 -> {time() - start_check5} seconds')
 
     if not force:
         guild[guild_id].options.stopped = False
 
     try:
-        start_source = time()
-        source = await YTDLSource2.create_source(guild_id, video.url)  # loop=bot.loop  va_list[0]
-        print(f'source -> {time() - start_source} seconds')
-        start_play = time()
+        source = await GetSource.create_source(guild_id, video.url)
         voice.play(source, after=lambda e: asyncio.run_coroutine_threadsafe(play_def(ctx, 'next'), bot.loop))
-        print(f'play -> {time() - start_play} seconds')
 
-        start_volume = time()
         await volume_command_def(ctx, guild[guild_id].options.volume * 100, False, True)
-        print(f'volume -> {time() - start_volume} seconds')
 
-        start_options = time()
+        # Variables update
         guild[guild_id].options.stopped = False
+        video.played_at = int(time())
         guild[guild_id].now_playing = video
 
+        # Queue update
         if guild[guild_id].options.loop:
             guild[guild_id].queue.append(video)
-
         guild[guild_id].queue.pop(0)
-        print(f'options -> {time() - start_options} seconds')
 
-        start_view = time()
-        view = PlayerControlView(ctx)
-        print(f'view -> {time() - start_view} seconds')
-
-        start_embed = time()
-        if guild[guild_id].options.response_type == 'long':
-            embed = create_embed(video, "Now playing", guild_id)
-            if guild[guild_id].options.buttons:
-                if not mute_response:
-                    await ctx.reply(embed=embed, view=view)
-            else:
-                if not mute_response:
-                    await ctx.reply(embed=embed)
-        print(f'embed -> {time() - start_embed} seconds')
-
-        start_short = time()
-        if guild[guild_id].options.response_type == 'short':
-            if guild[guild_id].options.buttons:
-                if not mute_response:
-                    await ctx.reply(f'{tg(guild_id, "Now playing")} [`{video.title}`](<{video.url}>) {notif}', view=view)
-            else:
-                if not mute_response:
-                    await ctx.reply(f'{tg(guild_id, "Now playing")} [`{video.title}`](<{video.url}>) {notif}')
-        print(f'short -> {time() - start_short} seconds')
-
-        start_save = time()
         save_json()
-        print(f'save -> {time() - start_save} seconds')
 
-    except (discord.ext.commands.errors.CommandInvokeError, IndexError, TypeError, discord.errors.ClientException,
-            YTDLError, discord.errors.NotFound):
+        # Response
+        options = guild[guild_id].options
+        response_type = options.response_type
+
+        message = f'{tg(guild_id, "Now playing")} [`{video.title}`](<{video.url}>) {notif}'
+        view = PlayerControlView(ctx)
+
+        if response_type == 'long':
+            if not mute_response:
+                embed = create_embed(video, "Now playing", guild_id)
+                if options.buttons:
+                    await ctx.reply(embed=embed, view=view)
+                else:
+                    await ctx.reply(embed=embed)
+            return [True, message]
+
+        elif response_type == 'short':
+            if not mute_response:
+                if options.buttons:
+                    await ctx.reply(message, view=view)
+                else:
+                    await ctx.reply(message)
+            return [True, message]
+
+        else:
+            return [True, message]
+
+
+    except (discord.ext.commands.errors.CommandInvokeError, IndexError, TypeError, discord.errors.ClientException, discord.errors.NotFound):
         log(guild_id, "------------------------------- play -------------------------")
         tb = traceback.format_exc()
         log(guild_id, tb)
@@ -1944,7 +1981,7 @@ async def radio_def(ctx,
     if guild_object.voice_client.is_playing():
         await stop_def(ctx, True)  # call the stop coroutine if something else is playing, pass True to not send response
 
-    video = VideoClass('Radio', author_id, radio_name=radio_type)
+    video = VideoClass('Radio', author_id, radio_name=radio_type, played_at=int(time()))
     guild[guild_id].now_playing = video
 
     guild[guild_id].options.is_radio = True
@@ -1993,7 +2030,7 @@ async def ps_def(ctx,
                 await ctx.reply(tg(guild_id, "No such file/website supported"), ephemeral=True)
             return False
 
-    video = VideoClass('Local', author_id, title=name, duration='Unknown', local_number=effect_number)
+    video = VideoClass('Local', author_id, title=name, duration='Unknown', local_number=effect_number, played_at=int(time()))
     guild[guild_id].now_playing = video
 
     if not guild_object.voice_client:
@@ -2055,7 +2092,7 @@ async def last_def(ctx,
     if not is_ctx:
         return [False, 'This command cant be used in WEB']
 
-    embed = create_embed(guild[guild_id].last_played, "Last played", guild_id)
+    embed = create_embed(guild[guild_id].history[-1], "Last played", guild_id)
 
     view = PlayerControlView(ctx)
 
@@ -2125,7 +2162,7 @@ async def stop_def(ctx,
     if not mute_response:
         await ctx.reply(message, ephemeral=True)
 
-    now_to_last(guild_id)
+    now_to_history(guild_id)
     save_json()
     return [True, message]
 
@@ -2196,7 +2233,7 @@ async def join_def(ctx,
     log(ctx, 'join_def', [channel_id, mute_response], log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
 
-    now_to_last(guild_id)
+    now_to_history(guild_id)
 
     if not channel_id:
         if not is_ctx:
@@ -2259,7 +2296,7 @@ async def disconnect_def(ctx,
         channel = guild_object.voice_client.channel
         await guild_object.voice_client.disconnect(force=True)
 
-        now_to_last(guild_id)
+        now_to_history(guild_id)
         save_json()
 
         message = f"{tg(guild_id, 'Left voice channel:')} `{channel}`"
@@ -2267,7 +2304,7 @@ async def disconnect_def(ctx,
             await ctx.reply(message, ephemeral=True)
         return [True, message]
     else:
-        now_to_last(guild_id)
+        now_to_history(guild_id)
         save_json()
 
         message = tg(guild_id, "Bot is **not** in a voice channel")
@@ -2915,13 +2952,15 @@ async def web_queue(web_data, video_type, position=None):
     log(web_data, 'web_queue', [video_type, position], log_type='function', author=web_data.author)
     guild_id = web_data.guild_id
 
-    if video_type == 'last_played':
-        video = guild[guild_id].last_played
-    elif video_type == 'now_playing':
+    if video_type == 'np':
         video = guild[guild_id].now_playing
     else:
-        log(guild_id, "web_queue -> Invalid video type")
-        return [False, 'Invalid video type (Internal web error -> contact developer)']
+        try:
+            index = int(video_type[1:])
+            video = guild[guild_id].history[index]
+        except (TypeError, ValueError, IndexError):
+            log(guild_id, "web_queue -> Invalid video type")
+            return [False, 'Invalid video type (Internal web error -> contact developer)']
 
     if video.class_type == 'Radio':
         return await web_queue_from_radio(web_data, video.radio_name, position)
@@ -2975,35 +3014,44 @@ async def web_join(web_data, form):
     except ValueError:
         return [False, f'Invalid channel id: {channel_id}']
 
-    task = bot.loop.create_task(join_def(web_data, channel_id))
-
-    while not task.done():
-        await asyncio.sleep(0.1)
+    task = asyncio.run_coroutine_threadsafe(join_def(web_data, channel_id), bot.loop)
 
     return task.result()
 
 async def web_disconnect(web_data):
     log(web_data, 'web_disconnect', [], log_type='function', author=web_data.author)
 
-    task = bot.loop.create_task(disconnect_def(web_data))
-
-    while not task.done():
-        await asyncio.sleep(0.1)
+    task = asyncio.run_coroutine_threadsafe(disconnect_def(web_data), bot.loop)
 
     return task.result()
 
 async def web_edit(web_data, form):
     log(web_data, 'web_edit', [form], log_type='function', author=web_data.author)
     guild_id = web_data.guild_id
-    q_index = form['edit_btn']
+    index = form['edit_btn']
+    is_queue = True
+    is_np = False
 
-    if not q_index.isdigit():
+    if index == 'np':
+        is_np = True
+
+    elif not index.isdigit():
+        is_queue = False
+        try:
+            index = int(index[1:])
+            if index < 0 or index >= len(guild[guild_id].history):
+                return [False, 'Invalid index (out of range)']
+        except (TypeError, ValueError, IndexError):
+            return [False, 'Invalid index (not a number)']
+
+    elif index.isdigit():
+        is_queue = True
+        index = int(index)
+        if index < 0 or index >= len(guild[guild_id].queue):
+            return [False, 'Invalid index (out of range)']
+
+    else:
         return [False, 'Invalid index (not a number)']
-
-    q_index = int(q_index)
-
-    if q_index < 0 or q_index >= len(guild[guild_id].queue):
-        return [False, 'Invalid index (out of range)']
 
     class_type = form['class_type']
     author = form['author']
@@ -3050,11 +3098,18 @@ async def web_edit(web_data, form):
     if duration and duration.isdigit():
         duration = int(duration)
 
-    guild[guild_id].queue[q_index] = VideoClass(class_type, author, url, title, picture, duration, channel_name, channel_link, radio_name, radio_website, local_number, created_at)
+
+    if is_np:
+        guild[guild_id].now_playing = VideoClass(class_type, author, url, title, picture, duration, channel_name, channel_link, radio_name, radio_website, local_number, created_at)
+    else:
+        if is_queue:
+            guild[guild_id].queue[index] = VideoClass(class_type, author, url, title, picture, duration, channel_name, channel_link, radio_name, radio_website, local_number, created_at)
+        else:
+            guild[guild_id].history[index] = VideoClass(class_type, author, url, title, picture, duration, channel_name, channel_link, radio_name, radio_website, local_number, created_at)
 
     save_json()
 
-    return [True, f'Edited queue item {q_index} successfully!']
+    return [True, f'Edited item {"h" if not is_queue else ""}{index} successfully!']
 
 # --------------------------------------------- WEB SERVER --------------------------------------------- #
 
@@ -3147,7 +3202,7 @@ async def guild_page(guild_id, key):
     log(request.remote_addr, f'/guild/{guild_id}&key={key}', log_type='ip')
     admin = False
     user = None
-    user_name, user_id = request.remote_addr, bot_id
+    user_name, user_id = request.remote_addr, 'WEB Guest'
     errors = []
     messages = []
     scroll_position = 0
@@ -3221,6 +3276,9 @@ async def guild_page(guild_id, key):
         if 'nextup_btn' in keys:
             log(web_data, 'nextup', [request.form['nextup_btn'], 0], log_type='web', author=web_data.author)
             response = await web_queue(web_data, request.form['nextup_btn'], 0)
+        if 'hdel_btn' in keys:
+            log(web_data, 'history remove', [request.form['hdel_btn']], log_type='web', author=web_data.author)
+            response = await remove_def(web_data, int(request.form['hdel_btn'][1:]), list_type='history')
 
         if 'edit_btn' in keys:
             log(web_data, 'web_edit', [request.form['edit_btn']], log_type='web', author=web_data.author)

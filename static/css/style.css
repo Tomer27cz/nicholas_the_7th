@@ -356,6 +356,13 @@ input.radio-checkbox[type=radio] + label
   gap: 1rem;
   justify-content: space-evenly;
 }
+.q-history {
+  margin: 1rem;
+  margin-top: 0;
+  padding: 1rem;
+  border-radius: 1rem;
+  background-color: var(--d-g2);
+}
 
 
 .q-item1 {
@@ -363,6 +370,9 @@ input.radio-checkbox[type=radio] + label
 }
 .q-item2 {
     flex: 0 0 20%;
+}
+.q-item3 {
+    flex: 0 0 15%;
 }
 .q-item0 {
     flex: 0 0 auto;
@@ -374,7 +384,7 @@ input.radio-checkbox[type=radio] + label
     align-self: center;
 }
 .q-wd {
-    width: 50%;
+    width: 35%;
 }
 
 

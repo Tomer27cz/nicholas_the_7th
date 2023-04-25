@@ -77,38 +77,47 @@
       <div class="accordion-header">
         <div class="d-grid gap-2">
           <a class="btn btn-dark accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="false" aria-controls="panelsStayOpen-collapseOne">
-              <h3>Last Played</h3>
+              <h3>History</h3>
           </a>
         </div>
       </div>
       <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse">
           <div class="accordion-body">
-            {% if guild.last_played is not none %}
-              <div class="q-container">
-                  <div class="q-div">
-                    <img loading="lazy" class="q-img" src="{{guild.last_played.picture}}" alt="thumbnail">
-                    <div class="q-item1 q-wd">
-                        <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="{{guild.last_played.url}}">{{guild.last_played.title}}</a></p>
-                        <p class="q-text"><a class="q-2" target="_blank" rel="noopener noreferrer" href="{{guild.last_played.channel_link}}">{{guild.last_played.channel_name}}</a></p>
-                        <p class="q-text q-3">{{convert_duration(guild.last_played.duration)}}</p>
-                    </div>
-                    <div class="q-item2 q-items-center">
-                        <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://discordapp.com/users/{{guild.last_played.author}}">{{get_username(guild.last_played.author)}}</a></p>
-                        <p class="q-text q-2">{{guild.last_played.author}}</p>
-                        <p class="q-text q-3">{{struct_to_time(guild.last_played.created_at, first='time')}}</p>
-                    </div>
-                    <div class="q-item0 q-wa q-self-center q-items-center">
-                        <form method="POST" action="" onsubmit="setScroll();">
-                            <input type="hidden" name="scroll" value="0" id="scrollPos1">
-                            {% if admin == True %}
-                            <button class="btn btn-outline btn-primary btn-sm btn-m" type="button" data-bs-toggle="modal" data-bs-target=#videoEditModal_lp>Edit</button>
-                            {% endif %}
-                            <button class="btn btn-outline btn-secondary btn-sm btn-m" type="submit" name="queue_btn" value="last_played">Add to Queue</button>
-                            <button class="btn btn-outline btn-secondary btn-sm btn-m" type="submit" name="nextup_btn" value="last_played">Next Up</button>
-                        </form>
-                    </div>
+            {% if guild.history %}
+              {% for track in guild.history %}
+                  <div class="q-div q-history">
+                      <img loading="lazy" class="q-img" src="{{track.picture}}" alt="thumbnail">
+                      <div class="q-item1 q-wd">
+                          <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="{{track.url}}">{{track.title}}</a></p>
+                          <p class="q-text"><a class="q-2" target="_blank" rel="noopener noreferrer" href="{{track.channel_link}}">{{track.channel_name}}</a></p>
+                          <p class="q-text q-3">{{convert_duration(track.duration)}}</p>
+                      </div>
+                      <div class="q-item3 q-items-center">
+                          <p class="q-text q-1">Played at</p>
+                          <p class="q-text q-2">{{struct_to_time(track.played_at, first='time')}}</p>
+                      </div>
+                      <div class="q-item2 q-items-center">
+                          <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://discordapp.com/users/{{track.author}}">{{get_username(track.author)}}</a></p>
+                          <p class="q-text q-2">{{track.author}}</p>
+                          <p class="q-text q-3">{{struct_to_time(track.created_at, first='time')}}</p>
+                      </div>
+                      <div class="q-item0 q-wa q-self-center q-items-center">
+                          <form method="POST" action="" onsubmit="setScroll();">
+                              <input type="hidden" name="scroll" value="0" id="scrollPos1">
+                              {% if admin == True %}
+                              <button class="btn btn-outline btn-primary btn-sm btn-m" type="button" data-bs-toggle="modal" data-bs-target=#videoEditModal_h{{guild.history.index(track)}}>Edit</button>
+                              <button class="btn btn-outline btn-danger btn-sm btn-m" type="submit" value="h{{guild.history.index(track)}}" name="hdel_btn">Remove</button>
+                              {% endif %}
+                              <button type="button" class="btn btn-secondary btn-sm dropdown-toggle btn-m" data-bs-toggle="dropdown" aria-expanded="false">More</button>
+                              <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                                  <li><button class="dropdown-item" type="submit" name="queue_btn" value="h{{guild.history.index(track)}}">Add to Queue</button></li>
+                                  <li><button class="dropdown-item" type="submit" name="nextup_btn" value="h{{guild.history.index(track)}}">Play next</button></li>
+                                  <li><button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target=#videoModal_h{{guild.history.index(track)}}>Info</button></li>
+                              </ul>
+                          </form>
+                      </div>
                   </div>
-              </div>
+              {% endfor %}
             {% else %}
             <div class="div-align">
                 <p>Nothing has been played yet</p>
@@ -116,7 +125,7 @@
             {% endif %}
           </div>
       </div>
-  </div>
+    </div>
     <div class="accordion-item">
       <div class="accordion-header">
         <div class="d-grid gap-2">
@@ -129,31 +138,37 @@
           <div class="accordion-body">
               {% if guild.now_playing is not none %}
               {{guild.now_playing.renew()}}
-              <div class="q-container">
-                <div class="q-div">
-                    <img loading="lazy" class="q-img" src="{{guild.now_playing.picture}}" alt="thumbnail">
-                    <div class="q-item1 q-wd">
-                        <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="{{guild.now_playing.url}}">{{guild.now_playing.title}}</a></p>
-                        <p class="q-text"><a class="q-2" target="_blank" rel="noopener noreferrer" href="{{guild.now_playing.channel_link}}">{{guild.now_playing.channel_name}}</a></p>
-                        <p class="q-text q-3">{{convert_duration(guild.now_playing.duration)}}</p>
-                    </div>
-                    <div class="q-item2 q-items-center">
-                        <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://discordapp.com/users/{{guild.now_playing.author}}">{{get_username(guild.now_playing.author)}}</a></p>
-                        <p class="q-text q-2">{{guild.now_playing.author}}</p>
-                        <p class="q-text q-3">{{struct_to_time(guild.now_playing.created_at, first='time')}}</p>
-                    </div>
-                    <div class="q-item0 q-wa q-self-center q-items-center">
-                        <form method="POST" action="" onsubmit="setScroll();">
-                            <input type="hidden" name="scroll" value="0" id="scrollPos2">
-                            {% if admin == True %}
-                            <button class="btn btn-outline btn-primary btn-sm btn-m" type="button" data-bs-toggle="modal" data-bs-target=#videoEditModal_np>Edit</button>
-                            {% endif %}
-                            <button class="btn btn-outline btn-secondary btn-sm btn-m" type="submit" name="queue_btn" value="now_playing">Add to Queue</button>
-                            <button class="btn btn-outline btn-secondary btn-sm btn-m" type="submit" name="nextup_btn" value="now_playing">Next Up</button>
-                        </form>
-                    </div>
+              <div class="q-div q-history">
+                  <img loading="lazy" class="q-img" src="{{guild.now_playing.picture}}" alt="thumbnail">
+                  <div class="q-item1 q-wd">
+                      <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="{{guild.now_playing.url}}">{{guild.now_playing.title}}</a></p>
+                      <p class="q-text"><a class="q-2" target="_blank" rel="noopener noreferrer" href="{{guild.now_playing.channel_link}}">{{guild.now_playing.channel_name}}</a></p>
+                      <p class="q-text q-3">{{convert_duration(guild.now_playing.duration)}}</p>
+                  </div>
+                  <div class="q-item3 q-items-center">
+                      <p class="q-text q-1">Played at</p>
+                      <p class="q-text q-2">{{struct_to_time(guild.now_playing.played_at, first='time')}}</p>
+                  </div>
+                  <div class="q-item2 q-items-center">
+                      <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://discordapp.com/users/{{guild.now_playing.author}}">{{get_username(guild.now_playing.author)}}</a></p>
+                      <p class="q-text q-2">{{guild.now_playing.author}}</p>
+                      <p class="q-text q-3">{{struct_to_time(guild.now_playing.created_at, first='time')}}</p>
+                  </div>
+                  <div class="q-item0 q-wa q-self-center q-items-center">
+                      <form method="POST" action="" onsubmit="setScroll();">
+                          <input type="hidden" name="scroll" value="0" id="scrollPos2">
+                          {% if admin == True %}
+                          <button class="btn btn-outline btn-primary btn-sm btn-m" type="button" data-bs-toggle="modal" data-bs-target=#videoEditModal_np>Edit</button>
+                          {% endif %}
+                          <button type="button" class="btn btn-secondary btn-sm dropdown-toggle btn-m" data-bs-toggle="dropdown" aria-expanded="false">More</button>
+                          <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                              <li><button class="dropdown-item" type="submit" name="queue_btn" value="np">Add to Queue</button></li>
+                              <li><button class="dropdown-item" type="submit" name="nextup_btn" value="np">Play next</button></li>
+                              <li><button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target=#videoModal_np>Info</button></li>
+                          </ul>
+                      </form>
+                  </div>
                 </div>
-              </div>
               {% else %}
               <div class="div-align">
                   <p>Nothing is playing right now</p>
@@ -201,7 +216,6 @@
   </div>
 </form>
 
-
 <!-- Queue -->
 <div class="div-align">
     <h2>Queue</h2>
@@ -237,8 +251,7 @@
                     <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
                         <li><button class="dropdown-item" type="submit" name="top_btn" value={{guild.queue.index(track)}}>Move to Top</button></li>
                         <li><button class="dropdown-item" type="submit" name="bottom_btn" value={{guild.queue.index(track)}}>Move to Bottom</button></li>
-                        <li><button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target=#videoModal_{{guild.queue.index(track)}}>Info</button>
-                    </li>
+                        <li><button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target=#videoModal_{{guild.queue.index(track)}}>Info</button></li>
                     </ul>
                     <button class="btn btn-outline btn-danger btn-sm btn-m" type="submit" name="del_btn" value="{{guild.queue.index(track)}}">Remove</button>
                 </div>
@@ -260,7 +273,6 @@
         </div>
     {% endfor %}
 </form>
-
 
 <!-- Video Modals -->
 {% for track in guild.queue %}
@@ -284,14 +296,57 @@
     </div>
 {% endfor %}
 
+<!-- Video History Modals -->
+{% for track in guild.history %}
+<div class="modal fade" id="videoModal_h{{guild.history.index(track)}}" data-bs-keyboard="false" tabindex="-1" aria-labelledby="videoLabel_h{{guild.history.index(track)}}" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="videoLabel_h{{guild.history.index(track)}}">Video History {{guild.history.index(track)}} Info</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="info-modal">
+                <br>
+                <p>index: <span class="v-info">{{guild.history.index(track)}}</span></p>
+                {% for key, value in track.__dict__.items() %}
+                    <p>{{key}}: <span class="v-info">{{value}}</span></p>
+                {% endfor %}
+                <br>
+            </div>
+        </div>
+      </div>
+    </div>
+{% endfor %}
+
+<!--Now Playing Modal-->
+{% if guild.now_playing %}
+<div class="modal fade" id="videoModal_np" data-bs-keyboard="false" tabindex="-1" aria-labelledby="videoLabel_np" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h1 class="modal-title fs-5" id="videoLabel_np">Video Now Playing Info</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="info-modal">
+            <br>
+            {% for key, value in guild.now_playing.__dict__.items() %}
+                <p>{{key}}: <span class="v-info">{{value}}</span></p>
+            {% endfor %}
+            <br>
+        </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
 <!-- Video Edit Modals -->
 {% if admin == True %}
     {% for track in guild.queue %}
-        <div class="modal fade" id="videoEditModal_{{guild.queue.index(track)}}" data-bs-keyboard="false" tabindex="-1" aria-labelledby="videoEditLabel{{guild.queue.index(track)}}" aria-hidden="true">
+        <div class="modal fade" id="videoEditModal_{{guild.queue.index(track)}}" data-bs-keyboard="false" tabindex="-1" aria-labelledby="videoEditLabel_{{guild.queue.index(track)}}" aria-hidden="true">
           <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="videoEditLabel{{guild.queue.index(track)}}">Video {{guild.queue.index(track)}} Edit</h1>
+                    <h1 class="modal-title fs-5" id="videoEditLabel_{{guild.queue.index(track)}}">Video {{guild.queue.index(track)}} Edit</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="info-modal">
@@ -314,21 +369,35 @@
           </div>
         </div>
     {% endfor %}
-    <div class="modal fade" id="videoEditModal_lp" data-bs-keyboard="false" tabindex="-1" aria-labelledby="videoEditLabel_lp" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="videoEditLabel_lp">Last Played Video Edit</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    {% for track in guild.history %}
+        <div class="modal fade" id="videoEditModal_h{{guild.history.index(track)}}" data-bs-keyboard="false" tabindex="-1" aria-labelledby="videoEditLabel_h{{guild.history.index(track)}}" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="videoEditLabel{{guild.history.index(track)}}">Video History {{guild.history.index(track)}} Edit</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="info-modal">
+                    <br>
+                    <form method="POST" onsubmit="setScroll();">
+                        <input type="hidden" name="scroll" value="0" id="scrollPos9">
+                    {% for key, value in track.__dict__.items() %}
+                        <div class="e-div">
+                            <label for="{{guild.history.index(track)}}_{{key}}" class="e-label">{{key}}</label>
+                            <input type="text" id="{{guild.history.index(track)}}_{{key}}" name="{{key}}" value="{{value}}" class="e-input">
+                        </div>
+                    {% endfor %}
+                        <div class="e-div">
+                            <button class="btn e-item1 btn-secondary btn-lg btn-m" type="button" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+                            <button class="btn e-item1 btn-primary btn-lg btn-m" type="submit" name="edit_btn" value="h{{guild.history.index(track)}}">Submit</button>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="info-modal">
-                <br>
-
-                <br>
-            </div>
+          </div>
         </div>
-      </div>
-    </div>
+    {% endfor %}
+    {% if guild.now_playing %}
     <div class="modal fade" id="videoEditModal_np" data-bs-keyboard="false" tabindex="-1" aria-labelledby="videoEditLabel_np" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
         <div class="modal-content">
@@ -338,12 +407,24 @@
             </div>
             <div class="info-modal">
                 <br>
-
-                <br>
+                <form method="POST" onsubmit="setScroll();">
+                    <input type="hidden" name="scroll" value="0" id="scrollPos10">
+                {% for key, value in guild.now_playing.__dict__.items() %}
+                    <div class="e-div">
+                        <label for="np_{{key}}" class="e-label">{{key}}</label>
+                        <input type="text" id="np_{{key}}" name="{{key}}" value="{{value}}" class="e-input">
+                    </div>
+                {% endfor %}
+                    <div class="e-div">
+                        <button class="btn e-item1 btn-secondary btn-lg btn-m" type="button" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+                        <button class="btn e-item1 btn-primary btn-lg btn-m" type="submit" name="edit_btn" value="np">Submit</button>
+                    </div>
+                </form>
             </div>
         </div>
       </div>
     </div>
+    {% endif %}
 {% endif %}
 
 <!-- Modals -->
@@ -356,9 +437,6 @@
         </div>
         <form method="POST" action="" onsubmit="setScroll();">
             <input type="hidden" name="scroll" value="0" id="scrollPos6">
-            <div class="j-text">
-                This may take a while -> Recommended /join in discord
-            </div>
             <div class="j-div">
                 <label class="btn-m j-label">Channel ID</label>
                 <div class="e-item2">
@@ -395,7 +473,7 @@
             <input type="hidden" name="scroll" value="0" id="scrollPos7">
           <div class="modal-body">
               <div class="mb-3">
-                  <label for="ytURL" class="btn-m">Youtube URL</label>
+                  <label for="ytURL" class="btn-m">URL</label>
                   <input type="url" class="form-control" name="ytURL" id="ytURL" required>
               </div>
           </div>
@@ -461,6 +539,8 @@ function setScroll() {
     document.getElementById("scrollPos6").value = window.scrollY;
     document.getElementById("scrollPos7").value = window.scrollY;
     document.getElementById("scrollPos8").value = window.scrollY;
+    document.getElementById("scrollPos9").value = window.scrollY;
+    document.getElementById("scrollPos10").value = window.scrollY;
 }
 
 window.scrollTo({ top:{{scroll_position}}, left:0, behavior: "instant"})
