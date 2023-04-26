@@ -73,7 +73,7 @@
         "REMOVED #": "REMOVED #",
         "Showing...": "Showing...",
         "Adding playlist to queue...": "Adding playlist to queue...",
-        "Queue #": "Queue #",
+        "QUEUE #": "QUEUE #",
         "Queue **cleared**, Player will now loop **currently** playing song:": "Queue **cleared**, Player will now loop **currently** playing song:",
         "**Moved**": "**Moved**",
         "Import code **required**": "Import code **required**",
@@ -137,7 +137,8 @@
         "That guild doesn't exist or the bot is not in it": "That guild doesn't exist or the bot is not in it",
         "Nothing selected": "Nothing selected",
         "No songs in queue": "No songs in queue",
-        "Check out the new": "Check out the new"
+        "Check out the new": "Check out the new",
+        "HISTORY #": "HISTORY #"
     },
     "cs": {
         "search": "Vyhledejte na youtube zadan\u00fd dotaz",

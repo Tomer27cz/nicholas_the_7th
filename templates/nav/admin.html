@@ -59,7 +59,7 @@
               <option selected value={{guild_object.data.id}}>{{guild_object.data.name}} -> {{guild_object.data.id}}</option>
             {% endfor %}
           </select>
-      </div>
+      </div>3
       <div class="div-login">
         <div class="row row-cols-lg-auto g-3">
           <div class="col-12">
@@ -167,6 +167,18 @@
             </div>
             <div class="col-12">
               <button type="submit" class="btn btn-primary" name="update_buffer_btn">Update</button>
+            </div>
+        </div>
+
+        <div class="row row-cols-lg-auto g-3 btn-m">
+            <div class="col-12">
+              <label for="bufferSelect" class="col-form-label">history_length</label>
+            </div>
+            <div class="col-12">
+              <input type="number" id="history_lengthSelect" name="history_lengthSelect" class="form-control" min="0" max="100" value="10">
+            </div>
+            <div class="col-12">
+              <button type="submit" class="btn btn-primary" name="update_history_length_btn">Update</button>
             </div>
         </div>
 

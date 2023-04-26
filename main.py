@@ -137,6 +137,7 @@ class Options:
         self.buttons = False
         self.volume = 1.0
         self.buffer = 600 # how many seconds of nothing before it disconnects | 600 = 10min
+        self.history_length = 10
 
 
 class GuildData:
@@ -639,8 +640,8 @@ def get_username(user_id: int):
 
 def now_to_history(guild_id: int):
     if guild[guild_id].now_playing is not None:
-        if len(guild[guild_id].history) >= 10:
-            while len(guild[guild_id].history) >= 10:
+        if len(guild[guild_id].history) >= guild[guild_id].options.history_length:
+            while len(guild[guild_id].history) >= guild[guild_id].options.history_length:
                 guild[guild_id].history.pop(0)
         guild[guild_id].history.append(guild[guild_id].now_playing)
         guild[guild_id].now_playing = None
@@ -1057,11 +1058,12 @@ async def shuffle(ctx: commands.Context,
 @app_commands.describe(display_type=text['display_type'], user_only=text['ephemeral'])
 async def show(ctx: commands.Context,
                display_type: Literal['short', 'medium', 'long'] = None,
+               list_type: Literal['queue', 'history']='queue',
                user_only: bool = False
                ):
     log(ctx.guild.id, 'show', [display_type, user_only], log_type='command', author=ctx.author)
 
-    await show_def(ctx, display_type, user_only)
+    await show_def(ctx, display_type, list_type, user_only)
 
 
 @bot.hybrid_command(name='search', with_app_command=True, description=text['search'],  help=text['search'])
@@ -1656,40 +1658,49 @@ async def shuffle_def(ctx,
 
 
 async def show_def(ctx,
-               display_type: Literal['short', 'medium', 'long'] = None,
-               ephemeral: bool = False
-               ):
-    log(ctx, 'show_def', [display_type, ephemeral], log_type='function', author=ctx.author)
+                   display_type: Literal['short', 'medium', 'long'] = None,
+                   list_type: Literal['queue', 'history']='queue',
+                   ephemeral: bool = False
+                   ):
+    log(ctx, 'show_def', [display_type, list_type,ephemeral], log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
 
     if not is_ctx:
         return [False, 'Cannot use this command in WEB']
 
+    if list_type == 'queue':
+        show_list = guild[guild_id].queue
+    elif list_type == 'history':
+        show_list = guild[guild_id].history
+    else:
+        return [False, 'Bad list_type']
+
     max_embed = 5
-    if not guild[guild_id].queue:
+    if not show_list:
         await ctx.reply(tg(guild_id, "Nothing to **show**, queue is **empty!**"), ephemeral=ephemeral)
         return
 
     if not display_type:
-        if len(guild[guild_id].queue) <= max_embed:
+        if len(show_list) <= max_embed:
             display_type = 'long'
         else:
             display_type = 'medium'
 
     if display_type == 'long':
-        await ctx.send(f"**THE QUEUE**\n **Loop** mode  `{guild[guild_id].options.loop}`,  **Display** type `{display_type}`, [Control Panel](http://nicholasthe7th.duckdns.org:5420/guild/{guild_id}&key={guild[guild_id].data.key})", ephemeral=ephemeral, mention_author=False)
+        message = f"**THE {list_type.capitalize()}**\n **Loop** mode  `{guild[guild_id].options.loop}`,  **Display** type `{display_type}`, [Control Panel](http://nicholasthe7th.duckdns.org:5420/guild/{guild_id}&key={guild[guild_id].data.key})"
+        await ctx.send(message, ephemeral=ephemeral, mention_author=False)
 
-        for index, val in enumerate(guild[guild_id].queue):
-            embed = create_embed(val, f'{tg(guild_id, "Queue #")}{index}', guild_id)
+        for index, val in enumerate(show_list):
+            embed = create_embed(val, f'{tg(guild_id, f"{list_type.upper()} #")}{index}', guild_id)
 
             await ctx.send(embed=embed, ephemeral=ephemeral, mention_author=False)
 
 
     if display_type == 'medium':
-        embed = discord.Embed(title="Song Queue", description=f'Loop: {guild[guild_id].options.loop} | Display type: {display_type} | [Control Panel](http://nicholasthe7th.duckdns.org:5420/guild/{guild_id}&key={guild[guild_id].data.key})', color=0x00ff00)
+        embed = discord.Embed(title=f"Song {list_type}", description=f'Loop: {guild[guild_id].options.loop} | Display type: {display_type} | [Control Panel](http://nicholasthe7th.duckdns.org:5420/guild/{guild_id}&key={guild[guild_id].data.key})', color=0x00ff00)
 
         message = ''
-        for index, val in enumerate(guild[guild_id].queue):
+        for index, val in enumerate(show_list):
             add = f'**{index}** --> `{convert_duration(val.duration)}`  [{val.title}](<{val.url}>) \n'
 
             if len(message) + len(add) > 1023:
@@ -1708,14 +1719,14 @@ async def show_def(ctx,
 
 
     if display_type == 'short':
-        send = f"**THE QUEUE**\n **Loop** mode  `{guild[guild_id].options.loop}`,  **Display** type `{display_type}`, [Control Panel](http://nicholasthe7th.duckdns.org:5420/guild/{guild_id}&key={guild[guild_id].data.key})"
+        send = f"**THE {list_type.upper()}**\n **Loop** mode  `{guild[guild_id].options.loop}`,  **Display** type `{display_type}`, [Control Panel](http://nicholasthe7th.duckdns.org:5420/guild/{guild_id}&key={guild[guild_id].data.key})"
         # noinspection PyUnresolvedReferences
         if ctx.interaction.response.is_done(): await ctx.send(send, ephemeral=ephemeral, mention_author=False)
         else: await ctx.reply(send, ephemeral=ephemeral, mention_author=False)
 
         message = ''
-        for index, val in enumerate(guild[guild_id].queue):
-            add = f'**{tg(guild_id, "Queue #")}{index}**  `{convert_duration(val.duration)}`  [`{val.title}`](<{val.url}>) \n'
+        for index, val in enumerate(show_list):
+            add = f'**{tg(guild_id, f"{list_type.upper()} #")}{index}**  `{convert_duration(val.duration)}`  [`{val.title}`](<{val.url}>) \n'
             if len(message) + len(add) > 2000:
                 if ephemeral:
                     await ctx.send(message, ephemeral=ephemeral, mention_author=False)
@@ -2561,17 +2572,18 @@ async def log_command_def(ctx: commands.Context,
 
 # noinspection PyTypeHints
 async def change_config_def(ctx: commands.Context,
-                        stopped: bool = None,
-                        loop: bool = None,
-                        is_radio: bool = None,
-                        buttons: bool = None,
-                        language: Literal[tuple(languages_dict.keys())] = None,
-                        response_type: Literal['short', 'long'] = None,
-                        buffer: int = None,
-                        volume = None,
-                        server = None,
+                            stopped: bool = None,
+                            loop: bool = None,
+                            is_radio: bool = None,
+                            buttons: bool = None,
+                            language: Literal[tuple(languages_dict.keys())] = None,
+                            response_type: Literal['short', 'long'] = None,
+                            buffer: int = None,
+                            history_length: int = None,
+                            volume = None,
+                            server = None,
                         ):
-    log(ctx.guild.id, 'change_config_def', [stopped, loop, is_radio, buttons, language, response_type, buffer, volume, server], log_type='function', author=ctx.author)
+    log(ctx.guild.id, 'change_config_def', [stopped, loop, is_radio, buttons, language, response_type, buffer, history_length, volume, server], log_type='function', author=ctx.author)
     guild_id = ctx.guild.id
 
     save_json()
@@ -2614,6 +2626,8 @@ async def change_config_def(ctx: commands.Context,
             guild[guild_id].options.volume = volume
         if buffer:
             guild[guild_id].options.buffer = buffer
+        if history_length:
+            guild[guild_id].options.history_length = history_length
 
         config_text = f'`stopped={guild[guild_id].options.stopped}`, `loop={guild[guild_id].options.loop}`,' \
                  f' `is_radio={guild[guild_id].options.is_radio}`, `buttons={guild[guild_id].options.buttons}`,' \
@@ -3111,6 +3125,19 @@ async def web_edit(web_data, form):
 
     return [True, f'Edited item {"h" if not is_queue else ""}{index} successfully!']
 
+async def web_options_edit(web_data, option, form):
+    log(web_data, 'web_options_edit', [option, form], log_type='function', author=web_data.author)
+    guild_id = web_data.guild_id
+
+    data = form[f'{option}Select']
+    options = guild[guild_id].options
+
+    options_dict = {'stopped': options.stopped, 'loop': options.loop, 'is_radio': options.is_radio,
+                    'language': options.language, 'response_type': options.response_type,
+                    'search_query': options.search_query, 'buttons': options.buttons, 'volume': options.volume,
+                    'buffer': options.buffer, 'history_length': options.history_length, option: data}
+
+
 # --------------------------------------------- WEB SERVER --------------------------------------------- #
 
 app = Flask(__name__)
@@ -3465,6 +3492,10 @@ async def admin_page():
             if 'update_buffer_btn' in keys:
                 guild[guild_id].options.buffer = int(request.form['bufferSelect'])
                 messages = ['buffer updated']
+                log(web_data, 'update buffer', [guild[guild_id].options.buffer], log_type='web', author=web_data.author)
+            if 'update_history_length_btn' in keys:
+                guild[guild_id].options.history_length = int(request.form['history_lengthSelect'])
+                messages = ['history_length updated']
                 log(web_data, 'update buffer', [guild[guild_id].options.buffer], log_type='web', author=web_data.author)
             if 'update_volume_btn' in keys:
                 guild[guild_id].options.volume = int(request.form['volumeSelect'])
