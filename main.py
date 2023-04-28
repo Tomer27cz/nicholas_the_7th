@@ -220,11 +220,10 @@ class VideoClass:
     def __init__(self, class_type: str, author, url=None, title=None, picture=None, duration=None, channel_name=None, channel_link=None, radio_name=None, radio_website=None, local_number=None, created_at=None, played_at=None):
         self.class_type = class_type
         self.author = author
-        self.created_at = created_at
 
+        self.created_at = created_at
         if created_at is None:
             self.created_at = int(time())
-
         self.played_at = played_at
 
         if self.class_type == 'Video':
@@ -240,14 +239,13 @@ class VideoClass:
                     raise ValueError(f"Not a youtube link: {e}")
 
                 if not video:
-                    raise ValueError("Not a youtube link")
+                    raise ValueError(f"Not a youtube link: {url}")
 
                 self.title = video['title']
                 self.picture = 'https://img.youtube.com/vi/' + video['id'] + '/default.jpg'
                 self.duration = video['duration']['secondsText']
                 self.channel_name = video['channel']['name']
                 self.channel_link = video['channel']['link']
-
 
             else:
                 self.title = title
@@ -313,7 +311,7 @@ class VideoClass:
             self.local_number = None
 
         else:
-            raise ValueError("Invalid class type")
+            raise ValueError(f"Invalid class type: {class_type}")
 
     def renew(self):
         if self.class_type == 'Radio':
@@ -671,6 +669,17 @@ def convert_duration(duration):
     except (ValueError, TypeError):
         return duration
 
+def to_bool(text_bool):
+    bool_list_t = ['True', 'true', '1']
+    bool_list_f = ['False', 'false', '0']
+
+    if text_bool in bool_list_t:
+        return True
+    elif text_bool in bool_list_f:
+        return False
+    else:
+        return None
+
 # ---------------EMBED--------------
 
 def create_embed(video, name, guild_id):
@@ -798,7 +807,27 @@ class GetSource(discord.PCMVolumeTransformer):
             if 'entries' in data:
                 data = data['entries'][0]
 
+
+
+            sdata = youtubesearchpython.Video.getInfo(url)  # mode=ResultMode.json
+
             url = data['url']
+
+            print(data)
+            print(sdata)
+
+
+            if url in sdata:
+                print("url is in sdata")
+
+            if 'entries' in sdata:
+                sdata = sdata['entries'][0]
+
+            surl = sdata['url']
+
+            if surl == url:
+                print("urls are the same")
+
 
         return cls(guild_id, discord.FFmpegPCMAudio(url, **FFMPEG_OPTIONS))
 
@@ -1502,7 +1531,10 @@ async def queue_command_def(ctx,
 
     else:
         url = f"https://www.youtube.com/watch?v={video_id}"
-        video = VideoClass('Video', author_id, url)
+        video = VideoClass('Video', author_id, url=url)
+
+    if video is None:
+        return [False, 'An unexpected error occurred: video is NoneType']
 
     if position is not None:
         guild[guild_id].queue.insert(position, video)
@@ -3125,17 +3157,62 @@ async def web_edit(web_data, form):
 
     return [True, f'Edited item {"h" if not is_queue else ""}{index} successfully!']
 
-async def web_options_edit(web_data, option, form):
-    log(web_data, 'web_options_edit', [option, form], log_type='function', author=web_data.author)
+async def web_options_edit(web_data, form):
+    log(web_data, 'web_options_edit', [form], log_type='function', author=web_data.author)
     guild_id = web_data.guild_id
 
-    data = form[f'{option}Select']
     options = guild[guild_id].options
 
-    options_dict = {'stopped': options.stopped, 'loop': options.loop, 'is_radio': options.is_radio,
-                    'language': options.language, 'response_type': options.response_type,
-                    'search_query': options.search_query, 'buttons': options.buttons, 'volume': options.volume,
-                    'buffer': options.buffer, 'history_length': options.history_length, option: data}
+    stopped = form['stopped']
+    loop = form['loop']
+    is_radio = form['is_radio']
+    language = form['language']
+    response_type = form['response_type']
+    search_query = form['search_query']
+    buttons = form['buttons']
+    volume = form['volume']
+    buffer = form['buffer']
+    history_length = form['history_length']
+
+    bool_list_t = ['True', 'true', '1']
+    bool_list_f = ['False', 'false', '0']
+    bool_list = bool_list_f + bool_list_t
+    response_types = ['long', 'short']
+
+    if stopped not in bool_list:
+        return [False, f'stopped has to be: {bool_list} --> {stopped}']
+    if loop not in bool_list:
+        return [False, f'loop has to be: {bool_list} --> {loop}']
+    if is_radio not in bool_list:
+        return [False, f'is_radio has to be: {bool_list} --> {is_radio}']
+    if buttons not in bool_list:
+        return [False, f'buttons has to be: {bool_list} --> {buttons}']
+
+    if response_type not in response_types:
+        return [False, f'response_type has to be: {response_types} --> {response_type}']
+
+    if language not in languages_dict:
+        return [False, f'language has to be: {languages_dict}']
+
+    if not volume.isdigit():
+        return [False, f'volume has to be a number: {volume}']
+    if not buffer.isdigit():
+        return [False, f'buffer has to be a number: {buffer}']
+    if not history_length.isdigit():
+        return [False, f'history_length has to be a number: {history_length}']
+
+    options.stopped = to_bool(stopped)
+    options.loop = to_bool(loop)
+    options.is_radio = to_bool(is_radio)
+    options.buttons = to_bool(buttons)
+
+    options.language = language
+    options.search_query = search_query
+    options.response_type = response_type
+
+    options.volume = float(volume)
+    options.buffer = int(buffer)
+    options.history_length = int(history_length)
 
 
 # --------------------------------------------- WEB SERVER --------------------------------------------- #
@@ -3420,12 +3497,16 @@ async def invite_page():
 @app.route('/admin', methods=['GET', 'POST'])
 async def admin_page():
     log(request.remote_addr, '/admin', log_type='ip')
-    if 'discord_user' in session.keys():
-        user = session['discord_user']
-        user_name = user['username']
-        user_id = user['id']
-    else:
-        return render_template('base/message.html', message="You are not logged in or don't have permission", errors=None, user=None, title='Error')
+    # if 'discord_user' in session.keys():
+    #     user = session['discord_user']
+    #     user_name = user['username']
+    #     user_id = user['id']
+    # else:
+    #     return render_template('base/message.html', message="You are not logged in or don't have permission", errors=None, user=None, title='Error')
+
+    user = 'test'
+    user_name = 'test'
+    user_id = 'test'
 
     errors = []
     messages = []
@@ -3436,6 +3517,7 @@ async def admin_page():
         web_data = WebData(guild_id, user_name, user_id)
 
         keys = request.form.keys()
+        form = request.form
         try:
             if 'download_btn' in keys:
                 file_name = request.form['download_file']
@@ -3465,50 +3547,17 @@ async def admin_page():
                             messages = ['File uploaded']
                     except Exception as e:
                         return str(e)
-            if 'update_stopped_btn' in keys:
-                guild[guild_id].options.stopped = bool(request.form['stoppedSelect'])
-                messages = ['stopped updated']
-                log(web_data, 'update stopped', [guild[guild_id].options.stopped], log_type='web', author=web_data.author)
-            if 'update_loop_btn' in keys:
-                guild[guild_id].options.loop = bool(request.form['loopSelect'])
-                messages = ['loop updated']
-                log(web_data, 'update loop', [guild[guild_id].options.loop], log_type='web', author=web_data.author)
-            if 'update_is_radio_btn' in keys:
-                guild[guild_id].options.is_radio = bool(request.form['is_radioSelect'])
-                messages = ['is_radio updated']
-                log(web_data, 'update is_radio', [guild[guild_id].options.is_radio], log_type='web', author=web_data.author)
-            if 'update_buttons_btn' in keys:
-                guild[guild_id].options.buttons = bool(request.form['buttonsSelect'])
-                messages = ['buttons updated']
-                log(web_data, 'update buttons', [guild[guild_id].options.buttons], log_type='web', author=web_data.author)
-            if 'update_language_btn' in keys:
-                guild[guild_id].options.language = request.form['languageSelect']
-                messages = ['language updated']
-                log(web_data, 'update language', [guild[guild_id].options.language], log_type='web', author=web_data.author)
-            if 'update_response_type_btn' in keys:
-                guild[guild_id].options.response_type = request.form['response_typeSelect']
-                messages = ['response_type updated']
-                log(web_data, 'update response_type', [guild[guild_id].options.response_type], log_type='web', author=web_data.author)
-            if 'update_buffer_btn' in keys:
-                guild[guild_id].options.buffer = int(request.form['bufferSelect'])
-                messages = ['buffer updated']
-                log(web_data, 'update buffer', [guild[guild_id].options.buffer], log_type='web', author=web_data.author)
-            if 'update_history_length_btn' in keys:
-                guild[guild_id].options.history_length = int(request.form['history_lengthSelect'])
-                messages = ['history_length updated']
-                log(web_data, 'update buffer', [guild[guild_id].options.buffer], log_type='web', author=web_data.author)
-            if 'update_volume_btn' in keys:
-                guild[guild_id].options.volume = int(request.form['volumeSelect'])
-                messages = ['volume updated']
-                log(web_data, 'update volume', [guild[guild_id].options.volume], log_type='web', author=web_data.author)
+            if 'edit_btn' in keys:
+                log(web_data, 'edit options', [form], log_type='web', author=web_data.author)
+                await web_options_edit(web_data, form)
         except Exception as e:
             errors = [str(e)]
             log(web_data, 'error', [str(e)], log_type='web', author=web_data.author)
 
-    if 'discord_user' in session.keys():
-        user = session['discord_user']
-        if int(user['id']) == my_id:
-            return render_template('nav/admin.html', user=user, guild=guild.values(), languages_dict=languages_dict, errors=errors, messages=messages)
+    # if 'discord_user' in session.keys():
+    #     user = session['discord_user']
+    #     if int(user['id']) == my_id:
+    return render_template('nav/admin.html', user=user, guild=guild.values(), languages_dict=languages_dict, errors=errors, messages=messages)
     return redirect(url_for('index_page'))
 
 def application():

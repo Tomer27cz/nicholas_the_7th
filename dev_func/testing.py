@@ -348,11 +348,59 @@
 # text = 'h13'
 # intiger = int(text[1:])
 # print(intiger)
+#
+# int(None)
+#
+#
+# print(bool(''))
+import yt_dlp
+import youtubesearchpython
+import time
 
-int(None)
+url = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
 
+YTDL_OPTIONS = {
+        'format': 'bestaudio/best',
+        'extractaudio': True,
+        'audioformat': 'mp3',
+        'outtmpl': '%(extractor)s-%(id)s-%(title)s.%(ext)s',
+        'restrictfilenames': True,
+        'noplaylist': True,
+        'nocheckcertificate': True,
+        'ignoreerrors': False,
+        'logtostderr': False,
+        'quiet': True,
+        'no_warnings': True,
+        'default_search': 'auto',
+        'source_address': '0.0.0.0',
+    }
 
+ytdl = yt_dlp.YoutubeDL(YTDL_OPTIONS)
 
+data_time = time.time()
+data = ytdl.extract_info(url, download=False)
+print(f'data took {time.time() - data_time}')
 
+if 'entries' in data:
+    data = data['entries'][0]
 
+sdata_time = time.time()
+sdata = youtubesearchpython.Video.getInfo(url)  # mode=ResultMode.json
+print(f'sdata took {time.time() - sdata_time}')
+
+url = data['url']
+
+# print(data)
+print(sdata)
+
+if url in sdata:
+    print("url is in sdata")
+
+if 'entries' in sdata:
+    sdata = sdata['entries'][0]
+
+surl = sdata['url']
+
+if surl == url:
+    print("urls are the same")
 

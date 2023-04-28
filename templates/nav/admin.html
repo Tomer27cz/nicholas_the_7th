@@ -21,179 +21,92 @@
 {% endif %}
 
 
-<div>
-  <form action="#" method="POST" enctype="multipart/form-data">
-    <div class="div-align-center">
-      <h1 class="btn-m">Admin</h1>
-    </div>
-    <div class="div-login">
-        <div class="row row-cols-lg-auto g-3">
-          <div class="col-12">
-              <h3>Files</h3>
-          </div>
-          <div class="col-12">
-            <select class="form-select" aria-label="Default select example" name="download_file" id="download_file">
-              <option selected value="log.txt">log.txt</option>
-              <option value="guilds.json">guilds.json</option>
-              <option value="other.json">other.json</option>
-              <option value="radio.json">radio.json</option>
-              <option value="languages.json">languages.json</option>
-              <option value="activity.log">activity.log</option>
-              <option value="data.txt">data.txt</option>
-            </select>
-          </div>
-          <div class="col-12">
-            <button type="submit" class="btn btn-primary" name="download_btn">Download</button>
-          </div>
-          <div class="col-12">
-            <input type="file" class="form-control" id="upload_file" name="file">
-          </div>
-          <div class="col-12">
-              <button type="submit" class="btn btn-primary" name="upload_btn">Upload</button>
-          </div>
-        </div>
-      </div>
-      <div class="div-login">
-          <select class="form-select" aria-label="Default select example" name="guild_id_select">
-            {% for guild_object in guild %}
-              <option selected value={{guild_object.data.id}}>{{guild_object.data.name}} -> {{guild_object.data.id}}</option>
-            {% endfor %}
-          </select>
-      </div>3
-      <div class="div-login">
-        <div class="row row-cols-lg-auto g-3">
-          <div class="col-12">
-            <h3>Options</h3>
-          </div>
-        </div>
-
-        <div class="row row-cols-lg-auto g-3 btn-m">
-            <div class="col-12">
-              <label for="stoppedSelect" class="col-form-label">stopped</label>
-            </div>
-            <div class="col-12">
-              <select class="form-select" id="stoppedSelect" name="stoppedSelect">
-                <option value="true">True</option>
-                <option value="false">False</option>
-                </select>
-            </div>
-            <div class="col-12">
-              <button type="submit" class="btn btn-primary" name="update_stopped_btn">Update</button>
-            </div>
-        </div>
-
-        <div class="row row-cols-lg-auto g-3 btn-m">
-            <div class="col-12">
-              <label for="loopSelect" class="col-form-label">loop</label>
-            </div>
-            <div class="col-12">
-              <select class="form-select" id="loopSelect" name="loopSelect">
-                <option value="true">True</option>
-                <option value="false">False</option>
-                </select>
-            </div>
-            <div class="col-12">
-              <button type="submit" class="btn btn-primary" name="update_loop_btn">Update</button>
-            </div>
-        </div>
-
-        <div class="row row-cols-lg-auto g-3 btn-m">
-            <div class="col-12">
-              <label for="is_radioSelect" class="col-form-label">is_radio</label>
-            </div>
-            <div class="col-12">
-              <select class="form-select" id="is_radioSelect" name="is_radioSelect">
-                <option value="true">True</option>
-                <option value="false">False</option>
-                </select>
-            </div>
-            <div class="col-12">
-              <button type="submit" class="btn btn-primary" name="update_is_radio_btn">Update</button>
-            </div>
-        </div>
-
-        <div class="row row-cols-lg-auto g-3 btn-m">
-            <div class="col-12">
-              <label for="buttonsSelect" class="col-form-label">buttons</label>
-            </div>
-            <div class="col-12">
-              <select class="form-select" id="buttonsSelect" name="buttonsSelect">
-                <option value="true">True</option>
-                <option value="false">False</option>
-                </select>
-            </div>
-            <div class="col-12">
-              <button type="submit" class="btn btn-primary" name="update_buttons_btn">Update</button>
-            </div>
-        </div>
-
-        <div class="row row-cols-lg-auto g-3 btn-m">
-            <div class="col-12">
-              <label for="languageSelect" class="col-form-label">language</label>
-            </div>
-            <div class="col-12">
-              <select class="form-select" id="languageSelect" name="languageSelect">
-                {% for language in languages_dict %}
-                  <option value={{language}}>{{language}}</option>
-                {% endfor %}
-                </select>
-            </div>
-            <div class="col-12">
-              <button type="submit" class="btn btn-primary" name="update_language_btn">Update</button>
-            </div>
-        </div>
-
-        <div class="row row-cols-lg-auto g-3 btn-m">
-            <div class="col-12">
-              <label for="response_typeSelect" class="col-form-label">response_type</label>
-            </div>
-            <div class="col-12">
-              <select class="form-select" id="response_typeSelect" name="response_typeSelect">
-                <option value="short">short</option>
-                <option value="long">long</option>
-                </select>
-            </div>
-            <div class="col-12">
-              <button type="submit" class="btn btn-primary" name="update_response_type_btn">Update</button>
-            </div>
-        </div>
-
-        <div class="row row-cols-lg-auto g-3 btn-m">
-            <div class="col-12">
-              <label for="bufferSelect" class="col-form-label">buffer</label>
-            </div>
-            <div class="col-12">
-              <input type="number" id="bufferSelect" name="bufferSelect" class="form-control" min="0" value="600">
-            </div>
-            <div class="col-12">
-              <button type="submit" class="btn btn-primary" name="update_buffer_btn">Update</button>
-            </div>
-        </div>
-
-        <div class="row row-cols-lg-auto g-3 btn-m">
-            <div class="col-12">
-              <label for="bufferSelect" class="col-form-label">history_length</label>
-            </div>
-            <div class="col-12">
-              <input type="number" id="history_lengthSelect" name="history_lengthSelect" class="form-control" min="0" max="100" value="10">
-            </div>
-            <div class="col-12">
-              <button type="submit" class="btn btn-primary" name="update_history_length_btn">Update</button>
-            </div>
-        </div>
-
-        <div class="row row-cols-lg-auto g-3 btn-m">
-            <div class="col-12">
-              <label for="volumeSelect" class="col-form-label">volume</label>
-            </div>
-            <div class="col-12">
-              <input type="number" id="volumeSelect" name="volumeSelect" class="form-control" min="0" value="100">
-            </div>
-            <div class="col-12">
-              <button type="submit" class="btn btn-primary" name="update_volume_btn">Update</button>
-            </div>
-        </div>
-      </div>
-  </form>
+<form action="#" method="POST">
+<div class="div-align-center">
+  <h1 class="btn-m">Admin</h1>
 </div>
+<div class="div-login">
+    <div class="row row-cols-lg-auto g-3">
+      <div class="col-12">
+          <h3>Files</h3>
+      </div>
+      <div class="col-12">
+        <select class="form-select" aria-label="Default select example" name="download_file" id="download_file">
+          <option selected value="log.txt">log.txt</option>
+          <option value="guilds.json">guilds.json</option>
+          <option value="other.json">other.json</option>
+          <option value="radio.json">radio.json</option>
+          <option value="languages.json">languages.json</option>
+          <option value="activity.log">activity.log</option>
+          <option value="data.txt">data.txt</option>
+        </select>
+      </div>
+      <div class="col-12">
+        <button type="submit" class="btn btn-primary" name="download_btn">Download</button>
+      </div>
+      <div class="col-12">
+        <input type="file" class="form-control" id="upload_file" name="file">
+      </div>
+      <div class="col-12">
+          <button type="submit" class="btn btn-primary" name="upload_btn">Upload</button>
+      </div>
+    </div>
+  </div>
+  <div class="div-login">
+    <div class="row row-cols-lg-auto g-3">
+      <div class="col-12">
+        <h3>Options</h3>
+      </div>
+    </div>
+  </div>
+  <div class="picker">
+      <h3>Select a server to Edit</h3>
+      <br/>
+      <section class="d-cards">
+        {% for guild_object in guild %}
+        <div class="d-card">
+          <a data-bs-toggle="modal" data-bs-target=#guildEditModal_{{guild_object.id}}>
+            {% if guild_object.data.icon is not none %}
+              <img loading="lazy" src="{{guild_object.data.icon}}" class="green-border" />
+            {% else %}
+              <img loading="lazy" src="/static/img/discord_icon.svg" class="green-border" />
+            {% endif %}
+          </a>
+          <br/>
+          {{ guild_object.data.name }}
+        </div>
+        {% endfor %}
+      </section>
+        <br/>
+    </div>
+</form>
+
+{% for guild_object in guild %}
+<div class="modal fade" id="guildEditModal_{{guild_object.id}}" data-bs-keyboard="false" tabindex="-1" aria-labelledby="guildEditLabel_{{guild_object.id}}" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h1 class="modal-title fs-5" id="guildEditLabel_{{guild_object.id}}">Guild Edit: {{guild_object.data.name}}</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="info-modal">
+            <br>
+            <form method="POST">
+            {% for key, value in guild_object.options.__dict__.items() %}
+                <div class="e-div">
+                    <label for="{{guild_object.id}}_{{key}}" class="e-label">{{key}}</label>
+                    <input type="text" id="{{guild_object.id}}_{{key}}" name="{{key}}" value="{{value}}" class="e-input">
+                </div>
+            {% endfor %}
+                <div class="e-div">
+                    <button class="btn e-item1 btn-secondary btn-lg btn-m" type="button" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+                    <button class="btn e-item1 btn-primary btn-lg btn-m" type="submit" name="edit_btn">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+
 {% endblock %}

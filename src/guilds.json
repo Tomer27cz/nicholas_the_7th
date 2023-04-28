@@ -3,15 +3,16 @@
         "id": 1008145667622969397,
         "options": {
             "id": 1008145667622969397,
-            "stopped": true,
+            "stopped": false,
             "loop": false,
-            "is_radio": true,
+            "is_radio": false,
             "language": "cs",
             "response_type": "short",
             "search_query": "Never gonna give you up",
             "buttons": false,
             "volume": 1.0,
-            "buffer": 600
+            "buffer": 600,
+            "history_length": 10
         },
         "data": {
             "id": 1008145667622969397,
@@ -46,20 +47,18 @@
                 }
             ]
         },
-        "queue": {},
-        "search_list": {},
-        "history": {
+        "queue": {
             "0": {
                 "class_type": "Video",
                 "author": 349164237605568513,
-                "created_at": 1682376478,
+                "created_at": 1682664897,
                 "played_at": null,
-                "url": "https://www.youtube.com/watch?v=M-mtdN6R3bQ",
-                "title": "Short Song (English Song)\ud83c\udfb5 [W Lyrics] 30 seconds",
-                "picture": "https://img.youtube.com/vi/M-mtdN6R3bQ/default.jpg",
-                "duration": "30",
-                "channel_name": "LEVIOS LS",
-                "channel_link": "https://www.youtube.com/channel/UC5728jgtLYM7O9HYPq8BYbQ",
+                "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+                "title": "Rick Astley - Never Gonna Give You Up (Official Music Video)",
+                "picture": "https://img.youtube.com/vi/dQw4w9WgXcQ/default.jpg",
+                "duration": "212",
+                "channel_name": "Rick Astley",
+                "channel_link": "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw",
                 "radio_name": null,
                 "radio_website": null,
                 "local_number": null
@@ -67,154 +66,38 @@
             "1": {
                 "class_type": "Video",
                 "author": 349164237605568513,
-                "created_at": 1682376478,
+                "created_at": 1682664994,
                 "played_at": null,
-                "url": "https://www.youtube.com/watch?v=M-mtdN6R3bQ",
-                "title": "Short Song (English Song)\ud83c\udfb5 [W Lyrics] 30 seconds",
-                "picture": "https://img.youtube.com/vi/M-mtdN6R3bQ/default.jpg",
-                "duration": "30",
-                "channel_name": "LEVIOS LS",
-                "channel_link": "https://www.youtube.com/channel/UC5728jgtLYM7O9HYPq8BYbQ",
+                "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+                "title": "Rick Astley - Never Gonna Give You Up (Official Music Video)",
+                "picture": "https://img.youtube.com/vi/dQw4w9WgXcQ/default.jpg",
+                "duration": "212",
+                "channel_name": "Rick Astley",
+                "channel_link": "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw",
                 "radio_name": null,
                 "radio_website": null,
-                "local_number": null
-            },
-            "2": {
-                "class_type": "Video",
-                "author": 349164237605568513,
-                "created_at": 1682376478,
-                "played_at": null,
-                "url": "https://www.youtube.com/watch?v=M-mtdN6R3bQ",
-                "title": "Short Song (English Song)\ud83c\udfb5 [W Lyrics] 30 seconds",
-                "picture": "https://img.youtube.com/vi/M-mtdN6R3bQ/default.jpg",
-                "duration": "30",
-                "channel_name": "LEVIOS LS",
-                "channel_link": "https://www.youtube.com/channel/UC5728jgtLYM7O9HYPq8BYbQ",
-                "radio_name": null,
-                "radio_website": null,
-                "local_number": null
-            },
-            "3": {
-                "class_type": "Video",
-                "author": 349164237605568513,
-                "created_at": 1682376478,
-                "played_at": null,
-                "url": "https://www.youtube.com/watch?v=M-mtdN6R3bQ",
-                "title": "Short Song (English Song)\ud83c\udfb5 [W Lyrics] 30 seconds",
-                "picture": "https://img.youtube.com/vi/M-mtdN6R3bQ/default.jpg",
-                "duration": "30",
-                "channel_name": "LEVIOS LS",
-                "channel_link": "https://www.youtube.com/channel/UC5728jgtLYM7O9HYPq8BYbQ",
-                "radio_name": null,
-                "radio_website": null,
-                "local_number": null
-            },
-            "4": {
-                "class_type": "Video",
-                "author": 349164237605568513,
-                "created_at": 1682376478,
-                "played_at": null,
-                "url": "https://www.youtube.com/watch?v=M-mtdN6R3bQ",
-                "title": "Short Song (English Song)\ud83c\udfb5 [W Lyrics] 30 seconds",
-                "picture": "https://img.youtube.com/vi/M-mtdN6R3bQ/default.jpg",
-                "duration": "30",
-                "channel_name": "LEVIOS LS",
-                "channel_link": "https://www.youtube.com/channel/UC5728jgtLYM7O9HYPq8BYbQ",
-                "radio_name": null,
-                "radio_website": null,
-                "local_number": null
-            },
-            "5": {
-                "class_type": "Video",
-                "author": 349164237605568513,
-                "created_at": 1682376478,
-                "played_at": null,
-                "url": "https://www.youtube.com/watch?v=M-mtdN6R3bQ",
-                "title": "Short Song (English Song)\ud83c\udfb5 [W Lyrics] 30 seconds",
-                "picture": "https://img.youtube.com/vi/M-mtdN6R3bQ/default.jpg",
-                "duration": "30",
-                "channel_name": "LEVIOS LS",
-                "channel_link": "https://www.youtube.com/channel/UC5728jgtLYM7O9HYPq8BYbQ",
-                "radio_name": null,
-                "radio_website": null,
-                "local_number": null
-            },
-            "6": {
-                "class_type": "Video",
-                "author": 349164237605568513,
-                "created_at": 1682376478,
-                "played_at": null,
-                "url": "https://www.youtube.com/watch?v=M-mtdN6R3bQ",
-                "title": "Short Song (English Song)\ud83c\udfb5 [W Lyrics] 30 seconds",
-                "picture": "https://img.youtube.com/vi/M-mtdN6R3bQ/default.jpg",
-                "duration": "30",
-                "channel_name": "LEVIOS LS",
-                "channel_link": "https://www.youtube.com/channel/UC5728jgtLYM7O9HYPq8BYbQ",
-                "radio_name": null,
-                "radio_website": null,
-                "local_number": null
-            },
-            "7": {
-                "class_type": "Video",
-                "author": 349164237605568513,
-                "created_at": 1682376478,
-                "played_at": null,
-                "url": "https://www.youtube.com/watch?v=M-mtdN6R3bQ",
-                "title": "Short Song (English Song)\ud83c\udfb5 [W Lyrics] 30 seconds",
-                "picture": "https://img.youtube.com/vi/M-mtdN6R3bQ/default.jpg",
-                "duration": "30",
-                "channel_name": "LEVIOS LS",
-                "channel_link": "https://www.youtube.com/channel/UC5728jgtLYM7O9HYPq8BYbQ",
-                "radio_name": null,
-                "radio_website": null,
-                "local_number": null
-            },
-            "8": {
-                "class_type": "Radio",
-                "author": 349164237605568513,
-                "created_at": 1682380475,
-                "played_at": null,
-                "radio_name": "Alternative Times Radio",
-                "url": "https://radia.cz/radio-alternative-times-radio-playlist",
-                "title": "The Pioneers",
-                "picture": "https://cdb.radia.cz/content/covers/a1/d4/thumbnails/a1d4f057b79cc5da662f8abb1b4261c2-image(image400).jpg",
-                "duration": "Stream",
-                "channel_name": "Bloc Party",
-                "channel_link": "https://radia.cz/radio-alternative-times-radio-playlist",
-                "radio_website": "radia_cz",
-                "local_number": null
-            },
-            "9": {
-                "class_type": "Radio",
-                "author": "WEB Interface",
-                "created_at": 1682381643,
-                "played_at": 1682381643,
-                "radio_name": "\u010cesk\u00fd rozhlas Brno",
-                "url": "https://radia.cz/radio-cesky-rozhlas-brno-playlist",
-                "title": "Hodina pln\u00e1 \u010desk\u00fdch p\u00edsni\u010dek",
-                "picture": "https://data.rozhlas.cz/api/v2/asset/show/5997050.jpg",
-                "duration": "Stream",
-                "channel_name": "Noc s \u010desk\u00fdmi p\u00edsni\u010dkami",
-                "channel_link": "https://radia.cz/radio-cesky-rozhlas-brno-playlist",
-                "radio_website": "radia_cz",
                 "local_number": null
             }
         },
-        "now_playing": {
-            "class_type": "Radio",
-            "author": "WEB Guest",
-            "created_at": 1682382062,
-            "played_at": 1682382062,
-            "radio_name": "\u010cesk\u00fd rozhlas Pardubice",
-            "url": "https://radia.cz/radio-cesky-rozhlas-pardubice-playlist",
-            "title": "Hodina pln\u00e1 \u010desk\u00fdch p\u00edsni\u010dek",
-            "picture": "https://data.rozhlas.cz/api/v2/asset/show/5997050.jpg",
-            "duration": "Stream",
-            "channel_name": "Noc s \u010desk\u00fdmi p\u00edsni\u010dkami",
-            "channel_link": "https://radia.cz/radio-cesky-rozhlas-pardubice-playlist",
-            "radio_website": "radia_cz",
-            "local_number": null
-        }
+        "search_list": {},
+        "history": {
+            "0": {
+                "class_type": "Video",
+                "author": 349164237605568513,
+                "created_at": 1000212400,
+                "played_at": null,
+                "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+                "title": "Never gonna give you up",
+                "picture": "https://img.youtube.com/vi/dQw4w9WgXcQ/default.jpg",
+                "duration": "3:33",
+                "channel_name": "Rick Astley",
+                "channel_link": "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw",
+                "radio_name": null,
+                "radio_website": null,
+                "local_number": null
+            }
+        },
+        "now_playing": {}
     },
     "892403162315644928": {
         "id": 892403162315644928,
@@ -228,7 +111,8 @@
             "search_query": "Never gonna give you up",
             "buttons": false,
             "volume": 1.0,
-            "buffer": 600
+            "buffer": 600,
+            "history_length": 10
         },
         "data": {
             "id": 892403162315644928,
@@ -288,7 +172,8 @@
             "search_query": "Never gonna give you up",
             "buttons": false,
             "volume": 1.0,
-            "buffer": 600
+            "buffer": 600,
+            "history_length": 10
         },
         "data": {
             "id": 892404682285256735,
@@ -344,7 +229,8 @@
             "search_query": "Never gonna give you up",
             "buttons": false,
             "volume": 1.0,
-            "buffer": 600
+            "buffer": 600,
+            "history_length": 10
         },
         "data": {
             "id": 1092207263843880983,
@@ -400,7 +286,8 @@
             "search_query": "Never gonna give you up",
             "buttons": false,
             "volume": 1.0,
-            "buffer": 600
+            "buffer": 600,
+            "history_length": 10
         },
         "data": {
             "id": 1092205538202353764,
@@ -456,7 +343,8 @@
             "search_query": "Never gonna give you up",
             "buttons": false,
             "volume": 1.0,
-            "buffer": 600
+            "buffer": 600,
+            "history_length": 10
         },
         "data": {
             "id": 1092212185553449023,
@@ -512,7 +400,8 @@
             "search_query": "Never gonna give you up",
             "buttons": false,
             "volume": 1.0,
-            "buffer": 600
+            "buffer": 600,
+            "history_length": 10
         },
         "data": {
             "id": null,
