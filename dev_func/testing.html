@@ -50,7 +50,13 @@
           </div>
           <div>
 
-              <a class="btn btn-primary" href="/login">Login</a>
+              <a class="user-color"></a>
+
+                <img src="https://cdn.discordapp.com/avatars//.png?size=32" class="rounded-circle">
+
+
+              <a class="btn btn-danger" href="/logout">Logout</a>
+              <a class="btn btn-outline-success btn-sm btn-m" href="/login">Update Session</a>
 
             <a class="btn btn-outline-danger btn-sm btn-m" href="/reset">Reset Session</a>
           </div>
@@ -62,1156 +68,657 @@
 
 
 
-        <div class="alert alert-success div-align alert-dismissible fade show sticky-top" role="alert">
-            `Rádio BLANÍK CZ` added to queue!
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-
-
-
-
-<!-- Guild -->
-<div>
-    <div class="div-align">
-        <div class="accordion" id="accordionFlushExample">
-          <div class="accordion-item">
-            <div class="accordion-header">
-                <div class="d-grid gap-2">
-                    <a class="btn btn-dark" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
-                        <h2>Tomer27cz's server</h2>
-                    </a>
-                </div>
-            </div>
-            <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-                <div class="q-container">
-                    <div class="q-div">
-
-                        None
-
-                        <div class="q-item1 q-wa">
-                            <p class="q-text q-1">Member Count</p>
-                            <p class="q-text q-2">7</p>
-                        </div>
-                        <div class="q-item1 q-wa">
-                            <p class="q-text q-1">ID</p>
-                            <p class="q-text q-2">1008145667622969397}</p>
-                        </div>
-                        <div class="q-item1 q-items-center">
-                            <p class="q-text q-1">Server Owner</p>
-                            <p class="q-text q-2"><a class="q-2" target="_blank" rel="noopener noreferrer" href="https://discordapp.com/users/349164237605568513">Tomer27cz</a></p>
-                            <p class="q-text q-3">349164237605568513</p>
-                        </div>
-                        <div class="q-item1 q-wa">
-                            <p class="q-text q-1">Created at</p>
-                            <p class="q-text q-2">13/08/2022 22:50:57</p>
-                        </div>
-                        <div class="q-item1 q-wa">
-                            <p class="q-text q-1">Description</p>
-                            <p class="q-text q-2">None</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-          </div>
-        </div>
-    </div>
-</div>
-
-<!-- Now and Last Playing -->
-<div class="accordion" id="accordionPanelsStayOpenExample">
-    <div class="accordion-item">
-      <div class="accordion-header">
-        <div class="d-grid gap-2">
-          <a class="btn btn-dark accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="false" aria-controls="panelsStayOpen-collapseOne">
-              <h3>Last Played</h3>
-          </a>
-        </div>
-      </div>
-      <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse">
-          <div class="accordion-body">
-
-              <div class="q-container">
-                  <div class="q-div">
-                    <img loading="lazy" class="q-img" src="https://cdb.radia.cz/content/covers/1e/b2/thumbnails/1eb283b8c4c8ba6b4faded632be4a52e-image(image400).jpeg" alt="thumbnail">
-                    <div class="q-item1 q-wd">
-                        <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://radia.cz/radio-blanik-cz-playlist">Vítr to ví</a></p>
-                        <p class="q-text"><a class="q-2" target="_blank" rel="noopener noreferrer" href="https://radia.cz/radio-blanik-cz-playlist">WALDEMAR MATUŠKA</a></p>
-                        <p class="q-text q-3">Stream</p>
-                    </div>
-                    <div class="q-item2 q-items-center">
-                        <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://discordapp.com/users/1007004463933952120">Nicholas the 7th</a></p>
-                        <p class="q-text q-2">1007004463933952120</p>
-                        <p class="q-text q-3">13:00:20 22/04/2023</p>
-                    </div>
-                    <div class="q-item0 q-wa q-self-center q-items-center">
-                        <form onsubmit="document.location.reload(true)" method="POST">
-
-                            <button class="btn btn-outline btn-secondary btn-sm btn-m" type="submit" name="queue_btn" value="last_played">Add to Queue</button>
-                            <button class="btn btn-outline btn-secondary btn-sm btn-m" type="submit" name="nextup_btn" value="last_played">Next Up</button>
-                        </form>
-                    </div>
-                  </div>
-              </div>
-
-          </div>
-      </div>
-  </div>
-    <div class="accordion-item">
-      <div class="accordion-header">
-        <div class="d-grid gap-2">
-          <a class="btn btn-dark accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="true" aria-controls="panelsStayOpen-collapseTwo">
-              <h3>Now Playing</h3>
-          </a>
-        </div>
-      </div>
-      <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse show">
-          <div class="accordion-body">
-
-              <div class="div-align">
-                  <p>Nothing is playing right now</p>
-              </div>
-
-          </div>
-      </div>
-  </div>
-</div>
-
-<!-- Control -->
 <form action="#" method="POST">
-  <div class="q-div">
-    <div class="q-item1 div-login">
-      <div class="e-div">
-          <button class="btn btn-outline btn-primary btn-sm btn-m e-item1" type="submit" name="skip_btn">Skip</button>
-          <button class="btn btn-outline btn-secondary btn-sm btn-m e-item1" type="submit" name="shuffle_btn">Shuffle</button>
-          <button class="btn btn-outline btn-danger btn-sm btn-m e-item1" type="submit" name="clear_btn">Clear</button>
+<div class="div-align-center">
+  <h1 class="btn-m">Admin</h1>
+</div>
+<div class="div-login">
+    <div class="row row-cols-lg-auto g-3 div-align">
+      <div class="col-12 btn-m">
+          <h3>Files</h3>
       </div>
-    </div>
-    <div class="q-item1 div-login">
-      <div class="e-div">
-          <button class="btn btn-outline btn-primary btn-sm btn-m e-item1" type="button" data-bs-toggle="modal" data-bs-target="#joinModal">Join</button>
-          <button class="btn btn-outline btn-danger btn-sm btn-m e-item1" type="submit" name="disconnect_btn">Disconnect</button>
+      <div class="col-12 btn-m">
+        <select class="form-select" aria-label="Default select example" name="download_file" id="download_file">
+          <option selected value="log.txt">log.txt</option>
+          <option value="guilds.json">guilds.json</option>
+          <option value="other.json">other.json</option>
+          <option value="radio.json">radio.json</option>
+          <option value="languages.json">languages.json</option>
+          <option value="activity.log">activity.log</option>
+          <option value="data.txt">data.txt</option>
+        </select>
       </div>
-    </div>
-    <div class="q-item1 div-login">
-      <div class="e-div">
-          <button class="btn btn-outline btn-primary btn-sm btn-m e-item1" type="submit" name="play_btn">Play</button>
-          <button class="btn btn-outline btn-secondary btn-sm btn-m e-item1" type="submit" name="pause_btn">Pause</button>
-          <button class="btn btn-outline btn-secondary btn-sm btn-m e-item1" type="submit" name="resume_btn">Resume</button>
-          <button class="btn btn-outline btn-danger btn-sm btn-m e-item1" type="submit" name="stop_btn">Stop</button>
+      <div class="col-12 btn-m">
+        <button type="submit" class="btn btn-primary" name="download_btn">Download</button>
       </div>
-    </div>
-    <div class="q-item1 div-login">
-      <div class="d-flex">
-          <div class="btn-m">
-              <input type="number" class="form-c form-control btn-m flex-fill" name="volumeInput" min="0" max="200" value="100" oninput="this.form.volumeRange.value=this.value">
-          </div>
-          <input type="range" class="form-r form-range btn-m" name="volumeRange" min="0" max="200" value="100" oninput="this.form.volumeInput.value=this.value">
-          <button class="btn btn-outline btn-primary btn-sm btn-m flex-fill" type="submit" name="volume_btn">Set</button>
+      <div class="col-12 btn-m">
+        <input type="file" class="form-control" id="upload_file" name="file">
+      </div>
+      <div class="col-12 btn-m">
+          <button type="submit" class="btn btn-primary" name="upload_btn">Upload</button>
       </div>
     </div>
   </div>
-</form>
-
-
-<!-- Queue -->
-<div class="div-align">
-    <h2>Queue</h2>
-</div>
-
-<div class="d-grid gap-2">
-    <button class="btn btn-primary btn-lg btn-q" data-bs-toggle="modal" data-bs-target="#addToModal">
-        Add to Queue
-    </button>
-</div>
-
-<form method="POST">
-
-        <div class="q-container">
-            <div class="q-div">
-                <img loading="lazy" class="q-img" src="https://cdn.discordapp.com/attachments/1008145669946626099/1015643172082286663/radio58.png" alt="thumbnail">
-                <div class="q-item1 q-wd">
-                    <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://radia.cz/radio-blanik-cz-playlist">Rádio BLANÍK CZ</a></p>
-                    <p class="q-text"><a class="q-2" target="_blank" rel="noopener noreferrer" href="https://radia.cz/radio-blanik-cz-playlist">radia_cz</a></p>
-                    <p class="q-text q-3">Stream</p>
-                </div>
-                <div class="q-item2 q-items-center">
-                    <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://discordapp.com/users/1007004463933952120">Nicholas the 7th</a></p>
-                    <p class="q-text q-2">1007004463933952120</p>
-                    <p class="q-text q-3">15:22:13 22/04/2023</p>
-                </div>
-                <div class="q-item0 q-wa q-self-center q-items-center">
-
-                    <button type="button" class="btn btn-secondary btn-sm dropdown-toggle btn-m" data-bs-toggle="dropdown" aria-expanded="false">More</button>
-                    <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
-                        <li><button class="dropdown-item" type="submit" name="top_btn" value="0">Move to Top</button></li>
-                        <li><button class="dropdown-item" type="submit" name="bottom_btn" value="0">Move to Bottom</button></li>
-                        <li><button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#videoModal_0">Info</button>
-                    </li>
-                    </ul>
-                    <button class="btn btn-outline btn-danger btn-sm btn-m" type="submit" name="del_btn" value="0">Remove</button>
-                </div>
-            </div>
-            <div class="q-item0 q-wa q-self-center q-items-center">
-                <div class="btn-group-vertical">
-                    <button class="btn btn-dark" name="up_btn" value="0">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-up" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"></path>
-                        </svg>
-                    </button>
-                    <button class="btn btn-dark" name="down_btn" value="0">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"></path>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-</form>
-
-
-<!-- Video Modals -->
-
-
-<div class="modal fade" id="videoModal_0" data-bs-keyboard="false" tabindex="-1" aria-labelledby="videoLabel_0" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="videoLabel_0">Video 0 Info</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="info-modal">
-                <br>
-                <p>index: <span class="v-info">0</span></p>
-
-                    <p>class_type: <span class="v-info">Radio</span></p>
-
-                    <p>author: <span class="v-info">1007004463933952120</span></p>
-
-                    <p>created_at: <span class="v-info">1682176933</span></p>
-
-                    <p>radio_name: <span class="v-info">Rádio BLANÍK CZ</span></p>
-
-                    <p>url: <span class="v-info">https://radia.cz/radio-blanik-cz-playlist</span></p>
-
-                    <p>title: <span class="v-info">Rádio BLANÍK CZ</span></p>
-
-                    <p>picture: <span class="v-info">https://cdn.discordapp.com/attachments/1008145669946626099/1015643172082286663/radio58.png</span></p>
-
-                    <p>duration: <span class="v-info">Stream</span></p>
-
-                    <p>channel_name: <span class="v-info">radia_cz</span></p>
-
-                    <p>channel_link: <span class="v-info">https://radia.cz/radio-blanik-cz-playlist</span></p>
-
-                    <p>radio_website: <span class="v-info">radia_cz</span></p>
-
-                    <p>local_number: <span class="v-info">None</span></p>
-
-                <br>
-            </div>
-        </div>
+  <div class="div-login">
+    <div class="row row-cols-lg-auto g-3">
+      <div class="col-12">
+        <h3>Options</h3>
       </div>
     </div>
+  </div>
+  <div class="picker">
+      <h3>Select a server to Edit</h3>
+      <br>
+      <section class="d-cards">
+
+        <div class="d-card">
+          <a data-bs-toggle="modal" data-bs-target="#guildEditModal_1008145667622969397">
+
+              <img loading="lazy" src="/static/img/discord_icon.svg" class="green-border">
+
+          </a>
+          <br>
+          Tomer27cz's server
+        </div>
+
+        <div class="d-card">
+          <a data-bs-toggle="modal" data-bs-target="#guildEditModal_892403162315644928">
+
+              <img loading="lazy" src="https://cdn.discordapp.com/icons/892403162315644928/ddf21b11faf19f03dafe5d0289996fa1.png?size=1024" class="green-border">
+
+          </a>
+          <br>
+          pog
+        </div>
+
+        <div class="d-card">
+          <a data-bs-toggle="modal" data-bs-target="#guildEditModal_892404682285256735">
+
+              <img loading="lazy" src="https://cdn.discordapp.com/icons/892404682285256735/ca21e41d0ff13e3cc8798ed3367495ff.png?size=1024" class="green-border">
+
+          </a>
+          <br>
+          Jebáci pri práci
+        </div>
+
+        <div class="d-card">
+          <a data-bs-toggle="modal" data-bs-target="#guildEditModal_1092207263843880983">
+
+              <img loading="lazy" src="https://cdn.discordapp.com/icons/1092207263843880983/41cd8aab063f81fa57ad014bd1d40c58.png?size=1024" class="green-border">
+
+          </a>
+          <br>
+          блять
+        </div>
+
+        <div class="d-card">
+          <a data-bs-toggle="modal" data-bs-target="#guildEditModal_1092205538202353764">
+
+              <img loading="lazy" src="https://cdn.discordapp.com/icons/1092205538202353764/83215429f288253f5788a6258698a281.png?size=1024" class="green-border">
+
+          </a>
+          <br>
+          The Next Level
+        </div>
+
+        <div class="d-card">
+          <a data-bs-toggle="modal" data-bs-target="#guildEditModal_1092212185553449023">
+
+              <img loading="lazy" src="https://cdn.discordapp.com/icons/1092212185553449023/89f6eb38b02fbfd77f2715f77a0aa0ae.png?size=1024" class="green-border">
+
+          </a>
+          <br>
+          F1 connoisseurs
+        </div>
+
+        <div class="d-card">
+          <a data-bs-toggle="modal" data-bs-target="#guildEditModal_837695985625858048">
+
+              <img loading="lazy" src="/static/img/discord_icon.svg" class="green-border">
+
+          </a>
+          <br>
+          None
+        </div>
+
+      </section>
+        <br>
+    </div>
+</form>
 
 
-<!-- Join Modal -->
-
-<div class="modal fade" id="joinModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="joinLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+<div class="modal fade" id="guildEditModal_1008145667622969397" data-bs-keyboard="false" tabindex="-1" aria-labelledby="guildEditLabel_1008145667622969397" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
     <div class="modal-content">
         <div class="modal-header">
-            <h1 class="modal-title fs-5" id="joinLabel">Join</h1>
+            <h1 class="modal-title fs-5" id="guildEditLabel_1008145667622969397">Guild Edit: Tomer27cz's server</h1>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <form method="POST">
-            <div class="j-text">
-                This may take a while -> Recommended /join in discord
-            </div>
-            <div class="j-div">
-                <label class="btn-m j-label">Channel ID</label>
-                <div class="e-item2">
-                    <input type="number" class="form-control" name="channel_id">
+        <div class="info-modal">
+            <br>
+            <form method="POST">
+
+                <div class="e-div">
+                    <label for="1008145667622969397_id" class="e-label">id</label>
+                    <input type="text" id="1008145667622969397_id" name="id" value="1008145667622969397" class="e-input">
                 </div>
-                <button type="submit" class="btn btn-primary" name="join_btn" value="id">Join</button>
-            </div>
-            <div class="j-div">
-                <label class="btn-m j-label">Channel</label>
-                <div class="e-item2">
-                    <select class="form-select" aria-label="channel_name" name="channel_name">
-                    <option value="131313154454">channel1</option>
-                    <option value="456456456455">channel2</option>
-                    <option value="456456456456">channel3</option>
-                    <option value="456456456545">channel4</option>
-                    </select>
+
+                <div class="e-div">
+                    <label for="1008145667622969397_stopped" class="e-label">stopped</label>
+                    <input type="text" id="1008145667622969397_stopped" name="stopped" value="False" class="e-input">
                 </div>
-                <button type="submit" class="btn btn-primary" name="join_btn" value="name">Join</button>
-            </div>
-        </form>
-    </div>
-  </div>
-</div>
 
+                <div class="e-div">
+                    <label for="1008145667622969397_loop" class="e-label">loop</label>
+                    <input type="text" id="1008145667622969397_loop" name="loop" value="False" class="e-input">
+                </div>
 
+                <div class="e-div">
+                    <label for="1008145667622969397_is_radio" class="e-label">is_radio</label>
+                    <input type="text" id="1008145667622969397_is_radio" name="is_radio" value="False" class="e-input">
+                </div>
 
-<!-- Modals -->
-<div class="modal fade" id="addToModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="staticBackdropLabel">Add to Queue</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-        <form method="POST" id="ytForm">
-          <div class="modal-body">
-              <div class="mb-3">
-                  <label for="ytURL" class="btn-m">Youtube URL</label>
-                  <input type="url" class="form-control" name="ytURL" id="ytURL" placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ" required="">
-              </div>
-              <div class="mb-3">
-                  <label for="addTo" class="col-form-label">Add to</label>
-                  <div id="addTo">
-                      <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="radio" name="addPosition" value="start" id="flexRadioDefault1">
-                          <label class="form-check-label" for="flexRadioDefault1">
-                              The Start
-                          </label>
-                      </div>
-                      <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="radio" name="addPosition" value="end" id="flexRadioDefault2" checked="">
-                          <label class="form-check-label" for="flexRadioDefault2">
-                              The End
-                          </label>
-                      </div>
-                  </div>
-              </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="button" id="addbuttonmodal" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#addToModalRadio">Radio</button>
-            <button type="submit" class="btn btn-primary btn-lg">Add</button>
-          </div>
-        </form>
-    </div>
-  </div>
-</div>
+                <div class="e-div">
+                    <label for="1008145667622969397_language" class="e-label">language</label>
+                    <input type="text" id="1008145667622969397_language" name="language" value="cs" class="e-input">
+                </div>
 
-<div class="modal" id="addToModalRadio" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl r-modal">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="staticBackdropLabelRadio">Add to Queue</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="e-div">
+                    <label for="1008145667622969397_response_type" class="e-label">response_type</label>
+                    <input type="text" id="1008145667622969397_response_type" name="response_type" value="short" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="1008145667622969397_search_query" class="e-label">search_query</label>
+                    <input type="text" id="1008145667622969397_search_query" name="search_query" value="Never gonna give you up" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="1008145667622969397_buttons" class="e-label">buttons</label>
+                    <input type="text" id="1008145667622969397_buttons" name="buttons" value="False" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="1008145667622969397_volume" class="e-label">volume</label>
+                    <input type="text" id="1008145667622969397_volume" name="volume" value="1.0" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="1008145667622969397_buffer" class="e-label">buffer</label>
+                    <input type="text" id="1008145667622969397_buffer" name="buffer" value="600" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="1008145667622969397_history_length" class="e-label">history_length</label>
+                    <input type="text" id="1008145667622969397_history_length" name="history_length" value="10" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <button class="btn e-item1 btn-secondary btn-lg btn-m" type="button" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+                    <button class="btn e-item1 btn-primary btn-lg btn-m" type="submit" name="edit_btn">Submit</button>
+                </div>
+            </form>
         </div>
-          <form method="POST" id="RadioForm">
-            <div class="modal-body">
-                <div class="mb-3">
-                    <div class="r-cards">
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox0" class="radio-checkbox" value="Alternative Times Radio">
-                                <label for="radio-checkbox0" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_0.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Alternative Times Radio</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox1" class="radio-checkbox" value="Český rozhlas Brno">
-                                <label for="radio-checkbox1" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_1.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Český rozhlas Brno</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox2" class="radio-checkbox" value="Český rozhlas České Budějovice">
-                                <label for="radio-checkbox2" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_2.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Český rozhlas České Budějovice</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox3" class="radio-checkbox" value="Český rozhlas D-dur">
-                                <label for="radio-checkbox3" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_3.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Český rozhlas D-dur</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox4" class="radio-checkbox" value="Český rozhlas Dvojka">
-                                <label for="radio-checkbox4" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_4.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Český rozhlas Dvojka</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox5" class="radio-checkbox" value="Český rozhlas Hradec Králové">
-                                <label for="radio-checkbox5" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_5.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Český rozhlas Hradec Králové</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox6" class="radio-checkbox" value="Český rozhlas Jazz">
-                                <label for="radio-checkbox6" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_6.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Český rozhlas Jazz</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox7" class="radio-checkbox" value="Český rozhlas Karlovy Vary">
-                                <label for="radio-checkbox7" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_7.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Český rozhlas Karlovy Vary</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox8" class="radio-checkbox" value="Český rozhlas Liberec">
-                                <label for="radio-checkbox8" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_8.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Český rozhlas Liberec</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox9" class="radio-checkbox" value="Český rozhlas Olomouc">
-                                <label for="radio-checkbox9" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_9.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Český rozhlas Olomouc</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox10" class="radio-checkbox" value="Český rozhlas Ostrava">
-                                <label for="radio-checkbox10" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_10.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Český rozhlas Ostrava</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox11" class="radio-checkbox" value="Český rozhlas Pardubice">
-                                <label for="radio-checkbox11" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_11.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Český rozhlas Pardubice</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox12" class="radio-checkbox" value="Český rozhlas Plus">
-                                <label for="radio-checkbox12" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_12.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Český rozhlas Plus</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox13" class="radio-checkbox" value="Český rozhlas Plzeň">
-                                <label for="radio-checkbox13" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_13.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Český rozhlas Plzeň</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox14" class="radio-checkbox" value="Český rozhlas Pohoda">
-                                <label for="radio-checkbox14" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_14.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Český rozhlas Pohoda</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox15" class="radio-checkbox" value="Český rozhlas Radio DAB Praha">
-                                <label for="radio-checkbox15" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_15.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Český rozhlas Radio DAB Praha</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox16" class="radio-checkbox" value="Český rozhlas Rádio Junior">
-                                <label for="radio-checkbox16" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_16.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Český rozhlas Rádio Junior</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox17" class="radio-checkbox" value="Český rozhlas Radio Wave">
-                                <label for="radio-checkbox17" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_17.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Český rozhlas Radio Wave</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox18" class="radio-checkbox" value="Český rozhlas Radiožurnál">
-                                <label for="radio-checkbox18" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_18.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Český rozhlas Radiožurnál</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox19" class="radio-checkbox" value="Český rozhlas Region">
-                                <label for="radio-checkbox19" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_19.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Český rozhlas Region</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox20" class="radio-checkbox" value="Český rozhlas Sever">
-                                <label for="radio-checkbox20" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_20.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Český rozhlas Sever</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox21" class="radio-checkbox" value="Český rozhlas Vltava">
-                                <label for="radio-checkbox21" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_21.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Český rozhlas Vltava</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox22" class="radio-checkbox" value="Český rozhlas Vysočina">
-                                <label for="radio-checkbox22" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_22.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Český rozhlas Vysočina</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox23" class="radio-checkbox" value="Český rozhlas Zlín">
-                                <label for="radio-checkbox23" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_23.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Český rozhlas Zlín</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox24" class="radio-checkbox" value="Coop TIP Rádio">
-                                <label for="radio-checkbox24" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_24.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Coop TIP Rádio</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox25" class="radio-checkbox" value="Country Radio">
-                                <label for="radio-checkbox25" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_25.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Country Radio</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox26" class="radio-checkbox" value="Dance Club Radio">
-                                <label for="radio-checkbox26" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_26.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Dance Club Radio</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox27" class="radio-checkbox" value="Drumandbass Radio SHADOWBOX">
-                                <label for="radio-checkbox27" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_27.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Drumandbass Radio SHADOWBOX</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox28" class="radio-checkbox" value="E-Rádio JAZZINEC">
-                                <label for="radio-checkbox28" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_28.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">E-Rádio JAZZINEC</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox29" class="radio-checkbox" value="Fajn Fresh Radio">
-                                <label for="radio-checkbox29" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_29.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Fajn Fresh Radio</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox30" class="radio-checkbox" value="Fajn Radio">
-                                <label for="radio-checkbox30" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_30.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Fajn Radio</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox31" class="radio-checkbox" value="HipHopVibes Radio">
-                                <label for="radio-checkbox31" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_31.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">HipHopVibes Radio</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox32" class="radio-checkbox" value="Hitrádio Černá Hora">
-                                <label for="radio-checkbox32" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_32.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Hitrádio Černá Hora</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox33" class="radio-checkbox" value="Hitrádio City 93,7 FM">
-                                <label for="radio-checkbox33" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_33.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Hitrádio City 93,7 FM</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox34" class="radio-checkbox" value="Hitrádio City Brno">
-                                <label for="radio-checkbox34" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_34.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Hitrádio City Brno</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox35" class="radio-checkbox" value="Hitrádio Desítka">
-                                <label for="radio-checkbox35" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_35.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Hitrádio Desítka</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox36" class="radio-checkbox" value="Hitrádio Devadesátka">
-                                <label for="radio-checkbox36" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_36.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Hitrádio Devadesátka</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox37" class="radio-checkbox" value="Hitrádio Faktor">
-                                <label for="radio-checkbox37" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_37.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Hitrádio Faktor</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox38" class="radio-checkbox" value="Hitrádio FM Plus">
-                                <label for="radio-checkbox38" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_38.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Hitrádio FM Plus</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox39" class="radio-checkbox" value="Hitrádio Milénium">
-                                <label for="radio-checkbox39" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_39.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Hitrádio Milénium</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox40" class="radio-checkbox" value="Hitrádio North Music">
-                                <label for="radio-checkbox40" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_40.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Hitrádio North Music</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox41" class="radio-checkbox" value="Hitrádio Orion">
-                                <label for="radio-checkbox41" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_41.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Hitrádio Orion</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox42" class="radio-checkbox" value="Hitrádio Osmdesátka">
-                                <label for="radio-checkbox42" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_42.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Hitrádio Osmdesátka</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox43" class="radio-checkbox" value="Hitrádio PopRock">
-                                <label for="radio-checkbox43" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_43.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Hitrádio PopRock</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox44" class="radio-checkbox" value="Hitrádio Vysočina">
-                                <label for="radio-checkbox44" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_44.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Hitrádio Vysočina</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox45" class="radio-checkbox" value="Hitrádio Zlín">
-                                <label for="radio-checkbox45" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_45.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Hitrádio Zlín</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox46" class="radio-checkbox" value="Hitrádio Zóna lásky">
-                                <label for="radio-checkbox46" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_46.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Hitrádio Zóna lásky</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox47" class="radio-checkbox" value="Kostka Rádio">
-                                <label for="radio-checkbox47" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_47.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Kostka Rádio</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox48" class="radio-checkbox" value="Max Rádio Online">
-                                <label for="radio-checkbox48" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_48.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Max Rádio Online</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox49" class="radio-checkbox" value="Metalománie">
-                                <label for="radio-checkbox49" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_49.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Metalománie</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox50" class="radio-checkbox" value="Oldies radio">
-                                <label for="radio-checkbox50" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_50.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Oldies radio</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox51" class="radio-checkbox" value="Radio 1">
-                                <label for="radio-checkbox51" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_51.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Radio 1</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox52" class="radio-checkbox" value="Radio 66">
-                                <label for="radio-checkbox52" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_52.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Radio 66</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox53" class="radio-checkbox" value="Radio Beat">
-                                <label for="radio-checkbox53" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_53.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Radio Beat</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox54" class="radio-checkbox" value="Rádio Benešov City">
-                                <label for="radio-checkbox54" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_54.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Rádio Benešov City</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox55" class="radio-checkbox" value="Radio Best of Rock">
-                                <label for="radio-checkbox55" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_55.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Radio Best of Rock</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox56" class="radio-checkbox" value="Rádio BLANÍK">
-                                <label for="radio-checkbox56" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_56.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Rádio BLANÍK</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox57" class="radio-checkbox" value="Rádio BLANÍK - Morava a Slezsko">
-                                <label for="radio-checkbox57" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_57.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Rádio BLANÍK - Morava a Slezsko</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox58" class="radio-checkbox" value="Rádio BLANÍK CZ">
-                                <label for="radio-checkbox58" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_58.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Rádio BLANÍK CZ</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox59" class="radio-checkbox" value="Rádio BOHEMIA">
-                                <label for="radio-checkbox59" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_59.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Rádio BOHEMIA</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox60" class="radio-checkbox" value="Radio Chillout">
-                                <label for="radio-checkbox60" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_60.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Radio Chillout</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox61" class="radio-checkbox" value="Radio Depeche Mode">
-                                <label for="radio-checkbox61" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_61.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Radio Depeche Mode</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox62" class="radio-checkbox" value="Radio Domino">
-                                <label for="radio-checkbox62" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_62.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Radio Domino</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox63" class="radio-checkbox" value="Radio Expert">
-                                <label for="radio-checkbox63" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_63.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Radio Expert</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox64" class="radio-checkbox" value="Radio Folk">
-                                <label for="radio-checkbox64" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_64.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Radio Folk</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox65" class="radio-checkbox" value="Rádio Helax">
-                                <label for="radio-checkbox65" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_65.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Rádio Helax</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox66" class="radio-checkbox" value="Rádio Humor">
-                                <label for="radio-checkbox66" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_66.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Rádio Humor</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox67" class="radio-checkbox" value="Rádio In">
-                                <label for="radio-checkbox67" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_67.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Rádio In</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox68" class="radio-checkbox" value="Radio Kiss">
-                                <label for="radio-checkbox68" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_68.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Radio Kiss</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox69" class="radio-checkbox" value="Rádio MB">
-                                <label for="radio-checkbox69" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_69.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Rádio MB</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox70" class="radio-checkbox" value="Radio Oldies Rock">
-                                <label for="radio-checkbox70" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_70.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Radio Oldies Rock</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox71" class="radio-checkbox" value="Rádio Pohádka">
-                                <label for="radio-checkbox71" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_71.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Rádio Pohádka</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox72" class="radio-checkbox" value="Rádio Ponte Records">
-                                <label for="radio-checkbox72" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_72.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Rádio Ponte Records</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox73" class="radio-checkbox" value="Rádio Povídka">
-                                <label for="radio-checkbox73" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_73.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Rádio Povídka</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox74" class="radio-checkbox" value="Radio Prague International">
-                                <label for="radio-checkbox74" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_74.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Radio Prague International</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox75" class="radio-checkbox" value="Radio Spin 96,2 FM">
-                                <label for="radio-checkbox75" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_75.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Radio Spin 96,2 FM</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox76" class="radio-checkbox" value="Rádio Tloskov">
-                                <label for="radio-checkbox76" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_76.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Rádio Tloskov</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox77" class="radio-checkbox" value="Rádio Ukrajina">
-                                <label for="radio-checkbox77" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_77.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Rádio Ukrajina</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox78" class="radio-checkbox" value="Rádio Vratislavice">
-                                <label for="radio-checkbox78" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_78.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Rádio Vratislavice</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox79" class="radio-checkbox" value="Rádio Vysočina">
-                                <label for="radio-checkbox79" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_79.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Rádio Vysočina</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox80" class="radio-checkbox" value="Rádio VYŠŠÍ HLAS">
-                                <label for="radio-checkbox80" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_80.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Rádio VYŠŠÍ HLAS</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox81" class="radio-checkbox" value="Rádio Zelená Hora">
-                                <label for="radio-checkbox81" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_81.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Rádio Zelená Hora</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox82" class="radio-checkbox" value="Radiožurnál Sport">
-                                <label for="radio-checkbox82" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_82.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Radiožurnál Sport</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox83" class="radio-checkbox" value="Relaxace - Jedoucí Vlak">
-                                <label for="radio-checkbox83" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_83.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Relaxace - Jedoucí Vlak</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox84" class="radio-checkbox" value="Relaxace - Letní bouřka">
-                                <label for="radio-checkbox84" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_84.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Relaxace - Letní bouřka</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox85" class="radio-checkbox" value="Relaxace - Moře">
-                                <label for="radio-checkbox85" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_85.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Relaxace - Moře</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox86" class="radio-checkbox" value="Relaxace - Oheň v krbu">
-                                <label for="radio-checkbox86" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_86.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Relaxace - Oheň v krbu</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox87" class="radio-checkbox" value="Relaxace - Zpěv ptáků">
-                                <label for="radio-checkbox87" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_87.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Relaxace - Zpěv ptáků</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox88" class="radio-checkbox" value="Rock Radio">
-                                <label for="radio-checkbox88" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_88.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Rock Radio</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox89" class="radio-checkbox" value="Rock Radio Morava">
-                                <label for="radio-checkbox89" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_89.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Rock Radio Morava</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox90" class="radio-checkbox" value="Rocková zábava">
-                                <label for="radio-checkbox90" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_90.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Rocková zábava</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox91" class="radio-checkbox" value="Roma Rádio">
-                                <label for="radio-checkbox91" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_91.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Roma Rádio</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox92" class="radio-checkbox" value="Signál Rádio">
-                                <label for="radio-checkbox92" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_92.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Signál Rádio</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox93" class="radio-checkbox" value="WebRádio Epigon">
-                                <label for="radio-checkbox93" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_93.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">WebRádio Epigon</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox94" class="radio-checkbox" value="Známka Punku">
-                                <label for="radio-checkbox94" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_94.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Známka Punku</a>
-                            </div>
-
-                            <div class="r-card">
-                                <input type="radio" name="radio-checkbox" id="radio-checkbox95" class="radio-checkbox" value="Evropa 2">
-                                <label for="radio-checkbox95" ondblclick="submitRadioForm()">
-                                    <img loading="lazy" src="/static/radio_svg/svg_radio_95.svg" class="r-img">
-                                </label>
-                                <a class="radio-label">Evropa 2</a>
-                            </div>
-
-                    </div>
-                </div>
-                <div class="mb-3">
-                    <label for="addToRadio" class="col-form-label">Add to</label>
-                    <div id="addToRadio">
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="addPosition" value="start" id="flexRadioDefault1Radio">
-                            <label class="form-check-label" for="flexRadioDefault1">
-                                The Start
-                            </label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="addPosition" value="end" id="flexRadioDefault2Radio" checked="">
-                            <label class="form-check-label" for="flexRadioDefault2">
-                                The End
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" id="addbuttonradio" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#addToModal">Video</button>
-              <button type="submit" class="btn btn-primary btn-lg">Add</button>
-            </div>
-          </form>
-      </div>
     </div>
+  </div>
 </div>
 
-<script>
-function submitRadioForm(id) {
-    var form = document.getElementById('RadioForm');
-    form.submit();
-}
-</script>
+<div class="modal fade" id="guildEditModal_892403162315644928" data-bs-keyboard="false" tabindex="-1" aria-labelledby="guildEditLabel_892403162315644928" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h1 class="modal-title fs-5" id="guildEditLabel_892403162315644928">Guild Edit: pog</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="info-modal">
+            <br>
+            <form method="POST">
+
+                <div class="e-div">
+                    <label for="892403162315644928_id" class="e-label">id</label>
+                    <input type="text" id="892403162315644928_id" name="id" value="892403162315644928" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="892403162315644928_stopped" class="e-label">stopped</label>
+                    <input type="text" id="892403162315644928_stopped" name="stopped" value="False" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="892403162315644928_loop" class="e-label">loop</label>
+                    <input type="text" id="892403162315644928_loop" name="loop" value="False" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="892403162315644928_is_radio" class="e-label">is_radio</label>
+                    <input type="text" id="892403162315644928_is_radio" name="is_radio" value="False" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="892403162315644928_language" class="e-label">language</label>
+                    <input type="text" id="892403162315644928_language" name="language" value="cs" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="892403162315644928_response_type" class="e-label">response_type</label>
+                    <input type="text" id="892403162315644928_response_type" name="response_type" value="short" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="892403162315644928_search_query" class="e-label">search_query</label>
+                    <input type="text" id="892403162315644928_search_query" name="search_query" value="Never gonna give you up" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="892403162315644928_buttons" class="e-label">buttons</label>
+                    <input type="text" id="892403162315644928_buttons" name="buttons" value="False" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="892403162315644928_volume" class="e-label">volume</label>
+                    <input type="text" id="892403162315644928_volume" name="volume" value="1.0" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="892403162315644928_buffer" class="e-label">buffer</label>
+                    <input type="text" id="892403162315644928_buffer" name="buffer" value="600" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="892403162315644928_history_length" class="e-label">history_length</label>
+                    <input type="text" id="892403162315644928_history_length" name="history_length" value="10" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <button class="btn e-item1 btn-secondary btn-lg btn-m" type="button" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+                    <button class="btn e-item1 btn-primary btn-lg btn-m" type="submit" name="edit_btn">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="guildEditModal_892404682285256735" data-bs-keyboard="false" tabindex="-1" aria-labelledby="guildEditLabel_892404682285256735" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h1 class="modal-title fs-5" id="guildEditLabel_892404682285256735">Guild Edit: Jebáci pri práci</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="info-modal">
+            <br>
+            <form method="POST">
+
+                <div class="e-div">
+                    <label for="892404682285256735_id" class="e-label">id</label>
+                    <input type="text" id="892404682285256735_id" name="id" value="892404682285256735" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="892404682285256735_stopped" class="e-label">stopped</label>
+                    <input type="text" id="892404682285256735_stopped" name="stopped" value="False" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="892404682285256735_loop" class="e-label">loop</label>
+                    <input type="text" id="892404682285256735_loop" name="loop" value="False" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="892404682285256735_is_radio" class="e-label">is_radio</label>
+                    <input type="text" id="892404682285256735_is_radio" name="is_radio" value="False" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="892404682285256735_language" class="e-label">language</label>
+                    <input type="text" id="892404682285256735_language" name="language" value="cs" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="892404682285256735_response_type" class="e-label">response_type</label>
+                    <input type="text" id="892404682285256735_response_type" name="response_type" value="short" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="892404682285256735_search_query" class="e-label">search_query</label>
+                    <input type="text" id="892404682285256735_search_query" name="search_query" value="Never gonna give you up" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="892404682285256735_buttons" class="e-label">buttons</label>
+                    <input type="text" id="892404682285256735_buttons" name="buttons" value="False" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="892404682285256735_volume" class="e-label">volume</label>
+                    <input type="text" id="892404682285256735_volume" name="volume" value="1.0" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="892404682285256735_buffer" class="e-label">buffer</label>
+                    <input type="text" id="892404682285256735_buffer" name="buffer" value="600" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="892404682285256735_history_length" class="e-label">history_length</label>
+                    <input type="text" id="892404682285256735_history_length" name="history_length" value="10" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <button class="btn e-item1 btn-secondary btn-lg btn-m" type="button" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+                    <button class="btn e-item1 btn-primary btn-lg btn-m" type="submit" name="edit_btn">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="guildEditModal_1092207263843880983" data-bs-keyboard="false" tabindex="-1" aria-labelledby="guildEditLabel_1092207263843880983" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h1 class="modal-title fs-5" id="guildEditLabel_1092207263843880983">Guild Edit: блять</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="info-modal">
+            <br>
+            <form method="POST">
+
+                <div class="e-div">
+                    <label for="1092207263843880983_id" class="e-label">id</label>
+                    <input type="text" id="1092207263843880983_id" name="id" value="1092207263843880983" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="1092207263843880983_stopped" class="e-label">stopped</label>
+                    <input type="text" id="1092207263843880983_stopped" name="stopped" value="False" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="1092207263843880983_loop" class="e-label">loop</label>
+                    <input type="text" id="1092207263843880983_loop" name="loop" value="False" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="1092207263843880983_is_radio" class="e-label">is_radio</label>
+                    <input type="text" id="1092207263843880983_is_radio" name="is_radio" value="False" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="1092207263843880983_language" class="e-label">language</label>
+                    <input type="text" id="1092207263843880983_language" name="language" value="cs" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="1092207263843880983_response_type" class="e-label">response_type</label>
+                    <input type="text" id="1092207263843880983_response_type" name="response_type" value="short" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="1092207263843880983_search_query" class="e-label">search_query</label>
+                    <input type="text" id="1092207263843880983_search_query" name="search_query" value="Never gonna give you up" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="1092207263843880983_buttons" class="e-label">buttons</label>
+                    <input type="text" id="1092207263843880983_buttons" name="buttons" value="False" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="1092207263843880983_volume" class="e-label">volume</label>
+                    <input type="text" id="1092207263843880983_volume" name="volume" value="1.0" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="1092207263843880983_buffer" class="e-label">buffer</label>
+                    <input type="text" id="1092207263843880983_buffer" name="buffer" value="600" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="1092207263843880983_history_length" class="e-label">history_length</label>
+                    <input type="text" id="1092207263843880983_history_length" name="history_length" value="10" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <button class="btn e-item1 btn-secondary btn-lg btn-m" type="button" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+                    <button class="btn e-item1 btn-primary btn-lg btn-m" type="submit" name="edit_btn">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="guildEditModal_1092205538202353764" data-bs-keyboard="false" tabindex="-1" aria-labelledby="guildEditLabel_1092205538202353764" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h1 class="modal-title fs-5" id="guildEditLabel_1092205538202353764">Guild Edit: The Next Level</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="info-modal">
+            <br>
+            <form method="POST">
+
+                <div class="e-div">
+                    <label for="1092205538202353764_id" class="e-label">id</label>
+                    <input type="text" id="1092205538202353764_id" name="id" value="1092205538202353764" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="1092205538202353764_stopped" class="e-label">stopped</label>
+                    <input type="text" id="1092205538202353764_stopped" name="stopped" value="False" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="1092205538202353764_loop" class="e-label">loop</label>
+                    <input type="text" id="1092205538202353764_loop" name="loop" value="False" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="1092205538202353764_is_radio" class="e-label">is_radio</label>
+                    <input type="text" id="1092205538202353764_is_radio" name="is_radio" value="False" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="1092205538202353764_language" class="e-label">language</label>
+                    <input type="text" id="1092205538202353764_language" name="language" value="cs" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="1092205538202353764_response_type" class="e-label">response_type</label>
+                    <input type="text" id="1092205538202353764_response_type" name="response_type" value="short" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="1092205538202353764_search_query" class="e-label">search_query</label>
+                    <input type="text" id="1092205538202353764_search_query" name="search_query" value="Never gonna give you up" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="1092205538202353764_buttons" class="e-label">buttons</label>
+                    <input type="text" id="1092205538202353764_buttons" name="buttons" value="False" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="1092205538202353764_volume" class="e-label">volume</label>
+                    <input type="text" id="1092205538202353764_volume" name="volume" value="1.0" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="1092205538202353764_buffer" class="e-label">buffer</label>
+                    <input type="text" id="1092205538202353764_buffer" name="buffer" value="600" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="1092205538202353764_history_length" class="e-label">history_length</label>
+                    <input type="text" id="1092205538202353764_history_length" name="history_length" value="10" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <button class="btn e-item1 btn-secondary btn-lg btn-m" type="button" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+                    <button class="btn e-item1 btn-primary btn-lg btn-m" type="submit" name="edit_btn">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="guildEditModal_1092212185553449023" data-bs-keyboard="false" tabindex="-1" aria-labelledby="guildEditLabel_1092212185553449023" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h1 class="modal-title fs-5" id="guildEditLabel_1092212185553449023">Guild Edit: F1 connoisseurs</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="info-modal">
+            <br>
+            <form method="POST">
+
+                <div class="e-div">
+                    <label for="1092212185553449023_id" class="e-label">id</label>
+                    <input type="text" id="1092212185553449023_id" name="id" value="1092212185553449023" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="1092212185553449023_stopped" class="e-label">stopped</label>
+                    <input type="text" id="1092212185553449023_stopped" name="stopped" value="False" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="1092212185553449023_loop" class="e-label">loop</label>
+                    <input type="text" id="1092212185553449023_loop" name="loop" value="False" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="1092212185553449023_is_radio" class="e-label">is_radio</label>
+                    <input type="text" id="1092212185553449023_is_radio" name="is_radio" value="False" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="1092212185553449023_language" class="e-label">language</label>
+                    <input type="text" id="1092212185553449023_language" name="language" value="cs" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="1092212185553449023_response_type" class="e-label">response_type</label>
+                    <input type="text" id="1092212185553449023_response_type" name="response_type" value="short" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="1092212185553449023_search_query" class="e-label">search_query</label>
+                    <input type="text" id="1092212185553449023_search_query" name="search_query" value="Never gonna give you up" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="1092212185553449023_buttons" class="e-label">buttons</label>
+                    <input type="text" id="1092212185553449023_buttons" name="buttons" value="False" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="1092212185553449023_volume" class="e-label">volume</label>
+                    <input type="text" id="1092212185553449023_volume" name="volume" value="1.0" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="1092212185553449023_buffer" class="e-label">buffer</label>
+                    <input type="text" id="1092212185553449023_buffer" name="buffer" value="600" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="1092212185553449023_history_length" class="e-label">history_length</label>
+                    <input type="text" id="1092212185553449023_history_length" name="history_length" value="10" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <button class="btn e-item1 btn-secondary btn-lg btn-m" type="button" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+                    <button class="btn e-item1 btn-primary btn-lg btn-m" type="submit" name="edit_btn">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="guildEditModal_837695985625858048" data-bs-keyboard="false" tabindex="-1" aria-labelledby="guildEditLabel_837695985625858048" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h1 class="modal-title fs-5" id="guildEditLabel_837695985625858048">Guild Edit: None</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="info-modal">
+            <br>
+            <form method="POST">
+
+                <div class="e-div">
+                    <label for="837695985625858048_id" class="e-label">id</label>
+                    <input type="text" id="837695985625858048_id" name="id" value="837695985625858048" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="837695985625858048_stopped" class="e-label">stopped</label>
+                    <input type="text" id="837695985625858048_stopped" name="stopped" value="False" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="837695985625858048_loop" class="e-label">loop</label>
+                    <input type="text" id="837695985625858048_loop" name="loop" value="False" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="837695985625858048_is_radio" class="e-label">is_radio</label>
+                    <input type="text" id="837695985625858048_is_radio" name="is_radio" value="False" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="837695985625858048_language" class="e-label">language</label>
+                    <input type="text" id="837695985625858048_language" name="language" value="cs" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="837695985625858048_response_type" class="e-label">response_type</label>
+                    <input type="text" id="837695985625858048_response_type" name="response_type" value="short" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="837695985625858048_search_query" class="e-label">search_query</label>
+                    <input type="text" id="837695985625858048_search_query" name="search_query" value="Never gonna give you up" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="837695985625858048_buttons" class="e-label">buttons</label>
+                    <input type="text" id="837695985625858048_buttons" name="buttons" value="False" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="837695985625858048_volume" class="e-label">volume</label>
+                    <input type="text" id="837695985625858048_volume" name="volume" value="1.0" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="837695985625858048_buffer" class="e-label">buffer</label>
+                    <input type="text" id="837695985625858048_buffer" name="buffer" value="600" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <label for="837695985625858048_history_length" class="e-label">history_length</label>
+                    <input type="text" id="837695985625858048_history_length" name="history_length" value="10" class="e-input">
+                </div>
+
+                <div class="e-div">
+                    <button class="btn e-item1 btn-secondary btn-lg btn-m" type="button" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+                    <button class="btn e-item1 btn-primary btn-lg btn-m" type="submit" name="edit_btn">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+  </div>
+</div>
+
 
 
     <br><br>

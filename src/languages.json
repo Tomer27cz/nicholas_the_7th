@@ -278,7 +278,9 @@
         "Unknown type": "Nezn\u00e1m\u00fd typ",
         "Player **resumed!**": "Hr\u00e1\u010d ** obnoven! **",
         "No songs in queue": "\u017d\u00e1dn\u00e9 p\u00edsn\u011b ve front\u011b",
-        "Check out the new": "Pod\u00edvejte se na nový"
+        "Check out the new": "Pod\u00edvejte se na nov\u00fd",
+        "QUEUE #": "Fronta #",
+        "HISTORY #": "D\u011aJINY #"
     },
     "de": {
         "search": "Suchen Sie YouTube nach der bereitgestellten Abfrage",
@@ -418,7 +420,9 @@
         "Unknown type": "Unbekannter Typ",
         "Player **resumed!**": "Spieler ** wieder aufgenommen! **",
         "No songs in queue": "Keine Songs in der Warteschlange",
-        "Check out the new": "Schauen Sie sich das neue an"
+        "Check out the new": "Schauen Sie sich das neue an",
+        "QUEUE #": "WARTESCHLANGE #",
+        "HISTORY #": "GESCHICHTE #"
     },
     "eo": {
         "search": "Ser\u0109u YouTube",
@@ -558,7 +562,9 @@
         "Unknown type": "Nekonata tipo",
         "Player **resumed!**": "Ludanto ** rekomencis! **",
         "No songs in queue": "Neniuj kantoj en vosto",
-        "Check out the new": "Rigardu la novan"
+        "Check out the new": "Rigardu la novan",
+        "QUEUE #": "Vosto #",
+        "HISTORY #": "HISTORIO #"
     },
     "es": {
         "search": "Busque en YouTube la consulta proporcionada",
@@ -698,7 +704,9 @@
         "Unknown type": "Tipo desconocido",
         "Player **resumed!**": "\u00a1Jugador ** reanudado! **",
         "No songs in queue": "No hay canciones en la cola",
-        "Check out the new": "Mira el nuevo"
+        "Check out the new": "Mira el nuevo",
+        "QUEUE #": "COLA #",
+        "HISTORY #": "HISTORIA #"
     },
     "fr": {
         "search": "Recherchez YouTube pour la requ\u00eate fournie",
@@ -838,7 +846,9 @@
         "Unknown type": "Type inconnu",
         "Player **resumed!**": "Joueur ** repris! **",
         "No songs in queue": "Pas de chansons dans la file d'attente",
-        "Check out the new": "D\u00e9couvrez le nouveau"
+        "Check out the new": "D\u00e9couvrez le nouveau",
+        "QUEUE #": "FILE D'ATTENTE #",
+        "HISTORY #": "HISTOIRE #"
     },
     "it": {
         "search": "Cerca YouTube per la query fornita",
@@ -978,7 +988,9 @@
         "Unknown type": "Tipo sconosciuto",
         "Player **resumed!**": "Giocatore ** ripreso! **",
         "No songs in queue": "Nessuna canzone in coda",
-        "Check out the new": "Dai un'occhiata al nuovo"
+        "Check out the new": "Dai un'occhiata al nuovo",
+        "QUEUE #": "CODA #",
+        "HISTORY #": "STORIA #"
     },
     "ja": {
         "search": "YouTube\u3092\u691c\u7d22\u3057\u3066\u304f\u3060\u3055\u3044",
@@ -1118,7 +1130,9 @@
         "Unknown type": "\u4e0d\u660e\u306a\u30bf\u30a4\u30d7",
         "Player **resumed!**": "\u30d7\u30ec\u30a4\u30e4\u30fc**\u518d\u958b\uff01**",
         "No songs in queue": "\u30ad\u30e5\u30fc\u306b\u66f2\u306f\u3042\u308a\u307e\u305b\u3093",
-        "Check out the new": "\u65b0\u3057\u3044\u3082\u306e\u3092\u30c1\u30a7\u30c3\u30af\u3057\u3066\u304f\u3060\u3055\u3044"
+        "Check out the new": "\u65b0\u3057\u3044\u3082\u306e\u3092\u30c1\u30a7\u30c3\u30af\u3057\u3066\u304f\u3060\u3055\u3044",
+        "QUEUE #": "\u5217 \uff03",
+        "HISTORY #": "\u6b74\u53f2 \uff03"
     },
     "ko": {
         "search": "\uc81c\uacf5\ub41c \ucffc\ub9ac\ub97c \uac80\uc0c9\ud558\uc2ed\uc2dc\uc624",
@@ -1258,7 +1272,9 @@
         "Unknown type": "\uc54c \uc218\uc5c6\ub294 \uc720\ud615",
         "Player **resumed!**": "\ud50c\ub808\uc774\uc5b4 ** \uc7ac\uac1c! **",
         "No songs in queue": "\ub300\uae30\uc5f4\uc5d0\ub294 \ub178\ub798\uac00 \uc5c6\uc2b5\ub2c8\ub2e4",
-        "Check out the new": "\uc0c8\ub85c\uc6b4 \uac83\uc744 \ud655\uc778\ud558\uc2ed\uc2dc\uc624"
+        "Check out the new": "\uc0c8\ub85c\uc6b4 \uac83\uc744 \ud655\uc778\ud558\uc2ed\uc2dc\uc624",
+        "QUEUE #": "\ub300\uae30\uc904 #",
+        "HISTORY #": "\uc5ed\uc0ac #"
     },
     "la": {
         "search": "Search YouTube pro provisum query",
@@ -1398,7 +1414,9 @@
         "Unknown type": "Ignotum type",
         "Player **resumed!**": "Ludio ludius ** resumpsit! **",
         "No songs in queue": "Nemo carmina in queue",
-        "Check out the new": "Reprehendo sicco novi"
+        "Check out the new": "Reprehendo sicco novi",
+        "QUEUE #": "Queue #",
+        "HISTORY #": "Historia #"
     },
     "zh": {
         "search": "\u641c\u7d22YouTube\u63d0\u4f9b\u7684\u67e5\u8be2",
@@ -1538,7 +1556,9 @@
         "Unknown type": "\u672a\u77e5\u7c7b\u578b",
         "Player **resumed!**": "\u7403\u5458**\u6062\u590d\uff01**",
         "No songs in queue": "\u961f\u5217\u4e2d\u6ca1\u6709\u6b4c\u66f2",
-        "Check out the new": "\u67e5\u770b\u65b0\u7684"
+        "Check out the new": "\u67e5\u770b\u65b0\u7684",
+        "QUEUE #": "\u961f\u5217 \uff03",
+        "HISTORY #": "\u5386\u53f2 \uff03"
     },
     "nl": {
         "search": "Zoek YouTube naar de verstrekte query",
@@ -1678,7 +1698,9 @@
         "Unknown type": "Onbekend type",
         "Player **resumed!**": "Speler ** hervat! **",
         "No songs in queue": "Geen nummers in wachtrij",
-        "Check out the new": "Bekijk het nieuwe"
+        "Check out the new": "Bekijk het nieuwe",
+        "QUEUE #": "WACHTRIJ #",
+        "HISTORY #": "GESCHIEDENIS #"
     },
     "pl": {
         "search": "Wyszukaj YouTube, aby uzyska\u0107 dostarczone zapytanie",
@@ -1818,7 +1840,9 @@
         "Unknown type": "Nieznany typ",
         "Player **resumed!**": "Gracz ** wznowiony! **",
         "No songs in queue": "Brak piosenek w kolejce",
-        "Check out the new": "Sprawd\u017a nowy"
+        "Check out the new": "Sprawd\u017a nowy",
+        "QUEUE #": "KOLEJKA #",
+        "HISTORY #": "Historia #"
     },
     "pt": {
         "search": "Pesquise o YouTube pela consulta fornecida",
@@ -1958,7 +1982,9 @@
         "Unknown type": "Tipo desconhecido",
         "Player **resumed!**": "Jogador ** retomado! **",
         "No songs in queue": "Sem m\u00fasicas na fila",
-        "Check out the new": "Confira o novo"
+        "Check out the new": "Confira o novo",
+        "QUEUE #": "FILA #",
+        "HISTORY #": "HIST\u00d3RIA #"
     },
     "ru": {
         "search": "\u041f\u043e\u0438\u0441\u043a YouTube \u0434\u043b\u044f \u043f\u0440\u0435\u0434\u043e\u0441\u0442\u0430\u0432\u043b\u0435\u043d\u043d\u043e\u0433\u043e \u0437\u0430\u043f\u0440\u043e\u0441\u0430",
@@ -2098,7 +2124,9 @@
         "Unknown type": "\u041d\u0435\u0438\u0437\u0432\u0435\u0441\u0442\u043d\u044b\u0439 \u0442\u0438\u043f",
         "Player **resumed!**": "\u0418\u0433\u0440\u043e\u043a ** \u0432\u043e\u0437\u043e\u0431\u043d\u043e\u0432\u0438\u043b\u0441\u044f! **",
         "No songs in queue": "\u041d\u0435\u0442 \u043f\u0435\u0441\u0435\u043d \u0432 \u043e\u0447\u0435\u0440\u0435\u0434\u0438",
-        "Check out the new": "\u041f\u0440\u043e\u0432\u0435\u0440\u044c\u0442\u0435 \u043d\u043e\u0432\u044b\u0439"
+        "Check out the new": "\u041f\u0440\u043e\u0432\u0435\u0440\u044c\u0442\u0435 \u043d\u043e\u0432\u044b\u0439",
+        "QUEUE #": "\u041e\u0427\u0415\u0420\u0415\u0414\u042c #",
+        "HISTORY #": "\u0418\u0441\u0442\u043e\u0440\u0438\u044f #"
     },
     "sv": {
         "search": "S\u00f6k YouTube efter den medf\u00f6ljande fr\u00e5gan",
@@ -2238,7 +2266,9 @@
         "Unknown type": "Ok\u00e4nd typ",
         "Player **resumed!**": "Spelare ** \u00e5terupptogs! **",
         "No songs in queue": "Inga l\u00e5tar i k\u00f6",
-        "Check out the new": "Kolla in det nya"
+        "Check out the new": "Kolla in det nya",
+        "QUEUE #": "K\u00f6 #",
+        "HISTORY #": "Historia #"
     },
     "tr": {
         "search": "Verilen sorgu i\u00e7in youtube aray\u0131n",
@@ -2378,6 +2408,8 @@
         "Unknown type": "Bilinmeyen T\u00fcr",
         "Player **resumed!**": "Oyuncu ** Devam Edildi! **",
         "No songs in queue": "Kuyrukta \u015eark\u0131 Yok",
-        "Check out the new": "Yeniye bak"
+        "Check out the new": "Yeniye bak",
+        "QUEUE #": "SIRA #",
+        "HISTORY #": "TAR\u0130H #"
     }
 }

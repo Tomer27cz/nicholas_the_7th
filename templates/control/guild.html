@@ -48,7 +48,7 @@
                         </div>
                         <div class="q-item1 q-wa">
                             <p class="q-text q-1">ID</p>
-                            <p class="q-text q-2">{{guild.data.id}}}</p>
+                            <p class="q-text q-2">{{guild.data.id}}</p>
                         </div>
                         <div class="q-item1 q-items-center">
                             <p class="q-text q-1">Server Owner</p>
@@ -93,8 +93,9 @@
                           <p class="q-text q-3">{{convert_duration(track.duration)}}</p>
                       </div>
                       <div class="q-item3 q-items-center">
-                          <p class="q-text q-1">Played at</p>
+                          <p class="q-text q-1">From/To</p>
                           <p class="q-text q-2">{{struct_to_time(track.played_at, first='time')}}</p>
+                          <p class="q-text q-2">{{struct_to_time(track.stopped_at, first='time')}}</p>
                       </div>
                       <div class="q-item2 q-items-center">
                           <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://discordapp.com/users/{{track.author}}">{{get_username(track.author)}}</a></p>

@@ -3,12 +3,12 @@
         "id": 1008145667622969397,
         "options": {
             "id": 1008145667622969397,
-            "stopped": false,
+            "stopped": true,
             "loop": false,
-            "is_radio": false,
+            "is_radio": true,
             "language": "cs",
             "response_type": "short",
-            "search_query": "Never gonna give you up",
+            "search_query": "{'footer': {'text': 'Requested at 20:25:04 28/04/2023'}, 'thumbnail': {'width': 64, 'url': 'https://cdn.discordapp.com/attachments/892403162315644931/1008054767379030096/vlc.png', 'proxy_url': 'https://media.discordapp.net/attachments/892403162315644931/1008054767379030096/vlc.png', 'height': 72}, 'fields': [{'value': 'Unknown', 'name': 'D\u00e9lka', 'inline': True}, {'value': '<@349164237605568513>', 'name': 'Na vy\u017e\u00e1d\u00e1n\u00ed', 'inline': True}, {'value': '[Message by Tomer27cz](https://discord.com/channels/1008145667622969397/1093886634577113191/1100177173295411230)', 'name': 'Autor', 'inline': True}, {'value': '[https://cdn.discordapp.com/attachments/1093886634577113191/1100177172972437504/henenetai_1.mov](https://cdn.discordapp.com/attachments/1093886634577113191/1100177172972437504/henenetai_1.mov)', 'name': 'URL', 'inline': True}], 'color': 5793266, 'type': 'rich', 'description': '```\\nhenenetai_1.mov\\n```', 'title': 'Now playing'}",
             "buttons": false,
             "volume": 1.0,
             "buffer": 600,
@@ -47,38 +47,7 @@
                 }
             ]
         },
-        "queue": {
-            "0": {
-                "class_type": "Video",
-                "author": 349164237605568513,
-                "created_at": 1682664897,
-                "played_at": null,
-                "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-                "title": "Rick Astley - Never Gonna Give You Up (Official Music Video)",
-                "picture": "https://img.youtube.com/vi/dQw4w9WgXcQ/default.jpg",
-                "duration": "212",
-                "channel_name": "Rick Astley",
-                "channel_link": "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw",
-                "radio_name": null,
-                "radio_website": null,
-                "local_number": null
-            },
-            "1": {
-                "class_type": "Video",
-                "author": 349164237605568513,
-                "created_at": 1682664994,
-                "played_at": null,
-                "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-                "title": "Rick Astley - Never Gonna Give You Up (Official Music Video)",
-                "picture": "https://img.youtube.com/vi/dQw4w9WgXcQ/default.jpg",
-                "duration": "212",
-                "channel_name": "Rick Astley",
-                "channel_link": "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw",
-                "radio_name": null,
-                "radio_website": null,
-                "local_number": null
-            }
-        },
+        "queue": {},
         "search_list": {},
         "history": {
             "0": {
@@ -86,6 +55,7 @@
                 "author": 349164237605568513,
                 "created_at": 1000212400,
                 "played_at": null,
+                "stopped_at": null,
                 "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
                 "title": "Never gonna give you up",
                 "picture": "https://img.youtube.com/vi/dQw4w9WgXcQ/default.jpg",
@@ -95,9 +65,40 @@
                 "radio_name": null,
                 "radio_website": null,
                 "local_number": null
+            },
+            "1": {
+                "class_type": "Probe",
+                "author": 349164237605568513,
+                "created_at": 1682715114,
+                "played_at": 1682715114,
+                "stopped_at": 1682715147,
+                "url": "https://cdn.discordapp.com/attachments/1093886634577113191/1100177172972437504/henenetai_1.mov",
+                "title": "henenetai_1.mov",
+                "picture": "https://cdn.discordapp.com/attachments/892403162315644931/1008054767379030096/vlc.png",
+                "duration": "Unknown",
+                "channel_name": "Message by Tomer27cz",
+                "channel_link": "https://discord.com/channels/1008145667622969397/1093886634577113191/1100177173295411230",
+                "radio_name": null,
+                "radio_website": null,
+                "local_number": null
             }
         },
-        "now_playing": {}
+        "now_playing": {
+            "class_type": "Radio",
+            "author": "WEB Guest",
+            "created_at": 1682715514,
+            "played_at": 1682715514,
+            "stopped_at": null,
+            "radio_name": "Evropa 2",
+            "url": "https://rds.actve.net/v1/metadata/channel/evropa2",
+            "title": "Evropa 2",
+            "picture": "https://static.mytuner.mobi/media/tvos_radios/4eYJ2UArA8.png",
+            "duration": "Stream",
+            "channel_name": "actve",
+            "channel_link": "https://rds.actve.net/v1/metadata/channel/evropa2",
+            "radio_website": "actve",
+            "local_number": null
+        }
     },
     "892403162315644928": {
         "id": 892403162315644928,
@@ -147,6 +148,7 @@
                 "author": 349164237605568513,
                 "created_at": 1000212400,
                 "played_at": null,
+                "stopped_at": null,
                 "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
                 "title": "Never gonna give you up",
                 "picture": "https://img.youtube.com/vi/dQw4w9WgXcQ/default.jpg",
@@ -204,6 +206,7 @@
                 "author": 349164237605568513,
                 "created_at": 1000212400,
                 "played_at": null,
+                "stopped_at": null,
                 "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
                 "title": "Never gonna give you up",
                 "picture": "https://img.youtube.com/vi/dQw4w9WgXcQ/default.jpg",
@@ -261,6 +264,7 @@
                 "author": 349164237605568513,
                 "created_at": 1000212400,
                 "played_at": null,
+                "stopped_at": null,
                 "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
                 "title": "Never gonna give you up",
                 "picture": "https://img.youtube.com/vi/dQw4w9WgXcQ/default.jpg",
@@ -318,6 +322,7 @@
                 "author": 349164237605568513,
                 "created_at": 1000212400,
                 "played_at": null,
+                "stopped_at": null,
                 "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
                 "title": "Never gonna give you up",
                 "picture": "https://img.youtube.com/vi/dQw4w9WgXcQ/default.jpg",
@@ -375,6 +380,7 @@
                 "author": 349164237605568513,
                 "created_at": 1000212400,
                 "played_at": null,
+                "stopped_at": null,
                 "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
                 "title": "Never gonna give you up",
                 "picture": "https://img.youtube.com/vi/dQw4w9WgXcQ/default.jpg",
@@ -427,6 +433,7 @@
                 "author": 349164237605568513,
                 "created_at": 1000212400,
                 "played_at": null,
+                "stopped_at": null,
                 "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
                 "title": "Never gonna give you up",
                 "picture": "https://img.youtube.com/vi/dQw4w9WgXcQ/default.jpg",

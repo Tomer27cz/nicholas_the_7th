@@ -421,6 +421,8 @@ input.radio-checkbox[type=radio] + label
 }
 .v-info {
   color: var(--json-green);
+  white-space: normal;
+  overflow-wrap: break-word;
 }
 
 
@@ -495,6 +497,11 @@ input.radio-checkbox[type=radio] + label
   text-align: center;
   padding: 0.5rem;
   color: #808080;
+}
+
+.l-div {
+  display: flex;
+  justify-content: flex-start;
 }
 
 
