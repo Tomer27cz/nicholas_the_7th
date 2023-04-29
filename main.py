@@ -1,5 +1,6 @@
 import os
 import random
+import subprocess
 
 import discord
 import asyncio
@@ -41,7 +42,7 @@ class Bot(commands.Bot):
             await self.tree.sync()
             log(None, f"Synced slash commands for {self.user}")
         await bot.change_presence(activity=discord.Game(name=f"/help"))
-        log(None, 'Logged in as:\n{0.user.name}\n{0.user.id}'.format(bot))
+        log(None, f'Logged in as:\n{bot.user.name}\n{bot.user.id}')
 
     async def on_guild_join(self, guild_object):
         log(guild_object.id, f"Joined guild {guild_object.name} with {guild_object.member_count} members and {len(guild_object.voice_channels)} voice channels")
@@ -619,12 +620,42 @@ def extract_yt_id(url_string: str):
         return None
     return results.group(1)
 
-async def get_url_probe_data(url: str):
-    codec, bitrate = await discord.FFmpegOpusAudio.probe(url)
-    if codec is None and bitrate is None:
+def get_first_url(string: str):
+    re_search = re.search(r"(http|ftp|https)://([\w_-]+(?:\.[\w_-]+)+)([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])", string)
+    if re_search is None:
         return None
+    return re_search[0]
 
-    return codec, bitrate
+async def get_url_probe_data(url: str):
+    extracted_url = get_first_url(url)
+    if extracted_url is None:
+        return None, extracted_url
+
+    print(extracted_url)
+
+    # noinspection PyBroadException
+    try:
+        executable = 'ffmpeg'
+        exe = executable[:2] + 'probe' if executable in ('ffmpeg', 'avconv') else executable
+        args = [exe, '-v', 'quiet', '-print_format', 'json', '-show_streams', '-select_streams', 'a:0', extracted_url]
+        output = subprocess.check_output(args, timeout=20)
+        codec = bitrate = None
+
+        if output:
+            data = json.loads(output)
+            streamdata = data['streams'][0]
+
+            codec = streamdata.get('codec_name')
+            bitrate = int(streamdata.get('bit_rate', 0))
+            bitrate = max(round(bitrate / 1000), 512)
+
+    except:
+        codec, bitrate = None, None
+
+    if codec and bitrate:
+        return (codec, bitrate), extracted_url
+
+    return None, extracted_url
 
 def get_content_of_message(message: discord.Message):
     if message.attachments:
@@ -634,11 +665,15 @@ def get_content_of_message(message: discord.Message):
         message_link = message.jump_url
         probe_data = [filename, message_author, message_link]
     elif message.embeds:
-        embed = message.embeds[0]
-        embed_dict = embed.to_dict()
-        embed_str = str(embed_dict)
-        url = embed_str
-        probe_data = None
+        if message.content:
+            url = message.content
+            probe_data = None
+        else:
+            embed = message.embeds[0]
+            embed_dict = embed.to_dict()
+            embed_str = str(embed_dict)
+            url = embed_str
+            probe_data = None
     else:
         url = message.content
         probe_data = None
@@ -858,7 +893,6 @@ class SearchOptionView(View):
         if self.from_play:
             await play_def(self.ctx)
 
-
     # noinspection PyUnusedLocal
     @discord.ui.button(emoji=react_dict['2'], style=discord.ButtonStyle.blurple, custom_id='2')
     async def callback_2(self, interaction, button):
@@ -956,7 +990,6 @@ class PlaylistOptionView(View):
             await play_def(self.ctx)
 
 # --------------------------------------- QUEUE --------------------------------------------------
-
 
 @bot.hybrid_command(name='queue', with_app_command=True, description=text['queue_add'], help=text['queue_add'])
 @app_commands.describe(url=text['url'], position=text['pos'])
@@ -1115,7 +1148,7 @@ async def play_now(inter, message: discord.Message):
 
     url, probe_data = get_content_of_message(message)
 
-    response = await queue_command_def(ctx, url, mute_response=True, probe_data=probe_data, ephemeral=True, position=0)
+    response = await queue_command_def(ctx, url, mute_response=True, probe_data=probe_data, ephemeral=True, position=0, from_play=True)
     if response:
         if response[0]:
             await play_def(ctx, force=True)
@@ -1314,7 +1347,7 @@ async def queue_command_def(ctx,
     if '/playlist?list=' in url:
         if is_ctx:
             if not ctx.interaction.response.is_done():
-                await ctx.defer()
+                await ctx.defer(ephemeral=ephemeral)
 
         try:
             playlist_videos = youtubesearchpython.Playlist.getVideos(url)
@@ -1347,7 +1380,7 @@ async def queue_command_def(ctx,
 
         save_json()
 
-        message = f"`{playlist_songs}` {tg(guild_id, 'songs from playlist added to queue!')} -> [Control Panel](http://nicholasthe7th.duckdns.org:5420/guild/{guild_id}&key={guild[guild_id].data.key})"
+        message = f"`{playlist_songs}` {tg(guild_id, 'songs from playlist added to queue!')} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={guild[guild_id].data.key})"
         if not mute_response:
             await ctx.reply(message, ephemeral=ephemeral)
         return [True, message, None]
@@ -1361,20 +1394,20 @@ async def queue_command_def(ctx,
     video_id = extract_yt_id(url)
 
     if video_id is None:
-        probe = await get_url_probe_data(url)
+        probe, extracted_url = await get_url_probe_data(url)
 
         if probe is None:
             if is_ctx and not no_search:
                 await search_command_def(ctx, url, display_type='short', force=force, from_play=from_play, ephemeral=ephemeral)
 
-            message = f'[`{url}`](<{url}>) {tg(guild_id, "is not supported!")} -> [Control Panel](http://nicholasthe7th.duckdns.org:5420/guild/{guild_id}&key={guild[guild_id].data.key})'
+            message = f'[`{url}`](<{url}>) {tg(guild_id, "is not supported!")} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={guild[guild_id].data.key})'
             save_json()
             return [False, message]
         else:
             if probe_data:
-                video = VideoClass('Probe', author_id, url=url, title=probe_data[0], picture=vlc_logo, duration='Unknown', channel_name=probe_data[1], channel_link=probe_data[2])
+                video = VideoClass('Probe', author_id, url=extracted_url, title=probe_data[0], picture=vlc_logo, duration='Unknown', channel_name=probe_data[1], channel_link=probe_data[2])
             else:
-                video = VideoClass('Probe', author_id, url=url, title='URL Probe', picture=vlc_logo, duration='Unknown', channel_name='URL Probe', channel_link=url)
+                video = VideoClass('Probe', author_id, url=extracted_url, title='URL Probe', picture=vlc_logo, duration='Unknown', channel_name='URL Probe', channel_link=extracted_url)
 
     else:
         url = f"https://www.youtube.com/watch?v={video_id}"
@@ -1390,7 +1423,7 @@ async def queue_command_def(ctx,
 
     save_json()
 
-    message = f'[`{video.title}`](<{video.url}>) {tg(guild_id, "added to queue!")} -> [Control Panel](http://nicholasthe7th.duckdns.org:5420/guild/{guild_id}&key={guild[guild_id].data.key})'
+    message = f'[`{video.title}`](<{video.url}>) {tg(guild_id, "added to queue!")} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={guild[guild_id].data.key})'
     if not mute_response:
         await ctx.reply(message, ephemeral=ephemeral)
     return [True, message, None]
@@ -1560,7 +1593,7 @@ async def show_def(ctx,
             display_type = 'medium'
 
     if display_type == 'long':
-        message = f"**THE {list_type.capitalize()}**\n **Loop** mode  `{guild[guild_id].options.loop}`,  **Display** type `{display_type}`, [Control Panel](http://nicholasthe7th.duckdns.org:5420/guild/{guild_id}&key={guild[guild_id].data.key})"
+        message = f"**THE {list_type.capitalize()}**\n **Loop** mode  `{guild[guild_id].options.loop}`,  **Display** type `{display_type}`, [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={guild[guild_id].data.key})"
         await ctx.send(message, ephemeral=ephemeral, mention_author=False)
 
         for index, val in enumerate(show_list):
@@ -1570,7 +1603,7 @@ async def show_def(ctx,
 
 
     if display_type == 'medium':
-        embed = discord.Embed(title=f"Song {list_type}", description=f'Loop: {guild[guild_id].options.loop} | Display type: {display_type} | [Control Panel](http://nicholasthe7th.duckdns.org:5420/guild/{guild_id}&key={guild[guild_id].data.key})', color=0x00ff00)
+        embed = discord.Embed(title=f"Song {list_type}", description=f'Loop: {guild[guild_id].options.loop} | Display type: {display_type} | [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={guild[guild_id].data.key})', color=0x00ff00)
 
         message = ''
         for index, val in enumerate(show_list):
@@ -1592,7 +1625,7 @@ async def show_def(ctx,
 
 
     if display_type == 'short':
-        send = f"**THE {list_type.upper()}**\n **Loop** mode  `{guild[guild_id].options.loop}`,  **Display** type `{display_type}`, [Control Panel](http://nicholasthe7th.duckdns.org:5420/guild/{guild_id}&key={guild[guild_id].data.key})"
+        send = f"**THE {list_type.upper()}**\n **Loop** mode  `{guild[guild_id].options.loop}`,  **Display** type `{display_type}`, [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={guild[guild_id].data.key})"
         # noinspection PyUnresolvedReferences
         if ctx.interaction.response.is_done(): await ctx.send(send, ephemeral=ephemeral, mention_author=False)
         else: await ctx.reply(send, ephemeral=ephemeral, mention_author=False)
@@ -1623,7 +1656,7 @@ async def search_command_def(ctx,
                              from_play: bool = False,
                              ephemeral: bool = False
                              ):
-    log(ctx, 'search_command_def', [search_query, display_type, force, from_play], log_type='function', author=ctx.author)
+    log(ctx, 'search_command_def', [search_query, display_type, force, from_play, ephemeral], log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
 
     if not is_ctx:
@@ -1631,7 +1664,7 @@ async def search_command_def(ctx,
 
     # noinspection PyUnresolvedReferences
     if not ctx.interaction.response.is_done():
-        await ctx.defer()
+        await ctx.defer(ephemeral=ephemeral)
 
     guild[guild_id].options.search_query = search_query
 
@@ -1679,7 +1712,7 @@ async def play_def(ctx,
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
     response = []
 
-    notif = f'\n{tg(guild_id, "Check out the new")} [Control Panel](http://nicholasthe7th.duckdns.org:5420/guild/{guild_id}&key={guild[guild_id].data.key})'
+    notif = f'\n{tg(guild_id, "Check out the new")} [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={guild[guild_id].data.key})'
 
     if url == 'next':
         if guild[guild_id].options.stopped:
@@ -1776,7 +1809,7 @@ async def play_def(ctx,
         guild[guild_id].options.stopped = False
 
     try:
-        source = await GetSource.create_source(guild_id, video.url)
+        source = await GetSource.create_source(guild_id, video.url, source_type=video.class_type)
         voice.play(source, after=lambda e: asyncio.run_coroutine_threadsafe(play_def(ctx, 'next'), bot.loop))
 
         await volume_command_def(ctx, guild[guild_id].options.volume * 100, False, True)
@@ -2286,7 +2319,7 @@ async def list_radios_def(ctx,
 async def key_def(ctx: commands.Context):
     log(ctx, 'key_def', [], log_type='function', author=ctx.author)
     save_json()
-    message = f'Key: `{guild[ctx.guild.id].data.key}` -> [Control Panel](http://nicholasthe7th.duckdns.org:5420/guild/{ctx.guild.id}&key={guild[ctx.guild.id].data.key})'
+    message = f'Key: `{guild[ctx.guild.id].data.key}` -> [Control Panel]({config.WEB_URL}/guild/{ctx.guild.id}&key={guild[ctx.guild.id].data.key})'
     await ctx.reply(message)
     save_json()
     return [True, message]
@@ -3076,7 +3109,6 @@ async def guild_get_key_page(guild_id):
 
     return render_template('control/action/get_key.html', guild_id=guild_id, errors=None, url=Oauth.discord_login_url, user=user)
 
-
 @app.route('/guild/<guild_id>&key=<key>', methods=['GET', 'POST'])
 async def guild_page(guild_id, key):
     log(request.remote_addr, f'/guild/{guild_id}&key={key}', log_type='ip')
@@ -3199,7 +3231,6 @@ async def guild_page(guild_id, key):
     session['mutual_guild_ids'] = mutual_guild_ids
 
     return render_template('control/guild.html', guild=guild_object, struct_to_time=struct_to_time, convert_duration=convert_duration, get_username=get_username, errors=errors, messages=messages, user=user, admin=admin, volume=round(guild_object.options.volume * 100), radios=list(radio_dict.values()), scroll_position=scroll_position)
-
 
 @app.route('/login')
 async def login_page():

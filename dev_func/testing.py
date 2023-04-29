@@ -412,24 +412,50 @@
 #     json_dict = json.dumps(ydl.sanitize_info(info))
 #
 #     print(getsizeof(json_dict))
+#
+# def is_float(value):
+#   if value is None:
+#       return False
+#   # noinspection PyBroadException
+#   try:
+#       float(value)
+#       return True
+#   except:
+#       return False
+#
+#
+# text = '1.0'
+#
+# print(is_float(text))
 
-def is_float(value):
-  if value is None:
-      return False
-  # noinspection PyBroadException
-  try:
-      float(value)
-      return True
-  except:
-      return False
+
+import re
 
 
-text = '1.0'
+string_test = """
+29/04/2023 10:32:12 | F 1008145667622969397 | queue_command_def -> ['Nyní hraje: [`https://cdn.discordapp.com/attachments/837695986994118678/1099709266039930992/AAAAAAAAAAAA.mp4`](<https://cdn.discordapp.com/attachments/837695986994118678/1099709266039930992/AAAAAAAAAAAA.mp4>)', None, True, False, False, None, False, True]
+"""
 
-print(is_float(text))
 
+def find_url(string: str):
+  url = re.search(r"(http|ftp|https)://([\w_-]+(?:\.[\w_-]+)+)([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])", string)
+  return url[0]
 
+def get_first_url(string: str):
+    re_search = re.search("(?P<url>https?://\S+)", string)
+    if re_search is None:
+        return None
+    return re_search.group("url")
 
+def get_first_url2(string: str):
+    re_search = re.search(r"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\), ]|(?:%[0-9a-fA-F][0-9a-fA-F]))+", string)
+    if re_search is None:
+        return None
+    return re_search[0]
+
+print(find_url(string_test))
+print(get_first_url(string_test))
+print(get_first_url2(string_test))
 
 
 
