@@ -1,31 +1,29 @@
+import asyncio
+import json
 import os
 import random
+import re
 import subprocess
+import sys
+import threading
+import traceback
+from os import path, listdir
+from time import time, strftime, gmtime
+from typing import Literal
 
 import discord
-import asyncio
+import requests
+import youtubesearchpython
+import yt_dlp
+from bs4 import BeautifulSoup
 from discord import FFmpegPCMAudio, app_commands
 from discord.ext import commands
 from discord.ui import View
-
 from flask import Flask, render_template, request, url_for, redirect, session, send_file
-import threading
 
-import yt_dlp
-import youtubesearchpython
-from bs4 import BeautifulSoup
-import requests
-import json
-import re
-
-from os import path, listdir
-import sys
-from typing import Literal
-import traceback
-from time import time, strftime, gmtime
-
-from oauth import Oauth
 import config
+from oauth import Oauth
+
 
 # ---------------- Bot class ------------
 
@@ -342,7 +340,7 @@ class VideoClass:
             pass
 
         return
-    
+
 # ------------ Guild ------------
 
 class Guild:
@@ -408,7 +406,7 @@ def log(ctx, text_data, options=None, log_type='text', author=None):
         guild_id = ctx.guild_id
     else:
         guild_id = ctx
-    
+
     if log_type == 'command':
         message = f"{now_time_str} | C {guild_id} | Command ({text_data}) was requested by ({author}) -> {options}"
     elif log_type == 'function':
@@ -421,7 +419,7 @@ def log(ctx, text_data, options=None, log_type='text', author=None):
         message = f"{now_time_str} | I {guild_id} | Requested: {text_data}"
     else:
         raise ValueError('Wrong log_type')
-    
+
     print(message)
 
     with open("log/log.txt", "a", encoding="utf-8") as f:
