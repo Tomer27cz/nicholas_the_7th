@@ -4,6 +4,10 @@ This is a discord bot that I made for a few discord servers. It is a work in pro
 
 It is not meant to be used by anyone else, but if you want to use it, feel free to do so.
 
+## Invite
+
+The bot is currently hosted by me. So if you want you can [Invite](https://discord.com/api/oauth2/authorize?client_id=1007004463933952120&permissions=3198017&scope=bot) him.
+
 ## Installation
 
 - Clone the repository 
