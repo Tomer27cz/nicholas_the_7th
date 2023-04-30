@@ -11,6 +11,7 @@ from os import path, listdir
 from time import time, strftime, gmtime
 from typing import Literal
 
+import spotipy
 import discord
 import requests
 import youtubesearchpython
@@ -19,6 +20,7 @@ from bs4 import BeautifulSoup
 from discord import FFmpegPCMAudio, app_commands
 from discord.ext import commands
 from discord.ui import View
+from spotipy.oauth2 import SpotifyClientCredentials
 from flask import Flask, render_template, request, url_for, redirect, session, send_file
 
 import config
@@ -550,6 +552,13 @@ bot = Bot()
 
 log(None, 'Bot class initialized')
 
+# ---------------------------------------------- SPOTIPY ---------------------------------------------------------------
+
+credentials = SpotifyClientCredentials(client_id=config.SPOTIPY_CLIENT_ID, client_secret=config.SPOTIPY_CLIENT_SECRET)
+sp = spotipy.Spotify(client_credentials_manager=credentials)
+
+log(None, 'Spotipy class initialized')
+
 # ----------------------------------------------------------------------------------------------------------------------
 
 
@@ -598,6 +607,107 @@ def tg(guild_id, content):
         log(None, f'KeyError: {content} in {lang}')
         to_return = content
     return to_return
+
+# --------- spotify --------
+
+def spotify_to_yt_video(spotify_url, author):
+    # noinspection PyBroadException
+    try:
+        spotify_track = sp.track(spotify_url)
+    except Exception:
+        return None
+
+    title = spotify_track['name']
+    artist = spotify_track['artists'][0]['name']
+    search_query = f"{title} {artist}"
+
+    custom_search = youtubesearchpython.VideosSearch(search_query, limit=1)
+
+    if not custom_search.result()['result']:
+        return None
+
+    video = custom_search.result()['result'][0]
+
+    yt_url = video['link']
+    yt_title = video['title']
+    yt_picture = 'https://img.youtube.com/vi/' + video['id'] + '/default.jpg'
+    yt_duration = video['duration']
+    yt_channel_name = video['channel']['name']
+    yt_channel_link = video['channel']['link']
+
+    video_class = VideoClass('Video', author, url=yt_url, title=yt_title, picture=yt_picture, duration=yt_duration, channel_name=yt_channel_name, channel_link=yt_channel_link)
+
+    return video_class
+
+def spotify_playlist_to_yt_video_list(spotify_playlist_url, author):
+    # noinspection PyBroadException
+    try:
+        spotify_playlist = sp.playlist_items(spotify_playlist_url, fields='items.track.name, items.track.artists.name')
+    except Exception:
+        return None
+
+    video_list = []
+
+    for index, item in enumerate(spotify_playlist['items']):
+        spotify_track = item['track']
+
+        title = spotify_track['name']
+        artist = spotify_track['artists'][0]['name']
+        search_query = f"{title} {artist}"
+
+        custom_search = youtubesearchpython.VideosSearch(search_query, limit=1)
+
+        if not custom_search.result()['result']:
+            continue
+
+        video = custom_search.result()['result'][0]
+
+        yt_url = video['link']
+        yt_title = video['title']
+        yt_picture = 'https://img.youtube.com/vi/' + video['id'] + '/default.jpg'
+        yt_duration = video['duration']
+        yt_channel_name = video['channel']['name']
+        yt_channel_link = video['channel']['link']
+
+        video_class = VideoClass('Video', author, url=yt_url, title=yt_title, picture=yt_picture, duration=yt_duration, channel_name=yt_channel_name, channel_link=yt_channel_link)
+
+        video_list.append(video_class)
+
+    return video_list
+
+def spotify_album_to_yt_video_list(spotify_album_url, author):
+    # noinspection PyBroadException
+    try:
+        spotify_album = sp.album_tracks(spotify_album_url)
+    except Exception:
+        return None
+
+    video_list = []
+
+    for index, spotify_track in enumerate(spotify_album['items']):
+        title = spotify_track['name']
+        artist = spotify_track['artists'][0]['name']
+        search_query = f"{title} {artist}"
+
+        custom_search = youtubesearchpython.VideosSearch(search_query, limit=1)
+
+        if not custom_search.result()['result']:
+            continue
+
+        video = custom_search.result()['result'][0]
+
+        yt_url = video['link']
+        yt_title = video['title']
+        yt_picture = 'https://img.youtube.com/vi/' + video['id'] + '/default.jpg'
+        yt_duration = video['duration']
+        yt_channel_name = video['channel']['name']
+        yt_channel_link = video['channel']['link']
+
+        video_class = VideoClass('Video', author, url=yt_url, title=yt_title, picture=yt_picture, duration=yt_duration, channel_name=yt_channel_name, channel_link=yt_channel_link)
+
+        video_list.append(video_class)
+
+    return video_list
 
 # --------- video_info / url --------
 
@@ -742,6 +852,15 @@ def is_float(value):
       return True
   except:
       return False
+
+# -------------- get / set --------------
+
+def to_queue(guild_id: int, video: VideoClass, position: int = None):
+    if position is None:
+        guild[guild_id].queue.append(video)
+    else:
+        guild[guild_id].queue.insert(position, video)
+    save_json()
 
 # ---------------EMBED--------------
 
@@ -1371,10 +1490,7 @@ async def queue_command_def(ctx,
             url = f"https://www.youtube.com/watch?v={playlist_videos[index]['id']}"
             video = VideoClass('Video', author_id, url)
 
-            if position or position == 0:
-                guild[guild_id].queue.insert(position, video)
-            else:
-                guild[guild_id].queue.append(video)
+            to_queue(guild_id, video, position)
 
         save_json()
 
@@ -1388,6 +1504,69 @@ async def queue_command_def(ctx,
         message = tg(guild_id, 'This video is from a **playlist**, do you want to add the playlist to **queue?**')
         await ctx.reply(message, view=view, ephemeral=ephemeral)
         return [False, message]
+
+    if 'spotify.com/playlist/' in url:
+        adding_message = None
+        if is_ctx:
+            adding_message = await ctx.reply(tg(guild_id, 'Adding songs to queue... (might take a while)'), ephemeral=ephemeral)
+
+        video_list = spotify_playlist_to_yt_video_list(url, author_id)
+
+        if video_list is None:
+            message = f'`{url}` {tg(guild_id, "is not supported!")} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={guild[guild_id].data.key})'
+            if is_ctx:
+                await adding_message.edit(content=message)
+            return [False, message]
+
+        if position is not None:
+            video_list = list(reversed(video_list))
+
+        for video in video_list:
+            to_queue(guild_id, video, position)
+
+        message = f'`{len(video_list)}` {tg(guild_id, "songs from playlist added to queue!")} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={guild[guild_id].data.key})'
+        if is_ctx:
+            await adding_message.edit(content=message)
+        return [True, message]
+
+    if 'spotify.com/album/' in url:
+        adding_message = None
+        if is_ctx:
+            adding_message = await ctx.reply(tg(guild_id, 'Adding songs to queue... (might take a while)'), ephemeral=ephemeral)
+
+        video_list = spotify_album_to_yt_video_list(url, author_id)
+
+        if video_list is None:
+            message = f'`{url}` {tg(guild_id, "is not supported!")} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={guild[guild_id].data.key})'
+            if is_ctx:
+                await adding_message.edit(content=message)
+            return [False, message]
+
+        if position is not None:
+            video_list = list(reversed(video_list))
+
+        for video in video_list:
+            to_queue(guild_id, video, position)
+
+        message = f'`{len(video_list)}` {tg(guild_id, "songs from album added to queue!")} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={guild[guild_id].data.key})'
+        if is_ctx:
+            await adding_message.edit(content=message)
+        return [True, message]
+
+    if 'spotify.com/track/' in url:
+        video = spotify_to_yt_video(url, author_id)
+        if video is None:
+            message = f'`{url}` {tg(guild_id, "is not supported!")} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={guild[guild_id].data.key})'
+            if not mute_response:
+                await ctx.reply(message, ephemeral=ephemeral)
+            return [False, message]
+
+        to_queue(guild_id, video, position)
+
+        message = f'`{video.title}` {tg(guild_id, "added to queue!")} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={guild[guild_id].data.key})'
+        if not mute_response:
+            await ctx.reply(message, ephemeral=ephemeral)
+        return [True, message]
 
     video_id = extract_yt_id(url)
 
@@ -1414,10 +1593,7 @@ async def queue_command_def(ctx,
     if video is None:
         return [False, 'An unexpected error occurred: video is NoneType']
 
-    if position is not None:
-        guild[guild_id].queue.insert(position, video)
-    else:
-        guild[guild_id].queue.append(video)
+    to_queue(guild_id, video, position)
 
     save_json()
 
@@ -2815,10 +2991,7 @@ async def web_queue(web_data, video_type, position=None):
         return await web_queue_from_radio(web_data, video.radio_name, position)
 
     try:
-        if position == 0:
-            guild[guild_id].queue.insert(0, video)
-        else:
-            guild[guild_id].queue.append(video)
+        to_queue(guild_id, video, position=position)
 
         save_json()
         log(guild_id, "web_queue -> Queued")
@@ -3368,7 +3541,7 @@ async def admin_page():
     return redirect(url_for('index_page'))
 
 def application():
-    web_thread = threading.Thread(target=app.run, kwargs={'debug': False, 'host': '0.0.0.0', 'port': int(os.environ.get('PORT', config.PORT))})
+    web_thread = threading.Thread(target=app.run, kwargs={'debug': False, 'host': '0.0.0.0', 'port': int(os.environ.get('PORT', 5420))})
     bot_thread = threading.Thread(target=bot.run, kwargs={'token':config.BOT_TOKEN})
 
     web_thread.start()

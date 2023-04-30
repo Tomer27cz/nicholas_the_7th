@@ -138,7 +138,8 @@
         "Nothing selected": "Nothing selected",
         "No songs in queue": "No songs in queue",
         "Check out the new": "Check out the new",
-        "HISTORY #": "HISTORY #"
+        "HISTORY #": "HISTORY #",
+        "Adding songs to queue... (might take a while)": "Adding songs to queue... (might take a while)"
     },
     "cs": {
         "search": "Vyhledejte na youtube zadan\u00fd dotaz",
@@ -280,7 +281,8 @@
         "No songs in queue": "\u017d\u00e1dn\u00e9 p\u00edsn\u011b ve front\u011b",
         "Check out the new": "Pod\u00edvejte se na nov\u00fd",
         "QUEUE #": "Fronta #",
-        "HISTORY #": "D\u011aJINY #"
+        "HISTORY #": "D\u011aJINY #",
+        "Adding songs to queue... (might take a while)": "P\u0159id\u00e1n\u00ed p\u00edsn\u00ed do fronty ... (m\u016f\u017ee chv\u00edli trvat)"
     },
     "de": {
         "search": "Suchen Sie YouTube nach der bereitgestellten Abfrage",
@@ -422,7 +424,8 @@
         "No songs in queue": "Keine Songs in der Warteschlange",
         "Check out the new": "Schauen Sie sich das neue an",
         "QUEUE #": "WARTESCHLANGE #",
-        "HISTORY #": "GESCHICHTE #"
+        "HISTORY #": "GESCHICHTE #",
+        "Adding songs to queue... (might take a while)": "Hinzuf\u00fcgen von Songs zur Warteschlange ... (M\u00f6glicherweise dauern eine Weile)"
     },
     "eo": {
         "search": "Ser\u0109u YouTube",
@@ -564,7 +567,8 @@
         "No songs in queue": "Neniuj kantoj en vosto",
         "Check out the new": "Rigardu la novan",
         "QUEUE #": "Vosto #",
-        "HISTORY #": "HISTORIO #"
+        "HISTORY #": "HISTORIO #",
+        "Adding songs to queue... (might take a while)": "Aldonante kantojn al vosto ... (eble da\u016dros iom da tempo)"
     },
     "es": {
         "search": "Busque en YouTube la consulta proporcionada",
@@ -706,7 +710,8 @@
         "No songs in queue": "No hay canciones en la cola",
         "Check out the new": "Mira el nuevo",
         "QUEUE #": "COLA #",
-        "HISTORY #": "HISTORIA #"
+        "HISTORY #": "HISTORIA #",
+        "Adding songs to queue... (might take a while)": "Agregar canciones a la cola ... (podr\u00eda llevar un tiempo)"
     },
     "fr": {
         "search": "Recherchez YouTube pour la requ\u00eate fournie",
@@ -848,7 +853,8 @@
         "No songs in queue": "Pas de chansons dans la file d'attente",
         "Check out the new": "D\u00e9couvrez le nouveau",
         "QUEUE #": "FILE D'ATTENTE #",
-        "HISTORY #": "HISTOIRE #"
+        "HISTORY #": "HISTOIRE #",
+        "Adding songs to queue... (might take a while)": "Ajouter des chansons \u00e0 la file d'attente ... (pourrait prendre un certain temps)"
     },
     "it": {
         "search": "Cerca YouTube per la query fornita",
@@ -990,7 +996,8 @@
         "No songs in queue": "Nessuna canzone in coda",
         "Check out the new": "Dai un'occhiata al nuovo",
         "QUEUE #": "CODA #",
-        "HISTORY #": "STORIA #"
+        "HISTORY #": "STORIA #",
+        "Adding songs to queue... (might take a while)": "Aggiungere canzoni alla coda ... (potrebbe richiedere un po 'di tempo)"
     },
     "ja": {
         "search": "YouTube\u3092\u691c\u7d22\u3057\u3066\u304f\u3060\u3055\u3044",
@@ -1132,7 +1139,8 @@
         "No songs in queue": "\u30ad\u30e5\u30fc\u306b\u66f2\u306f\u3042\u308a\u307e\u305b\u3093",
         "Check out the new": "\u65b0\u3057\u3044\u3082\u306e\u3092\u30c1\u30a7\u30c3\u30af\u3057\u3066\u304f\u3060\u3055\u3044",
         "QUEUE #": "\u5217 \uff03",
-        "HISTORY #": "\u6b74\u53f2 \uff03"
+        "HISTORY #": "\u6b74\u53f2 \uff03",
+        "Adding songs to queue... (might take a while)": "\u30ad\u30e5\u30fc\u306b\u66f2\u3092\u8ffd\u52a0...\uff08\u3057\u3070\u3089\u304f\u6642\u9593\u304c\u304b\u304b\u308b\u304b\u3082\u3057\u308c\u307e\u305b\u3093\uff09"
     },
     "ko": {
         "search": "\uc81c\uacf5\ub41c \ucffc\ub9ac\ub97c \uac80\uc0c9\ud558\uc2ed\uc2dc\uc624",
@@ -1274,7 +1282,8 @@
         "No songs in queue": "\ub300\uae30\uc5f4\uc5d0\ub294 \ub178\ub798\uac00 \uc5c6\uc2b5\ub2c8\ub2e4",
         "Check out the new": "\uc0c8\ub85c\uc6b4 \uac83\uc744 \ud655\uc778\ud558\uc2ed\uc2dc\uc624",
         "QUEUE #": "\ub300\uae30\uc904 #",
-        "HISTORY #": "\uc5ed\uc0ac #"
+        "HISTORY #": "\uc5ed\uc0ac #",
+        "Adding songs to queue... (might take a while)": "\ud050\uc5d0 \ub178\ub798 \ucd94\uac00 ... (\uc2dc\uac04\uc774 \uac78\ub9b4 \uc218 \uc788\uc74c)"
     },
     "la": {
         "search": "Search YouTube pro provisum query",
@@ -1416,7 +1425,8 @@
         "No songs in queue": "Nemo carmina in queue",
         "Check out the new": "Reprehendo sicco novi",
         "QUEUE #": "Queue #",
-        "HISTORY #": "Historia #"
+        "HISTORY #": "Historia #",
+        "Adding songs to queue... (might take a while)": "Addit carmina ad queue ... (ut a dum)"
     },
     "zh": {
         "search": "\u641c\u7d22YouTube\u63d0\u4f9b\u7684\u67e5\u8be2",
@@ -1558,7 +1568,8 @@
         "No songs in queue": "\u961f\u5217\u4e2d\u6ca1\u6709\u6b4c\u66f2",
         "Check out the new": "\u67e5\u770b\u65b0\u7684",
         "QUEUE #": "\u961f\u5217 \uff03",
-        "HISTORY #": "\u5386\u53f2 \uff03"
+        "HISTORY #": "\u5386\u53f2 \uff03",
+        "Adding songs to queue... (might take a while)": "\u5728\u961f\u5217\u4e2d\u6dfb\u52a0\u6b4c\u66f2...\uff08\u53ef\u80fd\u9700\u8981\u4e00\u6bb5\u65f6\u95f4\uff09"
     },
     "nl": {
         "search": "Zoek YouTube naar de verstrekte query",
@@ -1700,7 +1711,8 @@
         "No songs in queue": "Geen nummers in wachtrij",
         "Check out the new": "Bekijk het nieuwe",
         "QUEUE #": "WACHTRIJ #",
-        "HISTORY #": "GESCHIEDENIS #"
+        "HISTORY #": "GESCHIEDENIS #",
+        "Adding songs to queue... (might take a while)": "Nummers toevoegen om in de rij te staan ... (kan een tijdje duren)"
     },
     "pl": {
         "search": "Wyszukaj YouTube, aby uzyska\u0107 dostarczone zapytanie",
@@ -1842,7 +1854,8 @@
         "No songs in queue": "Brak piosenek w kolejce",
         "Check out the new": "Sprawd\u017a nowy",
         "QUEUE #": "KOLEJKA #",
-        "HISTORY #": "Historia #"
+        "HISTORY #": "Historia #",
+        "Adding songs to queue... (might take a while)": "Dodawanie piosenek do kolejki ... (mo\u017ce troch\u0119 czasu)"
     },
     "pt": {
         "search": "Pesquise o YouTube pela consulta fornecida",
@@ -1984,7 +1997,8 @@
         "No songs in queue": "Sem m\u00fasicas na fila",
         "Check out the new": "Confira o novo",
         "QUEUE #": "FILA #",
-        "HISTORY #": "HIST\u00d3RIA #"
+        "HISTORY #": "HIST\u00d3RIA #",
+        "Adding songs to queue... (might take a while)": "Adicionando m\u00fasicas \u00e0 fila ... (pode demorar um pouco)"
     },
     "ru": {
         "search": "\u041f\u043e\u0438\u0441\u043a YouTube \u0434\u043b\u044f \u043f\u0440\u0435\u0434\u043e\u0441\u0442\u0430\u0432\u043b\u0435\u043d\u043d\u043e\u0433\u043e \u0437\u0430\u043f\u0440\u043e\u0441\u0430",
@@ -2126,7 +2140,8 @@
         "No songs in queue": "\u041d\u0435\u0442 \u043f\u0435\u0441\u0435\u043d \u0432 \u043e\u0447\u0435\u0440\u0435\u0434\u0438",
         "Check out the new": "\u041f\u0440\u043e\u0432\u0435\u0440\u044c\u0442\u0435 \u043d\u043e\u0432\u044b\u0439",
         "QUEUE #": "\u041e\u0427\u0415\u0420\u0415\u0414\u042c #",
-        "HISTORY #": "\u0418\u0441\u0442\u043e\u0440\u0438\u044f #"
+        "HISTORY #": "\u0418\u0441\u0442\u043e\u0440\u0438\u044f #",
+        "Adding songs to queue... (might take a while)": "\u0414\u043e\u0431\u0430\u0432\u043b\u0435\u043d\u0438\u0435 \u043f\u0435\u0441\u0435\u043d \u0432 \u043e\u0447\u0435\u0440\u0435\u0434\u044c ... (\u043c\u043e\u0436\u0435\u0442 \u0437\u0430\u043d\u044f\u0442\u044c \u043d\u0435\u043a\u043e\u0442\u043e\u0440\u043e\u0435 \u0432\u0440\u0435\u043c\u044f)"
     },
     "sv": {
         "search": "S\u00f6k YouTube efter den medf\u00f6ljande fr\u00e5gan",
@@ -2268,7 +2283,8 @@
         "No songs in queue": "Inga l\u00e5tar i k\u00f6",
         "Check out the new": "Kolla in det nya",
         "QUEUE #": "K\u00f6 #",
-        "HISTORY #": "Historia #"
+        "HISTORY #": "Historia #",
+        "Adding songs to queue... (might take a while)": "L\u00e4gga till l\u00e5tar i k\u00f6 ... (kan ta ett tag)"
     },
     "tr": {
         "search": "Verilen sorgu i\u00e7in youtube aray\u0131n",
@@ -2410,6 +2426,7 @@
         "No songs in queue": "Kuyrukta \u015eark\u0131 Yok",
         "Check out the new": "Yeniye bak",
         "QUEUE #": "SIRA #",
-        "HISTORY #": "TAR\u0130H #"
+        "HISTORY #": "TAR\u0130H #",
+        "Adding songs to queue... (might take a while)": "S\u0131raya \u015fark\u0131lar ekleme ... (biraz zaman alabilir)"
     }
 }
