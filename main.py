@@ -26,7 +26,6 @@ from flask import Flask, render_template, request, url_for, redirect, session, s
 import config
 from oauth import Oauth
 
-
 # ---------------- Bot class ------------
 
 class Bot(commands.Bot):
@@ -214,7 +213,28 @@ class GuildData:
             self.voice_channels = None
 
 
-# ----------------- Video Classes ----------------
+class Guild:
+    def __init__(self, guild_id):
+        self.id = guild_id
+        self.options = Options(guild_id)
+        self.queue = []
+        self.search_list = []
+        self.now_playing = None
+        self.history = [VideoClass('Video',
+                                      created_at=1000212400,
+                                      url='https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+                                      author=my_id,
+                                      title='Never gonna give you up',
+                                      picture='https://img.youtube.com/vi/dQw4w9WgXcQ/default.jpg',
+                                      duration='3:33',
+                                      channel_name='Rick Astley',
+                                      channel_link='https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw')]
+        self.data = GuildData(guild_id)
+
+    def renew(self):
+        self.data = GuildData(self.id)
+
+# ----------------- Video Class ----------------
 
 class VideoClass:
     def __init__(self, class_type: str, author, url=None, title=None, picture=None, duration=None, channel_name=None, channel_link=None, radio_name=None, radio_website=None, local_number=None, created_at=None, played_at=None, stopped_at=None):
@@ -342,29 +362,6 @@ class VideoClass:
             pass
 
         return
-
-# ------------ Guild ------------
-
-class Guild:
-    def __init__(self, guild_id):
-        self.id = guild_id
-        self.options = Options(guild_id)
-        self.queue = []
-        self.search_list = []
-        self.now_playing = None
-        self.history = [VideoClass('Video',
-                                      created_at=1000212400,
-                                      url='https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-                                      author=my_id,
-                                      title='Never gonna give you up',
-                                      picture='https://img.youtube.com/vi/dQw4w9WgXcQ/default.jpg',
-                                      duration='3:33',
-                                      channel_name='Rick Astley',
-                                      channel_link='https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw')]
-        self.data = GuildData(guild_id)
-
-    def renew(self):
-        self.data = GuildData(self.id)
 
 # -------- Get SoundEffects ------------
 
@@ -608,7 +605,7 @@ def tg(guild_id, content):
         to_return = content
     return to_return
 
-# --------- spotify --------
+# ---------------------------------------------- SPOTIFY -------------------------------------------------------
 
 def spotify_to_yt_video(spotify_url, author):
     # noinspection PyBroadException
@@ -709,15 +706,7 @@ def spotify_album_to_yt_video_list(spotify_album_url, author):
 
     return video_list
 
-# --------- video_info / url --------
-
-def get_playlist_from_url(url: str):
-    try:
-        code = url[url.index('&list=')+1:url.index('&index=')]
-    except ValueError:
-        code = url[url.index('&list=')+1:]
-    playlist_url = 'https://www.youtube.com/playlist?' + code
-    return playlist_url
+# ---------------------------------------------- YOUTUBE -------------------------------------------------------
 
 def extract_yt_id(url_string: str):
     magic_regex = "^(?:https?://|//)?(?:www\.|m\.|.+\.)?(?:youtu\.be/|youtube\.com/(?:embed/|v/|shorts/|feeds/api/videos/|watch\?v=|watch\?.+&v=))([\w-]{11})(?![\w-])"
@@ -728,11 +717,60 @@ def extract_yt_id(url_string: str):
         return None
     return results.group(1)
 
+def get_playlist_from_url(url: str):
+    try:
+        code = url[url.index('&list=')+1:url.index('&index=')]
+    except ValueError:
+        code = url[url.index('&list=')+1:]
+    playlist_url = 'https://www.youtube.com/playlist?' + code
+    return playlist_url
+
+# ---------------------------------------------- URL -----------------------------------------------------------
+
+def get_url_of(string: str, section: str, number: int = 30):
+    pl_index = nearest_positive_number(string.index(section) - number)
+    url = string[pl_index:]
+    return get_first_url(url)
+
 def get_first_url(string: str):
     re_search = re.search(r"(http|ftp|https)://([\w_-]+(?:\.[\w_-]+)+)([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])", string)
     if re_search is None:
         return None
     return re_search[0]
+
+def get_url_type(string: str):
+    first_url = get_first_url(string)
+    yt_id = extract_yt_id(string)
+
+    if '/playlist?list=' in string:
+        extracted_url = get_url_of(string, '/playlist?list=', 30)
+        return 'YouTube Playlist', extracted_url
+
+    if any(param in string for param in {'index=', 'list='}):
+        return 'YouTube Playlist Video', string
+
+    if yt_id is not None:
+        return 'YouTube Video', string
+
+    if 'spotify.com/playlist/' in string:
+        extracted_url = get_url_of(string, 'spotify.com/playlist/', 15)
+        return 'Spotify Playlist', extracted_url
+
+    if 'spotify.com/album/' in string:
+        extracted_url = get_url_of(string, 'spotify.com/album/', 15)
+        return 'Spotify Album', extracted_url
+
+    if 'spotify.com/track/' in string:
+        extracted_url = get_url_of(string, 'spotify.com/track/', 15)
+        return 'Spotify Track', extracted_url
+
+    if first_url is not None:
+        return 'String with URL', first_url
+
+    return 'String', string
+
+
+# ---------------------------------------------- PROBE ---------------------------------------------------------
 
 async def get_url_probe_data(url: str):
     extracted_url = get_first_url(url)
@@ -763,48 +801,7 @@ async def get_url_probe_data(url: str):
 
     return None, extracted_url
 
-def get_content_of_message(message: discord.Message):
-    if message.attachments:
-        url = message.attachments[0].url
-        filename = message.attachments[0].filename
-        message_author = f"Message by {get_username(message.author.id)}"
-        message_link = message.jump_url
-        probe_data = [filename, message_author, message_link]
-    elif message.embeds:
-        if message.content:
-            url = message.content
-            probe_data = None
-        else:
-            embed = message.embeds[0]
-            embed_dict = embed.to_dict()
-            embed_str = str(embed_dict)
-            url = embed_str
-            probe_data = None
-    else:
-        url = message.content
-        probe_data = None
-
-    return url, probe_data
-
-# -------------- convert / get -----------
-
-def get_username(user_id: int):
-    # noinspection PyBroadException
-    try:
-        return bot.get_user(int(user_id)).name
-    except:
-        return user_id
-
-def now_to_history(guild_id: int):
-    if guild[guild_id].now_playing is not None:
-        if len(guild[guild_id].history) >= guild[guild_id].options.history_length:
-            while len(guild[guild_id].history) >= guild[guild_id].options.history_length:
-                guild[guild_id].history.pop(0)
-
-        guild[guild_id].now_playing.stopped_at = int(time())
-        guild[guild_id].history.append(guild[guild_id].now_playing)
-        guild[guild_id].now_playing = None
-        save_json()
+# ---------------------------------------------- CONVERT -------------------------------------------------------
 
 def convert_duration(duration):
     try:
@@ -830,6 +827,40 @@ def convert_duration(duration):
     except (ValueError, TypeError):
         return duration
 
+# ---------------------------------------------- GET -----------------------------------------------------------
+
+def get_username(user_id: int):
+    # noinspection PyBroadException
+    try:
+        return bot.get_user(int(user_id)).name
+    except:
+        return user_id
+
+def get_content_of_message(message: discord.Message):
+    if message.attachments:
+        url = message.attachments[0].url
+        filename = message.attachments[0].filename
+        message_author = f"Message by {get_username(message.author.id)}"
+        message_link = message.jump_url
+        probe_data = [filename, message_author, message_link]
+    elif message.embeds:
+        if message.content:
+            url = message.content
+            probe_data = None
+        else:
+            embed = message.embeds[0]
+            embed_dict = embed.to_dict()
+            embed_str = str(embed_dict)
+            url = embed_str
+            probe_data = None
+    else:
+        url = message.content
+        probe_data = None
+
+    return url, probe_data
+
+# ---------------------------------------------- CHECK ---------------------------------------------------------
+
 def to_bool(text_bool):
     bool_list_t = ['True', 'true', '1']
     bool_list_f = ['False', 'false', '0']
@@ -851,16 +882,13 @@ def is_float(value):
   except:
       return False
 
-# -------------- get / set --------------
-
-def to_queue(guild_id: int, video: VideoClass, position: int = None):
-    if position is None:
-        guild[guild_id].queue.append(video)
+def nearest_positive_number(number):
+    if number < 0:
+        return 0
     else:
-        guild[guild_id].queue.insert(position, video)
-    save_json()
+        return number
 
-# ---------------EMBED--------------
+# ---------------------------------------------- DISCORD -------------------------------------------------------
 
 def create_embed(video, name, guild_id):
     embed = (discord.Embed(title=name, description=f'```\n{video.title}\n```', color=discord.Color.blurple()))
@@ -878,7 +906,26 @@ def create_embed(video, name, guild_id):
 
     return embed
 
-# ------------- Youtube DL classes -----------
+def now_to_history(guild_id: int):
+    if guild[guild_id].now_playing is not None:
+        if len(guild[guild_id].history) >= guild[guild_id].options.history_length:
+            while len(guild[guild_id].history) >= guild[guild_id].options.history_length:
+                guild[guild_id].history.pop(0)
+
+        guild[guild_id].now_playing.stopped_at = int(time())
+        guild[guild_id].history.append(guild[guild_id].now_playing)
+        guild[guild_id].now_playing = None
+        save_json()
+
+def to_queue(guild_id: int, video: VideoClass, position: int = None):
+    if position is None:
+        guild[guild_id].queue.append(video)
+    else:
+        guild[guild_id].queue.insert(position, video)
+    save_json()
+
+
+# ---------------------------------------------- SOURCE -------------------------------------------------------
 
 YTDL_OPTIONS = {
         'format': 'bestaudio/best',
@@ -1449,8 +1496,22 @@ async def queue_command_def(ctx,
                             probe_data: list = None,
                             no_search: bool = False,
                             ephemeral: bool = False,
-                            is_extracted: bool = False,
                             ):
+    """
+    This function tries to queue a song. It is called by the queue command and the play command.
+
+    :param ctx: Context
+    :param url: An input string that is either a URL or a search query
+    :param position: An integer that represents the position in the queue to insert the song
+    :param mute_response: Whether to mute the response or not
+    :param force: Whether to force the song to play or not
+    :param from_play: Set to True if the command is being called from the play command
+    :param probe_data: Data from the probe command
+    :param no_search: Whether to search for the song or not when the URL is not a URL
+    :param ephemeral: Should the response be ephemeral
+    :return: [bool, str, VideoClass or None] - Whether the command was successful, the response message, and the VideoClass object or None
+    """
+
     log(ctx, 'queue_command_def', [url, position, mute_response, force, from_play, probe_data, no_search, ephemeral], log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
 
@@ -1460,15 +1521,10 @@ async def queue_command_def(ctx,
             await ctx.reply(message, ephemeral=True)
         return [False, message]
 
-    if not is_extracted:
-        extracted_url = get_first_url(url)
-        response = await queue_command_def(ctx, url=extracted_url, position=position, mute_response=mute_response, force=force, from_play=from_play, probe_data=probe_data, no_search=True, ephemeral=ephemeral, is_extracted=True)
-        if response[0]:
-            return response
-        else:
-            pass
+    url_type, url = get_url_type(url)
+    yt_id = extract_yt_id(url)
 
-    if '/playlist?list=' in url:
+    if url_type == 'YouTube Playlist':
         if is_ctx:
             if not ctx.interaction.response.is_done():
                 await ctx.defer(ephemeral=ephemeral)
@@ -1502,29 +1558,21 @@ async def queue_command_def(ctx,
             await ctx.reply(message, ephemeral=ephemeral)
         return [True, message, None]
 
-    if any(param in url for param in {'index=', 'list='}) and is_ctx:
+    if url_type == 'YouTube Playlist Video' and is_ctx:
         view = PlaylistOptionView(ctx, url, force, from_play)
         message = tg(guild_id, 'This video is from a **playlist**, do you want to add the playlist to **queue?**')
         await ctx.reply(message, view=view, ephemeral=ephemeral)
         return [False, message]
 
-    if 'spotify.com/playlist/' in url or 'spotify.com/album/' in url:
+    if url_type == 'Spotify Playlist' or url_type == 'Spotify Album':
         adding_message = None
         if is_ctx:
             adding_message = await ctx.reply(tg(guild_id, 'Adding songs to queue... (might take a while)'), ephemeral=ephemeral)
 
-        if 'playlist' in url:
+        if url_type == 'Spotify Playlist':
             video_list = spotify_playlist_to_yt_video_list(url, author_id)
-        elif 'album' in url:
-            video_list = spotify_album_to_yt_video_list(url, author_id)
         else:
-            video_list = None
-
-        if video_list is None:
-            message = f'`{url}` {tg(guild_id, "is not supported!")} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={guild[guild_id].data.key})'
-            if is_ctx:
-                await adding_message.edit(content=message)
-            return [False, message]
+            video_list = spotify_album_to_yt_video_list(url, author_id)
 
         if position is not None:
             video_list = list(reversed(video_list))
@@ -1537,54 +1585,48 @@ async def queue_command_def(ctx,
             await adding_message.edit(content=message)
         return [True, message, None]
 
-    if 'spotify.com/track/' in url:
+    if url_type == 'Spotify Track':
         video = spotify_to_yt_video(url, author_id)
-        if video is None:
-            message = f'`{url}` {tg(guild_id, "is not supported!")} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={guild[guild_id].data.key})'
+        if video is not None:
+            to_queue(guild_id, video, position)
+
+            message = f'`{video.title}` {tg(guild_id, "added to queue!")} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={guild[guild_id].data.key})'
             if not mute_response:
                 await ctx.reply(message, ephemeral=ephemeral)
-            return [False, message]
+            return [True, message, video]
 
+    if url_type == 'YouTube Video' or yt_id is not None:
+        url = f"https://www.youtube.com/watch?v={yt_id}"
+        video = VideoClass('Video', author_id, url=url)
         to_queue(guild_id, video, position)
 
-        message = f'`{video.title}` {tg(guild_id, "added to queue!")} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={guild[guild_id].data.key})'
+        message = f'[`{video.title}`](<{video.url}>) {tg(guild_id, "added to queue!")} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={guild[guild_id].data.key})'
         if not mute_response:
             await ctx.reply(message, ephemeral=ephemeral)
         return [True, message, video]
 
-    video_id = extract_yt_id(url)
-
-    if video_id is None:
+    if url_type == 'String with URL':
         probe, extracted_url = await get_url_probe_data(url)
+        if probe:
+            if not probe_data:
+                probe_data = [extracted_url, extracted_url, extracted_url]
 
-        if probe is None:
-            if is_ctx and not no_search:
-                await search_command_def(ctx, url, display_type='short', force=force, from_play=from_play, ephemeral=ephemeral)
+            video = VideoClass('Probe', author_id, url=extracted_url, title=probe_data[0], picture=vlc_logo, duration='Unknown', channel_name=probe_data[1], channel_link=probe_data[2])
+            to_queue(guild_id, video, position)
 
-            message = f'[`{url}`](<{url}>) {tg(guild_id, "is not supported!")} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={guild[guild_id].data.key})'
+            message = f'[`{video.title}`](<{video.url}>) {tg(guild_id, "added to queue!")} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={guild[guild_id].data.key})'
             if not mute_response:
                 await ctx.reply(message, ephemeral=ephemeral)
-            return [False, message]
+            return [True, message, video]
 
-        if probe_data:
-            video = VideoClass('Probe', author_id, url=extracted_url, title=probe_data[0], picture=vlc_logo, duration='Unknown', channel_name=probe_data[1], channel_link=probe_data[2])
-        else:
-            video = VideoClass('Probe', author_id, url=extracted_url, title=extracted_url, picture=vlc_logo, duration='Unknown', channel_name=extracted_url, channel_link=extracted_url)
+    if is_ctx and not no_search:
+        await search_command_def(ctx, url, display_type='short', force=force, from_play=from_play,ephemeral=ephemeral)
 
-    else:
-        url = f"https://www.youtube.com/watch?v={video_id}"
-        video = VideoClass('Video', author_id, url=url)
-
-    if video is None:
-        return [False, 'An unexpected error occurred: video is NoneType']
-
-    to_queue(guild_id, video, position)
-    save_json()
-
-    message = f'[`{video.title}`](<{video.url}>) {tg(guild_id, "added to queue!")} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={guild[guild_id].data.key})'
+    message = f'`{url}` {tg(guild_id, "is not supported!")} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={guild[guild_id].data.key})'
     if not mute_response:
         await ctx.reply(message, ephemeral=ephemeral)
-    return [True, message, video]
+    return [False, message]
+
 
 async def next_up_def(ctx,
                       url,
@@ -3534,4 +3576,5 @@ def application():
     web_thread.join()
     bot_thread.join()
 
-application()
+if __name__ == '__main__':
+    application()
