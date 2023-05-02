@@ -427,35 +427,48 @@
 # text = '1.0'
 #
 # print(is_float(text))
+#
+#
+# import re
+#
+#
+# string_test = """
+# 29/04/2023 10:32:12 | F 1008145667622969397 | queue_command_def -> ['Nyní hraje: [`https://cdn.discordapp.com/attachments/837695986994118678/1099709266039930992/AAAAAAAAAAAA.mp4`](<https://cdn.discordapp.com/attachments/837695986994118678/1099709266039930992/AAAAAAAAAAAA.mp4>)', None, True, False, False, None, False, True]
+# """
+#
+#
+# def find_url(string: str):
+#   url = re.search(r"(http|ftp|https)://([\w_-]+(?:\.[\w_-]+)+)([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])", string)
+#   return url[0]
+#
+# def get_first_url(string: str):
+#     re_search = re.search("(?P<url>https?://\S+)", string)
+#     if re_search is None:
+#         return None
+#     return re_search.group("url")
+#
+# def get_first_url2(string: str):
+#     re_search = re.search(r"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\), ]|(?:%[0-9a-fA-F][0-9a-fA-F]))+", string)
+#     if re_search is None:
+#         return None
+#     return re_search[0]
+#
+# print(find_url(string_test))
+# print(get_first_url(string_test))
+# print(get_first_url2(string_test))
+#
+
+import sclib
+
+from sclib import SoundcloudAPI, Track, Playlist
+
+api = SoundcloudAPI()
+playlist = api.resolve('https://soundcloud.com/seamusmadeit/brakelights')
+
+print(playlist)
+print(playlist.title)
 
 
-import re
-
-
-string_test = """
-29/04/2023 10:32:12 | F 1008145667622969397 | queue_command_def -> ['Nyní hraje: [`https://cdn.discordapp.com/attachments/837695986994118678/1099709266039930992/AAAAAAAAAAAA.mp4`](<https://cdn.discordapp.com/attachments/837695986994118678/1099709266039930992/AAAAAAAAAAAA.mp4>)', None, True, False, False, None, False, True]
-"""
-
-
-def find_url(string: str):
-  url = re.search(r"(http|ftp|https)://([\w_-]+(?:\.[\w_-]+)+)([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])", string)
-  return url[0]
-
-def get_first_url(string: str):
-    re_search = re.search("(?P<url>https?://\S+)", string)
-    if re_search is None:
-        return None
-    return re_search.group("url")
-
-def get_first_url2(string: str):
-    re_search = re.search(r"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\), ]|(?:%[0-9a-fA-F][0-9a-fA-F]))+", string)
-    if re_search is None:
-        return None
-    return re_search[0]
-
-print(find_url(string_test))
-print(get_first_url(string_test))
-print(get_first_url2(string_test))
 
 
 

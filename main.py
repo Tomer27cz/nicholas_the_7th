@@ -739,8 +739,6 @@ async def get_url_probe_data(url: str):
     if extracted_url is None:
         return None, extracted_url
 
-    print(extracted_url)
-
     # noinspection PyBroadException
     try:
         executable = 'ffmpeg'
@@ -1451,6 +1449,7 @@ async def queue_command_def(ctx,
                             probe_data: list = None,
                             no_search: bool = False,
                             ephemeral: bool = False,
+                            is_extracted: bool = False,
                             ):
     log(ctx, 'queue_command_def', [url, position, mute_response, force, from_play, probe_data, no_search, ephemeral], log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
@@ -1461,6 +1460,14 @@ async def queue_command_def(ctx,
             await ctx.reply(message, ephemeral=True)
         return [False, message]
 
+    if not is_extracted:
+        extracted_url = get_first_url(url)
+        response = await queue_command_def(ctx, url=extracted_url, position=position, mute_response=mute_response, force=force, from_play=from_play, probe_data=probe_data, no_search=True, ephemeral=ephemeral, is_extracted=True)
+        if response[0]:
+            return response
+        else:
+            pass
+
     if '/playlist?list=' in url:
         if is_ctx:
             if not ctx.interaction.response.is_done():
@@ -1468,6 +1475,7 @@ async def queue_command_def(ctx,
 
         try:
             playlist_videos = youtubesearchpython.Playlist.getVideos(url)
+            playlist_videos = playlist_videos['videos']
         except KeyError:
             log(ctx, "------------------------------- playlist -------------------------")
             tb = traceback.format_exc()
@@ -1479,22 +1487,17 @@ async def queue_command_def(ctx,
                 await ctx.reply(message, ephemeral=ephemeral)
             return [False, message]
 
-        playlist_songs = 0
-        playlist_videos = playlist_videos['videos']
-
         if position is not None:
             playlist_videos = list(reversed(playlist_videos))
 
         for index, val in enumerate(playlist_videos):
-            playlist_songs += 1
             url = f"https://www.youtube.com/watch?v={playlist_videos[index]['id']}"
             video = VideoClass('Video', author_id, url)
-
             to_queue(guild_id, video, position)
 
         save_json()
 
-        message = f"`{playlist_songs}` {tg(guild_id, 'songs from playlist added to queue!')} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={guild[guild_id].data.key})"
+        message = f"`{len(playlist_videos)}` {tg(guild_id, 'songs from playlist added to queue!')} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={guild[guild_id].data.key})"
         if not mute_response:
             await ctx.reply(message, ephemeral=ephemeral)
         return [True, message, None]
@@ -1505,12 +1508,17 @@ async def queue_command_def(ctx,
         await ctx.reply(message, view=view, ephemeral=ephemeral)
         return [False, message]
 
-    if 'spotify.com/playlist/' in url:
+    if 'spotify.com/playlist/' in url or 'spotify.com/album/' in url:
         adding_message = None
         if is_ctx:
             adding_message = await ctx.reply(tg(guild_id, 'Adding songs to queue... (might take a while)'), ephemeral=ephemeral)
 
-        video_list = spotify_playlist_to_yt_video_list(url, author_id)
+        if 'playlist' in url:
+            video_list = spotify_playlist_to_yt_video_list(url, author_id)
+        elif 'album' in url:
+            video_list = spotify_album_to_yt_video_list(url, author_id)
+        else:
+            video_list = None
 
         if video_list is None:
             message = f'`{url}` {tg(guild_id, "is not supported!")} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={guild[guild_id].data.key})'
@@ -1527,31 +1535,7 @@ async def queue_command_def(ctx,
         message = f'`{len(video_list)}` {tg(guild_id, "songs from playlist added to queue!")} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={guild[guild_id].data.key})'
         if is_ctx:
             await adding_message.edit(content=message)
-        return [True, message]
-
-    if 'spotify.com/album/' in url:
-        adding_message = None
-        if is_ctx:
-            adding_message = await ctx.reply(tg(guild_id, 'Adding songs to queue... (might take a while)'), ephemeral=ephemeral)
-
-        video_list = spotify_album_to_yt_video_list(url, author_id)
-
-        if video_list is None:
-            message = f'`{url}` {tg(guild_id, "is not supported!")} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={guild[guild_id].data.key})'
-            if is_ctx:
-                await adding_message.edit(content=message)
-            return [False, message]
-
-        if position is not None:
-            video_list = list(reversed(video_list))
-
-        for video in video_list:
-            to_queue(guild_id, video, position)
-
-        message = f'`{len(video_list)}` {tg(guild_id, "songs from album added to queue!")} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={guild[guild_id].data.key})'
-        if is_ctx:
-            await adding_message.edit(content=message)
-        return [True, message]
+        return [True, message, None]
 
     if 'spotify.com/track/' in url:
         video = spotify_to_yt_video(url, author_id)
@@ -1566,7 +1550,7 @@ async def queue_command_def(ctx,
         message = f'`{video.title}` {tg(guild_id, "added to queue!")} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={guild[guild_id].data.key})'
         if not mute_response:
             await ctx.reply(message, ephemeral=ephemeral)
-        return [True, message]
+        return [True, message, video]
 
     video_id = extract_yt_id(url)
 
@@ -1578,13 +1562,14 @@ async def queue_command_def(ctx,
                 await search_command_def(ctx, url, display_type='short', force=force, from_play=from_play, ephemeral=ephemeral)
 
             message = f'[`{url}`](<{url}>) {tg(guild_id, "is not supported!")} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={guild[guild_id].data.key})'
-            save_json()
+            if not mute_response:
+                await ctx.reply(message, ephemeral=ephemeral)
             return [False, message]
+
+        if probe_data:
+            video = VideoClass('Probe', author_id, url=extracted_url, title=probe_data[0], picture=vlc_logo, duration='Unknown', channel_name=probe_data[1], channel_link=probe_data[2])
         else:
-            if probe_data:
-                video = VideoClass('Probe', author_id, url=extracted_url, title=probe_data[0], picture=vlc_logo, duration='Unknown', channel_name=probe_data[1], channel_link=probe_data[2])
-            else:
-                video = VideoClass('Probe', author_id, url=extracted_url, title='URL Probe', picture=vlc_logo, duration='Unknown', channel_name='URL Probe', channel_link=extracted_url)
+            video = VideoClass('Probe', author_id, url=extracted_url, title=extracted_url, picture=vlc_logo, duration='Unknown', channel_name=extracted_url, channel_link=extracted_url)
 
     else:
         url = f"https://www.youtube.com/watch?v={video_id}"
@@ -1594,13 +1579,12 @@ async def queue_command_def(ctx,
         return [False, 'An unexpected error occurred: video is NoneType']
 
     to_queue(guild_id, video, position)
-
     save_json()
 
     message = f'[`{video.title}`](<{video.url}>) {tg(guild_id, "added to queue!")} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={guild[guild_id].data.key})'
     if not mute_response:
         await ctx.reply(message, ephemeral=ephemeral)
-    return [True, message, None]
+    return [True, message, video]
 
 async def next_up_def(ctx,
                       url,
@@ -1927,17 +1911,17 @@ async def play_def(ctx,
         join_response = await join_def(ctx, None, True)
         voice = guild_object.voice_client
         if not join_response[0]:
-            return [False, response[1]]
+            return [False, join_response[1]]
 
     if voice.is_playing():
         if not guild[guild_id].options.is_radio and not force:
             if url:
                 if response:
-                    message = f'{tg(guild_id, "**Already playing**, added to queue")}: [`{response[2].title}`](<{response[2].url}>) {notif}'
-                    if not mute_response:
-                        await ctx.reply(message)
-                    return [False, message]
-
+                    if response[2]:
+                        message = f'{tg(guild_id, "**Already playing**, added to queue")}: [`{response[2].title}`](<{response[2].url}>) {notif}'
+                        if not mute_response:
+                            await ctx.reply(message)
+                        return [False, message]
                 message = f'{tg(guild_id, "**Already playing**, added to queue")} {notif}'
                 if not mute_response:
                     await ctx.reply(message)
