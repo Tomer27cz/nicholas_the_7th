@@ -163,16 +163,16 @@
 # # #
 # # # class_type = 'class_type'
 # # # author = 'author'
-# # # created_at = 'created_at'
-# # # url = ''
-# # # title = 'title'
-# # # picture = 'picture'
-# # # duration = 'duration'
-# # # channel_name = 'channel_name'
-# # # channel_link = 'channel_link'
-# # # radio_name = 'radio_name'
-# # # radio_website = 'radio_website'
-# # # local_number = 'None'
+# # # # created_at = 'created_at'
+# # # # url = ''
+# # # # title = 'title'
+# # # # picture = 'picture'
+# # # # duration = 'duration'
+# # # # channel_name = 'channel_name'
+# # # # channel_link = 'channel_link'
+# # # # radio_name = 'radio_name'
+# # # # radio_website = 'radio_website'
+# # # # local_number = 'None'
 # # #
 # # # values = [class_type, author, created_at, url, title, picture, duration, channel_name, channel_link, radio_name, radio_website, local_number]
 # # #
@@ -457,25 +457,294 @@
 # print(get_first_url(string_test))
 # print(get_first_url2(string_test))
 #
-
-import sclib
-
+#
+# import sclib
+#
+# from sclib import SoundcloudAPI, Track, Playlist
+#
+# api = SoundcloudAPI()
+# playlist = api.resolve('https://soundcloud.com/seamusmadeit/brakelights')
+#
+# print(playlist)
+# print(playlist.title)
+#
+# test = api.resolve('test')
+#
+# print(test)
+# import re
+#
+# def extract_yt_id(url_string: str):
+#     magic_regex = "^(?:https?://|//)?(?:www\.|m\.|.+\.)?(?:youtu\.be/|youtube\.com/(?:embed/|v/|shorts/|feeds/api/videos/|watch\?v=|watch\?.+&v=))([\w-]{11})(?![\w-])"
+#     regex = re.compile(magic_regex)
+#     results = regex.search(url_string)
+#
+#     if results is None:
+#         return None
+#     return results.group(1)
+#
+# def nearest_positive_number(number):
+#     if number < 0:
+#         return 0
+#     else:
+#         return number
+#
+# def get_url_of(string: str, section: str):
+#     separated_string = string.split(' ')
+#
+#     for s_string in separated_string:
+#         if section in s_string:
+#             return get_first_url(s_string)
+#
+#     return None
+#
+# def get_first_url(string: str):
+#     re_search = re.search(r"(http|ftp|https)://([\w_-]+(?:\.[\w_-]+)+)([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])", string)
+#     if re_search is None:
+#         return None
+#     return re_search[0]
+#
+# def get_url_type(string: str):
+#     first_url = get_first_url(string)
+#     yt_id = extract_yt_id(string)
+#
+#     if '/playlist?list=' in string:
+#         extracted_url = get_url_of(string, '/playlist?list=')
+#         if extracted_url is None:
+#             return 'String', string
+#         return 'YouTube Playlist', extracted_url
+#
+#     if any(param in string for param in {'index=', 'list='}):
+#         extracted_url = get_url_of(string, 'index=')
+#         if extracted_url is None:
+#             extracted_url = get_url_of(string, 'list=')
+#             if extracted_url is None:
+#                 return 'String', string
+#         return 'YouTube Playlist Video', extracted_url
+#
+#     if yt_id is not None:
+#         return 'YouTube Video', string
+#
+#     if 'spotify.com/playlist/' in string:
+#         extracted_url = get_url_of(string, 'spotify.com/playlist/')
+#         if extracted_url is None:
+#             return 'String', string
+#         return 'Spotify Playlist', extracted_url
+#
+#     if 'spotify.com/album/' in string:
+#         extracted_url = get_url_of(string, 'spotify.com/album/')
+#         if extracted_url is None:
+#             return 'String', string
+#         return 'Spotify Album', extracted_url
+#
+#     if 'spotify.com/track/' in string:
+#         extracted_url = get_url_of(string, 'spotify.com/track/')
+#         if extracted_url is None:
+#             return 'String', string
+#         return 'Spotify Track', extracted_url
+#
+#     if 'spotify.com/' in string:
+#         extracted_url = get_url_of(string, 'spotify.com/')
+#         if extracted_url is None:
+#             return 'String', string
+#         return 'Spotify URL', extracted_url
+#
+#     if 'soundcloud.com/' in string:
+#         extracted_url = get_url_of(string, 'soundcloud.com/')
+#         if extracted_url is None:
+#             return 'String', string
+#         return 'SoundCloud URL', extracted_url
+#
+#     if first_url is not None:
+#         return 'String with URL', first_url
+#
+#     return 'String', string
+#
+#
+#
+#
+# test_string = "jdbv euu hdfu fytiu sy https://youtu.be https://www.soundcloud.com/yes"
+#
+#
+# t, u = get_url_type(test_string)
+#
+# print(t)
+# print(u)
+#
 from sclib import SoundcloudAPI, Track, Playlist
-
-api = SoundcloudAPI()
-playlist = api.resolve('https://soundcloud.com/seamusmadeit/brakelights')
-
-print(playlist)
-print(playlist.title)
+import youtubesearchpython
+from time import time
+import requests
 
 
 
 
 
 
+class VideoClass:
+    def __init__(self, class_type: str, author, url=None, title=None, picture=None, duration=None, channel_name=None, channel_link=None, radio_name=None, radio_website=None, local_number=None, created_at=None, played_at=None, stopped_at=None):
+        self.class_type = class_type
+        self.author = author
+
+        self.created_at = created_at
+        if created_at is None:
+            self.created_at = int(time())
+
+        self.played_at = played_at
+        self.stopped_at = stopped_at
+
+        if self.class_type == 'Video':
+            if url is None:
+                raise ValueError("URL is required")
+
+            self.url = url
+
+            if title is None:
+                try:
+                    video = youtubesearchpython.Video.getInfo(url)  # mode=ResultMode.json
+                except Exception as e:
+                    raise ValueError(f"Not a youtube link: {e}")
+
+                if not video:
+                    raise ValueError(f"Not a youtube link: {url}")
+
+                self.title = video['title']
+                self.picture = 'https://img.youtube.com/vi/' + video['id'] + '/default.jpg'
+                self.duration = video['duration']['secondsText']
+                self.channel_name = video['channel']['name']
+                self.channel_link = video['channel']['link']
+
+            else:
+                self.title = title
+                self.picture = picture
+                self.duration = duration
+                self.channel_name = channel_name
+                self.channel_link = channel_link
+
+            self.radio_name = None
+            self.radio_website = None
+            self.local_number = None
+
+        elif self.class_type == 'Probe':
+            self.url = url
+            self.title = title
+            self.picture = picture
+            self.duration = duration
+            self.channel_name = channel_name
+            self.channel_link = channel_link
+            self.radio_name = None
+            self.radio_website = None
+            self.local_number = None
+
+        elif self.class_type == 'SoundCloud':
+            if url is None:
+                raise ValueError("URL is required")
+
+            self.url = url
+
+            if title is None:
+                try:
+                    track = sc.resolve(self.url)
+                except Exception as e:
+                    raise ValueError(f"Not a SoundCloud link: {e}")
+
+                if not track:
+                    raise ValueError(f"Not a SoundCloud link: {self.url}")
+
+                self.title = track.title
+                self.picture = track.artwork_url
+                self.duration = (track.duration * 0.001)
+                self.channel_name = track.artist
+                self.channel_link = None
+
+            else:
+                self.title = title
+                self.picture = picture
+                self.duration = duration
+                self.channel_name = channel_name
+                self.channel_link = channel_link
+
+            self.radio_name = None
+            self.radio_website = None
+            self.local_number = None
+
+        else:
+            raise ValueError(f"Invalid class type: {class_type}")
+
+    def renew(self):
+        pass
 
 
 
 
 
+
+
+
+
+
+client_id = 'AU7fjwV781BibOk5lhaqJO2Njbr7EBvo'
+sc = SoundcloudAPI(client_id=client_id)
+
+print('initialized')
+test_url = 'https://soundcloud.com/seamusmadeit/brakelights'
+test_url2 = 'https://soundcloud.com/travis-scott-radio/sdp-interlude-demo?si=6b0d48bb63924d7293d8d1b10c49e084&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing'
+test_url3 = 'https://soundcloud.com/test/test'
+
+
+class_type = 'class_type'
+author = 'author'
+created_at = 'created_at'
+url = ''
+title = 'title'
+picture = 'picture'
+duration = 'duration'
+channel_name = 'channel_name'
+channel_link = 'channel_link'
+radio_name = 'radio_name'
+radio_website = 'radio_website'
+local_number = 'None'
+
+
+
+def soundcloud_to_video(soundcloud_url: str):
+    try:
+        track = sc.resolve(soundcloud_url)
+    except Exception:
+        return None
+
+    # url = track.uri
+    # title = track.title
+    # picture = track.artwork_url
+    # duration = track.duration
+    # channel_name = track.artist
+    # channel_link = track.artist
+    #
+    # print(url)
+    # print(title)
+    # print(picture)
+    # print(duration)
+    # print(channel_name)
+    # print(channel_link)
+
+    print(type(track.duration))
+
+    print(int(track.duration * 0.001))
+
+    print(track.title)
+    print(track.STREAM_URL)
+    print(track.duration)
+    print(track.artist)
+    print(track.artwork_url)
+    print(track.urn)
+    print(track.user)
+    print(track.user_id)
+
+    print(track.get_stream_url())
+
+    return track
+
+
+response = soundcloud_to_video(test_url3)
+
+print(response)
 

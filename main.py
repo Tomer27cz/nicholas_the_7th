@@ -21,6 +21,7 @@ from discord import FFmpegPCMAudio, app_commands
 from discord.ext import commands
 from discord.ui import View
 from spotipy.oauth2 import SpotifyClientCredentials
+from sclib.asyncio import SoundcloudAPI, Track, Playlist
 from flask import Flask, render_template, request, url_for, redirect, session, send_file
 
 import config
@@ -237,7 +238,7 @@ class Guild:
 # ----------------- Video Class ----------------
 
 class VideoClass:
-    def __init__(self, class_type: str, author, url=None, title=None, picture=None, duration=None, channel_name=None, channel_link=None, radio_name=None, radio_website=None, local_number=None, created_at=None, played_at=None, stopped_at=None):
+    def __init__(self, class_type: str, author, url=None, title=None, picture=None, duration=None, channel_name=None, channel_link=None, radio_name=None, radio_website=None, local_number=None, created_at=None, played_at=None, stopped_at=None, stream_url=None):
         self.class_type = class_type
         self.author = author
 
@@ -332,6 +333,36 @@ class VideoClass:
             self.radio_website = None
             self.local_number = None
 
+        elif self.class_type == 'SoundCloud':
+            if url is None:
+                raise ValueError("URL is required")
+
+            self.url = url
+
+            if title is None:
+                try:
+                    track = sc.resolve(self.url)
+                except Exception as e:
+                    raise ValueError(f"Not a SoundCloud link: {e}")
+
+                if not track:
+                    raise ValueError(f"Not a SoundCloud link: {self.url}")
+
+                self.title = track.title
+                self.picture = track.artwork_url
+                self.duration = (track.duration * 0.001)
+                self.channel_name = track.artist
+                self.channel_link = track.url
+            else:
+                self.title = title
+                self.picture = picture
+                self.duration = duration
+                self.channel_name = channel_name
+                self.channel_link = channel_link
+            self.radio_name = None
+            self.radio_website = None
+            self.local_number = None
+
         else:
             raise ValueError(f"Invalid class type: {class_type}")
 
@@ -357,10 +388,8 @@ class VideoClass:
 
             else:
                 raise ValueError("Invalid radio website")
-
         else:
             pass
-
         return
 
 # -------- Get SoundEffects ------------
@@ -478,7 +507,7 @@ def json_to_video(video_dict):
 
     class_type = video_dict['class_type']
 
-    if class_type not in ['Video', 'Radio', 'Local', 'Probe']:
+    if class_type not in ['Video', 'Radio', 'Local', 'Probe', 'SoundCloud']:
         raise ValueError('Wrong class_type')
 
     video = VideoClass(class_type,
@@ -547,14 +576,20 @@ log(None, 'Loaded other.json')
 
 bot = Bot()
 
-log(None, 'Bot class initialized')
+log(None, 'Discord API initialized')
 
 # ---------------------------------------------- SPOTIPY ---------------------------------------------------------------
 
 credentials = SpotifyClientCredentials(client_id=config.SPOTIPY_CLIENT_ID, client_secret=config.SPOTIPY_CLIENT_SECRET)
 sp = spotipy.Spotify(client_credentials_manager=credentials)
 
-log(None, 'Spotipy class initialized')
+log(None, 'Spotify API initialized')
+
+# --------------------------------------------- SOUNDCLOUD -------------------------------------------------------------
+
+sc = SoundcloudAPI(client_id=config.SOUNDCLOUD_CLIENT_ID)
+
+log(None, 'SoundCloud API initialized')
 
 # ----------------------------------------------------------------------------------------------------------------------
 
@@ -727,10 +762,14 @@ def get_playlist_from_url(url: str):
 
 # ---------------------------------------------- URL -----------------------------------------------------------
 
-def get_url_of(string: str, section: str, number: int = 30):
-    pl_index = nearest_positive_number(string.index(section) - number)
-    url = string[pl_index:]
-    return get_first_url(url)
+def get_url_of(string: str, section: str):
+    separated_string = string.split(' ')
+
+    for s_string in separated_string:
+        if section in s_string:
+            return get_first_url(s_string)
+
+    return None
 
 def get_first_url(string: str):
     re_search = re.search(r"(http|ftp|https)://([\w_-]+(?:\.[\w_-]+)+)([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])", string)
@@ -743,32 +782,56 @@ def get_url_type(string: str):
     yt_id = extract_yt_id(string)
 
     if '/playlist?list=' in string:
-        extracted_url = get_url_of(string, '/playlist?list=', 30)
+        extracted_url = get_url_of(string, '/playlist?list=')
+        if extracted_url is None:
+            return 'String', string
         return 'YouTube Playlist', extracted_url
 
     if any(param in string for param in {'index=', 'list='}):
-        return 'YouTube Playlist Video', string
+        extracted_url = get_url_of(string, 'index=')
+        if extracted_url is None:
+            extracted_url = get_url_of(string, 'list=')
+            if extracted_url is None:
+                return 'String', string
+        return 'YouTube Playlist Video', extracted_url
 
     if yt_id is not None:
         return 'YouTube Video', string
 
     if 'spotify.com/playlist/' in string:
-        extracted_url = get_url_of(string, 'spotify.com/playlist/', 15)
+        extracted_url = get_url_of(string, 'spotify.com/playlist/')
+        if extracted_url is None:
+            return 'String', string
         return 'Spotify Playlist', extracted_url
 
     if 'spotify.com/album/' in string:
-        extracted_url = get_url_of(string, 'spotify.com/album/', 15)
+        extracted_url = get_url_of(string, 'spotify.com/album/')
+        if extracted_url is None:
+            return 'String', string
         return 'Spotify Album', extracted_url
 
     if 'spotify.com/track/' in string:
-        extracted_url = get_url_of(string, 'spotify.com/track/', 15)
+        extracted_url = get_url_of(string, 'spotify.com/track/')
+        if extracted_url is None:
+            return 'String', string
         return 'Spotify Track', extracted_url
+
+    if 'spotify.com/' in string:
+        extracted_url = get_url_of(string, 'spotify.com/')
+        if extracted_url is None:
+            return 'String', string
+        return 'Spotify URL', extracted_url
+
+    if 'soundcloud.com/' in string:
+        extracted_url = get_url_of(string, 'soundcloud.com/')
+        if extracted_url is None:
+            return 'String', string
+        return 'SoundCloud URL', extracted_url
 
     if first_url is not None:
         return 'String with URL', first_url
 
     return 'String', string
-
 
 # ---------------------------------------------- PROBE ---------------------------------------------------------
 
@@ -882,12 +945,6 @@ def is_float(value):
   except:
       return False
 
-def nearest_positive_number(number):
-    if number < 0:
-        return 0
-    else:
-        return number
-
 # ---------------------------------------------- DISCORD -------------------------------------------------------
 
 def create_embed(video, name, guild_id):
@@ -917,12 +974,17 @@ def now_to_history(guild_id: int):
         guild[guild_id].now_playing = None
         save_json()
 
-def to_queue(guild_id: int, video: VideoClass, position: int = None):
+async def to_queue(guild_id: int, video: VideoClass, position: int = None, ctx, mute_response, ephemeral):
     if position is None:
         guild[guild_id].queue.append(video)
     else:
         guild[guild_id].queue.insert(position, video)
     save_json()
+
+    message = f'[`{video.title}`](<{video.url}>) {tg(guild_id, "added to queue!")} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={guild[guild_id].data.key})'
+    if not mute_response:
+        await ctx.reply(message, ephemeral=ephemeral)
+    return [True, message, video]
 
 
 # ---------------------------------------------- SOURCE -------------------------------------------------------
@@ -964,6 +1026,10 @@ class GetSource(discord.PCMVolumeTransformer):
                 data = data['entries'][0]
 
             url = data['url']
+
+        if source_type == 'SoundCloud':
+            track = await sc.resolve(url)
+            url = track.get_stream_url()
 
         return cls(guild_id, discord.FFmpegPCMAudio(url, **FFMPEG_OPTIONS))
 
@@ -1595,6 +1661,41 @@ async def queue_command_def(ctx,
                 await ctx.reply(message, ephemeral=ephemeral)
             return [True, message, video]
 
+    if url_type == 'Spotify URL':
+        response = spotify_to_yt_video(url, author_id)
+        if response is None:
+            message = f'Invalid spotify url: `{url}`'
+            if not mute_response:
+                await ctx.reply(message, ephemeral=ephemeral)
+            return [False, message, None]
+
+        to_queue(guild_id, response, position)
+
+        message = f'[`{response.title}`](<{response.url}>) {tg(guild_id, "added to queue!")} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={guild[guild_id].data.key})'
+        if not mute_response:
+            await ctx.reply(message, ephemeral=ephemeral)
+        return [True, message, response]
+
+    if url_type == 'SoundCloud URL':
+        try:
+            track = await sc.resolve(url)
+        except Exception:
+            message = f'Invalid SoundCloud url: {url}'
+            if not mute_response:
+                await ctx.reply(message, ephemeral=ephemeral)
+            return [False, message, None]
+
+        if type(track) == Track:
+            try:
+                video = VideoClass('SoundCloud', author=author_id, url=url)
+            except ValueError as e:
+                message = e
+                if not mute_response:
+                    await ctx.reply(message, ephemeral=ephemeral)
+                return [False, message, None]
+
+            return await to_queue(guild_id, video, position, ctx, mute_response, ephemeral)
+
     if url_type == 'YouTube Video' or yt_id is not None:
         url = f"https://www.youtube.com/watch?v={yt_id}"
         video = VideoClass('Video', author_id, url=url)
@@ -1991,7 +2092,7 @@ async def play_def(ctx,
     video = guild[guild_id].queue[0]
     now_to_history(guild_id)
 
-    if video.class_type not in ['Video', 'Probe']:
+    if video.class_type not in ['Video', 'Probe', 'SoundCloud']:
         guild[guild_id].queue.pop(0)
         if video.class_type == 'Radio':
             await radio_def(ctx, video.title)
@@ -3127,7 +3228,7 @@ async def web_edit(web_data, form):
     if radio_website in none_list: radio_website = None
     if local_number in none_list: local_number = None
 
-    if class_type not in ['Video', 'Radio', 'Local', 'Probe']:
+    if class_type not in ['Video', 'Radio', 'Local', 'Probe', 'SoundCloud']:
         return [False, f'Invalid class type: {class_type}']
 
     if created_at:
