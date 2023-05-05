@@ -1,3 +1,5 @@
+import time
+
 # # # # import random
 # # # #
 # # # # guild_id = 1008145667622969397
@@ -746,20 +748,54 @@
 # response = soundcloud_to_video(test_url4)
 #
 # print(response)
+#
+# import youtubesearchpython
+#
+# test_url = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
+# test_id = 'dQw4w9WgXcQ'
+#
+# fetcher = youtubesearchpython.StreamURLFetcher()
+#
+# video = youtubesearchpython.Video.get(test_id)
+#
+# print(video)
+#
+# url = fetcher.get(video, 251)
+# print(url)
+import time
 
-import youtubesearchpython
+import yt_dlp
 
-test_url = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
-test_id = 'dQw4w9WgXcQ'
+url1 = 'https://alfred23harth.bandcamp.com/track/incantation'
+url2 = 'https://www.youtube.com/watch?v=GW6GSa14xXI'
 
-fetcher = youtubesearchpython.StreamURLFetcher()
+url = url1
 
-video = youtubesearchpython.Video.get(test_id)
+YTDL_OPTIONS = {
+        'format': 'bestaudio/best',
+        'extractaudio': True,
+        'audioformat': 'mp3',
+        'outtmpl': '%(extractor)s-%(id)s-%(title)s.%(ext)s',
+        'restrictfilenames': True,
+        'noplaylist': True,
+        'nocheckcertificate': True,
+        'ignoreerrors': False,
+        'logtostderr': False,
+        'quiet': True,
+        'no_warnings': True,
+        'default_search': 'auto',
+        'source_address': '0.0.0.0',
+    }
 
-print(video)
+ytdl = yt_dlp.YoutubeDL(YTDL_OPTIONS)
 
-url = fetcher.get(video, 251)
-print(url)
+print("initialized")
+
+start_t = time.time()
+result = ytdl.extract_info(url, download=False)
+print(f"extract took: {time.time() - start_t}")
+
+print(result)
 
 
 

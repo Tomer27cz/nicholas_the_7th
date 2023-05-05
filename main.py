@@ -114,6 +114,10 @@ class Bot(commands.Bot):
 # ---------------- Data Classes ------------
 
 class WebData:
+    """
+    Replaces commands.Context when there is None
+    """
+
     def __init__(self, guild_id, author, author_id):
         self.guild_id = guild_id
         self.author = author
@@ -127,6 +131,10 @@ class WebData:
 
 
 class Options:
+    """
+    Options for each guild
+    (data class)
+    """
     def __init__(self, guild_id):
         self.id = guild_id
         self.stopped = False
@@ -142,6 +150,9 @@ class Options:
 
 
 class GuildData:
+    """
+    Stores and updates the data for each guild
+    """
     def __init__(self, guild_id):
         self.id = guild_id
 
@@ -215,6 +226,9 @@ class GuildData:
 
 
 class Guild:
+    """
+    Stores all the variables, data classes and lists for each guild
+    """
     def __init__(self, guild_id):
         self.id = guild_id
         self.options = Options(guild_id)
@@ -238,6 +252,12 @@ class Guild:
 # ----------------- Video Class ----------------
 
 class VideoClass:
+    """
+    Stores all the data for each video
+    Can do, YouTube, SoundCloud, Czech Radios, Url Probes, Local Files and Fake Spotify
+
+    Raises ValueError: If URL is not provided or is incorrect for class_type
+    """
     def __init__(self, class_type: str, author, url=None, title=None, picture=None, duration=None, channel_name=None, channel_link=None, radio_name=None, radio_website=None, local_number=None, created_at=None, played_at=None, stopped_at=None):
         self.class_type = class_type
         self.author = author
@@ -1017,13 +1037,26 @@ FFMPEG_OPTIONS = {
 }
 
 class GetSource(discord.PCMVolumeTransformer):
+    """
+    Get source from url
+
+    When the source type is 'Video', the url is a youtube video url
+    When the source type is 'SoundCloud', the url is a soundcloud track url
+    Other it tries to get the source from the url
+
+    :param guild_id: int
+    :param url: str
+    :param source_type: str ('Video', 'SoundCloud') - default: 'Video'
+
+    :return source: discord.FFmpegPCMAudio
+    """
     ytdl = yt_dlp.YoutubeDL(YTDL_OPTIONS)
 
-    def __init__(self, guild_id, source):
+    def __init__(self, guild_id: int, source: discord.FFmpegPCMAudio):
         super().__init__(source, guild[guild_id].options.volume)
 
     @classmethod
-    async def create_source(cls, guild_id, url, source_type='Video'):
+    async def create_source(cls, guild_id: int, url: str, source_type: str='Video'):
         if source_type == 'Video':
             loop = asyncio.get_event_loop()
             data = await loop.run_in_executor(None, lambda: cls.ytdl.extract_info(url, download=False))

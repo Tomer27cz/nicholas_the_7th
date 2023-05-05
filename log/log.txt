@@ -2669,3 +2669,219 @@ Testing Bot
 21/04/2023 18:44:12 | F 1008145667622969397 | web_queue -> ['now_playing', None]
 21/04/2023 18:44:12 | F 1008145667622969397 | web_queue_from_radio -> ['Evropa 2', None]
 21/04/2023 18:59:13 | I 10.0.0.1 | Requested: /guild/1008145667622969397&key=0qzk5v
+27/04/2023 11:13:32 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+27/04/2023 11:13:32 | T None | Loaded radio.json
+27/04/2023 11:13:32 | T None | Loaded languages.json
+27/04/2023 11:13:32 | T None | Loaded other.json
+27/04/2023 11:13:32 | T None | Bot class initialized
+27/04/2023 11:13:32 | T None | Loaded guilds.json
+27/04/2023 11:13:32 | T None | Loaded sound_effects folder
+27/04/2023 11:13:54 | I 10.14.0.2 | Requested: /index
+27/04/2023 11:14:36 | I 127.0.0.1 | Requested: /index
+27/04/2023 11:14:45 | I 127.0.0.1 | Requested: /admin
+27/04/2023 11:17:34 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+27/04/2023 11:17:35 | T None | Loaded radio.json
+27/04/2023 11:17:35 | T None | Loaded languages.json
+27/04/2023 11:17:35 | T None | Loaded other.json
+27/04/2023 11:17:35 | T None | Bot class initialized
+27/04/2023 11:17:35 | T None | Loaded guilds.json
+27/04/2023 11:17:35 | T None | Loaded sound_effects folder
+27/04/2023 11:17:39 | T None | Trying to sync commands
+27/04/2023 11:17:39 | T None | Synced slash commands for Testing Bot#3465
+27/04/2023 11:17:39 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+27/04/2023 11:17:42 | I 127.0.0.1 | Requested: /admin
+27/04/2023 11:17:42 | I 127.0.0.1 | Requested: /index
+27/04/2023 11:17:50 | I 127.0.0.1 | Requested: /admin
+27/04/2023 11:17:50 | I 127.0.0.1 | Requested: /index
+27/04/2023 11:17:56 | I 127.0.0.1 | Requested: /admin
+27/04/2023 11:17:57 | I 127.0.0.1 | Requested: /index
+27/04/2023 11:18:50 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+27/04/2023 11:18:50 | T None | Loaded radio.json
+27/04/2023 11:18:50 | T None | Loaded languages.json
+27/04/2023 11:18:50 | T None | Loaded other.json
+27/04/2023 11:18:50 | T None | Bot class initialized
+27/04/2023 11:18:50 | T None | Loaded guilds.json
+27/04/2023 11:18:50 | T None | Loaded sound_effects folder
+27/04/2023 11:18:54 | T None | Trying to sync commands
+27/04/2023 11:18:54 | T None | Synced slash commands for Testing Bot#3465
+27/04/2023 11:18:54 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+27/04/2023 11:18:57 | I 127.0.0.1 | Requested: /admin
+27/04/2023 11:49:33 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+27/04/2023 11:49:33 | T None | Loaded radio.json
+27/04/2023 11:49:33 | T None | Loaded languages.json
+27/04/2023 11:49:33 | T None | Loaded other.json
+27/04/2023 11:49:33 | T None | Bot class initialized
+27/04/2023 11:49:33 | T None | Loaded guilds.json
+27/04/2023 11:49:33 | T None | Loaded sound_effects folder
+27/04/2023 11:49:43 | T None | Trying to sync commands
+27/04/2023 11:49:44 | T None | Synced slash commands for Testing Bot#3465
+27/04/2023 11:49:44 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+27/04/2023 11:49:56 | I 127.0.0.1 | Requested: /admin
+27/04/2023 11:53:02 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+27/04/2023 11:53:02 | T None | Loaded radio.json
+27/04/2023 11:53:02 | T None | Loaded languages.json
+27/04/2023 11:53:02 | T None | Loaded other.json
+27/04/2023 11:53:02 | T None | Bot class initialized
+27/04/2023 11:53:02 | T None | Loaded guilds.json
+27/04/2023 11:53:02 | T None | Loaded sound_effects folder
+27/04/2023 11:53:07 | T None | Trying to sync commands
+27/04/2023 11:53:08 | T None | Synced slash commands for Testing Bot#3465
+27/04/2023 11:53:08 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+27/04/2023 11:53:12 | I 127.0.0.1 | Requested: /admin
+27/04/2023 11:56:48 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+27/04/2023 11:56:48 | T None | Loaded radio.json
+27/04/2023 11:56:48 | T None | Loaded languages.json
+27/04/2023 11:56:48 | T None | Loaded other.json
+27/04/2023 11:56:48 | T None | Bot class initialized
+27/04/2023 11:56:48 | T None | Loaded guilds.json
+27/04/2023 11:56:48 | T None | Loaded sound_effects folder
+27/04/2023 11:56:51 | T None | Trying to sync commands
+27/04/2023 11:56:52 | T None | Synced slash commands for Testing Bot#3465
+27/04/2023 11:56:52 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+27/04/2023 11:56:55 | I 127.0.0.1 | Requested: /admin
+27/04/2023 11:58:56 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+27/04/2023 11:58:56 | T None | Loaded radio.json
+27/04/2023 11:58:56 | T None | Loaded languages.json
+27/04/2023 11:58:56 | T None | Loaded other.json
+27/04/2023 11:58:56 | T None | Bot class initialized
+27/04/2023 11:58:56 | T None | Loaded guilds.json
+27/04/2023 11:58:56 | T None | Loaded sound_effects folder
+27/04/2023 11:59:00 | I 127.0.0.1 | Requested: /admin
+27/04/2023 11:59:00 | T None | Trying to sync commands
+27/04/2023 11:59:01 | T None | Synced slash commands for Testing Bot#3465
+27/04/2023 11:59:01 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+27/04/2023 11:59:42 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+27/04/2023 11:59:42 | T None | Loaded radio.json
+27/04/2023 11:59:42 | T None | Loaded languages.json
+27/04/2023 11:59:42 | T None | Loaded other.json
+27/04/2023 11:59:42 | T None | Bot class initialized
+27/04/2023 11:59:42 | T None | Loaded guilds.json
+27/04/2023 11:59:42 | T None | Loaded sound_effects folder
+27/04/2023 11:59:46 | T None | Trying to sync commands
+27/04/2023 11:59:47 | T None | Synced slash commands for Testing Bot#3465
+27/04/2023 11:59:47 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+27/04/2023 11:59:48 | I 127.0.0.1 | Requested: /admin
+28/04/2023 06:52:06 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+28/04/2023 06:52:06 | T None | Loaded radio.json
+28/04/2023 06:52:06 | T None | Loaded languages.json
+28/04/2023 06:52:06 | T None | Loaded other.json
+28/04/2023 06:52:06 | T None | Bot class initialized
+28/04/2023 06:52:06 | T None | Loaded guilds.json
+28/04/2023 06:52:06 | T None | Loaded sound_effects folder
+28/04/2023 06:52:10 | T None | Trying to sync commands
+28/04/2023 06:52:10 | T None | Synced slash commands for Testing Bot#3465
+28/04/2023 06:52:10 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+28/04/2023 06:52:46 | C 1008145667622969397 | Command (play) was requested by (Tomer27cz#4272) -> ['https://www.youtube.com/watch?v=dQw4w9WgXcQ', False]
+28/04/2023 06:52:46 | F 1008145667622969397 | play_def -> ['https://www.youtube.com/watch?v=dQw4w9WgXcQ', False, False]
+28/04/2023 06:52:46 | F 1008145667622969397 | queue_command_def -> ['https://www.youtube.com/watch?v=dQw4w9WgXcQ', None, True, False, True, None]
+28/04/2023 06:52:47 | F 1008145667622969397 | join_def -> [None, True]
+28/04/2023 06:52:47 | T 1008145667622969397 | Hybrid command raised an error: Command 'play' raised an exception: AttributeError: 'Options' object has no attribute 'history_length'
+28/04/2023 06:54:07 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+28/04/2023 06:54:07 | T None | Loaded radio.json
+28/04/2023 06:54:07 | T None | Loaded languages.json
+28/04/2023 06:54:07 | T None | Loaded other.json
+28/04/2023 06:54:07 | T None | Bot class initialized
+28/04/2023 06:54:07 | T None | Building new guilds.json ...
+28/04/2023 06:54:28 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+28/04/2023 06:54:29 | T None | Loaded radio.json
+28/04/2023 06:54:29 | T None | Loaded languages.json
+28/04/2023 06:54:29 | T None | Loaded other.json
+28/04/2023 06:54:29 | T None | Bot class initialized
+28/04/2023 06:54:29 | T None | Loaded guilds.json
+28/04/2023 06:54:29 | T None | Loaded sound_effects folder
+28/04/2023 06:54:33 | T None | Trying to sync commands
+28/04/2023 06:54:33 | T None | Synced slash commands for Testing Bot#3465
+28/04/2023 06:54:33 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+28/04/2023 06:54:57 | C 1008145667622969397 | Command (play) was requested by (Tomer27cz#4272) -> ['https://www.youtube.com/watch?v=dQw4w9WgXcQ', False]
+28/04/2023 06:54:57 | F 1008145667622969397 | play_def -> ['https://www.youtube.com/watch?v=dQw4w9WgXcQ', False, False]
+28/04/2023 06:54:57 | F 1008145667622969397 | queue_command_def -> ['https://www.youtube.com/watch?v=dQw4w9WgXcQ', None, True, False, True, None]
+28/04/2023 06:54:57 | F 1008145667622969397 | join_def -> [None, True]
+28/04/2023 06:54:59 | T 1008145667622969397 | ------------------------------- play -------------------------
+28/04/2023 06:54:59 | T 1008145667622969397 | Traceback (most recent call last):
+  File "C:\Users\Admin\Desktop\discord_bot_stanley_the_7th\main.py", line 1934, in play_def
+    source = await GetSource.create_source(guild_id, video.url)
+  File "C:\Users\Admin\Desktop\discord_bot_stanley_the_7th\main.py", line 812, in create_source
+    sdata = youtubesearchpython.Video.getInfo(url)  # mode=ResultMode.json
+  File "C:\Users\Admin\PycharmProjects\pythonProject\venv\lib\site-packages\youtubesearchpython\extras.py", line 353, in getInfo
+    vc.post_request_only_html_processing()
+  File "C:\Users\Admin\PycharmProjects\pythonProject\venv\lib\site-packages\youtubesearchpython\core\video.py", line 67, in post_request_only_html_processing
+    self.__getVideoComponent(self.componentMode)
+  File "C:\Users\Admin\PycharmProjects\pythonProject\venv\lib\site-packages\youtubesearchpython\core\video.py", line 167, in __getVideoComponent
+    component['link'] = 'https://www.youtube.com/watch?v=' + component['id']
+TypeError: can only concatenate str (not "NoneType") to str
+
+28/04/2023 06:54:59 | T 1008145667622969397 | --------------------------------------------------------------
+28/04/2023 06:56:21 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+28/04/2023 06:56:21 | T None | Loaded radio.json
+28/04/2023 06:56:21 | T None | Loaded languages.json
+28/04/2023 06:56:21 | T None | Loaded other.json
+28/04/2023 06:56:21 | T None | Bot class initialized
+28/04/2023 06:56:21 | T None | Loaded guilds.json
+28/04/2023 06:56:21 | T None | Loaded sound_effects folder
+28/04/2023 06:56:24 | T None | Trying to sync commands
+28/04/2023 06:56:25 | T None | Synced slash commands for Testing Bot#3465
+28/04/2023 06:56:25 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+28/04/2023 06:56:34 | C 1008145667622969397 | Command (play) was requested by (Tomer27cz#4272) -> ['https://www.youtube.com/watch?v=dQw4w9WgXcQ', False]
+28/04/2023 06:56:34 | F 1008145667622969397 | play_def -> ['https://www.youtube.com/watch?v=dQw4w9WgXcQ', False, False]
+28/04/2023 06:56:34 | F 1008145667622969397 | queue_command_def -> ['https://www.youtube.com/watch?v=dQw4w9WgXcQ', None, True, False, True, None]
+28/04/2023 06:56:35 | F 1008145667622969397 | join_def -> [None, True]
+28/04/2023 06:56:37 | T 1008145667622969397 | Hybrid command raised an error: Command 'play' raised an exception: KeyError: 'url'
+02/05/2023 10:57:28 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+02/05/2023 10:57:28 | T None | Loaded radio.json
+02/05/2023 10:57:28 | T None | Loaded languages.json
+02/05/2023 10:57:28 | T None | Loaded other.json
+02/05/2023 10:57:28 | T None | Bot class initialized
+02/05/2023 11:51:49 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+02/05/2023 11:51:49 | T None | Loaded radio.json
+02/05/2023 11:51:49 | T None | Loaded languages.json
+02/05/2023 11:51:49 | T None | Loaded other.json
+02/05/2023 11:51:49 | T None | Bot class initialized
+02/05/2023 11:51:49 | T None | Spotipy class initialized
+02/05/2023 11:51:49 | T None | Loaded guilds.json
+02/05/2023 11:51:49 | T None | Loaded sound_effects folder
+02/05/2023 11:51:53 | T None | Trying to sync commands
+02/05/2023 11:51:54 | T None | Synced slash commands for Testing Bot#3465
+02/05/2023 11:51:54 | T None | Logged in as:
+Testing Bot
+1009574748302356581
+03/05/2023 07:54:28 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+03/05/2023 07:54:28 | T None | Loaded radio.json
+03/05/2023 07:54:28 | T None | Loaded languages.json
+03/05/2023 07:54:28 | T None | Loaded other.json
+03/05/2023 07:54:28 | T None | Bot class initialized
+03/05/2023 07:54:28 | T None | Spotipy class initialized
+03/05/2023 07:54:28 | T None | Loaded guilds.json
+03/05/2023 07:54:28 | T None | Loaded sound_effects folder
+03/05/2023 07:56:20 | T None | --------------------------------------- NEW / REBOOTED ----------------------------------------
+03/05/2023 07:56:20 | T None | Loaded radio.json
+03/05/2023 07:56:20 | T None | Loaded languages.json
+03/05/2023 07:56:20 | T None | Loaded other.json
+03/05/2023 07:56:20 | T None | Bot class initialized
+03/05/2023 07:56:20 | T None | Spotipy class initialized
+03/05/2023 07:56:20 | T None | Loaded guilds.json
+03/05/2023 07:56:20 | T None | Loaded sound_effects folder
+03/05/2023 07:56:24 | T None | Trying to sync commands
+03/05/2023 07:56:25 | T None | Synced slash commands for Testing Bot#3465
+03/05/2023 07:56:25 | T None | Logged in as:
+Testing Bot
+1009574748302356581
