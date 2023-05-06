@@ -30,6 +30,11 @@ from oauth import Oauth
 # ---------------- Bot class ------------
 
 class Bot(commands.Bot):
+    """
+    Bot class
+
+    This class is used to create the bot instance.
+    """
     def __init__(self):
         intents = discord.Intents.all()
         super().__init__(command_prefix=prefix, intents=intents)
@@ -115,9 +120,8 @@ class Bot(commands.Bot):
 
 class WebData:
     """
-    Replaces commands.Context when there is None
+    Replaces commands.Context when there can be none
     """
-
     def __init__(self, guild_id, author, author_id):
         self.guild_id = guild_id
         self.author = author
@@ -418,6 +422,10 @@ class VideoClass:
 # -------- Get SoundEffects ------------
 
 def load_sound_effects():
+    """
+    Loads all sound effects from the sound_effects folder
+    to the global variable all_sound_effects
+    """
     # noinspection PyGlobalUndefined
     global all_sound_effects
     all_sound_effects = ["No sound effects found"]
@@ -431,7 +439,13 @@ def load_sound_effects():
 
 # ----------- TIME ---------------------
 
-def struct_to_time(struct_time, first='date'):
+def struct_to_time(struct_time, first='date') -> str:
+    """
+    Converts struct_time to time string
+    :param struct_time: int == struct_time
+    :param first: ('date', 'time') == (01/01/1970 00:00:00, 00:00:00 01/01/1970)
+    :return: str
+    """
     if type(struct_time) != int:
         try:
             struct_time = int(struct_time)
@@ -449,6 +463,16 @@ def struct_to_time(struct_time, first='date'):
 # ------------ PRINT --------------------
 
 def log(ctx, text_data, options=None, log_type='text', author=None):
+    """
+    Logs data to the console and to the log file
+    :param ctx: commands.Context or WebData or guild_id
+    :param text_data: The data to be logged
+    :param options: list - options to be logged from command
+    :param log_type: ('command', 'function', 'web', 'text', 'ip') - type of log
+    :param author: Author of the command
+    :return: None
+    """
+
     now_time_str = struct_to_time(time())
 
     if type(ctx) == commands.Context:
@@ -477,6 +501,11 @@ def log(ctx, text_data, options=None, log_type='text', author=None):
         f.write(message + "\n")
 
 def collect_data(data):
+    """
+    Collects data to the data.txt file
+    :param data: data to be collected
+    :return: None
+    """
     now_time_str = struct_to_time(time())
     message = f"{now_time_str} | {data}\n"
 
@@ -486,6 +515,11 @@ def collect_data(data):
 # ---------------------------------------------- GUILD TO JSON ---------------------------------------------------------
 
 def guild_to_json(guild_object):
+    """
+    Converts guild object to json
+    :param guild_object: guild object from 'guild' global list
+    :return: dict - guild object in python dict
+    """
     guild_dict = {}
     search_dict = {}
     queue_dict = {}
@@ -517,6 +551,11 @@ def guild_to_json(guild_object):
     return guild_dict
 
 def guilds_to_json(guild_dict):
+    """
+    Converts guilds dict to json
+    :param guild_dict: global guilds dict
+    :return: dict - guilds dict in python dict
+    """
     guilds_dict = {}
     for guild_id, guilds_object in guild_dict.items():
         guilds_dict[int(guild_id)] = guild_to_json(guilds_object)
@@ -525,6 +564,11 @@ def guilds_to_json(guild_dict):
 # ---------------------------------------------- JSON TO GUILD ---------------------------------------------------------
 
 def json_to_video(video_dict):
+    """
+    Converts video dict to VideoClass object
+    :param video_dict: dict - video dict
+    :return: VideoClass object
+    """
     if not video_dict:
         return None
 
@@ -551,6 +595,11 @@ def json_to_video(video_dict):
     return video
 
 def json_to_guild(guild_dict):
+    """
+    Converts guild dict to Guild object
+    :param guild_dict: dict - guild dict
+    :return: Guild object
+    """
     guild_object = Guild(guild_dict['id'])
     guild_object.options.__dict__ = guild_dict['options']
     guild_object.data.__dict__ = guild_dict['data']
@@ -562,6 +611,11 @@ def json_to_guild(guild_dict):
     return guild_object
 
 def json_to_guilds(guilds_dict):
+    """
+    Converts guilds dict to guilds object
+    :param guilds_dict: dict - guilds dict
+    :return: global dict - guilds object
+    """
     guilds_object = {}
     for guild_id, guild_dict in guilds_dict.items():
         guilds_object[int(guild_id)] = json_to_guild(guild_dict)
@@ -646,6 +700,10 @@ load_sound_effects()
 # ---------------------------------------------- SAVE JSON -------------------------------------------------------------
 
 def save_json():
+    """
+    Saves guild object to guilds.json
+    :return: None
+    """
     for guild_object in guild.values():
         guild_object.renew()
 
@@ -654,7 +712,15 @@ def save_json():
 
 # ---------------------------------------------- TEXT ----------------------------------------------------------
 
-def tg(guild_id, content):
+def tg(guild_id: int, content: str) -> str:
+    """
+    Translates text to guild language
+    Selects language from guild options
+    Gets text from languages.json
+    :param guild_id: int - id of guild
+    :param content: str - translation key
+    :return: str - translated text
+    """
     lang = guild[guild_id].options.language
     try:
         to_return = languages_dict[lang][content]
@@ -665,7 +731,13 @@ def tg(guild_id, content):
 
 # ---------------------------------------------- SPOTIFY -------------------------------------------------------
 
-def spotify_to_yt_video(spotify_url, author):
+def spotify_to_yt_video(spotify_url: str, author) -> VideoClass or None:
+    """
+    Converts spotify url to youtube video
+    :param spotify_url: str - spotify url
+    :param author: author of command
+    :return: VideoClass object
+    """
     # noinspection PyBroadException
     try:
         spotify_track = sp.track(spotify_url)
@@ -694,7 +766,13 @@ def spotify_to_yt_video(spotify_url, author):
 
     return video_class
 
-def spotify_playlist_to_yt_video_list(spotify_playlist_url, author):
+def spotify_playlist_to_yt_video_list(spotify_playlist_url: str, author) -> list or None:
+    """
+    Converts spotify playlist url to list of youtube videos
+    :param spotify_playlist_url: str - spotify playlist url
+    :param author: author of command
+    :return: [VideoClass, VideoClass, ...] or None
+    """
     # noinspection PyBroadException
     try:
         spotify_playlist = sp.playlist_items(spotify_playlist_url, fields='items.track.name, items.track.artists.name')
@@ -730,7 +808,13 @@ def spotify_playlist_to_yt_video_list(spotify_playlist_url, author):
 
     return video_list
 
-def spotify_album_to_yt_video_list(spotify_album_url, author):
+def spotify_album_to_yt_video_list(spotify_album_url: str, author) -> list or None:
+    """
+    Converts spotify album url to list of youtube videos
+    :param spotify_album_url: str - spotify album url
+    :param author: author of command
+    :return: [VideoClass, VideoClass, ...] or None
+    """
     # noinspection PyBroadException
     try:
         spotify_album = sp.album_tracks(spotify_album_url)
@@ -766,7 +850,14 @@ def spotify_album_to_yt_video_list(spotify_album_url, author):
 
 # ---------------------------------------------- YOUTUBE -------------------------------------------------------
 
-def extract_yt_id(url_string: str):
+def extract_yt_id(url_string: str) -> str or None:
+    """
+    Extracts youtube video id from url
+    https://youtube.com/watch?v={video_id} => video_id
+
+    :param url_string: str - url
+    :return: str - youtube video id
+    """
     magic_regex = "^(?:https?://|//)?(?:www\.|m\.|.+\.)?(?:youtu\.be/|youtube\.com/(?:embed/|v/|shorts/|feeds/api/videos/|watch\?v=|watch\?.+&v=))([\w-]{11})(?![\w-])"
     regex = re.compile(magic_regex)
     results = regex.search(url_string)
@@ -775,7 +866,12 @@ def extract_yt_id(url_string: str):
         return None
     return results.group(1)
 
-def get_playlist_from_url(url: str):
+def get_playlist_from_url(url: str) -> str:
+    """
+    Returns playlist url from video url
+    :param url: str - video url
+    :return: str - playlist url
+    """
     try:
         code = url[url.index('&list=')+1:url.index('&index=')]
     except ValueError:
@@ -785,7 +881,14 @@ def get_playlist_from_url(url: str):
 
 # ---------------------------------------------- URL -----------------------------------------------------------
 
-def get_url_of(string: str, section: str):
+def get_url_of(string: str, section: str) -> str or None:
+    """
+    Returns url of section in string
+    or None if not found
+    :param string: str - string to search in
+    :param section: str - section to search for
+    :return: str - url or None
+    """
     separated_string = string.split(' ')
 
     for s_string in separated_string:
@@ -794,13 +897,25 @@ def get_url_of(string: str, section: str):
 
     return None
 
-def get_first_url(string: str):
+def get_first_url(string: str) -> str or None:
+    """
+    Returns first url in string using regex
+    or None if not found
+    :param string: str - string to search in
+    :return: str - url or None
+    """
     re_search = re.search(r"(http|ftp|https)://([\w_-]+(?:\.[\w_-]+)+)([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])", string)
     if re_search is None:
         return None
     return re_search[0]
 
 def get_url_type(string: str):
+    """
+    Returns type of url
+
+    :param string: str - string to search in
+    :return: ('YouTube Playlist', 'YouTube Playlist Video', 'YouTube Video', 'Spotify Playlist', 'Spotify Album', 'Spotify Track', 'String'), url: str
+    """
     first_url = get_first_url(string)
     yt_id = extract_yt_id(string)
 
@@ -858,7 +973,13 @@ def get_url_type(string: str):
 
 # ---------------------------------------------- PROBE ---------------------------------------------------------
 
-async def get_url_probe_data(url: str):
+async def get_url_probe_data(url: str) -> (tuple or None, str or None):
+    """
+    Returns probe data of url
+    or None if not found
+    :param url: str: url to probe
+    :return: tuple(codec, bitrate), url or None, None
+    """
     extracted_url = get_first_url(url)
     if extracted_url is None:
         return None, extracted_url
@@ -889,7 +1010,14 @@ async def get_url_probe_data(url: str):
 
 # ---------------------------------------------- CONVERT -------------------------------------------------------
 
-def convert_duration(duration):
+def convert_duration(duration) -> str or None:
+    """
+    Converts duration(in sec) to HH:MM:SS format
+    or returns 'Stream' if duration is None or 0
+    if can't convert returns duration as str
+    :param duration: duration in sec
+    :return: str - duration in HH:MM:SS format
+    """
     try:
         if duration is None or duration == 0 or duration == '0':
             return 'Stream'
@@ -911,18 +1039,38 @@ def convert_duration(duration):
                 seconds = 00
             return "%02d:%02d" % (minutes, seconds)
     except (ValueError, TypeError):
-        return duration
+        return str(duration)
 
 # ---------------------------------------------- GET -----------------------------------------------------------
 
-def get_username(user_id: int):
+def get_username(user_id: int) -> str:
+    """
+    Returns username of user_id with bot.get_user
+
+    if can't find user returns str(user_id)
+
+    :param user_id: id of user
+    :return: str - username of user_id or str(user_id)
+    """
     # noinspection PyBroadException
     try:
         return bot.get_user(int(user_id)).name
     except:
-        return user_id
+        return str(user_id)
 
-def get_content_of_message(message: discord.Message):
+def get_content_of_message(message: discord.Message) -> (str, list or None):
+    """
+    Returns content of message
+
+    if message has attachments returns url of first attachment and list with filename, author and link of message
+
+    if message has embeds returns str representation of first embed without thumbnail and None
+
+    if message has embeds and content returns content of message and None
+
+    :param message: message: discord.Message
+    :return: content: str, probe_data: list or None
+    """
     if message.attachments:
         url = message.attachments[0].url
         filename = message.attachments[0].filename
@@ -948,7 +1096,13 @@ def get_content_of_message(message: discord.Message):
 
 # ---------------------------------------------- CHECK ---------------------------------------------------------
 
-def to_bool(text_bool):
+def to_bool(text_bool: str) -> bool or None:
+    """
+    Converts text_bool to bool
+    if can't convert returns None
+    :param text_bool: str
+    :return: bool or None
+    """
     bool_list_t = ['True', 'true', '1']
     bool_list_f = ['False', 'false', '0']
 
@@ -959,7 +1113,7 @@ def to_bool(text_bool):
     else:
         return None
 
-def is_float(value):
+def is_float(value) -> bool:
   if value is None:
       return False
   # noinspection PyBroadException
@@ -971,7 +1125,14 @@ def is_float(value):
 
 # ---------------------------------------------- DISCORD -------------------------------------------------------
 
-def create_embed(video, name, guild_id):
+def create_embed(video: VideoClass, name: str, guild_id) -> discord.Embed:
+    """
+    Creates embed with video info
+    :param video: VideoClass
+    :param name: str - title of embed
+    :param guild_id: id of guild the embed is created for
+    :return: discord.Embed
+    """
     embed = (discord.Embed(title=name, description=f'```\n{video.title}\n```', color=discord.Color.blurple()))
     embed.add_field(name=tg(guild_id, 'Duration'), value=convert_duration(video.duration))
 
@@ -988,6 +1149,13 @@ def create_embed(video, name, guild_id):
     return embed
 
 def now_to_history(guild_id: int):
+    """
+    Moves now_playing to history and sets now_playing to None
+    Removes first element of history if history length is more than options.history_length
+
+    :param guild_id: int - id of guild
+    :return: None
+    """
     if guild[guild_id].now_playing is not None:
         if len(guild[guild_id].history) >= guild[guild_id].options.history_length:
             while len(guild[guild_id].history) >= guild[guild_id].options.history_length:
@@ -998,7 +1166,21 @@ def now_to_history(guild_id: int):
         guild[guild_id].now_playing = None
         save_json()
 
-async def to_queue(guild_id: int, video: VideoClass, position: int = None, ctx=None, mute_response: bool=False, ephemeral: bool=False, return_message: bool=False):
+async def to_queue(guild_id: int, video: VideoClass, position: int = None, ctx=None, mute_response: bool=False, ephemeral: bool=False, return_message: bool=False) -> [bool, str, VideoClass] or None:
+    """
+    Adds video to queue
+
+    if return_message is True returns: [bool, str, VideoClass]
+
+    :param guild_id: id of guild: int
+    :param video: VideoClass
+    :param position: int - position in queue to add video
+    :param ctx: commands.Context - context of command
+    :param mute_response: bool - if True doesn't send ctx reply
+    :param ephemeral: bool - if True sends message as ephemeral
+    :param return_message: bool
+    :return: [bool, str, VideoClass] or None
+    """
     if position is None:
         guild[guild_id].queue.append(video)
     else:
@@ -1075,7 +1257,6 @@ class GetSource(discord.PCMVolumeTransformer):
 # ------------------------------------ View Classes --------------------------------------------------------------------
 
 class PlayerControlView(View):
-
     def __init__(self, ctx):
         super().__init__(timeout=7200)
         if type(ctx) == commands.Context:
@@ -1601,7 +1782,7 @@ async def queue_command_def(ctx,
                             probe_data: list = None,
                             no_search: bool = False,
                             ephemeral: bool = False,
-                            ):
+                            ) -> [bool, str, VideoClass or None]:
     """
     This function tries to queue a song. It is called by the queue command and the play command.
 
