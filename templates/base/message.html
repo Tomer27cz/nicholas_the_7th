@@ -3,22 +3,22 @@
 {% set title = title %}
 
 {% block content %}
-{% if errors %}
+  {% if errors %}
     {% for error in errors %}
-        <div class="alert alert-danger div-align alert-dismissible fade show" role="alert">
-            {{error}}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
+      <div class="alert alert-danger div-align alert-dismissible fade show" role="alert">
+        {{error}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
     {% endfor %}
-{% endif %}
+  {% endif %}
 
 
-<div class="div-align-center">
+  <div class="div-align-center">
     <div class="div-login">
-        <h1>{{message}}</h1>
-        <a class="btn btn-secondary btn-lg" href="/">Return Home</a>
-        <a class="btn btn-primary btn-lg" href="/guild">Servers</a>
+      <h1>{{message}}</h1>
+      <a class="btn btn-secondary btn-lg" href="/">Return Home</a>
+      <a class="btn btn-primary btn-lg" href="/guild">Servers</a>
     </div>
-</div>
+  </div>
 
 {% endblock %}

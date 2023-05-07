@@ -3,109 +3,109 @@
 {% set title = "Admin" %}
 
 {% block content %}
-{% if errors %}
+  {% if errors %}
     {% for error in errors %}
-        <div class="alert alert-danger div-align alert-dismissible fade show sticky-top" role="alert">
-            {{error}}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
+      <div class="alert alert-danger div-align alert-dismissible fade show sticky-top" role="alert">
+        {{error}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
     {% endfor %}
-{% endif %}
-{% if messages %}
+  {% endif %}
+  {% if messages %}
     {% for message in messages %}
-        <div class="alert alert-success div-align alert-dismissible fade show sticky-top" role="alert">
-            {{message}}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
+      <div class="alert alert-success div-align alert-dismissible fade show sticky-top" role="alert">
+        {{message}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
     {% endfor %}
-{% endif %}
+  {% endif %}
 
 
-<form action="#" method="POST">
-<div class="div-align-center">
-  <h1 class="btn-m">Admin</h1>
-</div>
-<div class="div-login">
-    <div class="row row-cols-lg-auto g-3">
-      <div class="col-12">
+  <form action="#" method="POST">
+    <div class="div-align-center">
+      <h1 class="btn-m">Admin</h1>
+    </div>
+    <div class="div-login">
+      <div class="row row-cols-lg-auto g-3">
+        <div class="col-12">
           <h3>Files</h3>
-      </div>
-      <div class="col-12">
-        <select class="form-select" aria-label="Default select example" name="download_file" id="download_file">
-          <option selected value="log.txt">log.txt</option>
-          <option value="guilds.json">guilds.json</option>
-          <option value="other.json">other.json</option>
-          <option value="radio.json">radio.json</option>
-          <option value="languages.json">languages.json</option>
-          <option value="activity.log">activity.log</option>
-          <option value="data.txt">data.txt</option>
-        </select>
-      </div>
-      <div class="col-12">
-        <button type="submit" class="btn btn-primary" name="download_btn">Download</button>
-      </div>
-      <div class="col-12">
-        <input type="file" class="form-control" id="upload_file" name="file">
-      </div>
-      <div class="col-12">
+        </div>
+        <div class="col-12">
+          <select class="form-select" aria-label="Default select example" name="download_file" id="download_file">
+            <option selected value="log.txt">log.txt</option>
+            <option value="guilds.json">guilds.json</option>
+            <option value="other.json">other.json</option>
+            <option value="radio.json">radio.json</option>
+            <option value="languages.json">languages.json</option>
+            <option value="activity.log">activity.log</option>
+            <option value="data.txt">data.txt</option>
+          </select>
+        </div>
+        <div class="col-12">
+          <button type="submit" class="btn btn-primary" name="download_btn">Download</button>
+        </div>
+        <div class="col-12">
+          <input type="file" class="form-control" id="upload_file" name="file">
+        </div>
+        <div class="col-12">
           <button type="submit" class="btn btn-primary" name="upload_btn">Upload</button>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="div-login">
-    <div class="row row-cols-lg-auto g-3">
-      <div class="col-12">
-        <h3>Options</h3>
+    <div class="div-login">
+      <div class="row row-cols-lg-auto g-3">
+        <div class="col-12">
+          <h3>Options</h3>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="picker">
+    <div class="picker">
       <h3>Select a server to Edit</h3>
       <br/>
       <section class="d-cards">
         {% for guild_object in guild %}
-        <div class="d-card">
-          <a data-bs-toggle="modal" data-bs-target=#guildEditModal_{{guild_object.id}}>
-            {% if guild_object.data.icon is not none %}
-              <img loading="lazy" src="{{guild_object.data.icon}}" class="green-border" />
-            {% else %}
-              <img loading="lazy" src="/static/img/discord_icon.svg" class="green-border" />
-            {% endif %}
-          </a>
-          <br/>
-          {{ guild_object.data.name }}
-        </div>
+          <div class="d-card">
+            <a data-bs-toggle="modal" data-bs-target=#guildEditModal_{{guild_object.id}}>
+              {% if guild_object.data.icon is not none %}
+                <img loading="lazy" src="{{guild_object.data.icon}}" class="green-border" />
+              {% else %}
+                <img loading="lazy" src="/static/img/discord_icon.svg" class="green-border" />
+              {% endif %}
+            </a>
+            <br/>
+            {{ guild_object.data.name }}
+          </div>
         {% endfor %}
       </section>
-        <br/>
+      <br/>
     </div>
-</form>
+  </form>
 
-{% for guild_object in guild %}
-<form action="#" method="POST">
-    <div class="modal fade" id="guildEditModal_{{guild_object.id}}" data-bs-keyboard="false" tabindex="-1" aria-labelledby="guildEditLabel_{{guild_object.id}}" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
-        <div class="modal-content">
+  {% for guild_object in guild %}
+    <form action="#" method="POST">
+      <div class="modal fade" id="guildEditModal_{{guild_object.id}}" data-bs-keyboard="false" tabindex="-1" aria-labelledby="guildEditLabel_{{guild_object.id}}" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+          <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="guildEditLabel_{{guild_object.id}}">Guild Edit: {{guild_object.data.name}}</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              <h1 class="modal-title fs-5" id="guildEditLabel_{{guild_object.id}}">Guild Edit: {{guild_object.data.name}}</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="info-modal">
-                {% for key, value in guild_object.options.__dict__.items() %}
-                    <div class="e-div">
-                        <label for="{{guild_object.id}}_{{key}}" class="e-label">{{key}}</label>
-                        <input type="text" id="{{guild_object.id}}_{{key}}" name="{{key}}" value="{{value}}" class="e-input">
-                    </div>
-                {% endfor %}
-                    <div class="e-div">
-                        <button class="btn e-item1 btn-secondary btn-lg btn-m" type="button" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
-                        <button class="btn e-item1 btn-primary btn-lg btn-m" type="submit" name="edit_btn">Submit</button>
-                    </div>
+              {% for key, value in guild_object.options.__dict__.items() %}
+                <div class="e-div">
+                  <label for="{{guild_object.id}}_{{key}}" class="e-label">{{key}}</label>
+                  <input type="text" id="{{guild_object.id}}_{{key}}" name="{{key}}" value="{{value}}" class="e-input">
+                </div>
+              {% endfor %}
+              <div class="e-div">
+                <button class="btn e-item1 btn-secondary btn-lg btn-m" type="button" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+                <button class="btn e-item1 btn-primary btn-lg btn-m" type="submit" name="edit_btn">Submit</button>
+              </div>
             </div>
+          </div>
         </div>
       </div>
-    </div>
-</form>
-{% endfor %}
-<br><br>
+    </form>
+  {% endfor %}
+  <br><br>
 {% endblock %}
