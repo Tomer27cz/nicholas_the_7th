@@ -1995,8 +1995,7 @@ async def skip_def(ctx) -> ReturnData:
 
     if guild_object.voice_client:
         if guild_object.voice_client.is_playing():
-
-            stop_response = await stop_def(ctx, True)
+            stop_response = await stop_def(ctx, mute_response=True, keep_loop=True)
             if not stop_response.response:
                 return stop_response
 
@@ -2361,10 +2360,10 @@ async def play_def(ctx,
         guild[guild_id].options.stopped = True
         guild[guild_id].options.is_radio = False
 
-    if not guild[guild_id].queue:
-        if voice.is_paused():
-            return await resume_def(ctx)
+    if voice.is_paused():
+        return await resume_def(ctx)
 
+    if not guild[guild_id].queue:
         message = f'{tg(guild_id, "There is **nothing** in your **queue**")} {notif}'
         if not after and not mute_response:
             await ctx.reply(message)
@@ -2481,7 +2480,7 @@ async def radio_def(ctx,
             return response
 
     if guild_object.voice_client.is_playing():
-        await stop_def(ctx, True)
+        await stop_def(ctx, mute_response=True)
 
     video = VideoClass('Radio', author_id, radio_name=radio_type, played_at=int(time()))
     guild[guild_id].now_playing = video
@@ -2548,7 +2547,7 @@ async def ps_def(ctx, effect_number: app_commands.Range[int, 1, len(all_sound_ef
 
     voice = guild_object.voice_client
 
-    stop_response = await stop_def(ctx, True)
+    stop_response = await stop_def(ctx, mute_response=True)
     if not stop_response.response:
         return stop_response
 
@@ -2637,11 +2636,15 @@ async def loop_command_def(ctx) -> ReturnData:
 
     if guild[guild_id].options.loop:
         guild[guild_id].options.loop = False
+        save_json()
+
         message = 'Loop mode: `False`'
         await ctx.reply(message, ephemeral=True)
         return ReturnData(True, message)
 
     guild[guild_id].options.loop = True
+    save_json()
+
     message = 'Loop mode: `True`'
     await ctx.reply(message, ephemeral=True)
     return ReturnData(True, message)
@@ -2659,25 +2662,28 @@ async def loop_this_def(ctx) -> ReturnData:
         guild[guild_id].queue.clear()
         guild[guild_id].queue.append(guild[guild_id].now_playing)
         guild[guild_id].options.loop = True
+        save_json()
 
         message = f'{tg(guild_id, "Queue **cleared**, Player will now loop **currently** playing song:")} [`{guild[guild_id].now_playing.title}`](<{guild[guild_id].now_playing.url}>)'
         await ctx.reply(message)
         return ReturnData(True, message)
 
+    save_json()
     message = tg(guild_id, "Nothing is playing **right now**")
     await ctx.reply(message)
     return ReturnData(False, message)
 
 # --------------------------------------- VOICE --------------------------------------------------
 
-async def stop_def(ctx, mute_response: bool = False) -> ReturnData:
+async def stop_def(ctx, mute_response: bool = False, keep_loop: bool=False) -> ReturnData:
     """
     Stops player
     :param ctx: Context
     :param mute_response: Should bot response be muted
+    :param keep_loop: Should loop be kept
     :return: ReturnData
     """
-    log(ctx, 'stop_def', [mute_response], log_type='function', author=ctx.author)
+    log(ctx, 'stop_def', [mute_response, keep_loop], log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
 
     voice = discord.utils.get(bot.voice_clients, guild=guild_object)
@@ -2691,7 +2697,8 @@ async def stop_def(ctx, mute_response: bool = False) -> ReturnData:
     voice.stop()
 
     guild[guild_id].options.stopped = True
-    guild[guild_id].options.loop = False
+    if not keep_loop:
+        guild[guild_id].options.loop = False
 
     now_to_history(guild_id)
 
@@ -2727,6 +2734,8 @@ async def pause_def(ctx, mute_response: bool = False) -> ReturnData:
         message = tg(guild_id, "Bot is not connected to a voice channel")
         resp = False
 
+    save_json()
+
     if not mute_response:
         await ctx.reply(message, ephemeral=True)
     return ReturnData(resp, message)
@@ -2757,6 +2766,8 @@ async def resume_def(ctx, mute_response: bool = False) -> ReturnData:
     else:
         message = tg(guild_id, "Bot is not connected to a voice channel")
         resp = False
+
+    save_json()
 
     if not mute_response:
         await ctx.reply(message, ephemeral=True)
@@ -2834,7 +2845,7 @@ async def disconnect_def(ctx, mute_response: bool = False) -> ReturnData:
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
 
     if guild_object.voice_client:
-        await stop_def(ctx, True)
+        await stop_def(ctx, mute_response=True)
         guild[guild_id].queue.clear()
 
         channel = guild_object.voice_client.channel
@@ -2896,6 +2907,7 @@ async def ping_def(ctx) -> ReturnData:
     :return: ReturnData
     """
     log(ctx, 'ping_def', [], log_type='function', author=ctx.author)
+    save_json()
 
     message = f'**Pong!** Latency: {round(bot.latency * 1000)}ms'
     await ctx.reply(message)
@@ -2945,6 +2957,7 @@ async def sound_effects_def(ctx, ephemeral: bool = True) -> ReturnData:
 
     embed.add_field(name="", value=message, inline=False)
 
+    save_json()
     await ctx.send(embed=embed, ephemeral=ephemeral)
     return ReturnData(True, 'Sound effects')
 
@@ -2974,6 +2987,7 @@ async def list_radios_def(ctx, ephemeral: bool = True) -> ReturnData:
 
     embed.add_field(name="", value=message, inline=False)
 
+    save_json()
     await ctx.send(embed=embed, ephemeral=ephemeral)
     return ReturnData(True, 'Radio list')
 
@@ -2984,6 +2998,7 @@ async def key_def(ctx: commands.Context) -> ReturnData:
     :return: ReturnData
     """
     log(ctx, 'key_def', [], log_type='function', author=ctx.author)
+    save_json()
 
     message = f'Key: `{guild[ctx.guild.id].data.key}` -> [Control Panel]({config.WEB_URL}/guild/{ctx.guild.id}&key={guild[ctx.guild.id].data.key})'
     await ctx.reply(message)
@@ -3694,6 +3709,54 @@ async def web_options_edit(web_data, form) -> ReturnData:
 
     return ReturnData(True, f'Edited options successfully!')
 
+async def web_user_options_edit(web_data, form) -> ReturnData:
+    log(web_data, 'web_user_options_edit', [form], log_type='function', author=web_data.author)
+    options = guild[web_data.guild_id].options
+
+    loop = form['loop']
+    language = form['language']
+    response_type = form['response_type']
+    buttons = form['buttons']
+    volume = form['volume']
+    buffer = form['buffer']
+    history_length = form['history_length']
+
+    bool_list_t = ['True', 'true', '1']
+    bool_list_f = ['False', 'false', '0']
+    bool_list = bool_list_f + bool_list_t
+    response_types = ['long', 'short']
+
+    if loop not in bool_list:
+        return ReturnData(False, f'loop has to be: {bool_list} --> {loop}')
+    if buttons not in bool_list:
+        return ReturnData(False, f'buttons has to be: {bool_list} --> {buttons}')
+
+    if response_type not in response_types:
+        return ReturnData(False, f'response_type has to be: {response_types} --> {response_type}')
+
+    if language not in languages_dict:
+        return ReturnData(False, f'language has to be: {languages_dict}')
+
+
+    if not volume.isdigit():
+        return ReturnData(False, f'volume has to be a number: {volume}')
+    if not buffer.isdigit():
+        return ReturnData(False, f'buffer has to be a number: {buffer}')
+    if not history_length.isdigit():
+        return ReturnData(False, f'history_length has to be a number: {history_length}')
+
+    options.loop = to_bool(loop)
+    options.buttons = to_bool(buttons)
+
+    options.language = language
+    options.response_type = response_type
+
+    options.volume = float(int(volume)*0.01)
+    options.buffer = int(buffer)
+    options.history_length = int(history_length)
+
+    return ReturnData(True, f'Edited options successfully!')
+
 # --------------------------------------------- WEB SERVER --------------------------------------------- #
 
 app = Flask(__name__)
@@ -3831,13 +3894,13 @@ async def guild_page(guild_id, key):
         if 'pause_btn' in keys:
             log(web_data, 'pause', [], log_type='web', author=web_data.author)
             response = await pause_def(web_data)
-        if 'resume_btn' in keys:
-            log(web_data, 'resume', [], log_type='web', author=web_data.author)
-            response = await resume_def(web_data)
-
         if 'skip_btn' in keys:
             log(web_data, 'skip', [], log_type='web', author=web_data.author)
             response = await skip_def(web_data)
+
+        if 'loop_btn' in keys:
+            log(web_data, 'loop', [], log_type='web', author=web_data.author)
+            response = await loop_command_def(web_data)
         if 'shuffle_btn' in keys:
             log(web_data, 'shuffle', [], log_type='web', author=web_data.author)
             response = await shuffle_def(web_data)
@@ -3865,6 +3928,9 @@ async def guild_page(guild_id, key):
         if 'edit_btn' in keys:
             log(web_data, 'web_edit', [request.form['edit_btn']], log_type='web', author=web_data.author)
             response = await web_edit(web_data, request.form)
+        if 'options_btn' in keys:
+            log(web_data, 'web_options', [request.form], log_type='web', author=web_data.author)
+            response = await web_user_options_edit(web_data, request.form)
 
         if 'volume_btn' in keys:
             log(web_data, 'volume_command_def', [request.form['volumeRange'], request.form['volumeInput']], log_type='web', author=web_data.author)
@@ -3900,7 +3966,7 @@ async def guild_page(guild_id, key):
     mutual_guild_ids.append(guild_object.id)
     session['mutual_guild_ids'] = mutual_guild_ids
 
-    return render_template('control/guild.html', guild=guild_object, struct_to_time=struct_to_time, convert_duration=convert_duration, get_username=get_username, errors=errors, messages=messages, user=user, admin=admin, volume=round(guild_object.options.volume * 100), radios=list(radio_dict.values()), scroll_position=scroll_position)
+    return render_template('control/guild.html', guild=guild_object, struct_to_time=struct_to_time, convert_duration=convert_duration, get_username=get_username, errors=errors, messages=messages, user=user, admin=admin, volume=round(guild_object.options.volume * 100), radios=list(radio_dict.values()), scroll_position=scroll_position, languages_dict=languages_dict)
 
 @app.route('/login')
 async def login_page():
