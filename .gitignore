@@ -4,6 +4,8 @@ __pycache__/
 api_keys.py
 config.py
 config_real.py
+credentials.json
+dev_func/translator/credentials.json
 *.py[cod]
 
 # C extensions

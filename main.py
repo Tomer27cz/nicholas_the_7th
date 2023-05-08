@@ -416,14 +416,14 @@ class Guild:
         self.search_list = []
         self.now_playing = None
         self.history = [VideoClass('Video',
-                                      created_at=1000212400,
-                                      url='https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-                                      author=my_id,
-                                      title='Never gonna give you up',
-                                      picture='https://img.youtube.com/vi/dQw4w9WgXcQ/default.jpg',
-                                      duration='3:33',
-                                      channel_name='Rick Astley',
-                                      channel_link='https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw')]
+                                   created_at=1000212400,
+                                   url='https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+                                   author=my_id,
+                                   title='Never gonna give you up',
+                                   picture='https://img.youtube.com/vi/dQw4w9WgXcQ/default.jpg',
+                                   duration='3:33',
+                                   channel_name='Rick Astley',
+                                   channel_link='https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw')]
         self.data = GuildData(guild_id)
 
     def renew(self):
@@ -1124,14 +1124,14 @@ def to_bool(text_bool: str) -> bool or None:
         return None
 
 def is_float(value) -> bool:
-  if value is None:
-      return False
-  # noinspection PyBroadException
-  try:
-      float(value)
-      return True
-  except:
-      return False
+    if value is None:
+        return False
+    # noinspection PyBroadException
+    try:
+        float(value)
+        return True
+    except:
+        return False
 
 # ---------------------------------------------- DISCORD -------------------------------------------------------
 
@@ -1209,20 +1209,20 @@ async def to_queue(guild_id: int, video: VideoClass, position: int = None, ctx=N
 # ---------------------------------------------- SOURCE -------------------------------------------------------
 
 YTDL_OPTIONS = {
-        'format': 'bestaudio/best',
-        'extractaudio': True,
-        'audioformat': 'mp3',
-        'outtmpl': '%(extractor)s-%(id)s-%(title)s.%(ext)s',
-        'restrictfilenames': True,
-        'noplaylist': True,
-        'nocheckcertificate': True,
-        'ignoreerrors': False,
-        'logtostderr': False,
-        'quiet': True,
-        'no_warnings': True,
-        'default_search': 'auto',
-        'source_address': '0.0.0.0',
-    }
+    'format': 'bestaudio/best',
+    'extractaudio': True,
+    'audioformat': 'mp3',
+    'outtmpl': '%(extractor)s-%(id)s-%(title)s.%(ext)s',
+    'restrictfilenames': True,
+    'noplaylist': True,
+    'nocheckcertificate': True,
+    'ignoreerrors': False,
+    'logtostderr': False,
+    'quiet': True,
+    'no_warnings': True,
+    'default_search': 'auto',
+    'source_address': '0.0.0.0',
+}
 
 FFMPEG_OPTIONS = {
     'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
@@ -1429,8 +1429,7 @@ class PlaylistOptionView(View):
         position = 0 if self.force else None
         response: ReturnData = await queue_command_def(self.ctx, playlist_url, position=position, mute_response=True, force=self.force)
 
-        msg = await interaction.original_response()
-        await msg.edit(content=response.message, view=None)
+        await interaction.response.edit_message(content=response.message, view=None)
 
         if self.from_play:
             await play_def(self.ctx)
@@ -1443,8 +1442,7 @@ class PlaylistOptionView(View):
         position = 0 if self.force else None
         response: ReturnData = await queue_command_def(self.ctx, pure_url, position=position, mute_response=True, force=self.force)
 
-        msg = await interaction.original_response()
-        await msg.edit(content=response.message, view=None)
+        await interaction.response.edit_message(content=response.message, view=None)
 
         if self.from_play:
             await play_def(self.ctx)
@@ -1760,17 +1758,17 @@ async def log_command(ctx: commands.Context, log_type: Literal['log.txt', 'guild
 @app_commands.describe(server='all, this, {guild_id}', volume='No division', buffer='In seconds', language='Language code', response_type='short, long', buttons='True, False', is_radio='True, False', loop='True, False', stopped='True, False', history_length='Number of items in history (100 is probably a lot)')
 @commands.check(is_authorised)
 async def change_options(ctx: commands.Context,
-                        stopped: bool = None,
-                        loop: bool = None,
-                        is_radio: bool = None,
-                        buttons: bool = None,
-                        language: Literal[tuple(languages_dict.keys())] = None,
-                        response_type: Literal['short', 'long'] = None,
-                        buffer: int = None,
-                        history_length: int = None,
-                        volume = None,
-                        server = None,
-                        ):
+                         stopped: bool = None,
+                         loop: bool = None,
+                         is_radio: bool = None,
+                         buttons: bool = None,
+                         language: Literal[tuple(languages_dict.keys())] = None,
+                         response_type: Literal['short', 'long'] = None,
+                         buffer: int = None,
+                         history_length: int = None,
+                         volume = None,
+                         server = None,
+                         ):
     log(ctx, 'zz_change_options', [stopped, loop, is_radio, buttons, language, response_type, buffer, history_length, volume, server], log_type='command', author=ctx.author)
 
     await change_options_def(ctx, stopped, loop, is_radio, buttons, language, response_type, buffer, history_length, volume, server)
@@ -1786,16 +1784,7 @@ def ctx_check(ctx):
 
 # --------------------------------------- QUEUE --------------------------------------------------
 
-async def queue_command_def(ctx,
-                            url=None,
-                            position: int = None,
-                            mute_response: bool = False,
-                            force: bool = False,
-                            from_play: bool = False,
-                            probe_data: list = None,
-                            no_search: bool = False,
-                            ephemeral: bool = False,
-                            ) -> ReturnData:
+async def queue_command_def(ctx, url=None, position: int = None, mute_response: bool = False, force: bool = False, from_play: bool = False, probe_data: list = None, no_search: bool = False, ephemeral: bool = False,) -> ReturnData:
     """
     This function tries to queue a song. It is called by the queue command and the play command.
 
@@ -1955,7 +1944,6 @@ async def queue_command_def(ctx,
         await ctx.reply(message, ephemeral=ephemeral)
     return ReturnData(False, message)
 
-
 async def next_up_def(ctx, url, ephemeral: bool = False):
     """
     Adds a song to the queue and plays it if the queue is empty
@@ -2011,12 +1999,7 @@ async def skip_def(ctx) -> ReturnData:
     await ctx.reply(message, ephemeral=True)
     return ReturnData(False, message)
 
-async def remove_def(ctx,
-                     number: int,
-                     display_type: Literal['short', 'long'] = None,
-                     ephemeral: bool = False,
-                     list_type: Literal['queue', 'history'] = 'queue'
-                     ) -> ReturnData:
+async def remove_def(ctx, number: int, display_type: Literal['short', 'long'] = None, ephemeral: bool = False, list_type: Literal['queue', 'history'] = 'queue') -> ReturnData:
     """
     Removes a song from the queue or history
     :param ctx: Context
@@ -2130,11 +2113,7 @@ async def shuffle_def(ctx, ephemeral: bool = False) -> ReturnData:
     await ctx.reply(message, ephemeral=ephemeral)
     return ReturnData(True, message)
 
-async def show_def(ctx,
-                   display_type: Literal['short', 'medium', 'long'] = None,
-                   list_type: Literal['queue', 'history']='queue',
-                   ephemeral: bool = False
-                   ) -> ReturnData:
+async def show_def(ctx, display_type: Literal['short', 'medium', 'long'] = None, list_type: Literal['queue', 'history']='queue', ephemeral: bool = False) -> ReturnData:
     """
     Shows the queue or history (only in discord)
     :param ctx: Context
@@ -2224,13 +2203,7 @@ async def show_def(ctx,
 
     save_json()
 
-async def search_command_def(ctx,
-                             search_query,
-                             display_type: Literal['short', 'long'] = None,
-                             force: bool = False,
-                             from_play: bool = False,
-                             ephemeral: bool = False
-                             ) -> ReturnData:
+async def search_command_def(ctx, search_query, display_type: Literal['short', 'long'] = None, force: bool = False, from_play: bool = False, ephemeral: bool = False) -> ReturnData:
     """
     Search for a song and add it to the queue with buttons (only in discord)
     :param ctx: Context
@@ -2288,12 +2261,7 @@ async def search_command_def(ctx,
 
 # --------------------------------------- PLAYER --------------------------------------------------
 
-async def play_def(ctx,
-                   url=None,
-                   force=False,
-                   mute_response=False,
-                   after=False,
-                   ):
+async def play_def(ctx, url=None, force=False, mute_response=False, after=False) -> ReturnData:
     log(ctx, 'play_def', [url, force, mute_response, after], log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
     response = ReturnData(False, 'Unknown error')
@@ -2341,11 +2309,12 @@ async def play_def(ctx,
     if voice.is_playing():
         if not guild[guild_id].options.is_radio and not force:
             if url:
-                if response.video:
+                if response.video is not None:
                     message = f'{tg(guild_id, "**Already playing**, added to queue")}: [`{response.video.title}`](<{response.video.url}>) {notif}'
                     if not mute_response:
                         await ctx.reply(message)
                     return ReturnData(False, message)
+
                 message = f'{tg(guild_id, "**Already playing**, added to queue")} {notif}'
                 if not mute_response:
                     await ctx.reply(message)
@@ -2376,11 +2345,9 @@ async def play_def(ctx,
     if video.class_type not in ['Video', 'Probe', 'SoundCloud']:
         guild[guild_id].queue.pop(0)
         if video.class_type == 'Radio':
-            await radio_def(ctx, video.title)
-            return
+            return await radio_def(ctx, video.title)
         if video.class_type == 'Local':
-            await ps_def(ctx, video.local_number)
-            return
+            return await ps_def(ctx, video.local_number)
 
         message = tg(guild_id, "Unknown type")
         if not mute_response:
@@ -2435,19 +2402,16 @@ async def play_def(ctx,
         else:
             return ReturnData(True, message)
 
-
     except (discord.ext.commands.errors.CommandInvokeError, IndexError, TypeError, discord.errors.ClientException, discord.errors.NotFound):
         log(ctx, "------------------------------- play -------------------------")
         tb = traceback.format_exc()
         log(ctx, tb)
         log(ctx, "--------------------------------------------------------------")
-        await ctx.reply(f'{tg(guild_id, "An **error** occurred while trying to play the song")}'
-                        f' {bot.get_user(my_id).mention} ({sys.exc_info()[0]})')
+        message = f'{tg(guild_id, "An **error** occurred while trying to play the song")} {bot.get_user(my_id).mention} ({sys.exc_info()[0]})'
+        await ctx.reply(message)
+        return ReturnData(False, message)
 
-async def radio_def(ctx,
-                    favourite_radio: Literal['Rádio BLANÍK','Rádio BLANÍK CZ','Evropa 2','Fajn Radio','Hitrádio PopRock','Český rozhlas Pardubice','Radio Beat','Country Radio','Radio Kiss','Český rozhlas Vltava','Hitrádio Černá Hora'] = None,
-                    radio_code: int = None,
-                    ) -> ReturnData:
+async def radio_def(ctx, favourite_radio: Literal['Rádio BLANÍK','Rádio BLANÍK CZ','Evropa 2','Fajn Radio','Hitrádio PopRock','Český rozhlas Pardubice','Radio Beat','Country Radio','Radio Kiss','Český rozhlas Vltava','Hitrádio Černá Hora'] = None, radio_code: int = None) -> ReturnData:
     """
     Play radio
     :param ctx: Context
@@ -3082,10 +3046,7 @@ async def kys_def(ctx: commands.Context):
     await ctx.reply(tg(guild_id, "Committing seppuku..."))
     sys.exit(3)
 
-async def config_command_def(ctx: commands.Context,
-                             config_file: discord.Attachment,
-                             config_type:  Literal['guilds', 'other', 'radio', 'languages'] = 'guilds',
-                             ):
+async def config_command_def(ctx: commands.Context, config_file: discord.Attachment, config_type:  Literal['guilds', 'other', 'radio', 'languages'] = 'guilds'):
     log(ctx, 'config_command_def', [config_file, config_type], log_type='function', author=ctx.author)
 
     if config_file.filename != f'{config_type}.json':
@@ -3109,9 +3070,7 @@ async def config_command_def(ctx: commands.Context,
     else:
         await ctx.reply(f"Saved new `{config_type}.json`", ephemeral=True)
 
-async def log_command_def(ctx: commands.Context,
-                          log_type: Literal['log.txt', 'guilds.json', 'other.json', 'radio.json', 'languages.json', 'activity.log', 'data.txt'] = 'log.txt'
-                          ):
+async def log_command_def(ctx: commands.Context, log_type: Literal['log.txt', 'guilds.json', 'other.json', 'radio.json', 'languages.json', 'activity.log', 'data.txt'] = 'log.txt'):
     log(ctx, 'log_command_def', [log_type], log_type='function', author=ctx.author)
     save_json()
     if log_type == 'log.txt':
@@ -3138,17 +3097,17 @@ async def log_command_def(ctx: commands.Context,
 
 # noinspection PyTypeHints
 async def change_options_def(ctx: commands.Context,
-                            stopped: bool = None,
-                            loop: bool = None,
-                            is_radio: bool = None,
-                            buttons: bool = None,
-                            language: Literal[tuple(languages_dict.keys())] = None,
-                            response_type: Literal['short', 'long'] = None,
-                            buffer: int = None,
-                            history_length: int = None,
-                            volume = None,
-                            server = None,
-                            ):
+                             stopped: bool = None,
+                             loop: bool = None,
+                             is_radio: bool = None,
+                             buttons: bool = None,
+                             language: Literal[tuple(languages_dict.keys())] = None,
+                             response_type: Literal['short', 'long'] = None,
+                             buffer: int = None,
+                             history_length: int = None,
+                             volume = None,
+                             server = None,
+                             ):
     log(ctx, 'change_options_def', [stopped, loop, is_radio, buttons, language, response_type, buffer, history_length, volume, server], log_type='function', author=ctx.author)
     guild_id = ctx.guild.id
 
@@ -3196,9 +3155,9 @@ async def change_options_def(ctx: commands.Context,
             guild[guild_id].options.history_length = history_length
 
         config_text = f'`stopped={guild[guild_id].options.stopped}`, `loop={guild[guild_id].options.loop}`,' \
-                 f' `is_radio={guild[guild_id].options.is_radio}`, `buttons={guild[guild_id].options.buttons}`,' \
-                 f' `language={guild[guild_id].options.language}`, `response_type={guild[guild_id].options.response_type}`,' \
-                 f' `volume={guild[guild_id].options.volume}`, `buffer={guild[guild_id].options.buffer}`'
+                      f' `is_radio={guild[guild_id].options.is_radio}`, `buttons={guild[guild_id].options.buttons}`,' \
+                      f' `language={guild[guild_id].options.language}`, `response_type={guild[guild_id].options.response_type}`,' \
+                      f' `volume={guild[guild_id].options.volume}`, `buffer={guild[guild_id].options.buffer}`'
 
         save_json()
 
@@ -3265,20 +3224,20 @@ async def help_command(ctx: commands.Context,
                                                f"`Play now` - {tg(gi, 'play')}")
 
     embed.add_field(name="Admin Commands (only for bot owner)", value=f"`/zz_announce` - \n"
-                                                 f"`/zz_rape` - \n"
-                                                 f"`/zz_rape_play` - \n"
-                                                 f"`/zz_kys` - \n"
-                                                 f"`/zz_config` - \n"
-                                                 f"`/zz_log` - \n"
-                                                 f"`/zz_change_config` - \n"
+                                                                      f"`/zz_rape` - \n"
+                                                                      f"`/zz_rape_play` - \n"
+                                                                      f"`/zz_kys` - \n"
+                                                                      f"`/zz_config` - \n"
+                                                                      f"`/zz_log` - \n"
+                                                                      f"`/zz_change_config` - \n"
                     , inline=False)
 
     if command == 'help':
         embed = discord.Embed(title="Help", description=f"`/help` - {tg(gi, 'help')}")
         embed.add_field(name=f"{tg(gi, 'Arguments')}", value=f"`general` - {tg(gi, 'The commands from')} General\n"
-                                                f"`player` - {tg(gi, 'The commands from')} Player\n"
-                                                f"`queue` - {tg(gi, 'The commands from')} Queue\n"
-                                                f"`voice` - {tg(gi, 'The commands from')} Voice"
+                                                             f"`player` - {tg(gi, 'The commands from')} Player\n"
+                                                             f"`queue` - {tg(gi, 'The commands from')} Queue\n"
+                                                             f"`voice` - {tg(gi, 'The commands from')} Voice"
                         , inline=False)
 
     elif command == 'ping':
@@ -3966,7 +3925,7 @@ async def guild_page(guild_id, key):
     mutual_guild_ids.append(guild_object.id)
     session['mutual_guild_ids'] = mutual_guild_ids
 
-    return render_template('control/guild.html', guild=guild_object, struct_to_time=struct_to_time, convert_duration=convert_duration, get_username=get_username, errors=errors, messages=messages, user=user, admin=admin, volume=round(guild_object.options.volume * 100), radios=list(radio_dict.values()), scroll_position=scroll_position, languages_dict=languages_dict)
+    return render_template('control/guild.html', guild=guild_object, struct_to_time=struct_to_time, convert_duration=convert_duration, get_username=get_username, errors=errors, messages=messages, user=user, admin=admin, volume=round(guild_object.options.volume * 100), radios=list(radio_dict.values()), scroll_position=scroll_position, languages_dict=languages_dict, tg=tg, gi=int(guild_id))
 
 @app.route('/login')
 async def login_page():

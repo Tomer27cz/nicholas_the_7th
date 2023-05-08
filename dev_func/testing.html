@@ -1,769 +1,2623 @@
-<html lang="en" data-bs-theme="dark" class=" lhovzqtw idc0_346"><head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
-    <link rel="stylesheet" href="/static/css/style.css">
-    <link rel="icon" href="/static/favicon/favicon.png" sizes="any">
-    <title>Nicholas the 7th | Control Panel</title>
+<html lang="en" data-bs-theme="dark" class=" btxmcss idc0_347"><head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="icon" href="/static/favicon/favicon.png" sizes="any">
+  <title>Nicholas the 7th | Control Panel</title>
+</head>
+<body style="" class="">
+<nav class="navbar sticky-top navbar-expand-lg navbar-dark nav-discord" data-bs-theme="dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/">
+      <svg xmlns="http://www.w3.org/2000/svg" width="30px" height="30px" viewBox="0 0 314 337" style="margin-right:0.5rem">
+        <path fill-rule="evenodd" fill="rgb(255, 255, 255)" d="M-0.000,0.000 L59.000,0.000 L190.000,118.000 L190.000,0.000 L244.000,0.000 L244.000,257.000 L190.000,210.000 L190.000,168.000 L55.000,49.000 L55.000,337.000 L-0.000,337.000 L-0.000,0.000 ZM67.000,337.000 L124.000,337.000 L124.000,223.000 L253.000,337.000 L314.000,337.000 L314.000,0.000 L257.000,0.000 L257.000,286.000 L124.000,169.000 L124.000,128.000 L67.000,77.000 L67.000,337.000 Z"></path>
+      </svg>
+      Nicholas the 7th
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" href="/">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/guild">Servers</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/about">About</a>
+        </li>
 
-    <script>
-      if ( window.history.replaceState ) {
-          window.history.replaceState( null, null, window.location.href );
-      }
-      document.addEventListener("DOMContentLoaded", function(event) {
-            var scrollpos = localStorage.getItem('scrollpos');
-            if (scrollpos) window.scrollTo((0, scrollpos, 'auto'));
-        });
+      </ul>
+      <div class="nav-static-buttons">
+        <button onclick="window.location.reload();" class="btn btn-outline-primary">Refresh Data</button>
+      </div>
+      <div>
 
-        window.onbeforeunload = function(e) {
-            localStorage.setItem('scrollpos', window.scrollY);
-        };
-    </script>
-  </head>
-  <body>
-    <nav class="navbar sticky-top navbar-expand-lg navbar-dark nav-discord" data-bs-theme="dark">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="/">
-              <svg xmlns="http://www.w3.org/2000/svg" width="30px" height="30px" viewBox="0 0 314 337" style="margin-right:0.5rem">
-                <path fill-rule="evenodd" fill="rgb(255, 255, 255)" d="M-0.000,0.000 L59.000,0.000 L190.000,118.000 L190.000,0.000 L244.000,0.000 L244.000,257.000 L190.000,210.000 L190.000,168.000 L55.000,49.000 L55.000,337.000 L-0.000,337.000 L-0.000,0.000 ZM67.000,337.000 L124.000,337.000 L124.000,223.000 L253.000,337.000 L314.000,337.000 L314.000,0.000 L257.000,0.000 L257.000,286.000 L124.000,169.000 L124.000,128.000 L67.000,77.000 L67.000,337.000 Z"></path>
+        <a class="btn btn-primary" href="/login">Login</a>
+
+        <a class="btn btn-outline-danger btn-sm btn-m" href="/reset">Reset Session</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Guild -->
+<div>
+  <div class="div-align">
+    <div class="accordion" id="accordionFlushExample">
+      <div class="accordion-item">
+        <div class="accordion-header div-options">
+          <button class="btn btn-dark btn-options" data-bs-toggle="modal" data-bs-target="#optionsModal">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M14 7V9C14 9 12.5867 9 12.5733 9.00667C12.42 9.58667 12.1733 10.1267 11.84 10.6067L12.74 11.5067L11.4933 12.7533L10.5933 11.8533C10.1133 12.1867 9.57334 12.44 8.99334 12.5867V14H6.99334V12.58C6.41334 12.4333 5.87334 12.18 5.39334 11.8467L4.49333 12.7467L3.24667 11.5L4.14667 10.6C3.81333 10.1267 3.56 9.58 3.41333 9H2V7H3.41333C3.56 6.42 3.81333 5.88 4.14667 5.4L3.24667 4.5L4.5 3.24667L5.4 4.14667C5.87334 3.81333 6.42 3.56 7 3.41333V2H9V3.41333C9.58 3.56667 10.12 3.81333 10.6 4.14667L11.5067 3.25333L12.7533 4.5L11.8533 5.4C12.1867 5.87334 12.44 6.42 12.5867 7H14ZM8 10C9.10457 10 10 9.10457 10 8C10 6.89543 9.10457 6 8 6C6.89543 6 6 6.89543 6 8C6 9.10457 6.89543 10 8 10Z"></path>
               </svg>
-              Nicholas the 7th
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item">
-              <a class="nav-link" href="/">Home</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/guild">Servers</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/about">About</a>
-            </li>
-
-          </ul>
-          <div class="nav-static-buttons">
-            <button onclick="window.location.reload();" class="btn btn-outline-primary">Refresh Data</button>
+          </button>
+          <div class="d-grid gap-2">
+            <a class="btn btn-dark" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+              <h2>Tomer27cz's server</h2>
+            </a>
           </div>
-          <div>
+        </div>
+        <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+          <div class="q-container">
+            <div class="q-div">
 
-              <a class="user-color"></a>
+              None
 
-                <img src="https://cdn.discordapp.com/avatars//.png?size=32" class="rounded-circle">
-
-
-              <a class="btn btn-danger" href="/logout">Logout</a>
-              <a class="btn btn-outline-success btn-sm btn-m" href="/login">Update Session</a>
-
-            <a class="btn btn-outline-danger btn-sm btn-m" href="/reset">Reset Session</a>
+              <div class="q-item1 q-wa">
+                <p class="q-text q-1">Member Count</p>
+                <p class="q-text q-2">7</p>
+              </div>
+              <div class="q-item1 q-wa">
+                <p class="q-text q-1">ID</p>
+                <p class="q-text q-2">1008145667622969397</p>
+              </div>
+              <div class="q-item1 q-items-center">
+                <p class="q-text q-1">Server Owner</p>
+                <p class="q-text q-2"><a class="q-2" target="_blank" rel="noopener noreferrer" href="https://discordapp.com/users/349164237605568513">Tomer27cz</a></p>
+                <p class="q-text q-3">349164237605568513</p>
+              </div>
+              <div class="q-item1 q-wa">
+                <p class="q-text q-1">Created at</p>
+                <p class="q-text q-2">13/08/2022 22:50:57</p>
+              </div>
+              <div class="q-item1 q-wa">
+                <p class="q-text q-1">Description</p>
+                <p class="q-text q-2">None</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </nav>
-
-
-
-
-
-<form action="#" method="POST">
-<div class="div-align-center">
-  <h1 class="btn-m">Admin</h1>
+    </div>
+  </div>
 </div>
-<div class="div-login">
-    <div class="row row-cols-lg-auto g-3 div-align">
-      <div class="col-12 btn-m">
-          <h3>Files</h3>
+
+<!-- Now and Last Playing -->
+<div class="accordion" id="accordionPanelsStayOpenExample">
+  <div class="accordion-item">
+    <div class="accordion-header">
+      <div class="d-grid gap-2">
+        <a class="btn btn-dark accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="false" aria-controls="panelsStayOpen-collapseOne">
+          <h3>History</h3>
+        </a>
       </div>
-      <div class="col-12 btn-m">
-        <select class="form-select" aria-label="Default select example" name="download_file" id="download_file">
-          <option selected value="log.txt">log.txt</option>
-          <option value="guilds.json">guilds.json</option>
-          <option value="other.json">other.json</option>
-          <option value="radio.json">radio.json</option>
-          <option value="languages.json">languages.json</option>
-          <option value="activity.log">activity.log</option>
-          <option value="data.txt">data.txt</option>
-        </select>
-      </div>
-      <div class="col-12 btn-m">
-        <button type="submit" class="btn btn-primary" name="download_btn">Download</button>
-      </div>
-      <div class="col-12 btn-m">
-        <input type="file" class="form-control" id="upload_file" name="file">
-      </div>
-      <div class="col-12 btn-m">
-          <button type="submit" class="btn btn-primary" name="upload_btn">Upload</button>
+    </div>
+    <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse">
+      <div class="accordion-body">
+
+
+        <div class="q-div q-history">
+          <img loading="lazy" class="q-img" src="https://img.youtube.com/vi/Q9hX2kB5Y7M/default.jpg" alt="thumbnail">
+          <div class="q-item1 q-wd">
+            <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=Q9hX2kB5Y7M">Hymna Kanady a USA na hokeji 🇨🇦🇺🇸⛸🏒+text-lyrics-sloky-preklad</a></p>
+            <p class="q-text"><a class="q-2" target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/channel/UCKstCd3bK2xqdicxjql_XsQ">moravan</a></p>
+            <p class="q-text q-3">02:49</p>
+          </div>
+          <div class="q-item3 q-items-center">
+            <p class="q-text q-1">From/To</p>
+            <p class="q-text q-2">20:07:49 29/04/2023</p>
+            <p class="q-text q-2">20:07:53 29/04/2023</p>
+          </div>
+          <div class="q-item2 q-items-center">
+            <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://discordapp.com/users/349164237605568513">Tomer27cz</a></p>
+            <p class="q-text q-2">349164237605568513</p>
+            <p class="q-text q-3">20:04:49 29/04/2023</p>
+          </div>
+          <div class="q-item0 q-wa q-self-center q-items-center">
+            <form method="POST" action="" onsubmit="setScroll();">
+              <input type="hidden" name="scroll" value="0" id="scrollPos1">
+
+              <button type="button" class="btn btn-secondary btn-sm dropdown-toggle btn-m" data-bs-toggle="dropdown" aria-expanded="false">More</button>
+              <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                <li><button class="dropdown-item" type="submit" name="queue_btn" value="h0">Add to Queue</button></li>
+                <li><button class="dropdown-item" type="submit" name="nextup_btn" value="h0">Play next</button></li>
+                <li><button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#videoModal_h0">Info</button></li>
+              </ul>
+            </form>
+          </div>
+        </div>
+
+        <div class="q-div q-history">
+          <img loading="lazy" class="q-img" src="https://img.youtube.com/vi/GW6GSa14xXI/default.jpg" alt="thumbnail">
+          <div class="q-item1 q-wd">
+            <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=GW6GSa14xXI">Bosanska Artiljerija</a></p>
+            <p class="q-text"><a class="q-2" target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/channel/UCBPe1JjyYYWUSr0M10u39dQ">Kocayine</a></p>
+            <p class="q-text q-3">03:36</p>
+          </div>
+          <div class="q-item3 q-items-center">
+            <p class="q-text q-1">From/To</p>
+            <p class="q-text q-2">20:07:54 29/04/2023</p>
+            <p class="q-text q-2">20:10:10 29/04/2023</p>
+          </div>
+          <div class="q-item2 q-items-center">
+            <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://discordapp.com/users/349164237605568513">Tomer27cz</a></p>
+            <p class="q-text q-2">349164237605568513</p>
+            <p class="q-text q-3">20:07:23 29/04/2023</p>
+          </div>
+          <div class="q-item0 q-wa q-self-center q-items-center">
+            <form method="POST" action="" onsubmit="setScroll();">
+              <input type="hidden" name="scroll" value="0" id="scrollPos1">
+
+              <button type="button" class="btn btn-secondary btn-sm dropdown-toggle btn-m" data-bs-toggle="dropdown" aria-expanded="false">More</button>
+              <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                <li><button class="dropdown-item" type="submit" name="queue_btn" value="h1">Add to Queue</button></li>
+                <li><button class="dropdown-item" type="submit" name="nextup_btn" value="h1">Play next</button></li>
+                <li><button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#videoModal_h1">Info</button></li>
+              </ul>
+            </form>
+          </div>
+        </div>
+
+        <div class="q-div q-history">
+          <img loading="lazy" class="q-img" src="https://img.youtube.com/vi/GW6GSa14xXI/default.jpg" alt="thumbnail">
+          <div class="q-item1 q-wd">
+            <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=GW6GSa14xXI">Bosanska Artiljerija</a></p>
+            <p class="q-text"><a class="q-2" target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/channel/UCBPe1JjyYYWUSr0M10u39dQ">Kocayine</a></p>
+            <p class="q-text q-3">03:36</p>
+          </div>
+          <div class="q-item3 q-items-center">
+            <p class="q-text q-1">From/To</p>
+            <p class="q-text q-2">20:10:13 29/04/2023</p>
+            <p class="q-text q-2">20:10:57 29/04/2023</p>
+          </div>
+          <div class="q-item2 q-items-center">
+            <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://discordapp.com/users/349164237605568513">Tomer27cz</a></p>
+            <p class="q-text q-2">349164237605568513</p>
+            <p class="q-text q-3">20:10:09 29/04/2023</p>
+          </div>
+          <div class="q-item0 q-wa q-self-center q-items-center">
+            <form method="POST" action="" onsubmit="setScroll();">
+              <input type="hidden" name="scroll" value="0" id="scrollPos1">
+
+              <button type="button" class="btn btn-secondary btn-sm dropdown-toggle btn-m" data-bs-toggle="dropdown" aria-expanded="false">More</button>
+              <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                <li><button class="dropdown-item" type="submit" name="queue_btn" value="h2">Add to Queue</button></li>
+                <li><button class="dropdown-item" type="submit" name="nextup_btn" value="h2">Play next</button></li>
+                <li><button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#videoModal_h2">Info</button></li>
+              </ul>
+            </form>
+          </div>
+        </div>
+
+        <div class="q-div q-history">
+          <img loading="lazy" class="q-img" src="https://img.youtube.com/vi/GW6GSa14xXI/default.jpg" alt="thumbnail">
+          <div class="q-item1 q-wd">
+            <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=GW6GSa14xXI">Bosanska Artiljerija</a></p>
+            <p class="q-text"><a class="q-2" target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/channel/UCBPe1JjyYYWUSr0M10u39dQ">Kocayine</a></p>
+            <p class="q-text q-3">03:36</p>
+          </div>
+          <div class="q-item3 q-items-center">
+            <p class="q-text q-1">From/To</p>
+            <p class="q-text q-2">20:12:15 29/04/2023</p>
+            <p class="q-text q-2">20:12:57 29/04/2023</p>
+          </div>
+          <div class="q-item2 q-items-center">
+            <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://discordapp.com/users/349164237605568513">Tomer27cz</a></p>
+            <p class="q-text q-2">349164237605568513</p>
+            <p class="q-text q-3">20:12:13 29/04/2023</p>
+          </div>
+          <div class="q-item0 q-wa q-self-center q-items-center">
+            <form method="POST" action="" onsubmit="setScroll();">
+              <input type="hidden" name="scroll" value="0" id="scrollPos1">
+
+              <button type="button" class="btn btn-secondary btn-sm dropdown-toggle btn-m" data-bs-toggle="dropdown" aria-expanded="false">More</button>
+              <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                <li><button class="dropdown-item" type="submit" name="queue_btn" value="h3">Add to Queue</button></li>
+                <li><button class="dropdown-item" type="submit" name="nextup_btn" value="h3">Play next</button></li>
+                <li><button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#videoModal_h3">Info</button></li>
+              </ul>
+            </form>
+          </div>
+        </div>
+
+        <div class="q-div q-history">
+          <img loading="lazy" class="q-img" src="https://img.youtube.com/vi/M-mtdN6R3bQ/default.jpg" alt="thumbnail">
+          <div class="q-item1 q-wd">
+            <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=M-mtdN6R3bQ">Short Song (English Song)🎵 [W Lyrics] 30 seconds</a></p>
+            <p class="q-text"><a class="q-2" target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/channel/UC5728jgtLYM7O9HYPq8BYbQ">LEVIOS LS</a></p>
+            <p class="q-text q-3">00:30</p>
+          </div>
+          <div class="q-item3 q-items-center">
+            <p class="q-text q-1">From/To</p>
+            <p class="q-text q-2">20:13:17 29/04/2023</p>
+            <p class="q-text q-2">20:13:47 29/04/2023</p>
+          </div>
+          <div class="q-item2 q-items-center">
+            <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://discordapp.com/users/349164237605568513">Tomer27cz</a></p>
+            <p class="q-text q-2">349164237605568513</p>
+            <p class="q-text q-3">20:13:15 29/04/2023</p>
+          </div>
+          <div class="q-item0 q-wa q-self-center q-items-center">
+            <form method="POST" action="" onsubmit="setScroll();">
+              <input type="hidden" name="scroll" value="0" id="scrollPos1">
+
+              <button type="button" class="btn btn-secondary btn-sm dropdown-toggle btn-m" data-bs-toggle="dropdown" aria-expanded="false">More</button>
+              <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                <li><button class="dropdown-item" type="submit" name="queue_btn" value="h4">Add to Queue</button></li>
+                <li><button class="dropdown-item" type="submit" name="nextup_btn" value="h4">Play next</button></li>
+                <li><button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#videoModal_h4">Info</button></li>
+              </ul>
+            </form>
+          </div>
+        </div>
+
+        <div class="q-div q-history">
+          <img loading="lazy" class="q-img" src="https://i1.sndcdn.com/artworks-WuEyxxKyhuLQcObS-a8bcxQ-large.jpg" alt="thumbnail">
+          <div class="q-item1 q-wd">
+            <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://soundcloud.com/mitchdbofficial/one-kiss-x-turn-up-the-speakers-mitch-db-switch">One Kiss X Turn Up The Speakers (MITCH DB SWITCH)</a></p>
+            <p class="q-text"><a class="q-2" target="_blank" rel="noopener noreferrer" href="https://soundcloud.com/mitchdbofficial">MITCH DB</a></p>
+            <p class="q-text q-3">02:09</p>
+          </div>
+          <div class="q-item3 q-items-center">
+            <p class="q-text q-1">From/To</p>
+            <p class="q-text q-2">13:16:46 06/05/2023</p>
+            <p class="q-text q-2">13:18:55 06/05/2023</p>
+          </div>
+          <div class="q-item2 q-items-center">
+            <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://discordapp.com/users/349164237605568513">Tomer27cz</a></p>
+            <p class="q-text q-2">349164237605568513</p>
+            <p class="q-text q-3">13:16:45 06/05/2023</p>
+          </div>
+          <div class="q-item0 q-wa q-self-center q-items-center">
+            <form method="POST" action="" onsubmit="setScroll();">
+              <input type="hidden" name="scroll" value="0" id="scrollPos1">
+
+              <button type="button" class="btn btn-secondary btn-sm dropdown-toggle btn-m" data-bs-toggle="dropdown" aria-expanded="false">More</button>
+              <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                <li><button class="dropdown-item" type="submit" name="queue_btn" value="h5">Add to Queue</button></li>
+                <li><button class="dropdown-item" type="submit" name="nextup_btn" value="h5">Play next</button></li>
+                <li><button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#videoModal_h5">Info</button></li>
+              </ul>
+            </form>
+          </div>
+        </div>
+
+        <div class="q-div q-history">
+          <img loading="lazy" class="q-img" src="https://i1.sndcdn.com/artworks-WuEyxxKyhuLQcObS-a8bcxQ-large.jpg" alt="thumbnail">
+          <div class="q-item1 q-wd">
+            <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://soundcloud.com/mitchdbofficial/one-kiss-x-turn-up-the-speakers-mitch-db-switch">One Kiss X Turn Up The Speakers (MITCH DB SWITCH)</a></p>
+            <p class="q-text"><a class="q-2" target="_blank" rel="noopener noreferrer" href="https://soundcloud.com/mitchdbofficial">MITCH DB</a></p>
+            <p class="q-text q-3">02:09</p>
+          </div>
+          <div class="q-item3 q-items-center">
+            <p class="q-text q-1">From/To</p>
+            <p class="q-text q-2">15:19:49 06/05/2023</p>
+            <p class="q-text q-2">15:21:03 06/05/2023</p>
+          </div>
+          <div class="q-item2 q-items-center">
+            <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://discordapp.com/users/349164237605568513">Tomer27cz</a></p>
+            <p class="q-text q-2">349164237605568513</p>
+            <p class="q-text q-3">15:19:43 06/05/2023</p>
+          </div>
+          <div class="q-item0 q-wa q-self-center q-items-center">
+            <form method="POST" action="" onsubmit="setScroll();">
+              <input type="hidden" name="scroll" value="0" id="scrollPos1">
+
+              <button type="button" class="btn btn-secondary btn-sm dropdown-toggle btn-m" data-bs-toggle="dropdown" aria-expanded="false">More</button>
+              <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                <li><button class="dropdown-item" type="submit" name="queue_btn" value="h6">Add to Queue</button></li>
+                <li><button class="dropdown-item" type="submit" name="nextup_btn" value="h6">Play next</button></li>
+                <li><button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#videoModal_h6">Info</button></li>
+              </ul>
+            </form>
+          </div>
+        </div>
+
+        <div class="q-div q-history">
+          <img loading="lazy" class="q-img" src="https://img.youtube.com/vi/yRGgl9KT9rE/default.jpg" alt="thumbnail">
+          <div class="q-item1 q-wd">
+            <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=yRGgl9KT9rE">Bosnian Folk Song - Bosanska Artiljerija</a></p>
+            <p class="q-text"><a class="q-2" target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/channel/UCZ5eiQ-W8K4w1pcQOPvRBDA">Folk Songs International</a></p>
+            <p class="q-text q-3">03:36</p>
+          </div>
+          <div class="q-item3 q-items-center">
+            <p class="q-text q-1">From/To</p>
+            <p class="q-text q-2">16:15:38 06/05/2023</p>
+            <p class="q-text q-2">16:16:33 06/05/2023</p>
+          </div>
+          <div class="q-item2 q-items-center">
+            <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://discordapp.com/users/349164237605568513">Tomer27cz</a></p>
+            <p class="q-text q-2">349164237605568513</p>
+            <p class="q-text q-3">16:15:36 06/05/2023</p>
+          </div>
+          <div class="q-item0 q-wa q-self-center q-items-center">
+            <form method="POST" action="" onsubmit="setScroll();">
+              <input type="hidden" name="scroll" value="0" id="scrollPos1">
+
+              <button type="button" class="btn btn-secondary btn-sm dropdown-toggle btn-m" data-bs-toggle="dropdown" aria-expanded="false">More</button>
+              <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                <li><button class="dropdown-item" type="submit" name="queue_btn" value="h7">Add to Queue</button></li>
+                <li><button class="dropdown-item" type="submit" name="nextup_btn" value="h7">Play next</button></li>
+                <li><button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#videoModal_h7">Info</button></li>
+              </ul>
+            </form>
+          </div>
+        </div>
+
+        <div class="q-div q-history">
+          <img loading="lazy" class="q-img" src="https://img.youtube.com/vi/atuFSv2bLa8/default.jpg" alt="thumbnail">
+          <div class="q-item1 q-wd">
+            <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=atuFSv2bLa8">Manuel - Gas Gas Gas</a></p>
+            <p class="q-text"><a class="q-2" target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/channel/UCNj850nm1A2ovokvNLFQZ3g">musoforlyf</a></p>
+            <p class="q-text q-3">04:32</p>
+          </div>
+          <div class="q-item3 q-items-center">
+            <p class="q-text q-1">From/To</p>
+            <p class="q-text q-2">16:16:34 06/05/2023</p>
+            <p class="q-text q-2">16:17:00 06/05/2023</p>
+          </div>
+          <div class="q-item2 q-items-center">
+            <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://discordapp.com/users/349164237605568513">Tomer27cz</a></p>
+            <p class="q-text q-2">349164237605568513</p>
+            <p class="q-text q-3">16:16:16 06/05/2023</p>
+          </div>
+          <div class="q-item0 q-wa q-self-center q-items-center">
+            <form method="POST" action="" onsubmit="setScroll();">
+              <input type="hidden" name="scroll" value="0" id="scrollPos1">
+
+              <button type="button" class="btn btn-secondary btn-sm dropdown-toggle btn-m" data-bs-toggle="dropdown" aria-expanded="false">More</button>
+              <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                <li><button class="dropdown-item" type="submit" name="queue_btn" value="h8">Add to Queue</button></li>
+                <li><button class="dropdown-item" type="submit" name="nextup_btn" value="h8">Play next</button></li>
+                <li><button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#videoModal_h8">Info</button></li>
+              </ul>
+            </form>
+          </div>
+        </div>
+
+        <div class="q-div q-history">
+          <img loading="lazy" class="q-img" src="https://img.youtube.com/vi/Nb9L0axJcEA/default.jpg" alt="thumbnail">
+          <div class="q-item1 q-wd">
+            <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=Nb9L0axJcEA">California Dreamin'</a></p>
+            <p class="q-text"><a class="q-2" target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/channel/UCI2xejvA4re8mgVMjm5_CBA">ServietteRussian</a></p>
+            <p class="q-text q-3">02:39</p>
+          </div>
+          <div class="q-item3 q-items-center">
+            <p class="q-text q-1">From/To</p>
+            <p class="q-text q-2">16:17:02 06/05/2023</p>
+            <p class="q-text q-2">16:19:41 06/05/2023</p>
+          </div>
+          <div class="q-item2 q-items-center">
+            <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://discordapp.com/users/349164237605568513">Tomer27cz</a></p>
+            <p class="q-text q-2">349164237605568513</p>
+            <p class="q-text q-3">16:16:28 06/05/2023</p>
+          </div>
+          <div class="q-item0 q-wa q-self-center q-items-center">
+            <form method="POST" action="" onsubmit="setScroll();">
+              <input type="hidden" name="scroll" value="0" id="scrollPos1">
+
+              <button type="button" class="btn btn-secondary btn-sm dropdown-toggle btn-m" data-bs-toggle="dropdown" aria-expanded="false">More</button>
+              <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                <li><button class="dropdown-item" type="submit" name="queue_btn" value="h9">Add to Queue</button></li>
+                <li><button class="dropdown-item" type="submit" name="nextup_btn" value="h9">Play next</button></li>
+                <li><button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#videoModal_h9">Info</button></li>
+              </ul>
+            </form>
+          </div>
+        </div>
+
+
       </div>
     </div>
   </div>
-  <div class="div-login">
-    <div class="row row-cols-lg-auto g-3">
-      <div class="col-12">
-        <h3>Options</h3>
+  <div class="accordion-item">
+    <div class="accordion-header">
+      <div class="d-grid gap-2">
+        <a class="btn btn-dark accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="true" aria-controls="panelsStayOpen-collapseTwo">
+          <h3>Now Playing</h3>
+        </a>
+      </div>
+    </div>
+    <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse show">
+      <div class="accordion-body">
+
+        <div class="div-align">
+          <p>Nothing is playing right now</p>
+        </div>
+
       </div>
     </div>
   </div>
-  <div class="picker">
-      <h3>Select a server to Edit</h3>
-      <br>
-      <section class="d-cards">
+</div>
 
-        <div class="d-card">
-          <a data-bs-toggle="modal" data-bs-target="#guildEditModal_1008145667622969397">
-
-              <img loading="lazy" src="/static/img/discord_icon.svg" class="green-border">
-
-          </a>
-          <br>
-          Tomer27cz's server
-        </div>
-
-        <div class="d-card">
-          <a data-bs-toggle="modal" data-bs-target="#guildEditModal_892403162315644928">
-
-              <img loading="lazy" src="https://cdn.discordapp.com/icons/892403162315644928/ddf21b11faf19f03dafe5d0289996fa1.png?size=1024" class="green-border">
-
-          </a>
-          <br>
-          pog
-        </div>
-
-        <div class="d-card">
-          <a data-bs-toggle="modal" data-bs-target="#guildEditModal_892404682285256735">
-
-              <img loading="lazy" src="https://cdn.discordapp.com/icons/892404682285256735/ca21e41d0ff13e3cc8798ed3367495ff.png?size=1024" class="green-border">
-
-          </a>
-          <br>
-          Jebáci pri práci
-        </div>
-
-        <div class="d-card">
-          <a data-bs-toggle="modal" data-bs-target="#guildEditModal_1092207263843880983">
-
-              <img loading="lazy" src="https://cdn.discordapp.com/icons/1092207263843880983/41cd8aab063f81fa57ad014bd1d40c58.png?size=1024" class="green-border">
-
-          </a>
-          <br>
-          блять
-        </div>
-
-        <div class="d-card">
-          <a data-bs-toggle="modal" data-bs-target="#guildEditModal_1092205538202353764">
-
-              <img loading="lazy" src="https://cdn.discordapp.com/icons/1092205538202353764/83215429f288253f5788a6258698a281.png?size=1024" class="green-border">
-
-          </a>
-          <br>
-          The Next Level
-        </div>
-
-        <div class="d-card">
-          <a data-bs-toggle="modal" data-bs-target="#guildEditModal_1092212185553449023">
-
-              <img loading="lazy" src="https://cdn.discordapp.com/icons/1092212185553449023/89f6eb38b02fbfd77f2715f77a0aa0ae.png?size=1024" class="green-border">
-
-          </a>
-          <br>
-          F1 connoisseurs
-        </div>
-
-        <div class="d-card">
-          <a data-bs-toggle="modal" data-bs-target="#guildEditModal_837695985625858048">
-
-              <img loading="lazy" src="/static/img/discord_icon.svg" class="green-border">
-
-          </a>
-          <br>
-          None
-        </div>
-
-      </section>
-        <br>
+<!-- Control -->
+<form action="" method="POST" onsubmit="setScroll();">
+  <input type="hidden" name="scroll" value="0" id="scrollPos3">
+  <div class="q-div div-con">
+    <div class="q-item1">
+      <div class="e-div">
+        <button class="btn btn-dark e-item1" type="button" data-bs-toggle="modal" data-bs-target="#joinModal">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#198754" viewBox="0 0 16 16">
+            <path d="M14 2H16V3H14V5H13V3H11V2H13V0H14V2Z"></path>
+            <path d="M6.5 8.00667C7.88 8.00667 9 6.88667 9 5.50667C9 4.12667 7.88 3.00667 6.5 3.00667C5.12 3.00667 4 4.12667 4 5.50667C4 6.88667 5.12 8.00667 6.5 8.00667Z"></path>
+            <path d="M6.5 8.34C3.26 8.34 1 9.98666 1 12.34V13.0067H12V12.34C12 9.98 9.74 8.34 6.5 8.34Z"></path>
+          </svg>
+        </button>
+        <button class="btn btn-dark e-item1" type="submit" name="disconnect_btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#dc3545" viewBox="0 0 24 24">
+            <path d="M21.1169 1.11603L22.8839 2.88403L19.7679 6.00003L22.8839 9.11603L21.1169 10.884L17.9999 7.76803L14.8839 10.884L13.1169 9.11603L16.2329 6.00003L13.1169 2.88403L14.8839 1.11603L17.9999 4.23203L21.1169 1.11603ZM18 22H13C6.925 22 2 17.075 2 11V6C2 5.447 2.448 5 3 5H7C7.553 5 8 5.447 8 6V10C8 10.553 7.553 11 7 11H6C6.063 14.938 9 18 13 18V17C13 16.447 13.447 16 14 16H18C18.553 16 19 16.447 19 17V21C19 21.553 18.553 22 18 22Z"></path>
+          </svg>
+        </button>
+      </div>
     </div>
+    <div class="q-item1">
+      <div class="e-div">
+        <button class="btn btn-dark e-item1" type="submit" name="play_btn" >
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#0d6efd" viewBox="0 0 384 512">
+            <path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"></path>
+          </svg>
+        </button>
+        <button class="btn btn-dark e-item1" type="submit" name="skip_btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 512 512">
+            <path d="M52.5 440.6c-9.5 7.9-22.8 9.7-34.1 4.4S0 428.4 0 416V96C0 83.6 7.2 72.3 18.4 67s24.5-3.6 34.1 4.4L224 214.3V256v41.7L52.5 440.6zM256 352V256 128 96c0-12.4 7.2-23.7 18.4-29s24.5-3.6 34.1 4.4l192 160c7.3 6.1 11.5 15.1 11.5 24.6s-4.2 18.5-11.5 24.6l-192 160c-9.5 7.9-22.8 9.7-34.1 4.4s-18.4-16.6-18.4-29V352z"></path>
+          </svg>
+        </button>
+        <button class="btn btn-dark e-item1" type="submit" name="pause_btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 320 512">
+            <path d="M48 64C21.5 64 0 85.5 0 112V400c0 26.5 21.5 48 48 48H80c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48H48zm192 0c-26.5 0-48 21.5-48 48V400c0 26.5 21.5 48 48 48h32c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48H240z"></path>
+          </svg>
+        </button>
+        <button class="btn btn-dark e-item1" type="submit" name="stop_btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#dc3545" viewBox="0 0 384 512">
+            <path d="M0 128C0 92.7 28.7 64 64 64H320c35.3 0 64 28.7 64 64V384c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V128z"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div class="q-item1">
+      <div class="d-flex">
+        <div class="btn-m">
+          <input type="number" class="form-c form-control btn-m flex-fill" name="volumeInput" min="0" max="200" value="100" oninput="this.form.volumeRange.value=this.value">
+        </div>
+        <input type="range" class="form-r form-range btn-m" name="volumeRange" min="0" max="200" value="100" oninput="this.form.volumeInput.value=this.value">
+        <button class="btn btn-outline btn-primary btn-sm btn-m flex-fill" type="submit" name="volume_btn">Set</button>
+      </div>
+    </div>
+  </div>
 </form>
 
 
-<div class="modal fade" id="guildEditModal_1008145667622969397" data-bs-keyboard="false" tabindex="-1" aria-labelledby="guildEditLabel_1008145667622969397" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h1 class="modal-title fs-5" id="guildEditLabel_1008145667622969397">Guild Edit: Tomer27cz's server</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="info-modal">
-            <br>
-            <form method="POST">
-
-                <div class="e-div">
-                    <label for="1008145667622969397_id" class="e-label">id</label>
-                    <input type="text" id="1008145667622969397_id" name="id" value="1008145667622969397" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="1008145667622969397_stopped" class="e-label">stopped</label>
-                    <input type="text" id="1008145667622969397_stopped" name="stopped" value="False" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="1008145667622969397_loop" class="e-label">loop</label>
-                    <input type="text" id="1008145667622969397_loop" name="loop" value="False" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="1008145667622969397_is_radio" class="e-label">is_radio</label>
-                    <input type="text" id="1008145667622969397_is_radio" name="is_radio" value="False" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="1008145667622969397_language" class="e-label">language</label>
-                    <input type="text" id="1008145667622969397_language" name="language" value="cs" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="1008145667622969397_response_type" class="e-label">response_type</label>
-                    <input type="text" id="1008145667622969397_response_type" name="response_type" value="short" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="1008145667622969397_search_query" class="e-label">search_query</label>
-                    <input type="text" id="1008145667622969397_search_query" name="search_query" value="Never gonna give you up" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="1008145667622969397_buttons" class="e-label">buttons</label>
-                    <input type="text" id="1008145667622969397_buttons" name="buttons" value="False" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="1008145667622969397_volume" class="e-label">volume</label>
-                    <input type="text" id="1008145667622969397_volume" name="volume" value="1.0" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="1008145667622969397_buffer" class="e-label">buffer</label>
-                    <input type="text" id="1008145667622969397_buffer" name="buffer" value="600" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="1008145667622969397_history_length" class="e-label">history_length</label>
-                    <input type="text" id="1008145667622969397_history_length" name="history_length" value="10" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <button class="btn e-item1 btn-secondary btn-lg btn-m" type="button" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
-                    <button class="btn e-item1 btn-primary btn-lg btn-m" type="submit" name="edit_btn">Submit</button>
-                </div>
-            </form>
-        </div>
-    </div>
+<!-- Queue -->
+<div class="q-top">
+  <div class="q-item1">
+    <h3>Queue</h3>
   </div>
+  <a class="q-top-add btn btn-dark" data-bs-toggle="modal" data-bs-target="#addToModal" title="Add to Queue">
+    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+      <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"></path>
+    </svg>
+  </a>
+  <a class="btn btn-dark" type="submit" name="loop_btn" title="Loop">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#198754" class="bi bi-arrow-repeat" viewBox="0 0 16 16">
+      <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"></path>
+      <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"></path>
+    </svg>
+  </a>
+  <a class="btn btn-dark" type="submit" name="shuffle_btn" title="Shuffle">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-shuffle" viewBox="0 0 16 16">
+      <path fill-rule="evenodd" d="M0 3.5A.5.5 0 0 1 .5 3H1c2.202 0 3.827 1.24 4.874 2.418.49.552.865 1.102 1.126 1.532.26-.43.636-.98 1.126-1.532C9.173 4.24 10.798 3 13 3v1c-1.798 0-3.173 1.01-4.126 2.082A9.624 9.624 0 0 0 7.556 8a9.624 9.624 0 0 0 1.317 1.918C9.828 10.99 11.204 12 13 12v1c-2.202 0-3.827-1.24-4.874-2.418A10.595 10.595 0 0 1 7 9.05c-.26.43-.636.98-1.126 1.532C4.827 11.76 3.202 13 1 13H.5a.5.5 0 0 1 0-1H1c1.798 0 3.173-1.01 4.126-2.082A9.624 9.624 0 0 0 6.444 8a9.624 9.624 0 0 0-1.317-1.918C4.172 5.01 2.796 4 1 4H.5a.5.5 0 0 1-.5-.5z"></path>
+      <path d="M13 5.466V1.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384l-2.36 1.966a.25.25 0 0 1-.41-.192zm0 9v-3.932a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384l-2.36 1.966a.25.25 0 0 1-.41-.192z"></path>
+    </svg>
+  </a>
+  <a class="btn btn-dark" type="submit" name="clear_btn" title="Clear">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+      <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"></path>
+      <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"></path>
+    </svg>
+  </a>
 </div>
-
-<div class="modal fade" id="guildEditModal_892403162315644928" data-bs-keyboard="false" tabindex="-1" aria-labelledby="guildEditLabel_892403162315644928" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h1 class="modal-title fs-5" id="guildEditLabel_892403162315644928">Guild Edit: pog</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<div class="q-main">
+  <form method="POST" action="" onsubmit="setScroll();">
+    <input type="hidden" name="scroll" value="0" id="scrollPos4">
+    <div class="q-container">
+      <div class="q-div">
+        <img loading="lazy" class="q-img" src="https://i1.sndcdn.com/artworks-WuEyxxKyhuLQcObS-a8bcxQ-large.jpg" alt="thumbnail">
+        <div class="q-item1 q-wd">
+          <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://soundcloud.com/mitchdbofficial/one-kiss-x-turn-up-the-speakers-mitch-db-switch">One Kiss X Turn Up The Speakers (MITCH DB SWITCH)</a></p>
+          <p class="q-text"><a class="q-2" target="_blank" rel="noopener noreferrer" href="https://soundcloud.com/mitchdbofficial">MITCH DB</a></p>
+          <p class="q-text q-3">02:09</p>
         </div>
-        <div class="info-modal">
-            <br>
-            <form method="POST">
-
-                <div class="e-div">
-                    <label for="892403162315644928_id" class="e-label">id</label>
-                    <input type="text" id="892403162315644928_id" name="id" value="892403162315644928" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="892403162315644928_stopped" class="e-label">stopped</label>
-                    <input type="text" id="892403162315644928_stopped" name="stopped" value="False" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="892403162315644928_loop" class="e-label">loop</label>
-                    <input type="text" id="892403162315644928_loop" name="loop" value="False" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="892403162315644928_is_radio" class="e-label">is_radio</label>
-                    <input type="text" id="892403162315644928_is_radio" name="is_radio" value="False" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="892403162315644928_language" class="e-label">language</label>
-                    <input type="text" id="892403162315644928_language" name="language" value="cs" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="892403162315644928_response_type" class="e-label">response_type</label>
-                    <input type="text" id="892403162315644928_response_type" name="response_type" value="short" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="892403162315644928_search_query" class="e-label">search_query</label>
-                    <input type="text" id="892403162315644928_search_query" name="search_query" value="Never gonna give you up" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="892403162315644928_buttons" class="e-label">buttons</label>
-                    <input type="text" id="892403162315644928_buttons" name="buttons" value="False" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="892403162315644928_volume" class="e-label">volume</label>
-                    <input type="text" id="892403162315644928_volume" name="volume" value="1.0" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="892403162315644928_buffer" class="e-label">buffer</label>
-                    <input type="text" id="892403162315644928_buffer" name="buffer" value="600" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="892403162315644928_history_length" class="e-label">history_length</label>
-                    <input type="text" id="892403162315644928_history_length" name="history_length" value="10" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <button class="btn e-item1 btn-secondary btn-lg btn-m" type="button" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
-                    <button class="btn e-item1 btn-primary btn-lg btn-m" type="submit" name="edit_btn">Submit</button>
-                </div>
-            </form>
+        <div class="q-item2 q-items-center">
+          <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://discordapp.com/users/WEB Guest">WEB Guest</a></p>
+          <p class="q-text q-2">WEB Guest</p>
+          <p class="q-text q-3">19:19:07 06/05/2023</p>
         </div>
-    </div>
-  </div>
-</div>
-
-<div class="modal fade" id="guildEditModal_892404682285256735" data-bs-keyboard="false" tabindex="-1" aria-labelledby="guildEditLabel_892404682285256735" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h1 class="modal-title fs-5" id="guildEditLabel_892404682285256735">Guild Edit: Jebáci pri práci</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="info-modal">
-            <br>
-            <form method="POST">
-
-                <div class="e-div">
-                    <label for="892404682285256735_id" class="e-label">id</label>
-                    <input type="text" id="892404682285256735_id" name="id" value="892404682285256735" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="892404682285256735_stopped" class="e-label">stopped</label>
-                    <input type="text" id="892404682285256735_stopped" name="stopped" value="False" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="892404682285256735_loop" class="e-label">loop</label>
-                    <input type="text" id="892404682285256735_loop" name="loop" value="False" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="892404682285256735_is_radio" class="e-label">is_radio</label>
-                    <input type="text" id="892404682285256735_is_radio" name="is_radio" value="False" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="892404682285256735_language" class="e-label">language</label>
-                    <input type="text" id="892404682285256735_language" name="language" value="cs" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="892404682285256735_response_type" class="e-label">response_type</label>
-                    <input type="text" id="892404682285256735_response_type" name="response_type" value="short" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="892404682285256735_search_query" class="e-label">search_query</label>
-                    <input type="text" id="892404682285256735_search_query" name="search_query" value="Never gonna give you up" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="892404682285256735_buttons" class="e-label">buttons</label>
-                    <input type="text" id="892404682285256735_buttons" name="buttons" value="False" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="892404682285256735_volume" class="e-label">volume</label>
-                    <input type="text" id="892404682285256735_volume" name="volume" value="1.0" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="892404682285256735_buffer" class="e-label">buffer</label>
-                    <input type="text" id="892404682285256735_buffer" name="buffer" value="600" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="892404682285256735_history_length" class="e-label">history_length</label>
-                    <input type="text" id="892404682285256735_history_length" name="history_length" value="10" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <button class="btn e-item1 btn-secondary btn-lg btn-m" type="button" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
-                    <button class="btn e-item1 btn-primary btn-lg btn-m" type="submit" name="edit_btn">Submit</button>
-                </div>
-            </form>
-        </div>
-    </div>
-  </div>
-</div>
-
-<div class="modal fade" id="guildEditModal_1092207263843880983" data-bs-keyboard="false" tabindex="-1" aria-labelledby="guildEditLabel_1092207263843880983" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h1 class="modal-title fs-5" id="guildEditLabel_1092207263843880983">Guild Edit: блять</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="info-modal">
-            <br>
-            <form method="POST">
-
-                <div class="e-div">
-                    <label for="1092207263843880983_id" class="e-label">id</label>
-                    <input type="text" id="1092207263843880983_id" name="id" value="1092207263843880983" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="1092207263843880983_stopped" class="e-label">stopped</label>
-                    <input type="text" id="1092207263843880983_stopped" name="stopped" value="False" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="1092207263843880983_loop" class="e-label">loop</label>
-                    <input type="text" id="1092207263843880983_loop" name="loop" value="False" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="1092207263843880983_is_radio" class="e-label">is_radio</label>
-                    <input type="text" id="1092207263843880983_is_radio" name="is_radio" value="False" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="1092207263843880983_language" class="e-label">language</label>
-                    <input type="text" id="1092207263843880983_language" name="language" value="cs" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="1092207263843880983_response_type" class="e-label">response_type</label>
-                    <input type="text" id="1092207263843880983_response_type" name="response_type" value="short" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="1092207263843880983_search_query" class="e-label">search_query</label>
-                    <input type="text" id="1092207263843880983_search_query" name="search_query" value="Never gonna give you up" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="1092207263843880983_buttons" class="e-label">buttons</label>
-                    <input type="text" id="1092207263843880983_buttons" name="buttons" value="False" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="1092207263843880983_volume" class="e-label">volume</label>
-                    <input type="text" id="1092207263843880983_volume" name="volume" value="1.0" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="1092207263843880983_buffer" class="e-label">buffer</label>
-                    <input type="text" id="1092207263843880983_buffer" name="buffer" value="600" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="1092207263843880983_history_length" class="e-label">history_length</label>
-                    <input type="text" id="1092207263843880983_history_length" name="history_length" value="10" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <button class="btn e-item1 btn-secondary btn-lg btn-m" type="button" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
-                    <button class="btn e-item1 btn-primary btn-lg btn-m" type="submit" name="edit_btn">Submit</button>
-                </div>
-            </form>
-        </div>
-    </div>
-  </div>
-</div>
-
-<div class="modal fade" id="guildEditModal_1092205538202353764" data-bs-keyboard="false" tabindex="-1" aria-labelledby="guildEditLabel_1092205538202353764" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h1 class="modal-title fs-5" id="guildEditLabel_1092205538202353764">Guild Edit: The Next Level</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="info-modal">
-            <br>
-            <form method="POST">
-
-                <div class="e-div">
-                    <label for="1092205538202353764_id" class="e-label">id</label>
-                    <input type="text" id="1092205538202353764_id" name="id" value="1092205538202353764" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="1092205538202353764_stopped" class="e-label">stopped</label>
-                    <input type="text" id="1092205538202353764_stopped" name="stopped" value="False" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="1092205538202353764_loop" class="e-label">loop</label>
-                    <input type="text" id="1092205538202353764_loop" name="loop" value="False" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="1092205538202353764_is_radio" class="e-label">is_radio</label>
-                    <input type="text" id="1092205538202353764_is_radio" name="is_radio" value="False" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="1092205538202353764_language" class="e-label">language</label>
-                    <input type="text" id="1092205538202353764_language" name="language" value="cs" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="1092205538202353764_response_type" class="e-label">response_type</label>
-                    <input type="text" id="1092205538202353764_response_type" name="response_type" value="short" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="1092205538202353764_search_query" class="e-label">search_query</label>
-                    <input type="text" id="1092205538202353764_search_query" name="search_query" value="Never gonna give you up" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="1092205538202353764_buttons" class="e-label">buttons</label>
-                    <input type="text" id="1092205538202353764_buttons" name="buttons" value="False" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="1092205538202353764_volume" class="e-label">volume</label>
-                    <input type="text" id="1092205538202353764_volume" name="volume" value="1.0" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="1092205538202353764_buffer" class="e-label">buffer</label>
-                    <input type="text" id="1092205538202353764_buffer" name="buffer" value="600" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="1092205538202353764_history_length" class="e-label">history_length</label>
-                    <input type="text" id="1092205538202353764_history_length" name="history_length" value="10" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <button class="btn e-item1 btn-secondary btn-lg btn-m" type="button" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
-                    <button class="btn e-item1 btn-primary btn-lg btn-m" type="submit" name="edit_btn">Submit</button>
-                </div>
-            </form>
-        </div>
-    </div>
-  </div>
-</div>
-
-<div class="modal fade" id="guildEditModal_1092212185553449023" data-bs-keyboard="false" tabindex="-1" aria-labelledby="guildEditLabel_1092212185553449023" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h1 class="modal-title fs-5" id="guildEditLabel_1092212185553449023">Guild Edit: F1 connoisseurs</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="info-modal">
-            <br>
-            <form method="POST">
-
-                <div class="e-div">
-                    <label for="1092212185553449023_id" class="e-label">id</label>
-                    <input type="text" id="1092212185553449023_id" name="id" value="1092212185553449023" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="1092212185553449023_stopped" class="e-label">stopped</label>
-                    <input type="text" id="1092212185553449023_stopped" name="stopped" value="False" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="1092212185553449023_loop" class="e-label">loop</label>
-                    <input type="text" id="1092212185553449023_loop" name="loop" value="False" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="1092212185553449023_is_radio" class="e-label">is_radio</label>
-                    <input type="text" id="1092212185553449023_is_radio" name="is_radio" value="False" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="1092212185553449023_language" class="e-label">language</label>
-                    <input type="text" id="1092212185553449023_language" name="language" value="cs" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="1092212185553449023_response_type" class="e-label">response_type</label>
-                    <input type="text" id="1092212185553449023_response_type" name="response_type" value="short" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="1092212185553449023_search_query" class="e-label">search_query</label>
-                    <input type="text" id="1092212185553449023_search_query" name="search_query" value="Never gonna give you up" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="1092212185553449023_buttons" class="e-label">buttons</label>
-                    <input type="text" id="1092212185553449023_buttons" name="buttons" value="False" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="1092212185553449023_volume" class="e-label">volume</label>
-                    <input type="text" id="1092212185553449023_volume" name="volume" value="1.0" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="1092212185553449023_buffer" class="e-label">buffer</label>
-                    <input type="text" id="1092212185553449023_buffer" name="buffer" value="600" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="1092212185553449023_history_length" class="e-label">history_length</label>
-                    <input type="text" id="1092212185553449023_history_length" name="history_length" value="10" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <button class="btn e-item1 btn-secondary btn-lg btn-m" type="button" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
-                    <button class="btn e-item1 btn-primary btn-lg btn-m" type="submit" name="edit_btn">Submit</button>
-                </div>
-            </form>
-        </div>
-    </div>
-  </div>
-</div>
-
-<div class="modal fade" id="guildEditModal_837695985625858048" data-bs-keyboard="false" tabindex="-1" aria-labelledby="guildEditLabel_837695985625858048" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h1 class="modal-title fs-5" id="guildEditLabel_837695985625858048">Guild Edit: None</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="info-modal">
-            <br>
-            <form method="POST">
-
-                <div class="e-div">
-                    <label for="837695985625858048_id" class="e-label">id</label>
-                    <input type="text" id="837695985625858048_id" name="id" value="837695985625858048" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="837695985625858048_stopped" class="e-label">stopped</label>
-                    <input type="text" id="837695985625858048_stopped" name="stopped" value="False" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="837695985625858048_loop" class="e-label">loop</label>
-                    <input type="text" id="837695985625858048_loop" name="loop" value="False" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="837695985625858048_is_radio" class="e-label">is_radio</label>
-                    <input type="text" id="837695985625858048_is_radio" name="is_radio" value="False" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="837695985625858048_language" class="e-label">language</label>
-                    <input type="text" id="837695985625858048_language" name="language" value="cs" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="837695985625858048_response_type" class="e-label">response_type</label>
-                    <input type="text" id="837695985625858048_response_type" name="response_type" value="short" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="837695985625858048_search_query" class="e-label">search_query</label>
-                    <input type="text" id="837695985625858048_search_query" name="search_query" value="Never gonna give you up" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="837695985625858048_buttons" class="e-label">buttons</label>
-                    <input type="text" id="837695985625858048_buttons" name="buttons" value="False" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="837695985625858048_volume" class="e-label">volume</label>
-                    <input type="text" id="837695985625858048_volume" name="volume" value="1.0" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="837695985625858048_buffer" class="e-label">buffer</label>
-                    <input type="text" id="837695985625858048_buffer" name="buffer" value="600" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <label for="837695985625858048_history_length" class="e-label">history_length</label>
-                    <input type="text" id="837695985625858048_history_length" name="history_length" value="10" class="e-input">
-                </div>
-
-                <div class="e-div">
-                    <button class="btn e-item1 btn-secondary btn-lg btn-m" type="button" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
-                    <button class="btn e-item1 btn-primary btn-lg btn-m" type="submit" name="edit_btn">Submit</button>
-                </div>
-            </form>
-        </div>
-    </div>
-  </div>
-</div>
-
-
-
-    <br><br>
-    <footer class="bd-footer py-4 py-md-5 nav-discord">
-      <div class="container py-4 py-md-5 px-4 px-md-3 text-body-secondary">
-        <div class="row">
-          <div class="col-lg-4 mb-2">
-            <a class="d-inline-flex align-items-center mb-2 text-body-emphasis text-decoration-none" href="/" aria-label="Nicholas The 7th">
-              <svg xmlns="http://www.w3.org/2000/svg" width="35px" height="35px" viewBox="0 0 314 337" style="margin-right:0.5rem">
-                <path fill-rule="evenodd" fill="rgb(255, 255, 255)" d="M-0.000,0.000 L59.000,0.000 L190.000,118.000 L190.000,0.000 L244.000,0.000 L244.000,257.000 L190.000,210.000 L190.000,168.000 L55.000,49.000 L55.000,337.000 L-0.000,337.000 L-0.000,0.000 ZM67.000,337.000 L124.000,337.000 L124.000,223.000 L253.000,337.000 L314.000,337.000 L314.000,0.000 L257.000,0.000 L257.000,286.000 L124.000,169.000 L124.000,128.000 L67.000,77.000 L67.000,337.000 Z"></path>
-              </svg>
-              <span class="fs-5">Nicholas the 7th</span>
-            </a>
-            <ul class="list-unstyled small">
-              <li class="mb-2">Designed and built by <a href="https://discordapp.com/users/349164237605568513">Tomer27cz#4272</a>, using open source repositories <a href="https://github.com/Rapptz/discord.py">discord.py</a>, <a href="https://github.com/pallets/flask/">flask</a>, <a href="https://github.com/yt-dlp/yt-dlp">yt-dlp</a>, <a href="https://github.com/alexmercerind/youtube-search-python">youtube-search-python</a>, <a href="https://www.crummy.com/software/BeautifulSoup/">bs4</a>, <a href="https://github.com/twbs/bootstrap">bootstrap</a>.</li>
-              <li class="mb-2">Code licensed <a href="https://github.com/Tomer27cz/discord_bot_stanley_the_7th/blob/main/LICENSE" target="_blank" rel="license noopener">MIT</a></li>
-              <li class="mb-2">Currently v7.0</li>
-            </ul>
-          </div>
-          <div class="col-6 col-lg-2 offset-lg-2 mb-2">
-            <h5>Links</h5>
-            <ul class="list-unstyled">
-              <li class="mb-2"><a href="/">Home</a></li>
-              <li class="mb-2"><a href="/guild">Servers</a></li>
-              <li class="mb-2"><a href="/about">About</a></li>
-            </ul>
-          </div>
-          <div class="col-6 col-lg-2 mb-2">
-            <h5>Projects</h5>
-            <ul class="list-unstyled">
-              <li class="mb-2"><a href="https://github.com/Tomer27cz/discord_bot_stanley_the_7th">Nicholas v7.0</a></li>
-              <li class="mb-2"><a href="https://github.com/Tomer27cz/discord_bot_stanley_the_6th">Nicholas v6.0</a></li>
-              <li class="mb-2"><a href="https://github.com/Tomer27cz/UIDEST">UIDEST</a></li>
-            </ul>
-          </div>
-          <div class="col-6 col-lg-2 mb-2">
-            <h5>Social</h5>
-            <ul class="list-unstyled">
-              <li class="mb-2"><a href="https://discordapp.com/users/349164237605568513">Discord</a></li>
-              <li class="mb-2"><a href="https://github.com/twbs/bootstrap/discussions">GitHub</a></li>
-            </ul>
-          </div>
+        <div class="q-item0 q-wa q-self-center q-items-center">
+
+          <button type="button" class="btn btn-secondary btn-sm dropdown-toggle btn-m" data-bs-toggle="dropdown" aria-expanded="false">More</button>
+          <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" style="">
+            <li><button class="dropdown-item" type="submit" name="top_btn" value="0">Move to Top</button></li>
+            <li><button class="dropdown-item" type="submit" name="bottom_btn" value="0">Move to Bottom</button></li>
+            <li><button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#videoModal_0">Info</button></li>
+          </ul>
+          <button class="btn btn-outline btn-danger btn-sm btn-m" type="submit" name="del_btn" value="0">Remove</button>
         </div>
       </div>
-    </footer>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js" integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N" crossorigin="anonymous"></script>
+      <div class="q-item0 q-wa q-self-center q-items-center">
+        <div class="btn-group-vertical">
+          <button class="btn btn-dark" name="up_btn" value="0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-up" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"></path>
+            </svg>
+          </button>
+          <button class="btn btn-dark" name="down_btn" value="0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-down" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="q-container">
+      <div class="q-div">
+        <img loading="lazy" class="q-img" src="https://i1.sndcdn.com/artworks-WuEyxxKyhuLQcObS-a8bcxQ-large.jpg" alt="thumbnail">
+        <div class="q-item1 q-wd">
+          <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://soundcloud.com/mitchdbofficial/one-kiss-x-turn-up-the-speakers-mitch-db-switch">One Kiss X Turn Up The Speakers (MITCH DB SWITCH)</a></p>
+          <p class="q-text"><a class="q-2" target="_blank" rel="noopener noreferrer" href="https://soundcloud.com/mitchdbofficial">MITCH DB</a></p>
+          <p class="q-text q-3">02:09</p>
+        </div>
+        <div class="q-item2 q-items-center">
+          <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://discordapp.com/users/WEB Guest">WEB Guest</a></p>
+          <p class="q-text q-2">WEB Guest</p>
+          <p class="q-text q-3">19:19:07 06/05/2023</p>
+        </div>
+        <div class="q-item0 q-wa q-self-center q-items-center">
+
+          <button type="button" class="btn btn-secondary btn-sm dropdown-toggle btn-m" data-bs-toggle="dropdown" aria-expanded="false">More</button>
+          <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" style="">
+            <li><button class="dropdown-item" type="submit" name="top_btn" value="0">Move to Top</button></li>
+            <li><button class="dropdown-item" type="submit" name="bottom_btn" value="0">Move to Bottom</button></li>
+            <li><button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#videoModal_0">Info</button></li>
+          </ul>
+          <button class="btn btn-outline btn-danger btn-sm btn-m" type="submit" name="del_btn" value="0">Remove</button>
+        </div>
+      </div>
+      <div class="q-item0 q-wa q-self-center q-items-center">
+        <div class="btn-group-vertical">
+          <button class="btn btn-dark" name="up_btn" value="0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-up" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"></path>
+            </svg>
+          </button>
+          <button class="btn btn-dark" name="down_btn" value="0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-down" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="q-container">
+      <div class="q-div">
+        <img loading="lazy" class="q-img" src="https://i1.sndcdn.com/artworks-WuEyxxKyhuLQcObS-a8bcxQ-large.jpg" alt="thumbnail">
+        <div class="q-item1 q-wd">
+          <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://soundcloud.com/mitchdbofficial/one-kiss-x-turn-up-the-speakers-mitch-db-switch">One Kiss X Turn Up The Speakers (MITCH DB SWITCH)</a></p>
+          <p class="q-text"><a class="q-2" target="_blank" rel="noopener noreferrer" href="https://soundcloud.com/mitchdbofficial">MITCH DB</a></p>
+          <p class="q-text q-3">02:09</p>
+        </div>
+        <div class="q-item2 q-items-center">
+          <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://discordapp.com/users/WEB Guest">WEB Guest</a></p>
+          <p class="q-text q-2">WEB Guest</p>
+          <p class="q-text q-3">19:19:07 06/05/2023</p>
+        </div>
+        <div class="q-item0 q-wa q-self-center q-items-center">
+
+          <button type="button" class="btn btn-secondary btn-sm dropdown-toggle btn-m" data-bs-toggle="dropdown" aria-expanded="false">More</button>
+          <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" style="">
+            <li><button class="dropdown-item" type="submit" name="top_btn" value="0">Move to Top</button></li>
+            <li><button class="dropdown-item" type="submit" name="bottom_btn" value="0">Move to Bottom</button></li>
+            <li><button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#videoModal_0">Info</button></li>
+          </ul>
+          <button class="btn btn-outline btn-danger btn-sm btn-m" type="submit" name="del_btn" value="0">Remove</button>
+        </div>
+      </div>
+      <div class="q-item0 q-wa q-self-center q-items-center">
+        <div class="btn-group-vertical">
+          <button class="btn btn-dark" name="up_btn" value="0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-up" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"></path>
+            </svg>
+          </button>
+          <button class="btn btn-dark" name="down_btn" value="0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-down" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="q-container">
+      <div class="q-div">
+        <img loading="lazy" class="q-img" src="https://i1.sndcdn.com/artworks-WuEyxxKyhuLQcObS-a8bcxQ-large.jpg" alt="thumbnail">
+        <div class="q-item1 q-wd">
+          <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://soundcloud.com/mitchdbofficial/one-kiss-x-turn-up-the-speakers-mitch-db-switch">One Kiss X Turn Up The Speakers (MITCH DB SWITCH)</a></p>
+          <p class="q-text"><a class="q-2" target="_blank" rel="noopener noreferrer" href="https://soundcloud.com/mitchdbofficial">MITCH DB</a></p>
+          <p class="q-text q-3">02:09</p>
+        </div>
+        <div class="q-item2 q-items-center">
+          <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://discordapp.com/users/WEB Guest">WEB Guest</a></p>
+          <p class="q-text q-2">WEB Guest</p>
+          <p class="q-text q-3">19:19:07 06/05/2023</p>
+        </div>
+        <div class="q-item0 q-wa q-self-center q-items-center">
+
+          <button type="button" class="btn btn-secondary btn-sm dropdown-toggle btn-m" data-bs-toggle="dropdown" aria-expanded="false">More</button>
+          <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" style="">
+            <li><button class="dropdown-item" type="submit" name="top_btn" value="0">Move to Top</button></li>
+            <li><button class="dropdown-item" type="submit" name="bottom_btn" value="0">Move to Bottom</button></li>
+            <li><button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#videoModal_0">Info</button></li>
+          </ul>
+          <button class="btn btn-outline btn-danger btn-sm btn-m" type="submit" name="del_btn" value="0">Remove</button>
+        </div>
+      </div>
+      <div class="q-item0 q-wa q-self-center q-items-center">
+        <div class="btn-group-vertical">
+          <button class="btn btn-dark" name="up_btn" value="0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-up" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"></path>
+            </svg>
+          </button>
+          <button class="btn btn-dark" name="down_btn" value="0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-down" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="q-container">
+      <div class="q-div">
+        <img loading="lazy" class="q-img" src="https://i1.sndcdn.com/artworks-WuEyxxKyhuLQcObS-a8bcxQ-large.jpg" alt="thumbnail">
+        <div class="q-item1 q-wd">
+          <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://soundcloud.com/mitchdbofficial/one-kiss-x-turn-up-the-speakers-mitch-db-switch">One Kiss X Turn Up The Speakers (MITCH DB SWITCH)</a></p>
+          <p class="q-text"><a class="q-2" target="_blank" rel="noopener noreferrer" href="https://soundcloud.com/mitchdbofficial">MITCH DB</a></p>
+          <p class="q-text q-3">02:09</p>
+        </div>
+        <div class="q-item2 q-items-center">
+          <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://discordapp.com/users/WEB Guest">WEB Guest</a></p>
+          <p class="q-text q-2">WEB Guest</p>
+          <p class="q-text q-3">19:19:07 06/05/2023</p>
+        </div>
+        <div class="q-item0 q-wa q-self-center q-items-center">
+
+          <button type="button" class="btn btn-secondary btn-sm dropdown-toggle btn-m" data-bs-toggle="dropdown" aria-expanded="false">More</button>
+          <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" style="">
+            <li><button class="dropdown-item" type="submit" name="top_btn" value="0">Move to Top</button></li>
+            <li><button class="dropdown-item" type="submit" name="bottom_btn" value="0">Move to Bottom</button></li>
+            <li><button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#videoModal_0">Info</button></li>
+          </ul>
+          <button class="btn btn-outline btn-danger btn-sm btn-m" type="submit" name="del_btn" value="0">Remove</button>
+        </div>
+      </div>
+      <div class="q-item0 q-wa q-self-center q-items-center">
+        <div class="btn-group-vertical">
+          <button class="btn btn-dark" name="up_btn" value="0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-up" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"></path>
+            </svg>
+          </button>
+          <button class="btn btn-dark" name="down_btn" value="0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-down" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="q-container">
+      <div class="q-div">
+        <img loading="lazy" class="q-img" src="https://i1.sndcdn.com/artworks-WuEyxxKyhuLQcObS-a8bcxQ-large.jpg" alt="thumbnail">
+        <div class="q-item1 q-wd">
+          <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://soundcloud.com/mitchdbofficial/one-kiss-x-turn-up-the-speakers-mitch-db-switch">One Kiss X Turn Up The Speakers (MITCH DB SWITCH)</a></p>
+          <p class="q-text"><a class="q-2" target="_blank" rel="noopener noreferrer" href="https://soundcloud.com/mitchdbofficial">MITCH DB</a></p>
+          <p class="q-text q-3">02:09</p>
+        </div>
+        <div class="q-item2 q-items-center">
+          <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://discordapp.com/users/WEB Guest">WEB Guest</a></p>
+          <p class="q-text q-2">WEB Guest</p>
+          <p class="q-text q-3">19:19:07 06/05/2023</p>
+        </div>
+        <div class="q-item0 q-wa q-self-center q-items-center">
+
+          <button type="button" class="btn btn-secondary btn-sm dropdown-toggle btn-m" data-bs-toggle="dropdown" aria-expanded="false">More</button>
+          <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" style="">
+            <li><button class="dropdown-item" type="submit" name="top_btn" value="0">Move to Top</button></li>
+            <li><button class="dropdown-item" type="submit" name="bottom_btn" value="0">Move to Bottom</button></li>
+            <li><button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#videoModal_0">Info</button></li>
+          </ul>
+          <button class="btn btn-outline btn-danger btn-sm btn-m" type="submit" name="del_btn" value="0">Remove</button>
+        </div>
+      </div>
+      <div class="q-item0 q-wa q-self-center q-items-center">
+        <div class="btn-group-vertical">
+          <button class="btn btn-dark" name="up_btn" value="0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-up" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"></path>
+            </svg>
+          </button>
+          <button class="btn btn-dark" name="down_btn" value="0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-down" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="q-container">
+      <div class="q-div">
+        <img loading="lazy" class="q-img" src="https://i1.sndcdn.com/artworks-WuEyxxKyhuLQcObS-a8bcxQ-large.jpg" alt="thumbnail">
+        <div class="q-item1 q-wd">
+          <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://soundcloud.com/mitchdbofficial/one-kiss-x-turn-up-the-speakers-mitch-db-switch">One Kiss X Turn Up The Speakers (MITCH DB SWITCH)</a></p>
+          <p class="q-text"><a class="q-2" target="_blank" rel="noopener noreferrer" href="https://soundcloud.com/mitchdbofficial">MITCH DB</a></p>
+          <p class="q-text q-3">02:09</p>
+        </div>
+        <div class="q-item2 q-items-center">
+          <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://discordapp.com/users/WEB Guest">WEB Guest</a></p>
+          <p class="q-text q-2">WEB Guest</p>
+          <p class="q-text q-3">19:19:07 06/05/2023</p>
+        </div>
+        <div class="q-item0 q-wa q-self-center q-items-center">
+
+          <button type="button" class="btn btn-secondary btn-sm dropdown-toggle btn-m" data-bs-toggle="dropdown" aria-expanded="false">More</button>
+          <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" style="">
+            <li><button class="dropdown-item" type="submit" name="top_btn" value="0">Move to Top</button></li>
+            <li><button class="dropdown-item" type="submit" name="bottom_btn" value="0">Move to Bottom</button></li>
+            <li><button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#videoModal_0">Info</button></li>
+          </ul>
+          <button class="btn btn-outline btn-danger btn-sm btn-m" type="submit" name="del_btn" value="0">Remove</button>
+        </div>
+      </div>
+      <div class="q-item0 q-wa q-self-center q-items-center">
+        <div class="btn-group-vertical">
+          <button class="btn btn-dark" name="up_btn" value="0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-up" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"></path>
+            </svg>
+          </button>
+          <button class="btn btn-dark" name="down_btn" value="0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-down" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="q-container">
+      <div class="q-div">
+        <img loading="lazy" class="q-img" src="https://i1.sndcdn.com/artworks-WuEyxxKyhuLQcObS-a8bcxQ-large.jpg" alt="thumbnail">
+        <div class="q-item1 q-wd">
+          <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://soundcloud.com/mitchdbofficial/one-kiss-x-turn-up-the-speakers-mitch-db-switch">One Kiss X Turn Up The Speakers (MITCH DB SWITCH)</a></p>
+          <p class="q-text"><a class="q-2" target="_blank" rel="noopener noreferrer" href="https://soundcloud.com/mitchdbofficial">MITCH DB</a></p>
+          <p class="q-text q-3">02:09</p>
+        </div>
+        <div class="q-item2 q-items-center">
+          <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://discordapp.com/users/WEB Guest">WEB Guest</a></p>
+          <p class="q-text q-2">WEB Guest</p>
+          <p class="q-text q-3">19:19:07 06/05/2023</p>
+        </div>
+        <div class="q-item0 q-wa q-self-center q-items-center">
+
+          <button type="button" class="btn btn-secondary btn-sm dropdown-toggle btn-m" data-bs-toggle="dropdown" aria-expanded="false">More</button>
+          <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" style="">
+            <li><button class="dropdown-item" type="submit" name="top_btn" value="0">Move to Top</button></li>
+            <li><button class="dropdown-item" type="submit" name="bottom_btn" value="0">Move to Bottom</button></li>
+            <li><button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#videoModal_0">Info</button></li>
+          </ul>
+          <button class="btn btn-outline btn-danger btn-sm btn-m" type="submit" name="del_btn" value="0">Remove</button>
+        </div>
+      </div>
+      <div class="q-item0 q-wa q-self-center q-items-center">
+        <div class="btn-group-vertical">
+          <button class="btn btn-dark" name="up_btn" value="0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-up" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"></path>
+            </svg>
+          </button>
+          <button class="btn btn-dark" name="down_btn" value="0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-down" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="q-container">
+      <div class="q-div">
+        <img loading="lazy" class="q-img" src="https://i1.sndcdn.com/artworks-WuEyxxKyhuLQcObS-a8bcxQ-large.jpg" alt="thumbnail">
+        <div class="q-item1 q-wd">
+          <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://soundcloud.com/mitchdbofficial/one-kiss-x-turn-up-the-speakers-mitch-db-switch">One Kiss X Turn Up The Speakers (MITCH DB SWITCH)</a></p>
+          <p class="q-text"><a class="q-2" target="_blank" rel="noopener noreferrer" href="https://soundcloud.com/mitchdbofficial">MITCH DB</a></p>
+          <p class="q-text q-3">02:09</p>
+        </div>
+        <div class="q-item2 q-items-center">
+          <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://discordapp.com/users/WEB Guest">WEB Guest</a></p>
+          <p class="q-text q-2">WEB Guest</p>
+          <p class="q-text q-3">19:19:07 06/05/2023</p>
+        </div>
+        <div class="q-item0 q-wa q-self-center q-items-center">
+
+          <button type="button" class="btn btn-secondary btn-sm dropdown-toggle btn-m" data-bs-toggle="dropdown" aria-expanded="false">More</button>
+          <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" style="">
+            <li><button class="dropdown-item" type="submit" name="top_btn" value="0">Move to Top</button></li>
+            <li><button class="dropdown-item" type="submit" name="bottom_btn" value="0">Move to Bottom</button></li>
+            <li><button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#videoModal_0">Info</button></li>
+          </ul>
+          <button class="btn btn-outline btn-danger btn-sm btn-m" type="submit" name="del_btn" value="0">Remove</button>
+        </div>
+      </div>
+      <div class="q-item0 q-wa q-self-center q-items-center">
+        <div class="btn-group-vertical">
+          <button class="btn btn-dark" name="up_btn" value="0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-up" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"></path>
+            </svg>
+          </button>
+          <button class="btn btn-dark" name="down_btn" value="0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-down" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="q-container">
+      <div class="q-div">
+        <img loading="lazy" class="q-img" src="https://i1.sndcdn.com/artworks-WuEyxxKyhuLQcObS-a8bcxQ-large.jpg" alt="thumbnail">
+        <div class="q-item1 q-wd">
+          <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://soundcloud.com/mitchdbofficial/one-kiss-x-turn-up-the-speakers-mitch-db-switch">One Kiss X Turn Up The Speakers (MITCH DB SWITCH)</a></p>
+          <p class="q-text"><a class="q-2" target="_blank" rel="noopener noreferrer" href="https://soundcloud.com/mitchdbofficial">MITCH DB</a></p>
+          <p class="q-text q-3">02:09</p>
+        </div>
+        <div class="q-item2 q-items-center">
+          <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://discordapp.com/users/WEB Guest">WEB Guest</a></p>
+          <p class="q-text q-2">WEB Guest</p>
+          <p class="q-text q-3">19:19:07 06/05/2023</p>
+        </div>
+        <div class="q-item0 q-wa q-self-center q-items-center">
+
+          <button type="button" class="btn btn-secondary btn-sm dropdown-toggle btn-m" data-bs-toggle="dropdown" aria-expanded="false">More</button>
+          <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" style="">
+            <li><button class="dropdown-item" type="submit" name="top_btn" value="0">Move to Top</button></li>
+            <li><button class="dropdown-item" type="submit" name="bottom_btn" value="0">Move to Bottom</button></li>
+            <li><button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#videoModal_0">Info</button></li>
+          </ul>
+          <button class="btn btn-outline btn-danger btn-sm btn-m" type="submit" name="del_btn" value="0">Remove</button>
+        </div>
+      </div>
+      <div class="q-item0 q-wa q-self-center q-items-center">
+        <div class="btn-group-vertical">
+          <button class="btn btn-dark" name="up_btn" value="0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-up" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"></path>
+            </svg>
+          </button>
+          <button class="btn btn-dark" name="down_btn" value="0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-down" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="q-container">
+      <div class="q-div">
+        <img loading="lazy" class="q-img" src="https://i1.sndcdn.com/artworks-WuEyxxKyhuLQcObS-a8bcxQ-large.jpg" alt="thumbnail">
+        <div class="q-item1 q-wd">
+          <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://soundcloud.com/mitchdbofficial/one-kiss-x-turn-up-the-speakers-mitch-db-switch">One Kiss X Turn Up The Speakers (MITCH DB SWITCH)</a></p>
+          <p class="q-text"><a class="q-2" target="_blank" rel="noopener noreferrer" href="https://soundcloud.com/mitchdbofficial">MITCH DB</a></p>
+          <p class="q-text q-3">02:09</p>
+        </div>
+        <div class="q-item2 q-items-center">
+          <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://discordapp.com/users/WEB Guest">WEB Guest</a></p>
+          <p class="q-text q-2">WEB Guest</p>
+          <p class="q-text q-3">19:19:07 06/05/2023</p>
+        </div>
+        <div class="q-item0 q-wa q-self-center q-items-center">
+
+          <button type="button" class="btn btn-secondary btn-sm dropdown-toggle btn-m" data-bs-toggle="dropdown" aria-expanded="false">More</button>
+          <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" style="">
+            <li><button class="dropdown-item" type="submit" name="top_btn" value="0">Move to Top</button></li>
+            <li><button class="dropdown-item" type="submit" name="bottom_btn" value="0">Move to Bottom</button></li>
+            <li><button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#videoModal_0">Info</button></li>
+          </ul>
+          <button class="btn btn-outline btn-danger btn-sm btn-m" type="submit" name="del_btn" value="0">Remove</button>
+        </div>
+      </div>
+      <div class="q-item0 q-wa q-self-center q-items-center">
+        <div class="btn-group-vertical">
+          <button class="btn btn-dark" name="up_btn" value="0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-up" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"></path>
+            </svg>
+          </button>
+          <button class="btn btn-dark" name="down_btn" value="0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-down" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="q-container">
+      <div class="q-div">
+        <img loading="lazy" class="q-img" src="https://i1.sndcdn.com/artworks-WuEyxxKyhuLQcObS-a8bcxQ-large.jpg" alt="thumbnail">
+        <div class="q-item1 q-wd">
+          <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://soundcloud.com/mitchdbofficial/one-kiss-x-turn-up-the-speakers-mitch-db-switch">One Kiss X Turn Up The Speakers (MITCH DB SWITCH)</a></p>
+          <p class="q-text"><a class="q-2" target="_blank" rel="noopener noreferrer" href="https://soundcloud.com/mitchdbofficial">MITCH DB</a></p>
+          <p class="q-text q-3">02:09</p>
+        </div>
+        <div class="q-item2 q-items-center">
+          <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://discordapp.com/users/WEB Guest">WEB Guest</a></p>
+          <p class="q-text q-2">WEB Guest</p>
+          <p class="q-text q-3">19:19:07 06/05/2023</p>
+        </div>
+        <div class="q-item0 q-wa q-self-center q-items-center">
+
+          <button type="button" class="btn btn-secondary btn-sm dropdown-toggle btn-m" data-bs-toggle="dropdown" aria-expanded="false">More</button>
+          <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" style="">
+            <li><button class="dropdown-item" type="submit" name="top_btn" value="0">Move to Top</button></li>
+            <li><button class="dropdown-item" type="submit" name="bottom_btn" value="0">Move to Bottom</button></li>
+            <li><button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#videoModal_0">Info</button></li>
+          </ul>
+          <button class="btn btn-outline btn-danger btn-sm btn-m" type="submit" name="del_btn" value="0">Remove</button>
+        </div>
+      </div>
+      <div class="q-item0 q-wa q-self-center q-items-center">
+        <div class="btn-group-vertical">
+          <button class="btn btn-dark" name="up_btn" value="0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-up" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"></path>
+            </svg>
+          </button>
+          <button class="btn btn-dark" name="down_btn" value="0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-down" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="q-container">
+      <div class="q-div">
+        <img loading="lazy" class="q-img" src="https://i1.sndcdn.com/artworks-WuEyxxKyhuLQcObS-a8bcxQ-large.jpg" alt="thumbnail">
+        <div class="q-item1 q-wd">
+          <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://soundcloud.com/mitchdbofficial/one-kiss-x-turn-up-the-speakers-mitch-db-switch">One Kiss X Turn Up The Speakers (MITCH DB SWITCH)</a></p>
+          <p class="q-text"><a class="q-2" target="_blank" rel="noopener noreferrer" href="https://soundcloud.com/mitchdbofficial">MITCH DB</a></p>
+          <p class="q-text q-3">02:09</p>
+        </div>
+        <div class="q-item2 q-items-center">
+          <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://discordapp.com/users/WEB Guest">WEB Guest</a></p>
+          <p class="q-text q-2">WEB Guest</p>
+          <p class="q-text q-3">19:19:07 06/05/2023</p>
+        </div>
+        <div class="q-item0 q-wa q-self-center q-items-center">
+
+          <button type="button" class="btn btn-secondary btn-sm dropdown-toggle btn-m" data-bs-toggle="dropdown" aria-expanded="false">More</button>
+          <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" style="">
+            <li><button class="dropdown-item" type="submit" name="top_btn" value="0">Move to Top</button></li>
+            <li><button class="dropdown-item" type="submit" name="bottom_btn" value="0">Move to Bottom</button></li>
+            <li><button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#videoModal_0">Info</button></li>
+          </ul>
+          <button class="btn btn-outline btn-danger btn-sm btn-m" type="submit" name="del_btn" value="0">Remove</button>
+        </div>
+      </div>
+      <div class="q-item0 q-wa q-self-center q-items-center">
+        <div class="btn-group-vertical">
+          <button class="btn btn-dark" name="up_btn" value="0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-up" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"></path>
+            </svg>
+          </button>
+          <button class="btn btn-dark" name="down_btn" value="0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-down" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="q-container">
+      <div class="q-div">
+        <img loading="lazy" class="q-img" src="https://i1.sndcdn.com/artworks-WuEyxxKyhuLQcObS-a8bcxQ-large.jpg" alt="thumbnail">
+        <div class="q-item1 q-wd">
+          <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://soundcloud.com/mitchdbofficial/one-kiss-x-turn-up-the-speakers-mitch-db-switch">One Kiss X Turn Up The Speakers (MITCH DB SWITCH)</a></p>
+          <p class="q-text"><a class="q-2" target="_blank" rel="noopener noreferrer" href="https://soundcloud.com/mitchdbofficial">MITCH DB</a></p>
+          <p class="q-text q-3">02:09</p>
+        </div>
+        <div class="q-item2 q-items-center">
+          <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://discordapp.com/users/WEB Guest">WEB Guest</a></p>
+          <p class="q-text q-2">WEB Guest</p>
+          <p class="q-text q-3">19:19:07 06/05/2023</p>
+        </div>
+        <div class="q-item0 q-wa q-self-center q-items-center">
+
+          <button type="button" class="btn btn-secondary btn-sm dropdown-toggle btn-m" data-bs-toggle="dropdown" aria-expanded="false">More</button>
+          <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" style="">
+            <li><button class="dropdown-item" type="submit" name="top_btn" value="0">Move to Top</button></li>
+            <li><button class="dropdown-item" type="submit" name="bottom_btn" value="0">Move to Bottom</button></li>
+            <li><button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#videoModal_0">Info</button></li>
+          </ul>
+          <button class="btn btn-outline btn-danger btn-sm btn-m" type="submit" name="del_btn" value="0">Remove</button>
+        </div>
+      </div>
+      <div class="q-item0 q-wa q-self-center q-items-center">
+        <div class="btn-group-vertical">
+          <button class="btn btn-dark" name="up_btn" value="0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-up" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"></path>
+            </svg>
+          </button>
+          <button class="btn btn-dark" name="down_btn" value="0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-down" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="q-container">
+      <div class="q-div">
+        <img loading="lazy" class="q-img" src="https://i1.sndcdn.com/artworks-WuEyxxKyhuLQcObS-a8bcxQ-large.jpg" alt="thumbnail">
+        <div class="q-item1 q-wd">
+          <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://soundcloud.com/mitchdbofficial/one-kiss-x-turn-up-the-speakers-mitch-db-switch">One Kiss X Turn Up The Speakers (MITCH DB SWITCH)</a></p>
+          <p class="q-text"><a class="q-2" target="_blank" rel="noopener noreferrer" href="https://soundcloud.com/mitchdbofficial">MITCH DB</a></p>
+          <p class="q-text q-3">02:09</p>
+        </div>
+        <div class="q-item2 q-items-center">
+          <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://discordapp.com/users/WEB Guest">WEB Guest</a></p>
+          <p class="q-text q-2">WEB Guest</p>
+          <p class="q-text q-3">19:19:07 06/05/2023</p>
+        </div>
+        <div class="q-item0 q-wa q-self-center q-items-center">
+
+          <button type="button" class="btn btn-secondary btn-sm dropdown-toggle btn-m" data-bs-toggle="dropdown" aria-expanded="false">More</button>
+          <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" style="">
+            <li><button class="dropdown-item" type="submit" name="top_btn" value="0">Move to Top</button></li>
+            <li><button class="dropdown-item" type="submit" name="bottom_btn" value="0">Move to Bottom</button></li>
+            <li><button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#videoModal_0">Info</button></li>
+          </ul>
+          <button class="btn btn-outline btn-danger btn-sm btn-m" type="submit" name="del_btn" value="0">Remove</button>
+        </div>
+      </div>
+      <div class="q-item0 q-wa q-self-center q-items-center">
+        <div class="btn-group-vertical">
+          <button class="btn btn-dark" name="up_btn" value="0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-up" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"></path>
+            </svg>
+          </button>
+          <button class="btn btn-dark" name="down_btn" value="0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-down" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<!-- Video Modals -->
+
+<div class="modal fade" id="videoModal_0" data-bs-keyboard="false" tabindex="-1" aria-labelledby="videoLabel_0" style="display: none;" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="videoLabel_0">Video 0 Info</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="info-modal">
+        <br>
+        <p>index: <span class="v-info">0</span></p>
+
+        <p>class_type: <span class="v-info">SoundCloud</span></p>
+
+        <p>author: <span class="v-info">WEB Guest</span></p>
+
+        <p>created_at: <span class="v-info">1683400747</span></p>
+
+        <p>played_at: <span class="v-info">None</span></p>
+
+        <p>stopped_at: <span class="v-info">None</span></p>
+
+        <p>url: <span class="v-info">https://soundcloud.com/mitchdbofficial/one-kiss-x-turn-up-the-speakers-mitch-db-switch</span></p>
+
+        <p>title: <span class="v-info">One Kiss X Turn Up The Speakers (MITCH DB SWITCH)</span></p>
+
+        <p>picture: <span class="v-info">https://i1.sndcdn.com/artworks-WuEyxxKyhuLQcObS-a8bcxQ-large.jpg</span></p>
+
+        <p>duration: <span class="v-info">129.411</span></p>
+
+        <p>channel_name: <span class="v-info">MITCH DB</span></p>
+
+        <p>channel_link: <span class="v-info">https://soundcloud.com/mitchdbofficial</span></p>
+
+        <p>radio_name: <span class="v-info">None</span></p>
+
+        <p>radio_website: <span class="v-info">None</span></p>
+
+        <p>local_number: <span class="v-info">None</span></p>
+
+        <br>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Video History Modals -->
+
+<div class="modal fade" id="videoModal_h0" data-bs-keyboard="false" tabindex="-1" aria-labelledby="videoLabel_h0" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="videoLabel_h0">Video History 0 Info</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="info-modal">
+        <br>
+        <p>index: <span class="v-info">0</span></p>
+
+        <p>class_type: <span class="v-info">Video</span></p>
+
+        <p>author: <span class="v-info">349164237605568513</span></p>
+
+        <p>created_at: <span class="v-info">1682798689</span></p>
+
+        <p>played_at: <span class="v-info">1682798869</span></p>
+
+        <p>stopped_at: <span class="v-info">1682798873</span></p>
+
+        <p>url: <span class="v-info">https://www.youtube.com/watch?v=Q9hX2kB5Y7M</span></p>
+
+        <p>title: <span class="v-info">Hymna Kanady a USA na hokeji 🇨🇦🇺🇸⛸🏒+text-lyrics-sloky-preklad</span></p>
+
+        <p>picture: <span class="v-info">https://img.youtube.com/vi/Q9hX2kB5Y7M/default.jpg</span></p>
+
+        <p>duration: <span class="v-info">169</span></p>
+
+        <p>channel_name: <span class="v-info">moravan</span></p>
+
+        <p>channel_link: <span class="v-info">https://www.youtube.com/channel/UCKstCd3bK2xqdicxjql_XsQ</span></p>
+
+        <p>radio_name: <span class="v-info">None</span></p>
+
+        <p>radio_website: <span class="v-info">None</span></p>
+
+        <p>local_number: <span class="v-info">None</span></p>
+
+        <br>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="videoModal_h1" data-bs-keyboard="false" tabindex="-1" aria-labelledby="videoLabel_h1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="videoLabel_h1">Video History 1 Info</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="info-modal">
+        <br>
+        <p>index: <span class="v-info">1</span></p>
+
+        <p>class_type: <span class="v-info">Video</span></p>
+
+        <p>author: <span class="v-info">349164237605568513</span></p>
+
+        <p>created_at: <span class="v-info">1682798843</span></p>
+
+        <p>played_at: <span class="v-info">1682798874</span></p>
+
+        <p>stopped_at: <span class="v-info">1682799010</span></p>
+
+        <p>url: <span class="v-info">https://www.youtube.com/watch?v=GW6GSa14xXI</span></p>
+
+        <p>title: <span class="v-info">Bosanska Artiljerija</span></p>
+
+        <p>picture: <span class="v-info">https://img.youtube.com/vi/GW6GSa14xXI/default.jpg</span></p>
+
+        <p>duration: <span class="v-info">216</span></p>
+
+        <p>channel_name: <span class="v-info">Kocayine</span></p>
+
+        <p>channel_link: <span class="v-info">https://www.youtube.com/channel/UCBPe1JjyYYWUSr0M10u39dQ</span></p>
+
+        <p>radio_name: <span class="v-info">None</span></p>
+
+        <p>radio_website: <span class="v-info">None</span></p>
+
+        <p>local_number: <span class="v-info">None</span></p>
+
+        <br>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="videoModal_h2" data-bs-keyboard="false" tabindex="-1" aria-labelledby="videoLabel_h2" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="videoLabel_h2">Video History 2 Info</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="info-modal">
+        <br>
+        <p>index: <span class="v-info">2</span></p>
+
+        <p>class_type: <span class="v-info">Video</span></p>
+
+        <p>author: <span class="v-info">349164237605568513</span></p>
+
+        <p>created_at: <span class="v-info">1682799009</span></p>
+
+        <p>played_at: <span class="v-info">1682799013</span></p>
+
+        <p>stopped_at: <span class="v-info">1682799057</span></p>
+
+        <p>url: <span class="v-info">https://www.youtube.com/watch?v=GW6GSa14xXI</span></p>
+
+        <p>title: <span class="v-info">Bosanska Artiljerija</span></p>
+
+        <p>picture: <span class="v-info">https://img.youtube.com/vi/GW6GSa14xXI/default.jpg</span></p>
+
+        <p>duration: <span class="v-info">216</span></p>
+
+        <p>channel_name: <span class="v-info">Kocayine</span></p>
+
+        <p>channel_link: <span class="v-info">https://www.youtube.com/channel/UCBPe1JjyYYWUSr0M10u39dQ</span></p>
+
+        <p>radio_name: <span class="v-info">None</span></p>
+
+        <p>radio_website: <span class="v-info">None</span></p>
+
+        <p>local_number: <span class="v-info">None</span></p>
+
+        <br>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="videoModal_h3" data-bs-keyboard="false" tabindex="-1" aria-labelledby="videoLabel_h3" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="videoLabel_h3">Video History 3 Info</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="info-modal">
+        <br>
+        <p>index: <span class="v-info">3</span></p>
+
+        <p>class_type: <span class="v-info">Video</span></p>
+
+        <p>author: <span class="v-info">349164237605568513</span></p>
+
+        <p>created_at: <span class="v-info">1682799133</span></p>
+
+        <p>played_at: <span class="v-info">1682799135</span></p>
+
+        <p>stopped_at: <span class="v-info">1682799177</span></p>
+
+        <p>url: <span class="v-info">https://www.youtube.com/watch?v=GW6GSa14xXI</span></p>
+
+        <p>title: <span class="v-info">Bosanska Artiljerija</span></p>
+
+        <p>picture: <span class="v-info">https://img.youtube.com/vi/GW6GSa14xXI/default.jpg</span></p>
+
+        <p>duration: <span class="v-info">216</span></p>
+
+        <p>channel_name: <span class="v-info">Kocayine</span></p>
+
+        <p>channel_link: <span class="v-info">https://www.youtube.com/channel/UCBPe1JjyYYWUSr0M10u39dQ</span></p>
+
+        <p>radio_name: <span class="v-info">None</span></p>
+
+        <p>radio_website: <span class="v-info">None</span></p>
+
+        <p>local_number: <span class="v-info">None</span></p>
+
+        <br>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="videoModal_h4" data-bs-keyboard="false" tabindex="-1" aria-labelledby="videoLabel_h4" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="videoLabel_h4">Video History 4 Info</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="info-modal">
+        <br>
+        <p>index: <span class="v-info">4</span></p>
+
+        <p>class_type: <span class="v-info">Video</span></p>
+
+        <p>author: <span class="v-info">349164237605568513</span></p>
+
+        <p>created_at: <span class="v-info">1682799195</span></p>
+
+        <p>played_at: <span class="v-info">1682799197</span></p>
+
+        <p>stopped_at: <span class="v-info">1682799227</span></p>
+
+        <p>url: <span class="v-info">https://www.youtube.com/watch?v=M-mtdN6R3bQ</span></p>
+
+        <p>title: <span class="v-info">Short Song (English Song)🎵 [W Lyrics] 30 seconds</span></p>
+
+        <p>picture: <span class="v-info">https://img.youtube.com/vi/M-mtdN6R3bQ/default.jpg</span></p>
+
+        <p>duration: <span class="v-info">30</span></p>
+
+        <p>channel_name: <span class="v-info">LEVIOS LS</span></p>
+
+        <p>channel_link: <span class="v-info">https://www.youtube.com/channel/UC5728jgtLYM7O9HYPq8BYbQ</span></p>
+
+        <p>radio_name: <span class="v-info">None</span></p>
+
+        <p>radio_website: <span class="v-info">None</span></p>
+
+        <p>local_number: <span class="v-info">None</span></p>
+
+        <br>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="videoModal_h5" data-bs-keyboard="false" tabindex="-1" aria-labelledby="videoLabel_h5" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="videoLabel_h5">Video History 5 Info</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="info-modal">
+        <br>
+        <p>index: <span class="v-info">5</span></p>
+
+        <p>class_type: <span class="v-info">SoundCloud</span></p>
+
+        <p>author: <span class="v-info">349164237605568513</span></p>
+
+        <p>created_at: <span class="v-info">1683379005</span></p>
+
+        <p>played_at: <span class="v-info">1683379006</span></p>
+
+        <p>stopped_at: <span class="v-info">1683379135</span></p>
+
+        <p>url: <span class="v-info">https://soundcloud.com/mitchdbofficial/one-kiss-x-turn-up-the-speakers-mitch-db-switch</span></p>
+
+        <p>title: <span class="v-info">One Kiss X Turn Up The Speakers (MITCH DB SWITCH)</span></p>
+
+        <p>picture: <span class="v-info">https://i1.sndcdn.com/artworks-WuEyxxKyhuLQcObS-a8bcxQ-large.jpg</span></p>
+
+        <p>duration: <span class="v-info">129.411</span></p>
+
+        <p>channel_name: <span class="v-info">MITCH DB</span></p>
+
+        <p>channel_link: <span class="v-info">https://soundcloud.com/mitchdbofficial</span></p>
+
+        <p>radio_name: <span class="v-info">None</span></p>
+
+        <p>radio_website: <span class="v-info">None</span></p>
+
+        <p>local_number: <span class="v-info">None</span></p>
+
+        <br>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="videoModal_h6" data-bs-keyboard="false" tabindex="-1" aria-labelledby="videoLabel_h6" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="videoLabel_h6">Video History 6 Info</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="info-modal">
+        <br>
+        <p>index: <span class="v-info">6</span></p>
+
+        <p>class_type: <span class="v-info">SoundCloud</span></p>
+
+        <p>author: <span class="v-info">349164237605568513</span></p>
+
+        <p>created_at: <span class="v-info">1683386383</span></p>
+
+        <p>played_at: <span class="v-info">1683386389</span></p>
+
+        <p>stopped_at: <span class="v-info">1683386463</span></p>
+
+        <p>url: <span class="v-info">https://soundcloud.com/mitchdbofficial/one-kiss-x-turn-up-the-speakers-mitch-db-switch</span></p>
+
+        <p>title: <span class="v-info">One Kiss X Turn Up The Speakers (MITCH DB SWITCH)</span></p>
+
+        <p>picture: <span class="v-info">https://i1.sndcdn.com/artworks-WuEyxxKyhuLQcObS-a8bcxQ-large.jpg</span></p>
+
+        <p>duration: <span class="v-info">129.411</span></p>
+
+        <p>channel_name: <span class="v-info">MITCH DB</span></p>
+
+        <p>channel_link: <span class="v-info">https://soundcloud.com/mitchdbofficial</span></p>
+
+        <p>radio_name: <span class="v-info">None</span></p>
+
+        <p>radio_website: <span class="v-info">None</span></p>
+
+        <p>local_number: <span class="v-info">None</span></p>
+
+        <br>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="videoModal_h7" data-bs-keyboard="false" tabindex="-1" aria-labelledby="videoLabel_h7" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="videoLabel_h7">Video History 7 Info</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="info-modal">
+        <br>
+        <p>index: <span class="v-info">7</span></p>
+
+        <p>class_type: <span class="v-info">Video</span></p>
+
+        <p>author: <span class="v-info">349164237605568513</span></p>
+
+        <p>created_at: <span class="v-info">1683389736</span></p>
+
+        <p>played_at: <span class="v-info">1683389738</span></p>
+
+        <p>stopped_at: <span class="v-info">1683389793</span></p>
+
+        <p>url: <span class="v-info">https://www.youtube.com/watch?v=yRGgl9KT9rE</span></p>
+
+        <p>title: <span class="v-info">Bosnian Folk Song - Bosanska Artiljerija</span></p>
+
+        <p>picture: <span class="v-info">https://img.youtube.com/vi/yRGgl9KT9rE/default.jpg</span></p>
+
+        <p>duration: <span class="v-info">216</span></p>
+
+        <p>channel_name: <span class="v-info">Folk Songs International</span></p>
+
+        <p>channel_link: <span class="v-info">https://www.youtube.com/channel/UCZ5eiQ-W8K4w1pcQOPvRBDA</span></p>
+
+        <p>radio_name: <span class="v-info">None</span></p>
+
+        <p>radio_website: <span class="v-info">None</span></p>
+
+        <p>local_number: <span class="v-info">None</span></p>
+
+        <br>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="videoModal_h8" data-bs-keyboard="false" tabindex="-1" aria-labelledby="videoLabel_h8" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="videoLabel_h8">Video History 8 Info</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="info-modal">
+        <br>
+        <p>index: <span class="v-info">8</span></p>
+
+        <p>class_type: <span class="v-info">Video</span></p>
+
+        <p>author: <span class="v-info">349164237605568513</span></p>
+
+        <p>created_at: <span class="v-info">1683389776</span></p>
+
+        <p>played_at: <span class="v-info">1683389794</span></p>
+
+        <p>stopped_at: <span class="v-info">1683389820</span></p>
+
+        <p>url: <span class="v-info">https://www.youtube.com/watch?v=atuFSv2bLa8</span></p>
+
+        <p>title: <span class="v-info">Manuel - Gas Gas Gas</span></p>
+
+        <p>picture: <span class="v-info">https://img.youtube.com/vi/atuFSv2bLa8/default.jpg</span></p>
+
+        <p>duration: <span class="v-info">272</span></p>
+
+        <p>channel_name: <span class="v-info">musoforlyf</span></p>
+
+        <p>channel_link: <span class="v-info">https://www.youtube.com/channel/UCNj850nm1A2ovokvNLFQZ3g</span></p>
+
+        <p>radio_name: <span class="v-info">None</span></p>
+
+        <p>radio_website: <span class="v-info">None</span></p>
+
+        <p>local_number: <span class="v-info">None</span></p>
+
+        <br>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="videoModal_h9" data-bs-keyboard="false" tabindex="-1" aria-labelledby="videoLabel_h9" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="videoLabel_h9">Video History 9 Info</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="info-modal">
+        <br>
+        <p>index: <span class="v-info">9</span></p>
+
+        <p>class_type: <span class="v-info">Video</span></p>
+
+        <p>author: <span class="v-info">349164237605568513</span></p>
+
+        <p>created_at: <span class="v-info">1683389788</span></p>
+
+        <p>played_at: <span class="v-info">1683389822</span></p>
+
+        <p>stopped_at: <span class="v-info">1683389981</span></p>
+
+        <p>url: <span class="v-info">https://www.youtube.com/watch?v=Nb9L0axJcEA</span></p>
+
+        <p>title: <span class="v-info">California Dreamin'</span></p>
+
+        <p>picture: <span class="v-info">https://img.youtube.com/vi/Nb9L0axJcEA/default.jpg</span></p>
+
+        <p>duration: <span class="v-info">159</span></p>
+
+        <p>channel_name: <span class="v-info">ServietteRussian</span></p>
+
+        <p>channel_link: <span class="v-info">https://www.youtube.com/channel/UCI2xejvA4re8mgVMjm5_CBA</span></p>
+
+        <p>radio_name: <span class="v-info">None</span></p>
+
+        <p>radio_website: <span class="v-info">None</span></p>
+
+        <p>local_number: <span class="v-info">None</span></p>
+
+        <br>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!--Now Playing Modal-->
+
+
+<!-- Video Edit Modals -->
+
+
+<!-- Modals -->
+<div class="modal fade" id="optionsModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="optionsLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="optionsLabel">Options</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form action="#" method="POST">
+        <div class="info-modal">
+          <div class="e-div">
+            <label for="loop" class="e-label">loop</label>
+            <select class="e-input" id="loop" name="loop">
+              <option value="True">True</option>
+              <option value="False">False</option>
+            </select>
+          </div>
+
+          <div class="e-div">
+            <label for="language" class="e-label">language</label>
+            <select class="e-input" id="language" name="language">
+              <option value="en" {{ selected if guild.options.language == 'en' }}>en</option>
+              <option value="cs">cs</option>
+              <option value="de">de</option>
+              <option value="eo">eo</option>
+              <option value="es">es</option>
+              <option value="fr">fr</option>
+              <option value="it">it</option>
+              <option value="ja">ja</option>
+              <option value="ko">ko</option>
+              <option value="la">la</option>
+              <option value="zh">zh</option>
+              <option value="nl">nl</option>
+              <option value="pl">pl</option>
+              <option value="pt">pt</option>
+              <option value="ru">ru</option>
+              <option value="sv">sv</option>
+              <option value="tr">tr</option>
+            </select>
+          </div>
+
+          <div class="e-div">
+            <label for="response_type" class="e-label">response_type</label>
+            <select class="e-input" id="response_type" name="response_type">
+              <option value="short">short</option>
+              <option value="long">long</option>
+            </select>
+          </div>
+
+          <div class="e-div">
+            <label for="buttons" class="e-label">buttons</label>
+            <select class="e-input" id="buttons" name="buttons">
+              <option value="True">True</option>
+              <option value="False">False</option>
+            </select>
+          </div>
+
+          <div class="e-div">
+            <label for="volume" class="e-label">volume (%)</label>
+            <input type="number" id="volume" name="volume" value="100" min="0" max="200" class="e-input">
+          </div>
+
+          <div class="e-div">
+            <label for="buffer" class="e-label">buffer (s)</label>
+            <input type="number" id="buffer" name="buffer" value="600" min="1" max="1800" class="e-input">
+          </div>
+
+          <div class="e-div">
+            <label for="history_length" class="e-label">history_length</label>
+            <input type="number" id="history_length" name="history_length" value="10" min="1" max="100" class="e-input">
+          </div>
+
+          <div class="e-div">
+            <button class="btn e-item1 btn-secondary btn-lg btn-m" type="button" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+            <button class="btn e-item1 btn-primary btn-lg btn-m" type="submit" name="edit_btn">Submit</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="joinModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="joinLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="joinLabel">Join</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form method="POST" action="" onsubmit="setScroll();">
+        <input type="hidden" name="scroll" value="0" id="scrollPos6">
+        <div class="j-div">
+          <label class="btn-m j-label">Channel ID</label>
+          <div class="e-item2">
+            <input type="number" class="form-control" name="channel_id">
+          </div>
+          <button type="submit" class="btn btn-primary" name="join_btn" value="id">Join</button>
+        </div>
+
+        <div class="j-div">
+          <label class="btn-m j-label">Channel</label>
+          <div class="e-item2">
+            <select class="form-select" aria-label="channel_name" name="channel_name">
+
+              <option value="1008145669946626106">Bolívia accidental</option>
+
+              <option value="1008145669946626107">Immernachtreich voice šanel</option>
+
+              <option value="1008145670206664795">Mazda showroom in Iwo Jima idk</option>
+
+              <option value="1008145670206664796">크립토 메인의 은신처</option>
+
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary" name="join_btn" value="name">Join</button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="addToModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">Add to Queue</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form method="POST" id="ytForm" action="" onsubmit="setScroll();">
+        <input type="hidden" name="scroll" value="0" id="scrollPos7">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="ytURL" class="btn-m">URL</label>
+            <input type="url" class="form-control" name="ytURL" id="ytURL" required="">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#addToModalRadio">Radio</button>
+          <button type="submit" class="btn btn-primary">Add</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="addToModalRadio" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl r-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabelRadio">Add to Queue</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form method="POST" id="RadioForm" action="" onsubmit="setScroll();">
+        <input type="hidden" name="scroll" value="0" id="scrollPos8">
+        <div class="e-div e-wrap">
+          <button type="button" class="btn btn-dark e-item1" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-secondary e-item1" data-bs-toggle="modal" data-bs-target="#addToModal">Video</button>
+          <!--                <button type="submit" class="btn btn-primary e-item1">Add</button>-->
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <div class="r-cards">
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox0" class="radio-checkbox" value="Alternative Times Radio">
+                <label for="radio-checkbox0" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_0.svg" class="r-img" alt="radio_img_0">
+                </label>
+                <a class="radio-label">Alternative Times Radio</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox1" class="radio-checkbox" value="Český rozhlas Brno">
+                <label for="radio-checkbox1" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_1.svg" class="r-img" alt="radio_img_1">
+                </label>
+                <a class="radio-label">Český rozhlas Brno</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox2" class="radio-checkbox" value="Český rozhlas České Budějovice">
+                <label for="radio-checkbox2" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_2.svg" class="r-img" alt="radio_img_2">
+                </label>
+                <a class="radio-label">Český rozhlas České Budějovice</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox3" class="radio-checkbox" value="Český rozhlas D-dur">
+                <label for="radio-checkbox3" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_3.svg" class="r-img" alt="radio_img_3">
+                </label>
+                <a class="radio-label">Český rozhlas D-dur</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox4" class="radio-checkbox" value="Český rozhlas Dvojka">
+                <label for="radio-checkbox4" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_4.svg" class="r-img" alt="radio_img_4">
+                </label>
+                <a class="radio-label">Český rozhlas Dvojka</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox5" class="radio-checkbox" value="Český rozhlas Hradec Králové">
+                <label for="radio-checkbox5" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_5.svg" class="r-img" alt="radio_img_5">
+                </label>
+                <a class="radio-label">Český rozhlas Hradec Králové</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox6" class="radio-checkbox" value="Český rozhlas Jazz">
+                <label for="radio-checkbox6" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_6.svg" class="r-img" alt="radio_img_6">
+                </label>
+                <a class="radio-label">Český rozhlas Jazz</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox7" class="radio-checkbox" value="Český rozhlas Karlovy Vary">
+                <label for="radio-checkbox7" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_7.svg" class="r-img" alt="radio_img_7">
+                </label>
+                <a class="radio-label">Český rozhlas Karlovy Vary</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox8" class="radio-checkbox" value="Český rozhlas Liberec">
+                <label for="radio-checkbox8" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_8.svg" class="r-img" alt="radio_img_8">
+                </label>
+                <a class="radio-label">Český rozhlas Liberec</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox9" class="radio-checkbox" value="Český rozhlas Olomouc">
+                <label for="radio-checkbox9" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_9.svg" class="r-img" alt="radio_img_9">
+                </label>
+                <a class="radio-label">Český rozhlas Olomouc</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox10" class="radio-checkbox" value="Český rozhlas Ostrava">
+                <label for="radio-checkbox10" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_10.svg" class="r-img" alt="radio_img_10">
+                </label>
+                <a class="radio-label">Český rozhlas Ostrava</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox11" class="radio-checkbox" value="Český rozhlas Pardubice">
+                <label for="radio-checkbox11" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_11.svg" class="r-img" alt="radio_img_11">
+                </label>
+                <a class="radio-label">Český rozhlas Pardubice</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox12" class="radio-checkbox" value="Český rozhlas Plus">
+                <label for="radio-checkbox12" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_12.svg" class="r-img" alt="radio_img_12">
+                </label>
+                <a class="radio-label">Český rozhlas Plus</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox13" class="radio-checkbox" value="Český rozhlas Plzeň">
+                <label for="radio-checkbox13" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_13.svg" class="r-img" alt="radio_img_13">
+                </label>
+                <a class="radio-label">Český rozhlas Plzeň</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox14" class="radio-checkbox" value="Český rozhlas Pohoda">
+                <label for="radio-checkbox14" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_14.svg" class="r-img" alt="radio_img_14">
+                </label>
+                <a class="radio-label">Český rozhlas Pohoda</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox15" class="radio-checkbox" value="Český rozhlas Radio DAB Praha">
+                <label for="radio-checkbox15" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_15.svg" class="r-img" alt="radio_img_15">
+                </label>
+                <a class="radio-label">Český rozhlas Radio DAB Praha</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox16" class="radio-checkbox" value="Český rozhlas Rádio Junior">
+                <label for="radio-checkbox16" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_16.svg" class="r-img" alt="radio_img_16">
+                </label>
+                <a class="radio-label">Český rozhlas Rádio Junior</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox17" class="radio-checkbox" value="Český rozhlas Radio Wave">
+                <label for="radio-checkbox17" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_17.svg" class="r-img" alt="radio_img_17">
+                </label>
+                <a class="radio-label">Český rozhlas Radio Wave</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox18" class="radio-checkbox" value="Český rozhlas Radiožurnál">
+                <label for="radio-checkbox18" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_18.svg" class="r-img" alt="radio_img_18">
+                </label>
+                <a class="radio-label">Český rozhlas Radiožurnál</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox19" class="radio-checkbox" value="Český rozhlas Region">
+                <label for="radio-checkbox19" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_19.svg" class="r-img" alt="radio_img_19">
+                </label>
+                <a class="radio-label">Český rozhlas Region</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox20" class="radio-checkbox" value="Český rozhlas Sever">
+                <label for="radio-checkbox20" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_20.svg" class="r-img" alt="radio_img_20">
+                </label>
+                <a class="radio-label">Český rozhlas Sever</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox21" class="radio-checkbox" value="Český rozhlas Vltava">
+                <label for="radio-checkbox21" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_21.svg" class="r-img" alt="radio_img_21">
+                </label>
+                <a class="radio-label">Český rozhlas Vltava</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox22" class="radio-checkbox" value="Český rozhlas Vysočina">
+                <label for="radio-checkbox22" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_22.svg" class="r-img" alt="radio_img_22">
+                </label>
+                <a class="radio-label">Český rozhlas Vysočina</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox23" class="radio-checkbox" value="Český rozhlas Zlín">
+                <label for="radio-checkbox23" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_23.svg" class="r-img" alt="radio_img_23">
+                </label>
+                <a class="radio-label">Český rozhlas Zlín</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox24" class="radio-checkbox" value="Coop TIP Rádio">
+                <label for="radio-checkbox24" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_24.svg" class="r-img" alt="radio_img_24">
+                </label>
+                <a class="radio-label">Coop TIP Rádio</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox25" class="radio-checkbox" value="Country Radio">
+                <label for="radio-checkbox25" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_25.svg" class="r-img" alt="radio_img_25">
+                </label>
+                <a class="radio-label">Country Radio</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox26" class="radio-checkbox" value="Dance Club Radio">
+                <label for="radio-checkbox26" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_26.svg" class="r-img" alt="radio_img_26">
+                </label>
+                <a class="radio-label">Dance Club Radio</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox27" class="radio-checkbox" value="Drumandbass Radio SHADOWBOX">
+                <label for="radio-checkbox27" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_27.svg" class="r-img" alt="radio_img_27">
+                </label>
+                <a class="radio-label">Drumandbass Radio SHADOWBOX</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox28" class="radio-checkbox" value="E-Rádio JAZZINEC">
+                <label for="radio-checkbox28" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_28.svg" class="r-img" alt="radio_img_28">
+                </label>
+                <a class="radio-label">E-Rádio JAZZINEC</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox29" class="radio-checkbox" value="Fajn Fresh Radio">
+                <label for="radio-checkbox29" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_29.svg" class="r-img" alt="radio_img_29">
+                </label>
+                <a class="radio-label">Fajn Fresh Radio</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox30" class="radio-checkbox" value="Fajn Radio">
+                <label for="radio-checkbox30" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_30.svg" class="r-img" alt="radio_img_30">
+                </label>
+                <a class="radio-label">Fajn Radio</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox31" class="radio-checkbox" value="HipHopVibes Radio">
+                <label for="radio-checkbox31" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_31.svg" class="r-img" alt="radio_img_31">
+                </label>
+                <a class="radio-label">HipHopVibes Radio</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox32" class="radio-checkbox" value="Hitrádio Černá Hora">
+                <label for="radio-checkbox32" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_32.svg" class="r-img" alt="radio_img_32">
+                </label>
+                <a class="radio-label">Hitrádio Černá Hora</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox33" class="radio-checkbox" value="Hitrádio City 93,7 FM">
+                <label for="radio-checkbox33" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_33.svg" class="r-img" alt="radio_img_33">
+                </label>
+                <a class="radio-label">Hitrádio City 93,7 FM</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox34" class="radio-checkbox" value="Hitrádio City Brno">
+                <label for="radio-checkbox34" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_34.svg" class="r-img" alt="radio_img_34">
+                </label>
+                <a class="radio-label">Hitrádio City Brno</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox35" class="radio-checkbox" value="Hitrádio Desítka">
+                <label for="radio-checkbox35" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_35.svg" class="r-img" alt="radio_img_35">
+                </label>
+                <a class="radio-label">Hitrádio Desítka</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox36" class="radio-checkbox" value="Hitrádio Devadesátka">
+                <label for="radio-checkbox36" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_36.svg" class="r-img" alt="radio_img_36">
+                </label>
+                <a class="radio-label">Hitrádio Devadesátka</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox37" class="radio-checkbox" value="Hitrádio Faktor">
+                <label for="radio-checkbox37" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_37.svg" class="r-img" alt="radio_img_37">
+                </label>
+                <a class="radio-label">Hitrádio Faktor</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox38" class="radio-checkbox" value="Hitrádio FM Plus">
+                <label for="radio-checkbox38" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_38.svg" class="r-img" alt="radio_img_38">
+                </label>
+                <a class="radio-label">Hitrádio FM Plus</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox39" class="radio-checkbox" value="Hitrádio Milénium">
+                <label for="radio-checkbox39" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_39.svg" class="r-img" alt="radio_img_39">
+                </label>
+                <a class="radio-label">Hitrádio Milénium</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox40" class="radio-checkbox" value="Hitrádio North Music">
+                <label for="radio-checkbox40" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_40.svg" class="r-img" alt="radio_img_40">
+                </label>
+                <a class="radio-label">Hitrádio North Music</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox41" class="radio-checkbox" value="Hitrádio Orion">
+                <label for="radio-checkbox41" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_41.svg" class="r-img" alt="radio_img_41">
+                </label>
+                <a class="radio-label">Hitrádio Orion</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox42" class="radio-checkbox" value="Hitrádio Osmdesátka">
+                <label for="radio-checkbox42" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_42.svg" class="r-img" alt="radio_img_42">
+                </label>
+                <a class="radio-label">Hitrádio Osmdesátka</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox43" class="radio-checkbox" value="Hitrádio PopRock">
+                <label for="radio-checkbox43" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_43.svg" class="r-img" alt="radio_img_43">
+                </label>
+                <a class="radio-label">Hitrádio PopRock</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox44" class="radio-checkbox" value="Hitrádio Vysočina">
+                <label for="radio-checkbox44" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_44.svg" class="r-img" alt="radio_img_44">
+                </label>
+                <a class="radio-label">Hitrádio Vysočina</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox45" class="radio-checkbox" value="Hitrádio Zlín">
+                <label for="radio-checkbox45" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_45.svg" class="r-img" alt="radio_img_45">
+                </label>
+                <a class="radio-label">Hitrádio Zlín</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox46" class="radio-checkbox" value="Hitrádio Zóna lásky">
+                <label for="radio-checkbox46" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_46.svg" class="r-img" alt="radio_img_46">
+                </label>
+                <a class="radio-label">Hitrádio Zóna lásky</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox47" class="radio-checkbox" value="Kostka Rádio">
+                <label for="radio-checkbox47" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_47.svg" class="r-img" alt="radio_img_47">
+                </label>
+                <a class="radio-label">Kostka Rádio</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox48" class="radio-checkbox" value="Max Rádio Online">
+                <label for="radio-checkbox48" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_48.svg" class="r-img" alt="radio_img_48">
+                </label>
+                <a class="radio-label">Max Rádio Online</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox49" class="radio-checkbox" value="Metalománie">
+                <label for="radio-checkbox49" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_49.svg" class="r-img" alt="radio_img_49">
+                </label>
+                <a class="radio-label">Metalománie</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox50" class="radio-checkbox" value="Oldies radio">
+                <label for="radio-checkbox50" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_50.svg" class="r-img" alt="radio_img_50">
+                </label>
+                <a class="radio-label">Oldies radio</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox51" class="radio-checkbox" value="Radio 1">
+                <label for="radio-checkbox51" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_51.svg" class="r-img" alt="radio_img_51">
+                </label>
+                <a class="radio-label">Radio 1</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox52" class="radio-checkbox" value="Radio 66">
+                <label for="radio-checkbox52" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_52.svg" class="r-img" alt="radio_img_52">
+                </label>
+                <a class="radio-label">Radio 66</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox53" class="radio-checkbox" value="Radio Beat">
+                <label for="radio-checkbox53" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_53.svg" class="r-img" alt="radio_img_53">
+                </label>
+                <a class="radio-label">Radio Beat</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox54" class="radio-checkbox" value="Rádio Benešov City">
+                <label for="radio-checkbox54" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_54.svg" class="r-img" alt="radio_img_54">
+                </label>
+                <a class="radio-label">Rádio Benešov City</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox55" class="radio-checkbox" value="Radio Best of Rock">
+                <label for="radio-checkbox55" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_55.svg" class="r-img" alt="radio_img_55">
+                </label>
+                <a class="radio-label">Radio Best of Rock</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox56" class="radio-checkbox" value="Rádio BLANÍK">
+                <label for="radio-checkbox56" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_56.svg" class="r-img" alt="radio_img_56">
+                </label>
+                <a class="radio-label">Rádio BLANÍK</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox57" class="radio-checkbox" value="Rádio BLANÍK - Morava a Slezsko">
+                <label for="radio-checkbox57" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_57.svg" class="r-img" alt="radio_img_57">
+                </label>
+                <a class="radio-label">Rádio BLANÍK - Morava a Slezsko</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox58" class="radio-checkbox" value="Rádio BLANÍK CZ">
+                <label for="radio-checkbox58" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_58.svg" class="r-img" alt="radio_img_58">
+                </label>
+                <a class="radio-label">Rádio BLANÍK CZ</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox59" class="radio-checkbox" value="Rádio BOHEMIA">
+                <label for="radio-checkbox59" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_59.svg" class="r-img" alt="radio_img_59">
+                </label>
+                <a class="radio-label">Rádio BOHEMIA</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox60" class="radio-checkbox" value="Radio Chillout">
+                <label for="radio-checkbox60" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_60.svg" class="r-img" alt="radio_img_60">
+                </label>
+                <a class="radio-label">Radio Chillout</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox61" class="radio-checkbox" value="Radio Depeche Mode">
+                <label for="radio-checkbox61" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_61.svg" class="r-img" alt="radio_img_61">
+                </label>
+                <a class="radio-label">Radio Depeche Mode</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox62" class="radio-checkbox" value="Radio Domino">
+                <label for="radio-checkbox62" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_62.svg" class="r-img" alt="radio_img_62">
+                </label>
+                <a class="radio-label">Radio Domino</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox63" class="radio-checkbox" value="Radio Expert">
+                <label for="radio-checkbox63" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_63.svg" class="r-img" alt="radio_img_63">
+                </label>
+                <a class="radio-label">Radio Expert</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox64" class="radio-checkbox" value="Radio Folk">
+                <label for="radio-checkbox64" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_64.svg" class="r-img" alt="radio_img_64">
+                </label>
+                <a class="radio-label">Radio Folk</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox65" class="radio-checkbox" value="Rádio Helax">
+                <label for="radio-checkbox65" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_65.svg" class="r-img" alt="radio_img_65">
+                </label>
+                <a class="radio-label">Rádio Helax</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox66" class="radio-checkbox" value="Rádio Humor">
+                <label for="radio-checkbox66" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_66.svg" class="r-img" alt="radio_img_66">
+                </label>
+                <a class="radio-label">Rádio Humor</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox67" class="radio-checkbox" value="Rádio In">
+                <label for="radio-checkbox67" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_67.svg" class="r-img" alt="radio_img_67">
+                </label>
+                <a class="radio-label">Rádio In</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox68" class="radio-checkbox" value="Radio Kiss">
+                <label for="radio-checkbox68" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_68.svg" class="r-img" alt="radio_img_68">
+                </label>
+                <a class="radio-label">Radio Kiss</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox69" class="radio-checkbox" value="Rádio MB">
+                <label for="radio-checkbox69" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_69.svg" class="r-img" alt="radio_img_69">
+                </label>
+                <a class="radio-label">Rádio MB</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox70" class="radio-checkbox" value="Radio Oldies Rock">
+                <label for="radio-checkbox70" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_70.svg" class="r-img" alt="radio_img_70">
+                </label>
+                <a class="radio-label">Radio Oldies Rock</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox71" class="radio-checkbox" value="Rádio Pohádka">
+                <label for="radio-checkbox71" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_71.svg" class="r-img" alt="radio_img_71">
+                </label>
+                <a class="radio-label">Rádio Pohádka</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox72" class="radio-checkbox" value="Rádio Ponte Records">
+                <label for="radio-checkbox72" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_72.svg" class="r-img" alt="radio_img_72">
+                </label>
+                <a class="radio-label">Rádio Ponte Records</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox73" class="radio-checkbox" value="Rádio Povídka">
+                <label for="radio-checkbox73" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_73.svg" class="r-img" alt="radio_img_73">
+                </label>
+                <a class="radio-label">Rádio Povídka</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox74" class="radio-checkbox" value="Radio Prague International">
+                <label for="radio-checkbox74" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_74.svg" class="r-img" alt="radio_img_74">
+                </label>
+                <a class="radio-label">Radio Prague International</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox75" class="radio-checkbox" value="Radio Spin 96,2 FM">
+                <label for="radio-checkbox75" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_75.svg" class="r-img" alt="radio_img_75">
+                </label>
+                <a class="radio-label">Radio Spin 96,2 FM</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox76" class="radio-checkbox" value="Rádio Tloskov">
+                <label for="radio-checkbox76" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_76.svg" class="r-img" alt="radio_img_76">
+                </label>
+                <a class="radio-label">Rádio Tloskov</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox77" class="radio-checkbox" value="Rádio Ukrajina">
+                <label for="radio-checkbox77" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_77.svg" class="r-img" alt="radio_img_77">
+                </label>
+                <a class="radio-label">Rádio Ukrajina</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox78" class="radio-checkbox" value="Rádio Vratislavice">
+                <label for="radio-checkbox78" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_78.svg" class="r-img" alt="radio_img_78">
+                </label>
+                <a class="radio-label">Rádio Vratislavice</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox79" class="radio-checkbox" value="Rádio Vysočina">
+                <label for="radio-checkbox79" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_79.svg" class="r-img" alt="radio_img_79">
+                </label>
+                <a class="radio-label">Rádio Vysočina</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox80" class="radio-checkbox" value="Rádio VYŠŠÍ HLAS">
+                <label for="radio-checkbox80" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_80.svg" class="r-img" alt="radio_img_80">
+                </label>
+                <a class="radio-label">Rádio VYŠŠÍ HLAS</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox81" class="radio-checkbox" value="Rádio Zelená Hora">
+                <label for="radio-checkbox81" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_81.svg" class="r-img" alt="radio_img_81">
+                </label>
+                <a class="radio-label">Rádio Zelená Hora</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox82" class="radio-checkbox" value="Radiožurnál Sport">
+                <label for="radio-checkbox82" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_82.svg" class="r-img" alt="radio_img_82">
+                </label>
+                <a class="radio-label">Radiožurnál Sport</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox83" class="radio-checkbox" value="Relaxace - Jedoucí Vlak">
+                <label for="radio-checkbox83" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_83.svg" class="r-img" alt="radio_img_83">
+                </label>
+                <a class="radio-label">Relaxace - Jedoucí Vlak</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox84" class="radio-checkbox" value="Relaxace - Letní bouřka">
+                <label for="radio-checkbox84" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_84.svg" class="r-img" alt="radio_img_84">
+                </label>
+                <a class="radio-label">Relaxace - Letní bouřka</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox85" class="radio-checkbox" value="Relaxace - Moře">
+                <label for="radio-checkbox85" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_85.svg" class="r-img" alt="radio_img_85">
+                </label>
+                <a class="radio-label">Relaxace - Moře</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox86" class="radio-checkbox" value="Relaxace - Oheň v krbu">
+                <label for="radio-checkbox86" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_86.svg" class="r-img" alt="radio_img_86">
+                </label>
+                <a class="radio-label">Relaxace - Oheň v krbu</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox87" class="radio-checkbox" value="Relaxace - Zpěv ptáků">
+                <label for="radio-checkbox87" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_87.svg" class="r-img" alt="radio_img_87">
+                </label>
+                <a class="radio-label">Relaxace - Zpěv ptáků</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox88" class="radio-checkbox" value="Rock Radio">
+                <label for="radio-checkbox88" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_88.svg" class="r-img" alt="radio_img_88">
+                </label>
+                <a class="radio-label">Rock Radio</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox89" class="radio-checkbox" value="Rock Radio Morava">
+                <label for="radio-checkbox89" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_89.svg" class="r-img" alt="radio_img_89">
+                </label>
+                <a class="radio-label">Rock Radio Morava</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox90" class="radio-checkbox" value="Rocková zábava">
+                <label for="radio-checkbox90" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_90.svg" class="r-img" alt="radio_img_90">
+                </label>
+                <a class="radio-label">Rocková zábava</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox91" class="radio-checkbox" value="Roma Rádio">
+                <label for="radio-checkbox91" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_91.svg" class="r-img" alt="radio_img_91">
+                </label>
+                <a class="radio-label">Roma Rádio</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox92" class="radio-checkbox" value="Signál Rádio">
+                <label for="radio-checkbox92" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_92.svg" class="r-img" alt="radio_img_92">
+                </label>
+                <a class="radio-label">Signál Rádio</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox93" class="radio-checkbox" value="WebRádio Epigon">
+                <label for="radio-checkbox93" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_93.svg" class="r-img" alt="radio_img_93">
+                </label>
+                <a class="radio-label">WebRádio Epigon</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox94" class="radio-checkbox" value="Známka Punku">
+                <label for="radio-checkbox94" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_94.svg" class="r-img" alt="radio_img_94">
+                </label>
+                <a class="radio-label">Známka Punku</a>
+              </div>
+
+              <div class="r-card">
+                <input type="radio" name="radio-checkbox" id="radio-checkbox95" class="radio-checkbox" value="Evropa 2">
+                <label for="radio-checkbox95" onclick="submitRadioForm()">
+                  <img loading="lazy" src="/static/radio_svg/svg_radio_95.svg" class="r-img" alt="radio_img_95">
+                </label>
+                <a class="radio-label">Evropa 2</a>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+window.scrollTo(300, 300);
+console.log("scrolling");
+</script>
+
+
+<br><br>
+<footer class="bd-footer py-4 py-md-5 nav-discord">
+  <div class="container py-4 py-md-5 px-4 px-md-3 text-body-secondary">
+    <div class="row">
+      <div class="col-lg-4 mb-2">
+        <a class="d-inline-flex align-items-center mb-2 text-body-emphasis text-decoration-none" href="/" aria-label="Nicholas The 7th">
+          <svg xmlns="http://www.w3.org/2000/svg" width="35px" height="35px" viewBox="0 0 314 337" style="margin-right:0.5rem">
+            <path fill-rule="evenodd" fill="rgb(255, 255, 255)" d="M-0.000,0.000 L59.000,0.000 L190.000,118.000 L190.000,0.000 L244.000,0.000 L244.000,257.000 L190.000,210.000 L190.000,168.000 L55.000,49.000 L55.000,337.000 L-0.000,337.000 L-0.000,0.000 ZM67.000,337.000 L124.000,337.000 L124.000,223.000 L253.000,337.000 L314.000,337.000 L314.000,0.000 L257.000,0.000 L257.000,286.000 L124.000,169.000 L124.000,128.000 L67.000,77.000 L67.000,337.000 Z"></path>
+          </svg>
+          <span class="fs-5">Nicholas the 7th</span>
+        </a>
+        <ul class="list-unstyled small">
+          <li class="mb-2">Designed and built by <a href="https://discordapp.com/users/349164237605568513">Tomer27cz#4272</a>, using open source repositories <a href="https://github.com/Rapptz/discord.py">discord.py</a>, <a href="https://github.com/pallets/flask/">flask</a>, <a href="https://github.com/yt-dlp/yt-dlp">yt-dlp</a>, <a href="https://github.com/alexmercerind/youtube-search-python">youtube-search-python</a>, <a href="https://www.crummy.com/software/BeautifulSoup/">bs4</a>, <a href="https://github.com/twbs/bootstrap">bootstrap</a>.</li>
+          <li class="mb-2">Code licensed <a href="https://github.com/Tomer27cz/discord_bot_stanley_the_7th/blob/main/LICENSE" target="_blank" rel="license noopener">MIT</a></li>
+          <li class="mb-2">Currently v7.0</li>
+        </ul>
+      </div>
+      <div class="col-6 col-lg-2 offset-lg-2 mb-2">
+        <h5>Links</h5>
+        <ul class="list-unstyled">
+          <li class="mb-2"><a href="/">Home</a></li>
+          <li class="mb-2"><a href="/guild">Servers</a></li>
+          <li class="mb-2"><a href="/about">About</a></li>
+        </ul>
+      </div>
+      <div class="col-6 col-lg-2 mb-2">
+        <h5>Projects</h5>
+        <ul class="list-unstyled">
+          <li class="mb-2"><a href="https://github.com/Tomer27cz/discord_bot_stanley_the_7th">Nicholas v7.0</a></li>
+          <li class="mb-2"><a href="https://github.com/Tomer27cz/discord_bot_stanley_the_6th">Nicholas v6.0</a></li>
+          <li class="mb-2"><a href="https://github.com/Tomer27cz/UIDEST">UIDEST</a></li>
+        </ul>
+      </div>
+      <div class="col-6 col-lg-2 mb-2">
+        <h5>Social</h5>
+        <ul class="list-unstyled">
+          <li class="mb-2"><a href="https://discordapp.com/users/349164237605568513">Discord</a></li>
+          <li class="mb-2"><a href="https://github.com/twbs/bootstrap/discussions">GitHub</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js" integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N" crossorigin="anonymous"></script>
 
 </body></html>

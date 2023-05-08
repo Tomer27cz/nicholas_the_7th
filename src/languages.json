@@ -139,7 +139,30 @@
         "No songs in queue": "No songs in queue",
         "Check out the new": "Check out the new",
         "HISTORY #": "HISTORY #",
-        "Adding songs to queue... (might take a while)": "Adding songs to queue... (might take a while)"
+        "Adding songs to queue... (might take a while)": "Adding songs to queue... (might take a while)",
+        "Now Playing": "Now Playing",
+        "Last Played": "Last Played",
+        "Queue": "Queue",
+        "At least **one** argument is required!": "At least **one** argument is required!",
+        "Radio **started**": "Radio **started**",
+        "There is no song played yet": "There is no song played yet",
+        "Member Count": "Member Count",
+        "Server Owner": "Server Owner",
+        "Created at": "Created at",
+        "Description": "Description",
+        "History": "History",
+        "From/To": "From/To",
+        "Edit": "Edit",
+        "Remove": "Remove",
+        "More": "More",
+        "Add to queue": "Add to queue",
+        "Play next": "Play next",
+        "Info": "Info",
+        "Nothing has been played yet": "Nothing has been played yet",
+        "Played at": "Played at",
+        "Nothing is playing right now": "Nothing is playing right now",
+        "Move to Top": "Move to Top",
+        "Move to Bottom": "Move to Bottom"
     },
     "cs": {
         "search": "Vyhledejte na youtube zadan\u00fd dotaz",
@@ -272,17 +295,22 @@
         "last": "Ukazuje posledn\u00ed p\u0159ehr\u00e1vanou p\u00edse\u0148",
         "The commands from": "P\u0159\u00edkazy z",
         "Arguments": "Argumenty",
-        "Player **stopped!**": "P\u0159ehr\u00e1va\u010d ** zastaven! **",
-        "Player **paused!**": "P\u0159ehr\u00e1va\u010d ** pozastaven\u00fd! **",
+        "Player **stopped!**": "P\u0159ehr\u00e1va\u010d **zastaven!**",
+        "Player **paused!**": "P\u0159ehr\u00e1va\u010d **pozastaven\u00fd!**",
         "Bot is not connected to a voice channel": "Bot nen\u00ed p\u0159ipojen k hlasov\u00e9mu kan\u00e1lu",
         "key": "Zobrazuje kl\u00ed\u010d pro server",
         "Unknown type": "Nezn\u00e1m\u00fd typ",
-        "Player **resumed!**": "Hr\u00e1\u010d ** obnoven! **",
+        "Player **resumed!**": "P\u0159ehr\u00e1va\u010d **obnoven!**",
         "No songs in queue": "\u017d\u00e1dn\u00e9 p\u00edsn\u011b ve front\u011b",
         "Check out the new": "Pod\u00edvejte se na nov\u00fd",
         "QUEUE #": "Fronta #",
         "HISTORY #": "D\u011aJINY #",
-        "Adding songs to queue... (might take a while)": "P\u0159id\u00e1n\u00ed p\u00edsn\u00ed do fronty ... (m\u016f\u017ee chv\u00edli trvat)"
+        "Adding songs to queue... (might take a while)": "P\u0159id\u00e1n\u00ed p\u00edsn\u00ed do fronty ... (m\u016f\u017ee chv\u00edli trvat)",
+        "Now Playing": "Nyn\u00ed hraje",
+        "Last Played": "Naposledy hr\u00e1no",
+        "At least **one** argument is required!": "Je vy\u017eadov\u00e1n alespo\u0148 **jeden** argument!",
+        "Radio **started**": "R\u00e1dio **spu\u0161t\u011bno**",
+        "There is no song played yet": "Zat\u00edm se nehraje \u017e\u00e1dn\u00e1 skladba"
     },
     "de": {
         "search": "Suchen Sie YouTube nach der bereitgestellten Abfrage",
@@ -425,7 +453,12 @@
         "Check out the new": "Schauen Sie sich das neue an",
         "QUEUE #": "WARTESCHLANGE #",
         "HISTORY #": "GESCHICHTE #",
-        "Adding songs to queue... (might take a while)": "Hinzuf\u00fcgen von Songs zur Warteschlange ... (M\u00f6glicherweise dauern eine Weile)"
+        "Adding songs to queue... (might take a while)": "Hinzuf\u00fcgen von Songs zur Warteschlange ... (M\u00f6glicherweise dauern eine Weile)",
+        "Now Playing": "L\u00e4uft gerade",
+        "Last Played": "Zuletzt gespielt",
+        "At least **one** argument is required!": "Mindestens **ein** Argument ist erforderlich!",
+        "Radio **started**": "Radio **gestartet**",
+        "There is no song played yet": "Es wurde noch kein Song gespielt"
     },
     "eo": {
         "search": "Ser\u0109u YouTube",
@@ -568,7 +601,12 @@
         "Check out the new": "Rigardu la novan",
         "QUEUE #": "Vosto #",
         "HISTORY #": "HISTORIO #",
-        "Adding songs to queue... (might take a while)": "Aldonante kantojn al vosto ... (eble da\u016dros iom da tempo)"
+        "Adding songs to queue... (might take a while)": "Aldonante kantojn al vosto ... (eble da\u016dros iom da tempo)",
+        "Now Playing": "Nun Ludante",
+        "Last Played": "Laste Ludita",
+        "At least **one** argument is required!": "Almena\u016d **unu** argumento necesas!",
+        "Radio **started**": "Radio **komencis**",
+        "There is no song played yet": "Ankora\u016d ne estas ludita kanto"
     },
     "es": {
         "search": "Busque en YouTube la consulta proporcionada",
@@ -711,7 +749,12 @@
         "Check out the new": "Mira el nuevo",
         "QUEUE #": "COLA #",
         "HISTORY #": "HISTORIA #",
-        "Adding songs to queue... (might take a while)": "Agregar canciones a la cola ... (podr\u00eda llevar un tiempo)"
+        "Adding songs to queue... (might take a while)": "Agregar canciones a la cola ... (podr\u00eda llevar un tiempo)",
+        "Now Playing": "Jugando ahora",
+        "Last Played": "\u00daltima reproducci\u00f3n",
+        "At least **one** argument is required!": "\u00a1Se requiere al menos **un** argumento!",
+        "Radio **started**": "Radio **comenz\u00f3**",
+        "There is no song played yet": "A\u00fan no se ha reproducido ninguna canci\u00f3n."
     },
     "fr": {
         "search": "Recherchez YouTube pour la requ\u00eate fournie",
@@ -854,7 +897,12 @@
         "Check out the new": "D\u00e9couvrez le nouveau",
         "QUEUE #": "FILE D'ATTENTE #",
         "HISTORY #": "HISTOIRE #",
-        "Adding songs to queue... (might take a while)": "Ajouter des chansons \u00e0 la file d'attente ... (pourrait prendre un certain temps)"
+        "Adding songs to queue... (might take a while)": "Ajouter des chansons \u00e0 la file d'attente ... (pourrait prendre un certain temps)",
+        "Now Playing": "Lecture en cours",
+        "Last Played": "Dernier jou\u00e9",
+        "At least **one** argument is required!": "Au moins **un** argument est requis\u00a0!",
+        "Radio **started**": "Radio **d\u00e9marr\u00e9e**",
+        "There is no song played yet": "Il n&#39;y a pas encore de chanson jou\u00e9e"
     },
     "it": {
         "search": "Cerca YouTube per la query fornita",
@@ -997,7 +1045,12 @@
         "Check out the new": "Dai un'occhiata al nuovo",
         "QUEUE #": "CODA #",
         "HISTORY #": "STORIA #",
-        "Adding songs to queue... (might take a while)": "Aggiungere canzoni alla coda ... (potrebbe richiedere un po 'di tempo)"
+        "Adding songs to queue... (might take a while)": "Aggiungere canzoni alla coda ... (potrebbe richiedere un po 'di tempo)",
+        "Now Playing": "Ora in riproduzione",
+        "Last Played": "Ultima giocata",
+        "At least **one** argument is required!": "\u00c8 richiesto almeno **un** argomento!",
+        "Radio **started**": "Radio **iniziata**",
+        "There is no song played yet": "Non \u00e8 ancora stata riprodotta alcuna canzone"
     },
     "ja": {
         "search": "YouTube\u3092\u691c\u7d22\u3057\u3066\u304f\u3060\u3055\u3044",
@@ -1140,7 +1193,12 @@
         "Check out the new": "\u65b0\u3057\u3044\u3082\u306e\u3092\u30c1\u30a7\u30c3\u30af\u3057\u3066\u304f\u3060\u3055\u3044",
         "QUEUE #": "\u5217 \uff03",
         "HISTORY #": "\u6b74\u53f2 \uff03",
-        "Adding songs to queue... (might take a while)": "\u30ad\u30e5\u30fc\u306b\u66f2\u3092\u8ffd\u52a0...\uff08\u3057\u3070\u3089\u304f\u6642\u9593\u304c\u304b\u304b\u308b\u304b\u3082\u3057\u308c\u307e\u305b\u3093\uff09"
+        "Adding songs to queue... (might take a while)": "\u30ad\u30e5\u30fc\u306b\u66f2\u3092\u8ffd\u52a0...\uff08\u3057\u3070\u3089\u304f\u6642\u9593\u304c\u304b\u304b\u308b\u304b\u3082\u3057\u308c\u307e\u305b\u3093\uff09",
+        "Now Playing": "\u518d\u751f\u4e2d",
+        "Last Played": "\u6700\u7d42\u30d7\u30ec\u30a4",
+        "At least **one** argument is required!": "\u5c11\u306a\u304f\u3068\u3082 **1 \u3064\u306e**\u5f15\u6570\u304c\u5fc5\u8981\u3067\u3059!",
+        "Radio **started**": "\u30e9\u30b8\u30aa**\u958b\u59cb**",
+        "There is no song played yet": "\u307e\u3060\u518d\u751f\u3055\u308c\u305f\u66f2\u306f\u3042\u308a\u307e\u305b\u3093"
     },
     "ko": {
         "search": "\uc81c\uacf5\ub41c \ucffc\ub9ac\ub97c \uac80\uc0c9\ud558\uc2ed\uc2dc\uc624",
@@ -1283,7 +1341,12 @@
         "Check out the new": "\uc0c8\ub85c\uc6b4 \uac83\uc744 \ud655\uc778\ud558\uc2ed\uc2dc\uc624",
         "QUEUE #": "\ub300\uae30\uc904 #",
         "HISTORY #": "\uc5ed\uc0ac #",
-        "Adding songs to queue... (might take a while)": "\ud050\uc5d0 \ub178\ub798 \ucd94\uac00 ... (\uc2dc\uac04\uc774 \uac78\ub9b4 \uc218 \uc788\uc74c)"
+        "Adding songs to queue... (might take a while)": "\ud050\uc5d0 \ub178\ub798 \ucd94\uac00 ... (\uc2dc\uac04\uc774 \uac78\ub9b4 \uc218 \uc788\uc74c)",
+        "Now Playing": "\uc9c0\uae08 \uc7ac\uc0dd \uc911",
+        "Last Played": "\ub9c8\uc9c0\ub9c9 \ud50c\ub808\uc774",
+        "At least **one** argument is required!": "\ucd5c\uc18c\ud55c **\ud558\ub098**\uc758 \uc778\uc218\uac00 \ud544\uc694\ud569\ub2c8\ub2e4!",
+        "Radio **started**": "\ub77c\ub514\uc624 **\uc2dc\uc791\ub428**",
+        "There is no song played yet": "\uc544\uc9c1 \uc7ac\uc0dd\ub41c \ub178\ub798\uac00 \uc5c6\uc2b5\ub2c8\ub2e4."
     },
     "la": {
         "search": "Search YouTube pro provisum query",
@@ -1426,7 +1489,12 @@
         "Check out the new": "Reprehendo sicco novi",
         "QUEUE #": "Queue #",
         "HISTORY #": "Historia #",
-        "Adding songs to queue... (might take a while)": "Addit carmina ad queue ... (ut a dum)"
+        "Adding songs to queue... (might take a while)": "Addit carmina ad queue ... (ut a dum)",
+        "Now Playing": "Nunc ludens",
+        "Last Played": "Last Played",
+        "At least **one** argument is required!": "Saltem unum argumentum quaeritur.",
+        "Radio **started**": "Radio",
+        "There is no song played yet": "Non est carmen adhuc"
     },
     "zh": {
         "search": "\u641c\u7d22YouTube\u63d0\u4f9b\u7684\u67e5\u8be2",
@@ -1569,7 +1637,12 @@
         "Check out the new": "\u67e5\u770b\u65b0\u7684",
         "QUEUE #": "\u961f\u5217 \uff03",
         "HISTORY #": "\u5386\u53f2 \uff03",
-        "Adding songs to queue... (might take a while)": "\u5728\u961f\u5217\u4e2d\u6dfb\u52a0\u6b4c\u66f2...\uff08\u53ef\u80fd\u9700\u8981\u4e00\u6bb5\u65f6\u95f4\uff09"
+        "Adding songs to queue... (might take a while)": "\u5728\u961f\u5217\u4e2d\u6dfb\u52a0\u6b4c\u66f2...\uff08\u53ef\u80fd\u9700\u8981\u4e00\u6bb5\u65f6\u95f4\uff09",
+        "Now Playing": "\u6b63\u5728\u64ad\u653e",
+        "Last Played": "\u6700\u540e\u64ad\u653e",
+        "At least **one** argument is required!": "\u81f3\u5c11\u9700\u8981**\u4e00\u4e2a**\u53c2\u6570\uff01",
+        "Radio **started**": "\u6536\u97f3\u673a**\u5f00\u59cb**",
+        "There is no song played yet": "\u8fd8\u6ca1\u6709\u6b4c\u66f2\u64ad\u653e"
     },
     "nl": {
         "search": "Zoek YouTube naar de verstrekte query",
@@ -1712,7 +1785,12 @@
         "Check out the new": "Bekijk het nieuwe",
         "QUEUE #": "WACHTRIJ #",
         "HISTORY #": "GESCHIEDENIS #",
-        "Adding songs to queue... (might take a while)": "Nummers toevoegen om in de rij te staan ... (kan een tijdje duren)"
+        "Adding songs to queue... (might take a while)": "Nummers toevoegen om in de rij te staan ... (kan een tijdje duren)",
+        "Now Playing": "Nu aan het spelen",
+        "Last Played": "Laatst gespeeld",
+        "At least **one** argument is required!": "Er is minimaal **\u00e9\u00e9n** argument vereist!",
+        "Radio **started**": "Radio **begonnen**",
+        "There is no song played yet": "Er is nog geen nummer gespeeld"
     },
     "pl": {
         "search": "Wyszukaj YouTube, aby uzyska\u0107 dostarczone zapytanie",
@@ -1855,7 +1933,12 @@
         "Check out the new": "Sprawd\u017a nowy",
         "QUEUE #": "KOLEJKA #",
         "HISTORY #": "Historia #",
-        "Adding songs to queue... (might take a while)": "Dodawanie piosenek do kolejki ... (mo\u017ce troch\u0119 czasu)"
+        "Adding songs to queue... (might take a while)": "Dodawanie piosenek do kolejki ... (mo\u017ce troch\u0119 czasu)",
+        "Now Playing": "Teraz odtwarzane",
+        "Last Played": "Ostatnio grane",
+        "At least **one** argument is required!": "Wymagany jest co najmniej **jeden** argument!",
+        "Radio **started**": "Radio **w\u0142\u0105czy\u0142o si\u0119**",
+        "There is no song played yet": "Nie ma jeszcze odtworzonego utworu"
     },
     "pt": {
         "search": "Pesquise o YouTube pela consulta fornecida",
@@ -1998,7 +2081,12 @@
         "Check out the new": "Confira o novo",
         "QUEUE #": "FILA #",
         "HISTORY #": "HIST\u00d3RIA #",
-        "Adding songs to queue... (might take a while)": "Adicionando m\u00fasicas \u00e0 fila ... (pode demorar um pouco)"
+        "Adding songs to queue... (might take a while)": "Adicionando m\u00fasicas \u00e0 fila ... (pode demorar um pouco)",
+        "Now Playing": "Tocando agora",
+        "Last Played": "Jogou pela \u00faltima vez",
+        "At least **one** argument is required!": "Pelo menos **um** argumento \u00e9 necess\u00e1rio!",
+        "Radio **started**": "R\u00e1dio **come\u00e7ou**",
+        "There is no song played yet": "N\u00e3o h\u00e1 nenhuma m\u00fasica tocada ainda"
     },
     "ru": {
         "search": "\u041f\u043e\u0438\u0441\u043a YouTube \u0434\u043b\u044f \u043f\u0440\u0435\u0434\u043e\u0441\u0442\u0430\u0432\u043b\u0435\u043d\u043d\u043e\u0433\u043e \u0437\u0430\u043f\u0440\u043e\u0441\u0430",
@@ -2141,7 +2229,12 @@
         "Check out the new": "\u041f\u0440\u043e\u0432\u0435\u0440\u044c\u0442\u0435 \u043d\u043e\u0432\u044b\u0439",
         "QUEUE #": "\u041e\u0427\u0415\u0420\u0415\u0414\u042c #",
         "HISTORY #": "\u0418\u0441\u0442\u043e\u0440\u0438\u044f #",
-        "Adding songs to queue... (might take a while)": "\u0414\u043e\u0431\u0430\u0432\u043b\u0435\u043d\u0438\u0435 \u043f\u0435\u0441\u0435\u043d \u0432 \u043e\u0447\u0435\u0440\u0435\u0434\u044c ... (\u043c\u043e\u0436\u0435\u0442 \u0437\u0430\u043d\u044f\u0442\u044c \u043d\u0435\u043a\u043e\u0442\u043e\u0440\u043e\u0435 \u0432\u0440\u0435\u043c\u044f)"
+        "Adding songs to queue... (might take a while)": "\u0414\u043e\u0431\u0430\u0432\u043b\u0435\u043d\u0438\u0435 \u043f\u0435\u0441\u0435\u043d \u0432 \u043e\u0447\u0435\u0440\u0435\u0434\u044c ... (\u043c\u043e\u0436\u0435\u0442 \u0437\u0430\u043d\u044f\u0442\u044c \u043d\u0435\u043a\u043e\u0442\u043e\u0440\u043e\u0435 \u0432\u0440\u0435\u043c\u044f)",
+        "Now Playing": "\u0421\u0435\u0439\u0447\u0430\u0441 \u0438\u0433\u0440\u0430\u0435\u0442",
+        "Last Played": "\u041f\u043e\u0441\u043b\u0435\u0434\u043d\u044f\u044f \u0438\u0433\u0440\u0430",
+        "At least **one** argument is required!": "\u0422\u0440\u0435\u0431\u0443\u0435\u0442\u0441\u044f \u0445\u043e\u0442\u044f \u0431\u044b **\u043e\u0434\u0438\u043d** \u0430\u0440\u0433\u0443\u043c\u0435\u043d\u0442!",
+        "Radio **started**": "\u0420\u0430\u0434\u0438\u043e **\u0437\u0430\u043f\u0443\u0449\u0435\u043d\u043e**",
+        "There is no song played yet": "\u041f\u0435\u0441\u043d\u044f \u0435\u0449\u0435 \u043d\u0435 \u0441\u044b\u0433\u0440\u0430\u043d\u0430"
     },
     "sv": {
         "search": "S\u00f6k YouTube efter den medf\u00f6ljande fr\u00e5gan",
@@ -2284,7 +2377,12 @@
         "Check out the new": "Kolla in det nya",
         "QUEUE #": "K\u00f6 #",
         "HISTORY #": "Historia #",
-        "Adding songs to queue... (might take a while)": "L\u00e4gga till l\u00e5tar i k\u00f6 ... (kan ta ett tag)"
+        "Adding songs to queue... (might take a while)": "L\u00e4gga till l\u00e5tar i k\u00f6 ... (kan ta ett tag)",
+        "Now Playing": "Nu spelas",
+        "Last Played": "Senast spelade",
+        "At least **one** argument is required!": "Minst **ett** argument kr\u00e4vs!",
+        "Radio **started**": "Radio **startade**",
+        "There is no song played yet": "Det finns ingen l\u00e5t spelad \u00e4n"
     },
     "tr": {
         "search": "Verilen sorgu i\u00e7in youtube aray\u0131n",
@@ -2427,6 +2525,11 @@
         "Check out the new": "Yeniye bak",
         "QUEUE #": "SIRA #",
         "HISTORY #": "TAR\u0130H #",
-        "Adding songs to queue... (might take a while)": "S\u0131raya \u015fark\u0131lar ekleme ... (biraz zaman alabilir)"
+        "Adding songs to queue... (might take a while)": "S\u0131raya \u015fark\u0131lar ekleme ... (biraz zaman alabilir)",
+        "Now Playing": "\u015eimdi oynuyor",
+        "Last Played": "Son \u00e7al\u0131nan",
+        "At least **one** argument is required!": "En az **bir** ba\u011f\u0131ms\u0131z de\u011fi\u015fken gereklidir!",
+        "Radio **started**": "Radyo **ba\u015flad\u0131**",
+        "There is no song played yet": "Hen\u00fcz \u00e7al\u0131nan \u015fark\u0131 yok"
     }
 }

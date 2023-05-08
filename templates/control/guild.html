@@ -51,7 +51,7 @@
                 None
               {% endif %}
               <div class="q-item1 q-wa">
-                <p class="q-text q-1">Member Count</p>
+                <p class="q-text q-1">{{ tg(gi, 'Member Count') }}</p>
                 <p class="q-text q-2">{{guild.data.member_count}}</p>
               </div>
               <div class="q-item1 q-wa">
@@ -59,16 +59,16 @@
                 <p class="q-text q-2">{{guild.data.id}}</p>
               </div>
               <div class="q-item1 q-items-center">
-                <p class="q-text q-1">Server Owner</p>
+                <p class="q-text q-1">{{ tg(gi, 'Server Owner') }}</p>
                 <p class="q-text q-2"><a class="q-2" target="_blank" rel="noopener noreferrer" href="https://discordapp.com/users/{{guild.data.owner_id}}">{{guild.data.owner_name}}</a></p>
                 <p class="q-text q-3">{{guild.data.owner_id}}</p>
               </div>
               <div class="q-item1 q-wa">
-                <p class="q-text q-1">Created at</p>
+                <p class="q-text q-1">{{ tg(gi, 'Created at') }}</p>
                 <p class="q-text q-2">{{struct_to_time(guild.data.created_at)}}</p>
               </div>
               <div class="q-item1 q-wa">
-                <p class="q-text q-1">Description</p>
+                <p class="q-text q-1">{{ tg(gi, 'Description') }}</p>
                 <p class="q-text q-2">{{guild.data.description}}</p>
               </div>
             </div>
@@ -85,7 +85,7 @@
     <div class="accordion-header">
       <div class="d-grid gap-2">
         <a class="btn btn-dark accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="false" aria-controls="panelsStayOpen-collapseOne">
-          <h3>History</h3>
+          <h3>{{ tg(gi, 'History') }}</h3>
         </a>
       </div>
     </div>
@@ -101,7 +101,7 @@
                 <p class="q-text q-3">{{convert_duration(track.duration)}}</p>
               </div>
               <div class="q-item3 q-items-center">
-                <p class="q-text q-1">From/To</p>
+                <p class="q-text q-1">{{ tg(gi, 'From/To') }}</p>
                 <p class="q-text q-2">{{struct_to_time(track.played_at, first='time')}}</p>
                 <p class="q-text q-2">{{struct_to_time(track.stopped_at, first='time')}}</p>
               </div>
@@ -114,14 +114,14 @@
                 <form method="POST" action="" onsubmit="setScroll();">
                   <input type="hidden" name="scroll" value="0" id="scrollPos1">
                   {% if admin == True %}
-                    <button class="btn btn-outline btn-primary btn-sm btn-m" type="button" data-bs-toggle="modal" data-bs-target=#videoEditModal_h{{guild.history.index(track)}}>Edit</button>
-                    <button class="btn btn-outline btn-danger btn-sm btn-m" type="submit" value="h{{guild.history.index(track)}}" name="hdel_btn">Remove</button>
+                    <button class="btn btn-outline btn-primary btn-sm btn-m" type="button" data-bs-toggle="modal" data-bs-target=#videoEditModal_h{{guild.history.index(track)}}>{{ tg(gi, 'Edit') }}</button>
+                    <button class="btn btn-outline btn-danger btn-sm btn-m" type="submit" value="h{{guild.history.index(track)}}" name="hdel_btn">{{ tg(gi, 'Remove') }}</button>
                   {% endif %}
-                  <button type="button" class="btn btn-secondary btn-sm dropdown-toggle btn-m" data-bs-toggle="dropdown" aria-expanded="false">More</button>
+                  <button type="button" class="btn btn-secondary btn-sm dropdown-toggle btn-m" data-bs-toggle="dropdown" aria-expanded="false">{{ tg(gi, 'More') }}</button>
                   <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
-                    <li><button class="dropdown-item" type="submit" name="queue_btn" value="h{{guild.history.index(track)}}">Add to Queue</button></li>
-                    <li><button class="dropdown-item" type="submit" name="nextup_btn" value="h{{guild.history.index(track)}}">Play next</button></li>
-                    <li><button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target=#videoModal_h{{guild.history.index(track)}}>Info</button></li>
+                    <li><button class="dropdown-item" type="submit" name="queue_btn" value="h{{guild.history.index(track)}}">{{ tg(gi, 'Add to queue') }}</button></li>
+                    <li><button class="dropdown-item" type="submit" name="nextup_btn" value="h{{guild.history.index(track)}}">{{ tg(gi, 'Play next') }}</button></li>
+                    <li><button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target=#videoModal_h{{guild.history.index(track)}}>{{ tg(gi, 'Info') }}</button></li>
                   </ul>
                 </form>
               </div>
@@ -129,7 +129,7 @@
           {% endfor %}
         {% else %}
           <div class="div-align">
-            <p>Nothing has been played yet</p>
+            <p>{{ tg(gi, 'Nothing has been played yet') }}</p>
           </div>
         {% endif %}
       </div>
@@ -139,7 +139,7 @@
     <div class="accordion-header">
       <div class="d-grid gap-2">
         <a class="btn btn-dark accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="true" aria-controls="panelsStayOpen-collapseTwo">
-          <h3>Now Playing</h3>
+          <h3>{{ tg(gi, 'Now Playing') }}</h3>
         </a>
       </div>
     </div>
@@ -157,7 +157,7 @@
               <p class="q-text q-3">{{convert_duration(guild.now_playing.duration)}}</p>
             </div>
             <div class="q-item3 q-items-center">
-              <p class="q-text q-1">Played at</p>
+              <p class="q-text q-1">{{ tg(gi, 'Played at') }}</p>
               <p class="q-text q-2">{{struct_to_time(guild.now_playing.played_at, first='time')}}</p>
             </div>
             <div class="q-item2 q-items-center">
@@ -169,20 +169,20 @@
               <form method="POST" action="" onsubmit="setScroll();">
                 <input type="hidden" name="scroll" value="0" id="scrollPos2">
                 {% if admin == True %}
-                  <button class="btn btn-outline btn-primary btn-sm btn-m" type="button" data-bs-toggle="modal" data-bs-target=#videoEditModal_np>Edit</button>
+                  <button class="btn btn-outline btn-primary btn-sm btn-m" type="button" data-bs-toggle="modal" data-bs-target=#videoEditModal_np>{{ tg(gi, 'Edit') }}</button>
                 {% endif %}
-                <button type="button" class="btn btn-secondary btn-sm dropdown-toggle btn-m" data-bs-toggle="dropdown" aria-expanded="false">More</button>
+                <button type="button" class="btn btn-secondary btn-sm dropdown-toggle btn-m" data-bs-toggle="dropdown" aria-expanded="false">{{ tg(gi, 'More') }}</button>
                 <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
-                  <li><button class="dropdown-item" type="submit" name="queue_btn" value="np">Add to Queue</button></li>
-                  <li><button class="dropdown-item" type="submit" name="nextup_btn" value="np">Play next</button></li>
-                  <li><button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target=#videoModal_np>Info</button></li>
+                  <li><button class="dropdown-item" type="submit" name="queue_btn" value="np">{{ tg(gi, 'Add to queue') }}</button></li>
+                  <li><button class="dropdown-item" type="submit" name="nextup_btn" value="np">{{ tg(gi, 'Play next') }}</button></li>
+                  <li><button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target=#videoModal_np>{{ tg(gi, 'Info') }}</button></li>
                 </ul>
               </form>
             </div>
           </div>
         {% else %}
           <div class="div-align">
-            <p>Nothing is playing right now</p>
+            <p>{{ tg(gi, 'Nothing is playing right now') }}</p>
           </div>
         {% endif %}
       </div>
@@ -249,7 +249,7 @@
 <!-- Queue -->
 <div class="q-top">
   <div class="q-item1">
-    <h3>Queue</h3>
+    <h3>{{ tg(gi, 'Queue') }}</h3>
   </div>
   <a class="q-top-add btn btn-dark" data-bs-toggle="modal" data-bs-target="#addToModal" title="Add to Queue">
     <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
@@ -298,15 +298,15 @@
             </div>
             <div class="q-item0 q-wa q-self-center q-items-center">
               {% if admin == True %}
-                <button class="btn btn-outline btn-primary btn-sm btn-m" type="button" data-bs-toggle="modal" data-bs-target=#videoEditModal_{{guild.queue.index(track)}}>Edit</button>
+                <button class="btn btn-outline btn-primary btn-sm btn-m" type="button" data-bs-toggle="modal" data-bs-target=#videoEditModal_{{guild.queue.index(track)}}>{{ tg(gi, 'Edit') }}</button>
               {% endif %}
-              <button type="button" class="btn btn-secondary btn-sm dropdown-toggle btn-m" data-bs-toggle="dropdown" aria-expanded="false">More</button>
+              <button type="button" class="btn btn-secondary btn-sm dropdown-toggle btn-m" data-bs-toggle="dropdown" aria-expanded="false">{{ tg(gi, 'More') }}</button>
               <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
-                <li><button class="dropdown-item" type="submit" name="top_btn" value={{guild.queue.index(track)}}>Move to Top</button></li>
-                <li><button class="dropdown-item" type="submit" name="bottom_btn" value={{guild.queue.index(track)}}>Move to Bottom</button></li>
-                <li><button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target=#videoModal_{{guild.queue.index(track)}}>Info</button></li>
+                <li><button class="dropdown-item" type="submit" name="top_btn" value={{guild.queue.index(track)}}>{{ tg(gi, 'Move to Top') }}</button></li>
+                <li><button class="dropdown-item" type="submit" name="bottom_btn" value={{guild.queue.index(track)}}>{{ tg(gi, 'Move to Bottom') }}</button></li>
+                <li><button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target=#videoModal_{{guild.queue.index(track)}}>{{ tg(gi, 'Info') }}</button></li>
               </ul>
-              <button class="btn btn-outline btn-danger btn-sm btn-m" type="submit" name="del_btn" value="{{guild.queue.index(track)}}">Remove</button>
+              <button class="btn btn-outline btn-danger btn-sm btn-m" type="submit" name="del_btn" value="{{guild.queue.index(track)}}">{{ tg(gi, 'Remove') }}</button>
             </div>
           </div>
           <div class="q-item0 q-wa q-self-center q-items-center">
