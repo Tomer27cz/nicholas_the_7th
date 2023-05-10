@@ -31,7 +31,7 @@
     <div class="accordion" id="accordionFlushExample">
       <div class="accordion-item">
         <div class="accordion-header div-options">
-          <button class="btn btn-dark btn-options" data-bs-toggle="modal" data-bs-target="#optionsModal" title="Server Options">
+          <button class="btn btn-dark btn-options" data-bs-toggle="modal" data-bs-target="#optionsModal" title="{{ tg(gi, 'Server Options') }}">
               <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16">
                 <path d="M14 7V9C14 9 12.5867 9 12.5733 9.00667C12.42 9.58667 12.1733 10.1267 11.84 10.6067L12.74 11.5067L11.4933 12.7533L10.5933 11.8533C10.1133 12.1867 9.57334 12.44 8.99334 12.5867V14H6.99334V12.58C6.41334 12.4333 5.87334 12.18 5.39334 11.8467L4.49333 12.7467L3.24667 11.5L4.14667 10.6C3.81333 10.1267 3.56 9.58 3.41333 9H2V7H3.41333C3.56 6.42 3.81333 5.88 4.14667 5.4L3.24667 4.5L4.5 3.24667L5.4 4.14667C5.87334 3.81333 6.42 3.56 7 3.41333V2H9V3.41333C9.58 3.56667 10.12 3.81333 10.6 4.14667L11.5067 3.25333L12.7533 4.5L11.8533 5.4C12.1867 5.87334 12.44 6.42 12.5867 7H14ZM8 10C9.10457 10 10 9.10457 10 8C10 6.89543 9.10457 6 8 6C6.89543 6 6 6.89543 6 8C6 9.10457 6.89543 10 8 10Z"></path>
               </svg>
@@ -196,14 +196,14 @@
   <div class="q-div div-con">
     <div class="q-item1">
       <div class="e-div">
-        <button class="btn btn-dark e-item1" type="button" data-bs-toggle="modal" data-bs-target="#joinModal" title="Join Channel" >
+        <button class="btn btn-dark e-item1" type="button" data-bs-toggle="modal" data-bs-target="#joinModal" title="{{ tg(gi, 'Join Channel') }}" >
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#198754" viewBox="0 0 16 16">
             <path d="M14 2H16V3H14V5H13V3H11V2H13V0H14V2Z"></path>
             <path d="M6.5 8.00667C7.88 8.00667 9 6.88667 9 5.50667C9 4.12667 7.88 3.00667 6.5 3.00667C5.12 3.00667 4 4.12667 4 5.50667C4 6.88667 5.12 8.00667 6.5 8.00667Z"></path>
             <path d="M6.5 8.34C3.26 8.34 1 9.98666 1 12.34V13.0067H12V12.34C12 9.98 9.74 8.34 6.5 8.34Z"></path>
           </svg>
         </button>
-        <button class="btn btn-dark e-item1" type="submit" name="disconnect_btn" title="Disconnect">
+        <button class="btn btn-dark e-item1" type="submit" name="disconnect_btn" title="{{ tg(gi, 'Disconnect') }}">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#dc3545" viewBox="0 0 24 24">
             <path d="M21.1169 1.11603L22.8839 2.88403L19.7679 6.00003L22.8839 9.11603L21.1169 10.884L17.9999 7.76803L14.8839 10.884L13.1169 9.11603L16.2329 6.00003L13.1169 2.88403L14.8839 1.11603L17.9999 4.23203L21.1169 1.11603ZM18 22H13C6.925 22 2 17.075 2 11V6C2 5.447 2.448 5 3 5H7C7.553 5 8 5.447 8 6V10C8 10.553 7.553 11 7 11H6C6.063 14.938 9 18 13 18V17C13 16.447 13.447 16 14 16H18C18.553 16 19 16.447 19 17V21C19 21.553 18.553 22 18 22Z"></path>
           </svg>
@@ -212,22 +212,22 @@
     </div>
     <div class="q-item1">
       <div class="e-div">
-        <button class="btn btn-dark e-item1" type="submit" name="play_btn" title="Play" >
+        <button class="btn btn-dark e-item1" type="submit" name="play_btn" title="{{ tg(gi, 'Play') }}" >
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#0d6efd" viewBox="0 0 384 512">
             <path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"></path>
           </svg>
         </button>
-        <button class="btn btn-dark e-item1" type="submit" name="skip_btn" title="Skip">
+        <button class="btn btn-dark e-item1" type="submit" name="skip_btn" title="{{ tg(gi, 'Skip') }}">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 512 512">
             <path d="M52.5 440.6c-9.5 7.9-22.8 9.7-34.1 4.4S0 428.4 0 416V96C0 83.6 7.2 72.3 18.4 67s24.5-3.6 34.1 4.4L224 214.3V256v41.7L52.5 440.6zM256 352V256 128 96c0-12.4 7.2-23.7 18.4-29s24.5-3.6 34.1 4.4l192 160c7.3 6.1 11.5 15.1 11.5 24.6s-4.2 18.5-11.5 24.6l-192 160c-9.5 7.9-22.8 9.7-34.1 4.4s-18.4-16.6-18.4-29V352z"></path>
           </svg>
         </button>
-        <button class="btn btn-dark e-item1" type="submit" name="pause_btn" title="Pause">
+        <button class="btn btn-dark e-item1" type="submit" name="pause_btn" title="{{ tg(gi, 'Pause') }}">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 320 512">
             <path d="M48 64C21.5 64 0 85.5 0 112V400c0 26.5 21.5 48 48 48H80c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48H48zm192 0c-26.5 0-48 21.5-48 48V400c0 26.5 21.5 48 48 48h32c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48H240z"></path>
           </svg>
         </button>
-        <button class="btn btn-dark e-item1" type="submit" name="stop_btn" title="Stop">
+        <button class="btn btn-dark e-item1" type="submit" name="stop_btn" title="{{ tg(gi, 'Stop') }}">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#dc3545" viewBox="0 0 384 512">
             <path d="M0 128C0 92.7 28.7 64 64 64H320c35.3 0 64 28.7 64 64V384c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V128z"></path>
           </svg>
@@ -240,7 +240,7 @@
           <input type="number" class="form-c form-control btn-m flex-fill" name="volumeInput" min="0" max="200" value="100" oninput="this.form.volumeRange.value=this.value">
         </div>
         <input type="range" class="form-r form-range btn-m" name="volumeRange" min="0" max="200" value="100" oninput="this.form.volumeInput.value=this.value">
-        <button class="btn btn-outline btn-primary btn-sm btn-m flex-fill" type="submit" name="volume_btn" title="Set Volume">Set</button>
+        <button class="btn btn-outline btn-primary btn-sm btn-m flex-fill" type="submit" name="volume_btn" title="{{ tg(gi, 'Set Volume') }}">Set</button>
       </div>
     </div>
   </div>
@@ -251,26 +251,26 @@
   <div class="q-item1">
     <h3>{{ tg(gi, 'Queue') }}</h3>
   </div>
-  <a class="q-top-add btn btn-dark" data-bs-toggle="modal" data-bs-target="#addToModal" title="Add to Queue">
+  <a class="q-top-add btn btn-dark" data-bs-toggle="modal" data-bs-target="#addToModal" title="{{ tg(gi, 'Add to queue') }}">
     <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
       <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"></path>
     </svg>
   </a>
   <form method="POST" action="#" onsubmit="setScroll();">
     <input type="hidden" name="scroll" value="0" id="scrollPos11">
-    <button class="btn btn-dark" type="submit" name="loop_btn" title="Loop">
+    <button class="btn btn-dark" type="submit" name="loop_btn" title="{{ tg(gi, 'Loop') }}">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="{{ '#198754' if guild.options.loop else 'currentColor' }}" class="bi bi-arrow-repeat" viewBox="0 0 16 16">
         <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"></path>
         <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"></path>
       </svg>
     </button>
-    <button class="btn btn-dark" type="submit" name="shuffle_btn" title="Shuffle">
+    <button class="btn btn-dark" type="submit" name="shuffle_btn" title="{{ tg(gi, 'Shuffle') }}">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-shuffle" viewBox="0 0 16 16">
         <path fill-rule="evenodd" d="M0 3.5A.5.5 0 0 1 .5 3H1c2.202 0 3.827 1.24 4.874 2.418.49.552.865 1.102 1.126 1.532.26-.43.636-.98 1.126-1.532C9.173 4.24 10.798 3 13 3v1c-1.798 0-3.173 1.01-4.126 2.082A9.624 9.624 0 0 0 7.556 8a9.624 9.624 0 0 0 1.317 1.918C9.828 10.99 11.204 12 13 12v1c-2.202 0-3.827-1.24-4.874-2.418A10.595 10.595 0 0 1 7 9.05c-.26.43-.636.98-1.126 1.532C4.827 11.76 3.202 13 1 13H.5a.5.5 0 0 1 0-1H1c1.798 0 3.173-1.01 4.126-2.082A9.624 9.624 0 0 0 6.444 8a9.624 9.624 0 0 0-1.317-1.918C4.172 5.01 2.796 4 1 4H.5a.5.5 0 0 1-.5-.5z"></path>
         <path d="M13 5.466V1.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384l-2.36 1.966a.25.25 0 0 1-.41-.192zm0 9v-3.932a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384l-2.36 1.966a.25.25 0 0 1-.41-.192z"></path>
       </svg>
     </button>
-    <button class="btn btn-dark" type="submit" name="clear_btn" title="Clear">
+    <button class="btn btn-dark" type="submit" name="clear_btn" title="{{ tg(gi, 'Clear') }}">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#dc3545" class="bi bi-trash" viewBox="0 0 16 16">
         <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"></path>
         <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"></path>
@@ -327,7 +327,7 @@
       {% endfor %}
     {% else %}
       <div class="div-align">
-        <p>There is nothing in the queue</p>
+        <p>{{ tg(gi, 'There is nothing in the queue') }}</p>
       </div>
     {% endif %}
   </div>
@@ -339,7 +339,7 @@
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="videoLabel_{{guild.queue.index(track)}}">Video {{guild.queue.index(track)}} Info</h1>
+        <h1 class="modal-title fs-5" id="videoLabel_{{guild.queue.index(track)}}">{{ tg(gi, 'Video') }} {{guild.queue.index(track)}} {{ tg(gi, 'Info') }}</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="info-modal">
@@ -361,7 +361,7 @@
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="videoLabel_h{{guild.history.index(track)}}">Video History {{guild.history.index(track)}} Info</h1>
+        <h1 class="modal-title fs-5" id="videoLabel_h{{guild.history.index(track)}}">{{ tg(gi, 'Video History') }} {{guild.history.index(track)}} {{ tg(gi, 'Info') }}</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="info-modal">
@@ -383,7 +383,7 @@
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="videoLabel_np">Video Now Playing Info</h1>
+        <h1 class="modal-title fs-5" id="videoLabel_np">{{ tg(gi, 'Video Now Playing Info') }}</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="info-modal">
@@ -405,7 +405,7 @@
       <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
         <div class="modal-content">
           <div class="modal-header">
-            <h1 class="modal-title fs-5" id="videoEditLabel_{{guild.queue.index(track)}}">Video {{guild.queue.index(track)}} Edit</h1>
+            <h1 class="modal-title fs-5" id="videoEditLabel_{{guild.queue.index(track)}}">{{ tg(gi, 'Video') }} {{guild.queue.index(track)}} {{ tg(gi, 'Edit') }}</h1>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="info-modal">
@@ -419,8 +419,8 @@
                 </div>
               {% endfor %}
               <div class="e-div">
-                <button class="btn e-item1 btn-secondary btn-lg btn-m" type="button" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
-                <button class="btn e-item1 btn-primary btn-lg btn-m" type="submit" name="edit_btn" value="{{guild.queue.index(track)}}">Submit</button>
+                <button class="btn e-item1 btn-secondary btn-lg btn-m" type="button" data-bs-dismiss="modal" aria-label="Close">{{ tg(gi, 'Close') }}</button>
+                <button class="btn e-item1 btn-primary btn-lg btn-m" type="submit" name="edit_btn" value="{{guild.queue.index(track)}}">{{ tg(gi, 'Submit') }}</button>
               </div>
             </form>
           </div>
@@ -433,7 +433,7 @@
       <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
         <div class="modal-content">
           <div class="modal-header">
-            <h1 class="modal-title fs-5" id="videoEditLabel{{guild.history.index(track)}}">Video History {{guild.history.index(track)}} Edit</h1>
+            <h1 class="modal-title fs-5" id="videoEditLabel{{guild.history.index(track)}}">{{ tg(gi, 'Video History') }} {{guild.history.index(track)}} {{ tg(gi, 'Edit') }}</h1>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="info-modal">
@@ -447,8 +447,8 @@
                 </div>
               {% endfor %}
               <div class="e-div">
-                <button class="btn e-item1 btn-secondary btn-lg btn-m" type="button" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
-                <button class="btn e-item1 btn-primary btn-lg btn-m" type="submit" name="edit_btn" value="h{{guild.history.index(track)}}">Submit</button>
+                <button class="btn e-item1 btn-secondary btn-lg btn-m" type="button" data-bs-dismiss="modal" aria-label="Close">{{ tg(gi, 'Cancel') }}</button>
+                <button class="btn e-item1 btn-primary btn-lg btn-m" type="submit" name="edit_btn" value="h{{guild.history.index(track)}}">{{ tg(gi, 'Submit') }}</button>
               </div>
             </form>
           </div>
@@ -461,7 +461,7 @@
       <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
         <div class="modal-content">
           <div class="modal-header">
-            <h1 class="modal-title fs-5" id="videoEditLabel_np">Now playing Video Edit</h1>
+            <h1 class="modal-title fs-5" id="videoEditLabel_np">{{ tg(gi, 'Now playing Video Edit') }}</h1>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="info-modal">
@@ -475,8 +475,8 @@
                 </div>
               {% endfor %}
               <div class="e-div">
-                <button class="btn e-item1 btn-secondary btn-lg btn-m" type="button" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
-                <button class="btn e-item1 btn-primary btn-lg btn-m" type="submit" name="edit_btn" value="np">Submit</button>
+                <button class="btn e-item1 btn-secondary btn-lg btn-m" type="button" data-bs-dismiss="modal" aria-label="Close">{{ tg(gi, 'Cancel') }}</button>
+                <button class="btn e-item1 btn-primary btn-lg btn-m" type="submit" name="edit_btn" value="np">{{ tg(gi, 'Submit') }}</button>
               </div>
             </form>
           </div>
@@ -569,11 +569,11 @@
           <div class="e-item2">
             <input type="number" class="form-control" name="channel_id">
           </div>
-          <button type="submit" class="btn btn-primary" name="join_btn" value="id">Join</button>
+          <button type="submit" class="btn btn-primary" name="join_btn" value="id">{{ tg(gi, 'Join') }}</button>
         </div>
         {% if guild.data.voice_channels %}
           <div class="j-div">
-            <label class="btn-m j-label">Channel</label>
+            <label class="btn-m j-label">{{ tg(gi, 'Channel') }}</label>
             <div class="e-item2">
               <select class="form-select" aria-label="channel_name" name="channel_name">
                 {% for channel in guild.data.voice_channels %}
@@ -581,7 +581,7 @@
                 {% endfor %}
               </select>
             </div>
-            <button type="submit" class="btn btn-primary" name="join_btn" value="name">Join</button>
+            <button type="submit" class="btn btn-primary" name="join_btn" value="name">{{ tg(gi, 'Join') }}</button>
           </div>
         {% endif %}
       </form>
@@ -593,7 +593,7 @@
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="staticBackdropLabel">Add to Queue</h1>
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">{{ tg(gi, 'Add to queue') }}</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
         <form method="POST" id="ytForm" action="" onsubmit="setScroll();">
@@ -605,9 +605,9 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#addToModalRadio">Radio</button>
-            <button type="submit" class="btn btn-primary">Add</button>
+            <button type="button" class="btn btn-dark" data-bs-dismiss="modal">{{ tg(gi, 'Close') }}</button>
+            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#addToModalRadio">{{ tg(gi, 'Radio') }}</button>
+            <button type="submit" class="btn btn-primary">{{ tg(gi, 'Add') }}</button>
           </div>
         </form>
     </div>
@@ -618,14 +618,14 @@
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl r-modal">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="staticBackdropLabelRadio">Add to Queue</h1>
+        <h1 class="modal-title fs-5" id="staticBackdropLabelRadio">{{ tg(gi, 'Add to queue') }}</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <form method="POST" id="RadioForm" action="" onsubmit="setScroll();">
         <input type="hidden" name="scroll" value="0" id="scrollPos8">
         <div class="e-div e-wrap">
-          <button type="button" class="btn btn-dark e-item1" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-secondary e-item1" data-bs-toggle="modal" data-bs-target="#addToModal">Video</button>
+          <button type="button" class="btn btn-dark e-item1" data-bs-dismiss="modal">{{ tg(gi, 'Close') }}</button>
+          <button type="button" class="btn btn-secondary e-item1" data-bs-toggle="modal" data-bs-target="#addToModal">{{ tg(gi, 'Video') }}</button>
           <!--                <button type="submit" class="btn btn-primary e-item1">Add</button>-->
         </div>
         <div class="modal-body">
@@ -648,34 +648,50 @@
   </div>
 </div>
 
-<script>
-function submitRadioForm(id) {
-    let form = document.getElementById('RadioForm');
-    let delayInMilliseconds = 100; //0.1 second
+<script type="text/javascript" charset="utf-8">
+  function httpGet(theUrl) {
+    let xmlHttp = new XMLHttpRequest();
+    xmlHttp.open( "GET", theUrl, false ); // false for synchronous request
+    xmlHttp.send( null );
+    return xmlHttp.responseText;
+  }
+  function getUpdate() {
+    let url = 'http://' + document.domain + ':' + location.port + '/guild/{{guild.data.id}}/update';
+    let response = httpGet(url);
+    if (response === "True") {
+      location.reload();
+    }
+  }
 
-    setTimeout(function() {
-      form.submit();
-    }, delayInMilliseconds);
-}
-function setScroll() {
-    document.getElementById("scrollPos1").value = window.scrollY;
-    document.getElementById("scrollPos2").value = window.scrollY;
-    document.getElementById("scrollPos3").value = window.scrollY;
-    document.getElementById("scrollPos4").value = window.scrollY;
-    document.getElementById("scrollPos5").value = window.scrollY;
-    document.getElementById("scrollPos6").value = window.scrollY;
-    document.getElementById("scrollPos7").value = window.scrollY;
-    document.getElementById("scrollPos8").value = window.scrollY;
-    document.getElementById("scrollPos9").value = window.scrollY;
-    document.getElementById("scrollPos10").value = window.scrollY;
-    document.getElementById("scrollPos11").value = window.scrollY;
-    document.getElementById("scrollPos12").value = window.scrollY;
-}
-function scrollNow(scroll_pos) {
-    window.scrollTo({top:scroll_pos, left:0, behavior: "instant"})
-}
+  function submitRadioForm(id) {
+   let form = document.getElementById('RadioForm');
+   let delayInMilliseconds = 100; //0.1 second
 
-scrollNow({{scroll_position}})
+   setTimeout(function() {
+     form.submit();
+   }, delayInMilliseconds);
+  }
+  function setScroll() {
+   document.getElementById("scrollPos1").value = window.scrollY;
+   document.getElementById("scrollPos2").value = window.scrollY;
+   document.getElementById("scrollPos3").value = window.scrollY;
+   document.getElementById("scrollPos4").value = window.scrollY;
+   document.getElementById("scrollPos5").value = window.scrollY;
+   document.getElementById("scrollPos6").value = window.scrollY;
+   document.getElementById("scrollPos7").value = window.scrollY;
+   document.getElementById("scrollPos8").value = window.scrollY;
+   document.getElementById("scrollPos9").value = window.scrollY;
+   document.getElementById("scrollPos10").value = window.scrollY;
+   document.getElementById("scrollPos11").value = window.scrollY;
+   document.getElementById("scrollPos12").value = window.scrollY;
+  }
+
+  function scrollNow(scroll_pos) {
+   window.scrollTo({top:scroll_pos, left:0, behavior: "instant"});
+  }
+
+  scrollNow({{scroll_position}})
+  setInterval(getUpdate, 10000)
 </script>
 
 {% endblock %}
