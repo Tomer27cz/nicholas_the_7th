@@ -49,6 +49,9 @@ class Bot(commands.Bot):
         await bot.change_presence(activity=discord.Game(name=f"/help"))
         log(None, f'Logged in as:\n{bot.user.name}\n{bot.user.id}')
 
+        for guild_object in bot.guilds:
+            guild[guild_object.id].renew()
+
     async def on_guild_join(self, guild_object):
         log(guild_object.id, f"Joined guild {guild_object.name} with {guild_object.member_count} members and {len(guild_object.voice_channels)} voice channels")
         guild[guild_object.id] = Guild(guild_object.id)
@@ -327,6 +330,7 @@ class Options:
         self.volume = 1.0
         self.buffer = 600 # how many seconds of nothing before it disconnects | 600 = 10min
         self.history_length = 10
+        self.update = False
 
 
 class GuildData:
@@ -390,7 +394,7 @@ class GuildData:
                             return
 
             self.name = None
-            self.id = None
+            self.id = guild_id
             self.key = None
             self.member_count = None
             self.owner_id = None
@@ -1103,6 +1107,24 @@ def get_content_of_message(message: discord.Message) -> (str, list or None):
 
     return url, probe_data
 
+def get_update_list() -> list or None:
+    guild_values = guild.values()
+    update_list = []
+
+    for guild_object in guild_values:
+        if guild_object.options.update:
+            update_list.append(guild_object.id)
+
+    if not update_list:
+        return None
+
+    return update_list
+
+def push_update(guild_id: int):
+    guild[guild_id].options.update = True
+    print(f'pushed update: {guild_id}')
+    print(f'is now: {guild[guild_id].options.update}')
+
 # ---------------------------------------------- CHECK ---------------------------------------------------------
 
 def to_bool(text_bool: str) -> bool or None:
@@ -1175,6 +1197,7 @@ def now_to_history(guild_id: int):
         guild[guild_id].history.append(guild[guild_id].now_playing)
         guild[guild_id].now_playing = None
         save_json()
+        push_update(guild_id)
 
 async def to_queue(guild_id: int, video: VideoClass, position: int = None, ctx=None, mute_response: bool=False, ephemeral: bool=False, return_message: bool=False) -> ReturnData or None:
     """
@@ -1196,6 +1219,8 @@ async def to_queue(guild_id: int, video: VideoClass, position: int = None, ctx=N
     else:
         guild[guild_id].queue.insert(position, video)
 
+    push_update(guild_id)
+    print(f'to queue after push: {guild[guild_id].options.update}')
     save_json()
 
     if return_message:
@@ -1342,9 +1367,9 @@ class SearchOptionView(View):
     async def callback_1(self, interaction, button):
         video = guild[self.guild_id].search_list[0]
         if self.force:
-            guild[self.guild_id].queue.insert(0, video)
+            await to_queue(self.guild_id, video, 0)
         else:
-            guild[self.guild_id].queue.append(video)
+            await to_queue(self.guild_id, video)
         save_json()
         await interaction.response.edit_message(content=f'[`{video.title}`](<{video.url}>) '
                                                         f'{tg(self.guild_id, "added to queue!")}', view=None)
@@ -1356,9 +1381,9 @@ class SearchOptionView(View):
     async def callback_2(self, interaction, button):
         video = guild[self.guild_id].search_list[1]
         if self.force:
-            guild[self.guild_id].queue.insert(0, video)
+            await to_queue(self.guild_id, video, 0)
         else:
-            guild[self.guild_id].queue.append(video)
+            await to_queue(self.guild_id, video)
         save_json()
         await interaction.response.edit_message(content=f'[`{video.title}`](<{video.url}>) '
                                                         f'{tg(self.guild_id, "added to queue!")}', view=None)
@@ -1370,9 +1395,9 @@ class SearchOptionView(View):
     async def callback_3(self, interaction, button):
         video = guild[self.guild_id].search_list[2]
         if self.force:
-            guild[self.guild_id].queue.insert(0, video)
+            await to_queue(self.guild_id, video, 0)
         else:
-            guild[self.guild_id].queue.append(video)
+            await to_queue(self.guild_id, video)
         save_json()
         await interaction.response.edit_message(content=f'[`{video.title}`](<{video.url}>) '
                                                         f'{tg(self.guild_id, "added to queue!")}', view=None)
@@ -1384,9 +1409,9 @@ class SearchOptionView(View):
     async def callback_4(self, interaction, button):
         video = guild[self.guild_id].search_list[3]
         if self.force:
-            guild[self.guild_id].queue.insert(0, video)
+            await to_queue(self.guild_id, video, 0)
         else:
-            guild[self.guild_id].queue.append(video)
+            await to_queue(self.guild_id, video)
         save_json()
         await interaction.response.edit_message(content=f'[`{video.title}`](<{video.url}>) '
                                                         f'{tg(self.guild_id, "added to queue!")}', view=None)
@@ -1398,9 +1423,9 @@ class SearchOptionView(View):
     async def callback_5(self, interaction, button):
         video = guild[self.guild_id].search_list[4]
         if self.force:
-            guild[self.guild_id].queue.insert(0, video)
+            await to_queue(self.guild_id, video, 0)
         else:
-            guild[self.guild_id].queue.append(video)
+            await to_queue(self.guild_id, video)
         save_json()
         await interaction.response.edit_message(content=f'[`{video.title}`](<{video.url}>) '
                                                         f'{tg(self.guild_id, "added to queue!")}', view=None)
@@ -1936,7 +1961,7 @@ async def queue_command_def(ctx, url=None, position: int = None, mute_response: 
             return await to_queue(guild_id, video, position, ctx, mute_response, ephemeral, True)
 
     if is_ctx and not no_search:
-        await search_command_def(ctx, url, display_type='short', force=force, from_play=from_play,ephemeral=ephemeral)
+        return await search_command_def(ctx, url, display_type='short', force=force, from_play=from_play,ephemeral=ephemeral)
 
     message = f'`{url}` {tg(guild_id, "is not supported!")} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={guild[guild_id].data.key})'
     if not mute_response:
@@ -2369,7 +2394,7 @@ async def play_def(ctx, url=None, force=False, mute_response=False, after=False)
 
         # Queue update
         if guild[guild_id].options.loop:
-            guild[guild_id].queue.append(video)
+            await to_queue(guild_id, video)
         guild[guild_id].queue.pop(0)
 
         save_json()
@@ -2623,7 +2648,7 @@ async def loop_this_def(ctx) -> ReturnData:
 
     if guild[guild_id].now_playing and guild_object.voice_client.is_playing:
         guild[guild_id].queue.clear()
-        guild[guild_id].queue.append(guild[guild_id].now_playing)
+        await to_queue(guild_id, guild[guild_id].now_playing)
         guild[guild_id].options.loop = True
         save_json()
 
@@ -2871,6 +2896,9 @@ async def ping_def(ctx) -> ReturnData:
     """
     log(ctx, 'ping_def', [], log_type='function', author=ctx.author)
     save_json()
+
+
+    push_update(ctx.guild.id)
 
     message = f'**Pong!** Latency: {round(bot.latency * 1000)}ms'
     await ctx.reply(message)
@@ -3480,9 +3508,9 @@ async def web_queue_from_radio(web_data, radio_name, position=None) -> ReturnDat
         video = VideoClass('Radio', web_data.author_id, radio_name=radio_name)
 
         if position == 'start':
-            guild[web_data.guild_id].queue.insert(0, video)
+            await to_queue(web_data.guild_id, video, 0)
         else:
-            guild[web_data.guild_id].queue.append(video)
+            await to_queue(web_data.guild_id, video)
 
         message = f'`{video.title}` added to queue!'
         save_json()
@@ -3623,6 +3651,7 @@ async def web_options_edit(web_data, form) -> ReturnData:
     volume = form['volume']
     buffer = form['buffer']
     history_length = form['history_length']
+    update = form['update']
 
     bool_list_t = ['True', 'true', '1']
     bool_list_f = ['False', 'false', '0']
@@ -3637,6 +3666,8 @@ async def web_options_edit(web_data, form) -> ReturnData:
         return ReturnData(False, f'is_radio has to be: {bool_list} --> {is_radio}')
     if buttons not in bool_list:
         return ReturnData(False, f'buttons has to be: {bool_list} --> {buttons}')
+    if update not in bool_list:
+        return ReturnData(False, f'update has to be: {bool_list} --> {update}')
 
     if response_type not in response_types:
         return ReturnData(False, f'response_type has to be: {response_types} --> {response_type}')
@@ -3656,6 +3687,7 @@ async def web_options_edit(web_data, form) -> ReturnData:
     options.loop = to_bool(loop)
     options.is_radio = to_bool(is_radio)
     options.buttons = to_bool(buttons)
+    options.update = to_bool(update)
 
     options.language = language
     options.search_query = search_query
@@ -4062,6 +4094,20 @@ async def admin_page():
         if int(user['id']) == my_id:
             return render_template('nav/admin.html', user=user, guild=guild.values(), languages_dict=languages_dict, errors=errors, messages=messages)
     return redirect(url_for('index_page'))
+
+@app.route('/guild/<int:guild_id>/update')
+async def update_page(guild_id):
+    try:
+        guild_id = int(guild_id)
+    except (ValueError, TypeError):
+        print('invalid url')
+        return 'False'
+
+    if guild[guild_id].options.update is True:
+        guild[guild_id].options.update = False
+        return 'True'
+    return 'False'
+
 
 def application():
     web_thread = threading.Thread(target=app.run, kwargs={'debug': False, 'host': '0.0.0.0', 'port': int(os.environ.get('PORT', 5420))})
