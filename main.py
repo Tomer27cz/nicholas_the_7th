@@ -436,7 +436,6 @@ def load_sound_effects():
     Loads all sound effects from the sound_effects folder
     to the global variable all_sound_effects
     """
-    # noinspection PyGlobalUndefined
     global all_sound_effects
     all_sound_effects = ["No sound effects found"]
     try:
@@ -507,19 +506,19 @@ def log(ctx, text_data, options=None, log_type='text', author=None):
 
     print(message)
 
-    with open("log/log.txt", "a", encoding="utf-8") as f:
+    with open("log/log.log", "a", encoding="utf-8") as f:
         f.write(message + "\n")
 
 def collect_data(data):
     """
-    Collects data to the data.txt file
+    Collects data to the data.log file
     :param data: data to be collected
     :return: None
     """
     now_time_str = struct_to_time(time())
     message = f"{now_time_str} | {data}\n"
 
-    with open("log/data.txt", "a", encoding="utf-8") as f:
+    with open("log/data.log", "a", encoding="utf-8") as f:
         f.write(message)
 
 # ---------------------------------------------- GUILD TO JSON ---------------------------------------------------------
@@ -1748,7 +1747,7 @@ async def config_command(ctx: commands.Context, config_file: discord.Attachment,
 
 @bot.hybrid_command(name='zz_log', with_app_command=True)
 @commands.check(is_authorised)
-async def log_command(ctx: commands.Context, log_type: Literal['log.txt', 'guilds.json', 'other.json', 'radio.json', 'languages.json', 'activity.log', 'data.txt'] = 'log.txt'):
+async def log_command(ctx: commands.Context, log_type: Literal['log.log', 'guilds.json', 'other.json', 'radio.json', 'languages.json', 'activity.log', 'data.log'] = 'log.log'):
     log(ctx, 'log', [log_type], log_type='command', author=ctx.author)
 
     await log_command_def(ctx, log_type)
@@ -3070,13 +3069,13 @@ async def config_command_def(ctx: commands.Context, config_file: discord.Attachm
     else:
         await ctx.reply(f"Saved new `{config_type}.json`", ephemeral=True)
 
-async def log_command_def(ctx: commands.Context, log_type: Literal['log.txt', 'guilds.json', 'other.json', 'radio.json', 'languages.json', 'activity.log', 'data.txt'] = 'log.txt'):
+async def log_command_def(ctx: commands.Context, log_type: Literal['log.log', 'guilds.json', 'other.json', 'radio.json', 'languages.json', 'activity.log', 'data.log'] = 'log.log'):
     log(ctx, 'log_command_def', [log_type], log_type='function', author=ctx.author)
     save_json()
-    if log_type == 'log.txt':
-        file_to_send = discord.File('log/log.txt')
-    elif log_type == 'data.txt':
-        file_to_send = discord.File('log/data.txt')
+    if log_type == 'log.log':
+        file_to_send = discord.File('log/log.log')
+    elif log_type == 'data.log':
+        file_to_send = discord.File('log/data.log')
     elif log_type == 'other.json':
         file_to_send = discord.File('src/other.json')
     elif log_type == 'radio.json':
@@ -3092,7 +3091,7 @@ async def log_command_def(ctx: commands.Context, log_type: Literal['log.txt', 'g
             await ctx.reply(f'`activity.log` does not exist', ephemeral=True)
             return
     else:
-        file_to_send = discord.File('log/log.txt')
+        file_to_send = discord.File('log/log.log')
     await ctx.reply(file=file_to_send, ephemeral=True)
 
 # noinspection PyTypeHints
@@ -4021,7 +4020,7 @@ async def admin_page():
                 file_name = request.form['download_file']
                 log(web_data, 'download file', [file_name], log_type='web', author=web_data.author)
                 try:
-                    if file_name == 'log.txt' or file_name == 'data.txt' or file_name == 'activity.log':
+                    if file_name == 'log.log' or file_name == 'data.log' or file_name == 'activity.log':
                         return send_file(f'log/{file_name}', as_attachment=True)
                     else:
                         return send_file(f'src/{file_name}', as_attachment=True)
@@ -4037,7 +4036,7 @@ async def admin_page():
                     errors = ['File name does not match']
                 else:
                     try:
-                        if file_name == 'log.txt' or file_name == 'data.txt' or file_name == 'activity.log':
+                        if file_name == 'log.log' or file_name == 'data.log' or file_name == 'activity.log':
                             f.save(f"log/{f.filename}")
                             messages = ['File uploaded']
                         else:
