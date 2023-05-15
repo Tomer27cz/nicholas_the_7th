@@ -41,7 +41,11 @@ WEB_URL = 'YOUR_WEB_URL' # This is the url for the flask server (http://127.0.0.
 SPOTIPY_CLIENT_ID='YOUR_SPOTIFY_CLIENT_ID' # This is the client id for the spotify api
 SPOTIPY_CLIENT_SECRET='YOUR_SPOTIFY_CLIENT_SECRET' # This is the client secret for the spotify api
 SPOTIPY_REDIRECT_URI='https://localhost:8888/callback' # This is the redirect uri for the spotify api
+
+# SoundCloud
+SOUNDCLOUD_CLIENT_ID = 'YOUR_SOUNDCLOUD_ID' # SoundCloud ID (you can use your accounts id -> developer tools)
 ```
+more detailed guide will be added later (maby)
 - Run the bot
 ```
 python main.py
@@ -55,6 +59,8 @@ python main.py
 - [youtube-search-python](https://github.com/alexmercerind/youtube-search-python) by alexmercerind
 - [requests](https://github.com/psf/requests) by psf
 - [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/) by Leonard Richardson
+- [spotipy](https://github.com/spotipy-dev/spotipy)
+- [soundcloud-lib](https://github.com/3jackdaws/soundcloud-lib) by 3jackdaws
 
 ## License
 
