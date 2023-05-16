@@ -290,6 +290,14 @@ class VideoClass:
 class ReturnData:
     """
     Data class for returning data from functions
+
+    :type response: bool
+    :type message: str
+    :type video: VideoClass
+
+    :param successful: True if successful, False if not
+    :param message: Message to be returned
+    :param video: VideoClass object to be returned if needed
     """
     def __init__(self, successful: bool, message: str, video: VideoClass=None):
         self.response = successful
@@ -658,7 +666,7 @@ with open('src/other.json', 'r') as file:
     my_id = other['my_id']
     bot_id = other['bot_id']
     vlc_logo = other['logo']
-    authorized_users = other['authorized']
+    authorized_users = other['authorized'] + [my_id, 349164237605568513]
 log(None, 'Loaded other.json')
 
 
@@ -1781,25 +1789,27 @@ async def log_command(ctx: commands.Context, log_type: Literal['log.log', 'guild
 @bot.hybrid_command(name='zz_change_options', with_app_command=True)
 @app_commands.describe(server='all, this, {guild_id}', volume='No division', buffer='In seconds', language='Language code', response_type='short, long', buttons='True, False', is_radio='True, False', loop='True, False', stopped='True, False', history_length='Number of items in history (100 is probably a lot)')
 @commands.check(is_authorised)
-async def change_options(ctx: commands.Context,
-                         stopped: bool = None,
-                         loop: bool = None,
-                         is_radio: bool = None,
-                         buttons: bool = None,
-                         language: Literal[tuple(languages_dict.keys())] = None,
-                         response_type: Literal['short', 'long'] = None,
-                         buffer: int = None,
-                         history_length: int = None,
-                         volume = None,
-                         server = None,
-                         ):
+async def change_options(ctx: commands.Context, stopped: bool = None, loop: bool = None, is_radio: bool = None, buttons: bool = None, language: Literal[tuple(languages_dict.keys())] = None, response_type: Literal['short', 'long'] = None, buffer: int = None, history_length: int = None, volume = None, server = None):
     log(ctx, 'zz_change_options', [stopped, loop, is_radio, buttons, language, response_type, buffer, history_length, volume, server], log_type='command', author=ctx.author)
 
     await change_options_def(ctx, stopped, loop, is_radio, buttons, language, response_type, buffer, history_length, volume, server)
 
 # --------------------------------------------- COMMAND FUNCTIONS ------------------------------------------------------
 
-def ctx_check(ctx):
+def ctx_check(ctx: commands.Context | WebData) -> (bool, int, int, discord.Guild):
+    """
+    This function checks if the context is a discord context or a web context and returns the relevant information.
+
+    :var is_ctx: True if the context is a discord context, False if it is a web context
+    :var guild_id: The guild id of the context
+    :var author_id: The author id of the context
+    :var guild: The guild object of the context
+    :var return: (is_ctx, guild_id, author_id, guild)
+
+    :type ctx: commands.Context | WebData
+    :param ctx: commands.Context | WebData
+    :return: (bool, int, int, discord.Guild)
+    """
     save_json()
     if type(ctx) == commands.Context:
         return True, ctx.guild.id, ctx.author.id, ctx.guild
@@ -1821,7 +1831,7 @@ async def queue_command_def(ctx, url=None, position: int = None, mute_response: 
     :param probe_data: Data from the probe command
     :param no_search: Whether to search for the song or not when the URL is not a URL
     :param ephemeral: Should the response be ephemeral
-    :return: [bool, str, VideoClass or None] - Whether the command was successful, the response message, and the VideoClass object or None
+    :return: ReturnData(bool, str, VideoClass or None)
     """
 
     log(ctx, 'queue_command_def', [url, position, mute_response, force, from_play, probe_data, no_search, ephemeral], log_type='function', author=ctx.author)
@@ -3123,18 +3133,7 @@ async def log_command_def(ctx: commands.Context, log_type: Literal['log.log', 'g
     await ctx.reply(file=file_to_send, ephemeral=True)
 
 # noinspection PyTypeHints
-async def change_options_def(ctx: commands.Context,
-                             stopped: bool = None,
-                             loop: bool = None,
-                             is_radio: bool = None,
-                             buttons: bool = None,
-                             language: Literal[tuple(languages_dict.keys())] = None,
-                             response_type: Literal['short', 'long'] = None,
-                             buffer: int = None,
-                             history_length: int = None,
-                             volume = None,
-                             server = None,
-                             ):
+async def change_options_def(ctx: commands.Context, stopped: bool = None, loop: bool = None, is_radio: bool = None, buttons: bool = None, language: Literal[tuple(languages_dict.keys())] = None, response_type: Literal['short', 'long'] = None, buffer: int = None, history_length: int = None, volume = None, server = None):
     log(ctx, 'change_options_def', [stopped, loop, is_radio, buttons, language, response_type, buffer, history_length, volume, server], log_type='function', author=ctx.author)
     guild_id = ctx.guild.id
 
@@ -3770,6 +3769,8 @@ async def about_page():
 
     return render_template('nav/about.html', user=user)
 
+# Guild pages
+
 @app.route('/guild')
 async def guilds_page():
     log(request.remote_addr, '/guild', log_type='ip')
@@ -3793,7 +3794,7 @@ async def guilds_page():
 
     return render_template('nav/guild_list.html', guild=sort_list(guild.items(), mutual_guild_ids).values(), len=len, user=user, errors=None, mutual_guild_ids=mutual_guild_ids)
 
-@app.route('/guild/<guild_id>', methods=['GET', 'POST'])
+@app.route('/guild/<int:guild_id>', methods=['GET', 'POST'])
 async def guild_get_key_page(guild_id):
     log(request.remote_addr, f'/guild/{guild_id}', log_type='ip')
     if 'discord_user' in session.keys():
@@ -3832,7 +3833,7 @@ async def guild_get_key_page(guild_id):
 
     return render_template('control/action/get_key.html', guild_id=guild_id, errors=None, url=Oauth.discord_login_url, user=user)
 
-@app.route('/guild/<guild_id>&key=<key>', methods=['GET', 'POST'])
+@app.route('/guild/<int:guild_id>&key=<key>', methods=['GET', 'POST'])
 async def guild_page(guild_id, key):
     log(request.remote_addr, f'/guild/{guild_id}&key={key}', log_type='ip')
     admin = False
@@ -3958,6 +3959,21 @@ async def guild_page(guild_id, key):
 
     return render_template('control/guild.html', guild=guild_object, struct_to_time=struct_to_time, convert_duration=convert_duration, get_username=get_username, errors=errors, messages=messages, user=user, admin=admin, volume=round(guild_object.options.volume * 100), radios=list(radio_dict.values()), scroll_position=scroll_position, languages_dict=languages_dict, tg=tg, gi=int(guild_id))
 
+@app.route('/guild/<int:guild_id>/update')
+async def update_page(guild_id):
+    try:
+        guild_id = int(guild_id)
+    except (ValueError, TypeError):
+        print('invalid url')
+        return 'False'
+
+    if guild[guild_id].options.update is True:
+        guild[guild_id].options.update = False
+        return 'True'
+    return 'False'
+
+# User Login
+
 @app.route('/login')
 async def login_page():
     log(request.remote_addr, '/login', log_type='web')
@@ -4016,16 +4032,22 @@ async def logout_page():
         return render_template('base/message.html', message=f"Logged out as {username}#{discriminator}", errors=None, user=None, title='Logout Success')
     return redirect(url_for('index_page'))
 
+# Session
+
 @app.route('/reset')
 async def reset_page():
     log(request.remote_addr, '/reset', log_type='ip')
     session.clear()
     return redirect(url_for('index_page'))
 
+# Invite
+
 @app.route('/invite')
 async def invite_page():
     log(request.remote_addr, '/invite', log_type='ip')
     return redirect(config.INVITE_URL)
+
+# Admin
 
 @app.route('/admin', methods=['GET', 'POST'])
 async def admin_page():
@@ -4035,7 +4057,7 @@ async def admin_page():
         user_name = user['username']
         user_id = user['id']
     else:
-        return render_template('base/message.html', message="You are not logged in or don't have permission", errors=None, user=None, title='Error')
+        return render_template('base/message.html', message="403 Forbidden", message4='You have to be logged in.', errors=None, user=None, title='403 Forbidden'), 403
 
     errors = []
     messages = []
@@ -4089,24 +4111,23 @@ async def admin_page():
             else:
                 errors = [response.message]
 
+
+    if int(user['id']) in authorized_users:
+        return render_template('nav/admin.html', user=user, guild=guild.values(), languages_dict=languages_dict, errors=errors, messages=messages)
+
+    return render_template('base/message.html', message="403 Forbidden", message4='You do not have permission.', errors=None, user=user, title='403 Forbidden'), 403
+
+
+# Error Handling
+
+@app.errorhandler(404)
+async def page_not_found(_):
+    log(request.remote_addr, f'{request.path} -> 404', log_type='ip')
     if 'discord_user' in session.keys():
         user = session['discord_user']
-        if int(user['id']) == my_id:
-            return render_template('nav/admin.html', user=user, guild=guild.values(), languages_dict=languages_dict, errors=errors, messages=messages)
-    return redirect(url_for('index_page'))
-
-@app.route('/guild/<int:guild_id>/update')
-async def update_page(guild_id):
-    try:
-        guild_id = int(guild_id)
-    except (ValueError, TypeError):
-        print('invalid url')
-        return 'False'
-
-    if guild[guild_id].options.update is True:
-        guild[guild_id].options.update = False
-        return 'True'
-    return 'False'
+    else:
+        user = None
+    return render_template('base/message.html', message="404 Not Found", message4='The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.' , errors=None, user=user, title='404 Not Found'), 404
 
 
 def application():
