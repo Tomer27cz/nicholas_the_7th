@@ -50,6 +50,19 @@ more detailed guide will be added later (maby)
 ```
 python main.py
 ```
+or (linux) - recommended 
+```
+nohup python3 -u main.py &>> log/activity.log &
+```
+for continuous execution with log 
+
+
+- Run `flaskapp.py` for Web Interface
+```
+python flaskapp.py
+```
+or [run with apache2](https://example.con)
+
 
 ## Credits
 
