@@ -1,6 +1,5 @@
 import asyncio
 import json
-import os
 import random
 import re
 import subprocess
@@ -22,10 +21,12 @@ from discord.ext import commands
 from discord.ui import View
 from spotipy.oauth2 import SpotifyClientCredentials
 from sclib import SoundcloudAPI, Track, Playlist
-from flask import Flask, render_template, request, url_for, redirect, session, send_file
+
+import socket
+import struct
+import pickle
 
 import config
-from oauth import Oauth
 
 # ---------------- Bot class ------------
 
@@ -483,7 +484,7 @@ def struct_to_time(struct_time, first='date') -> str:
 
 # ------------ PRINT --------------------
 
-def log(ctx, text_data, options=None, log_type='text', author=None):
+def log(ctx, text_data, options=None, log_type='text', author=None) -> None:
     """
     Logs data to the console and to the log file
     :param ctx: commands.Context or WebData or guild_id
@@ -520,18 +521,6 @@ def log(ctx, text_data, options=None, log_type='text', author=None):
 
     with open("log/log.log", "a", encoding="utf-8") as f:
         f.write(message + "\n")
-
-def collect_data(data):
-    """
-    Collects data to the data.log file
-    :param data: data to be collected
-    :return: None
-    """
-    now_time_str = struct_to_time(time())
-    message = f"{now_time_str} | {data}\n"
-
-    with open("log/data.log", "a", encoding="utf-8") as f:
-        f.write(message)
 
 # ---------------------------------------------- GUILD TO JSON ---------------------------------------------------------
 
@@ -3746,392 +3735,239 @@ async def web_user_options_edit(web_data, form) -> ReturnData:
 
     return ReturnData(True, f'Edited options successfully!')
 
-# --------------------------------------------- WEB SERVER --------------------------------------------- #
+# --------------------------------------------- IPC SERVER --------------------------------------------- #
 
-app = Flask(__name__)
-app.config['SECRET_KEY'] = config.WEB_SECRET_KEY
+async def send_msg(sock, msg: bytes):
+    """
+    Send a message to the socket prefixed with the length
+    :param sock: socket to send to
+    :param msg: message
 
-@app.route('/')
-async def index_page():
-    log(request.remote_addr, '/index', log_type='ip')
-    if 'discord_user' in session.keys(): user = session['discord_user']
-    else: user = None
+    :type msg: bytes
+    """
+    #get event loop
+    loop = asyncio.get_event_loop()
+    # Prefix each message with a 4-byte length (network byte order)
+    msg = struct.pack('>I', len(msg)) + msg
+    # send
+    await loop.sock_sendall(sock, msg)
 
-    return render_template('nav/index.html', user=user)
+async def recv_msg(sock) -> bytes or None:
+    """
+    Receive a message prefixed with the message length
+    :param sock: socket
+    :return: bytes
+    """
+    # Read message length and unpack it into an integer
+    raw_msglen = await recv_all(sock, 4)
+    if not raw_msglen:
+        return None
+    msglen = struct.unpack('>I', raw_msglen)[0]
+    # Read the message data
+    return await recv_all(sock, msglen)
 
-@app.route('/about')
-async def about_page():
-    log(request.remote_addr, '/about', log_type='ip')
-    if 'discord_user' in session.keys():
-        user = session['discord_user']
+async def recv_all(sock, n) -> bytes or None:
+    """
+    Recieve all
+    :param sock: socket
+    :param n: length to read
+    :return: bytes or None
+    """
+    # get event loop
+    loop = asyncio.get_event_loop()
+    # Helper function to recv n bytes or return None if EOF is hit
+    data = bytearray()
+    while len(data) < n:
+        packet = await loop.sock_recv(sock, (n-len(data)))
+        if not packet:
+            return None
+        data.extend(packet)
+    return data
+
+# execute from handle
+
+async def execute_function(request_dict) -> ReturnData:
+    """
+    Execute a function from a request dict
+    :param request_dict: A request dict
+    :type request_dict: dict
+    :return: ReturnData
+    """
+
+    if request_dict['type'] != 'function':
+        return ReturnData(False, f'Wrong type: {request_dict["type"]} --> Internal error (contact developer)')
+
+    web_data = request_dict['web_data']
+    func_name = request_dict['function_name']
+
+    if request_dict['args'] is None:
+        args = {}
     else:
-        user = None
-
-    return render_template('nav/about.html', user=user)
-
-# Guild pages
-
-@app.route('/guild')
-async def guilds_page():
-    log(request.remote_addr, '/guild', log_type='ip')
-    if 'discord_user' in session.keys():
-        user = session['discord_user']
-        mutual_guild_ids = session['mutual_guild_ids']
-    elif 'mutual_guild_ids' in session.keys():
-        mutual_guild_ids = session['mutual_guild_ids']
-        user = None
-        if mutual_guild_ids is None:
-            mutual_guild_ids = []
-            session['mutual_guild_ids'] = []
-    else:
-        user = None
-        mutual_guild_ids = []
-
-    def sort_list(val_lst, key_lst):
-        if not key_lst:
-            return dict(val_lst)
-        return dict(sorted(val_lst, key=lambda x: key_lst.index(x[0]) if x[0] in key_lst else len(key_lst)))
-
-    return render_template('nav/guild_list.html', guild=sort_list(guild.items(), mutual_guild_ids).values(), len=len, user=user, errors=None, mutual_guild_ids=mutual_guild_ids)
-
-@app.route('/guild/<int:guild_id>', methods=['GET', 'POST'])
-async def guild_get_key_page(guild_id):
-    log(request.remote_addr, f'/guild/{guild_id}', log_type='ip')
-    if 'discord_user' in session.keys():
-        user = session['discord_user']
-        mutual_guild_ids = session['mutual_guild_ids']
-    elif 'mutual_guild_ids' in session.keys():
-        mutual_guild_ids = session['mutual_guild_ids']
-        user = None
-        if mutual_guild_ids is None:
-            mutual_guild_ids = []
-            session['mutual_guild_ids'] = []
-    else:
-        user = None
-        mutual_guild_ids = []
+        args = request_dict['args']
 
     try:
-        guild_object = guild[int(guild_id)]
-    except (KeyError, ValueError, TypeError):
-        return render_template('base/message.html', guild_id=guild_id, user=user, message="That Server doesn't exist or the bot is not in it", errors=None, title='Error')
 
-    if guild_object.id in mutual_guild_ids:
-        return redirect(f'/guild/{guild_id}&key={guild_object.data.key}')
+        if func_name == 'remove_def':
+            return await remove_def(web_data, number=args['number'], list_type=args['list_type'])
+        if func_name == 'web_up':
+            return await web_up(web_data, number=args['number'])
+        if func_name == 'web_down':
+            return await web_down(web_data, number=args['number'])
+        if func_name == 'web_top':
+            return await web_top(web_data, number=args['number'])
+        if func_name == 'web_bottom':
+            return await web_bottom(web_data, number=args['number'])
 
-    if request.method == 'POST':
-        if 'key' in request.form.keys():
-            if request.form['key'] == guild_object.data.key:
-                if 'mutual_guild_ids' not in session.keys():
-                    session['mutual_guild_ids'] = []
+        if func_name == 'play_def':
+            return await play_def(web_data)
+        if func_name == 'stop_def':
+            return await stop_def(web_data)
+        if func_name == 'pause_def':
+            return await pause_def(web_data)
+        if func_name == 'skip_def':
+            return await skip_def(web_data)
 
-                session['mutual_guild_ids'] = session['mutual_guild_ids'] + [guild_object.id]
-                # mutual_guild_ids = session['mutual_guild_ids']
+        if func_name == 'loop_command_def':
+            return await loop_command_def(web_data)
+        if func_name == 'shuffle_def':
+            return await shuffle_def(web_data)
+        if func_name == 'clear_def':
+            return await clear_def(web_data)
 
-                return redirect(f'/guild/{guild_id}&key={request.form["key"]}')
+        if func_name == 'web_disconnect':
+            return await web_disconnect(web_data)
+        if func_name == 'web_join':
+            return await web_join(web_data, form=args['form'])
 
-        return render_template('control/action/get_key.html', guild_id=guild_id, errors=[f'Invalid code: {request.form["key"]} -> do /key in the server'], url=Oauth.discord_login_url, user=user)
+        if func_name == 'web_queue':
+            return await web_queue(web_data, video_type=args['video_type'], position=args['position'])
+        if func_name == 'queue_command_def':
+            return await queue_command_def(web_data, url=args['url'])
+        if func_name == 'web_queue_from_radio':
+            return await web_queue_from_radio(web_data, radio_name=args['radio_name'])
 
-    return render_template('control/action/get_key.html', guild_id=guild_id, errors=None, url=Oauth.discord_login_url, user=user)
+        if func_name == 'volume_command_def':
+            return await volume_command_def(web_data, volume=args['volume'])
 
-@app.route('/guild/<int:guild_id>&key=<key>', methods=['GET', 'POST'])
-async def guild_page(guild_id, key):
-    log(request.remote_addr, f'/guild/{guild_id}&key={key}', log_type='ip')
-    admin = False
-    user = None
-    user_name, user_id = request.remote_addr, 'WEB Guest'
-    errors = []
-    messages = []
-    scroll_position = 0
+        if func_name == 'web_edit':
+            return await web_edit(web_data, form=args['form'])
+        if func_name == 'web_options_edit':
+            return await web_options_edit(web_data, form=args['form'])
+        if func_name == 'web_user_options_edit':
+            return await web_user_options_edit(web_data, form=args['form'])
 
-    if 'discord_user' in session.keys():
-        user = session['discord_user']
-        user_name, user_id = user['username'], int(user['id'])
-        mutual_guild_ids = session['mutual_guild_ids']
-    elif 'mutual_guild_ids' in session.keys():
-        mutual_guild_ids = session['mutual_guild_ids']
+    except KeyError:
+        return ReturnData(False, f'Wrong args for ({func_name}): {args} --> Internal error (contact developer)')
+
+    return ReturnData(False, f'Unknown function: {func_name}')
+
+async def execute_get_data(request_dict) -> ReturnData:
+    data_type = request_dict['data_type']
+
+    if data_type == 'guild':
+        guild_id = request_dict['guild_id']
+        return guild[guild_id]
+    if data_type == 'guilds':
+        return guild
+    if data_type == 'update':
+        guild_id = request_dict['guild_id']
+        return guild[guild_id].options.update
+    if data_type == 'user':
+        user_id = request_dict['user_id']
+        return get_username(user_id)
+    if data_type == 'language':
+        guild_id = request_dict['guild_id']
+        return guild[guild_id].options.language
+    if data_type == 'renew':
+        radio_website = request_dict['radio_website']
+        url = request_dict['url']
+        if radio_website == 'radia_cz':
+            html = requests.get(url).text
+            soup = BeautifulSoup(html, features="lxml")
+            data1 = soup.find('div', attrs={'class': 'interpret-image'})
+            data2 = soup.find('div', attrs={'class': 'interpret-info'})
+
+            picture = data1.find('img')['src']
+            channel_name = data2.find('div', attrs={'class': 'nazev'}).text.lstrip().rstrip()
+            title = data2.find('div', attrs={'class': 'song'}).text.lstrip().rstrip()
+            duration = 'Stream'
+
+        elif radio_website == 'actve':
+            r = requests.get(url).json()
+            picture = r['coverBase']
+            channel_name = r['artist']
+            title = r['title']
+            duration = 'Stream'
+
+        else:
+            raise ValueError("Invalid radio website")
+
+        return [picture, channel_name, title, duration]
+
+async def execute_set_data(request_dict) -> None:
+    data_type = request_dict['data_type']
+
+    if data_type == 'update':
+        guild_id = request_dict['guild_id']
+        update_value = request_dict['update']
+        guild[guild_id].options.update = update_value
     else:
-        mutual_guild_ids = []
+        pass
 
-    if user_id == my_id or user_id == config.OWNER_ID:
-        admin = True
+# handle client
 
-    if request.method == 'POST':
-        web_data = WebData(int(guild_id), user_name, user_id)
-        response = None
+async def handle_client(client):
+    request_data = await recv_msg(client)
+    request_dict = pickle.loads(request_data)
 
-        keys = request.form.keys()
-        if 'del_btn' in keys:
-            log(web_data, 'remove', [request.form['del_btn']], log_type='web', author=web_data.author)
-            response = await remove_def(web_data, int(request.form['del_btn']))
-        if 'up_btn' in keys:
-            log(web_data, 'up', [request.form['up_btn']], log_type='web', author=web_data.author)
-            response = await web_up(web_data, request.form['up_btn'])
-        if 'down_btn' in keys:
-            log(web_data, 'down', [request.form['down_btn']], log_type='web', author=web_data.author)
-            response = await web_down(web_data, request.form['down_btn'])
-        if 'top_btn' in keys:
-            log(web_data, 'top', [request.form['top_btn']], log_type='web', author=web_data.author)
-            response = await web_top(web_data, request.form['top_btn'])
-        if 'bottom_btn' in keys:
-            log(web_data, 'bottom', [request.form['bottom_btn']], log_type='web', author=web_data.author)
-            response = await web_bottom(web_data, request.form['bottom_btn'])
+    request_type = request_dict['type']
 
-        if 'play_btn' in keys:
-            log(web_data, 'play', [], log_type='web', author=web_data.author)
-            response = await play_def(web_data)
-        if 'stop_btn' in keys:
-            log(web_data, 'stop', [], log_type='web', author=web_data.author)
-            response = await stop_def(web_data)
-        if 'pause_btn' in keys:
-            log(web_data, 'pause', [], log_type='web', author=web_data.author)
-            response = await pause_def(web_data)
-        if 'skip_btn' in keys:
-            log(web_data, 'skip', [], log_type='web', author=web_data.author)
-            response = await skip_def(web_data)
-
-        if 'loop_btn' in keys:
-            log(web_data, 'loop', [], log_type='web', author=web_data.author)
-            response = await loop_command_def(web_data)
-        if 'shuffle_btn' in keys:
-            log(web_data, 'shuffle', [], log_type='web', author=web_data.author)
-            response = await shuffle_def(web_data)
-        if 'clear_btn' in keys:
-            log(web_data, 'clear', [], log_type='web', author=web_data.author)
-            response = await clear_def(web_data)
-
-        if 'disconnect_btn' in keys:
-            log(web_data, 'disconnect', [], log_type='web', author=web_data.author)
-            response = await web_disconnect(web_data)
-        if 'join_btn' in keys:
-            log(web_data, 'join', [], log_type='web', author=web_data.author)
-            response = await web_join(web_data, request.form)
-
-        if 'queue_btn' in keys:
-            log(web_data, 'queue', [request.form['queue_btn']], log_type='web', author=web_data.author)
-            response = await web_queue(web_data, request.form['queue_btn'])
-        if 'nextup_btn' in keys:
-            log(web_data, 'nextup', [request.form['nextup_btn'], 0], log_type='web', author=web_data.author)
-            response = await web_queue(web_data, request.form['nextup_btn'], 0)
-        if 'hdel_btn' in keys:
-            log(web_data, 'history remove', [request.form['hdel_btn']], log_type='web', author=web_data.author)
-            response = await remove_def(web_data, int(request.form['hdel_btn'][1:]), list_type='history')
-
-        if 'edit_btn' in keys:
-            log(web_data, 'web_edit', [request.form['edit_btn']], log_type='web', author=web_data.author)
-            response = await web_edit(web_data, request.form)
-        if 'options_btn' in keys:
-            log(web_data, 'web_options', [request.form], log_type='web', author=web_data.author)
-            response = await web_user_options_edit(web_data, request.form)
-
-        if 'volume_btn' in keys:
-            log(web_data, 'volume_command_def', [request.form['volumeRange'], request.form['volumeInput']], log_type='web', author=web_data.author)
-            response = await volume_command_def(web_data, request.form['volumeRange'], request.form['volumeInput'])
-
-        if 'ytURL' in keys:
-            log(web_data, 'queue_command_def', [request.form['ytURL']], log_type='web', author=web_data.author)
-            response = await queue_command_def(web_data, request.form['ytURL'])
-        if 'radio-checkbox' in keys:
-            log(web_data, 'web_queue_from_radio', [request.form['radio-checkbox']], log_type='web', author=web_data.author)
-            response = await web_queue_from_radio(web_data, request.form['radio-checkbox'])
-
-        if 'scroll' in keys:
-            scroll_position = int(request.form['scroll'])
-
-        if response:
-            if not response.response:
-                errors = [response.message]
-            else:
-                messages = [response.message]
-
-    try:
-        guild_object = guild[int(guild_id)]
-    except (KeyError, ValueError, TypeError):
-        return render_template('base/message.html', guild_id=guild_id, user=user, message="That Server doesn't exist or the bot is not in it", errors=None, title='Error')
-
-    if key != guild_object.data.key:
-        if guild_object.id in mutual_guild_ids:
-            return redirect(f'/guild/{guild_id}&key={guild_object.data.key}')
-
-        return redirect(url_for('guild_get_key_page', guild_id=guild_id))
-
-    mutual_guild_ids.append(guild_object.id)
-    session['mutual_guild_ids'] = mutual_guild_ids
-
-    return render_template('control/guild.html', guild=guild_object, struct_to_time=struct_to_time, convert_duration=convert_duration, get_username=get_username, errors=errors, messages=messages, user=user, admin=admin, volume=round(guild_object.options.volume * 100), radios=list(radio_dict.values()), scroll_position=scroll_position, languages_dict=languages_dict, tg=tg, gi=int(guild_id))
-
-@app.route('/guild/<int:guild_id>/update')
-async def update_page(guild_id):
-    try:
-        guild_id = int(guild_id)
-    except (ValueError, TypeError):
-        print('invalid url')
-        return 'False'
-
-    if guild[guild_id].options.update is True:
-        guild[guild_id].options.update = False
-        return 'True'
-    return 'False'
-
-# User Login
-
-@app.route('/login')
-async def login_page():
-    log(request.remote_addr, '/login', log_type='web')
-    admin = False
-    if 'discord_user' in session.keys():
-        user = Oauth.get_user(session['access_token'])
-        collect_data(user)
-        session['discord_user'] = user
-
-        guilds = Oauth.get_user_guilds(session['access_token'])
-        collect_data(f'{user["username"]} -> {guilds}')
-
-        bot_guilds = Oauth.get_bot_guilds()
-        mutual_guilds = [x for x in guilds if x['id'] in map(lambda i: i['id'], bot_guilds)]
-
-        mutual_guild_ids = [int(guild_object['id']) for guild_object in mutual_guilds]
-        session['mutual_guild_ids'] = mutual_guild_ids
-
-        return render_template('base/message.html', message=f"Updated session for {user['username']}#{user['discriminator']}", errors=None, user=user, title='Update Success')
-
-    code = request.args.get('code')
-    if code is None:
-        return redirect(Oauth.discord_login_url)
-
-    response = Oauth.get_access_token(code)
-    access_token = response['access_token']
-
-    session['access_token'] = access_token
-
-    user = Oauth.get_user(access_token)
-    collect_data(user)
-    session['discord_user'] = user
-
-    guilds = Oauth.get_user_guilds(session['access_token'])
-    collect_data(f'{user["username"]} -> {guilds}')
-
-    bot_guilds = Oauth.get_bot_guilds()
-    mutual_guilds = [x for x in guilds if x['id'] in map(lambda i:i['id'], bot_guilds)]
-
-    mutual_guild_ids = [int(guild_object['id']) for guild_object in mutual_guilds]
-    if int(user['id']) == my_id:
-        mutual_guild_ids = [int(guild_object['id']) for guild_object in bot_guilds]
-        admin = True
-    session['mutual_guild_ids'] = mutual_guild_ids
-
-    return render_template('base/message.html', message=f"Success, logged in as {user['username']}#{user['discriminator']}{' -> ADMIN' if admin else ''}", errors=None, user=user, title='Login Success')
-
-@app.route('/logout')
-async def logout_page():
-    log(request.remote_addr, '/logout', log_type='ip')
-    if 'discord_user' in session.keys():
-        user = session['discord_user']
-        username = user['username']
-        discriminator = user['discriminator']
-        session.clear()
-        return render_template('base/message.html', message=f"Logged out as {username}#{discriminator}", errors=None, user=None, title='Logout Success')
-    return redirect(url_for('index_page'))
-
-# Session
-
-@app.route('/reset')
-async def reset_page():
-    log(request.remote_addr, '/reset', log_type='ip')
-    session.clear()
-    return redirect(url_for('index_page'))
-
-# Invite
-
-@app.route('/invite')
-async def invite_page():
-    log(request.remote_addr, '/invite', log_type='ip')
-    return redirect(config.INVITE_URL)
-
-# Admin
-
-@app.route('/admin', methods=['GET', 'POST'])
-async def admin_page():
-    log(request.remote_addr, '/admin', log_type='ip')
-    if 'discord_user' in session.keys():
-        user = session['discord_user']
-        user_name = user['username']
-        user_id = user['id']
+    if request_type == 'get_data':
+        response = await execute_get_data(request_dict)
+    elif request_type == 'function':
+        response = await execute_function(request_dict)
+    elif request_type == 'set_data':
+        response = await execute_set_data(request_dict)
     else:
-        return render_template('base/message.html', message="403 Forbidden", message4='You have to be logged in.', errors=None, user=None, title='403 Forbidden'), 403
-
-    errors = []
-    messages = []
-    response = None
-
-    if request.method == 'POST':
-        guild_id = None
-        web_data = WebData(guild_id, user_name, user_id)
-
-        keys = request.form.keys()
-        form = request.form
-        try:
-            if 'download_btn' in keys:
-                file_name = request.form['download_file']
-                log(web_data, 'download file', [file_name], log_type='web', author=web_data.author)
-                try:
-                    if file_name == 'log.log' or file_name == 'data.log' or file_name == 'activity.log':
-                        return send_file(f'log/{file_name}', as_attachment=True)
-                    else:
-                        return send_file(f'src/{file_name}', as_attachment=True)
-                except Exception as e:
-                    return str(e)
-            if 'upload_btn' in keys:
-                f = request.files['file']
-                file_name = request.form['download_file']
-                log(web_data, 'upload file', [f.filename, file_name], log_type='web', author=web_data.author)
-                if not f:
-                    errors = ['No file']
-                elif file_name != f.filename:
-                    errors = ['File name does not match']
-                else:
-                    try:
-                        if file_name == 'log.log' or file_name == 'data.log' or file_name == 'activity.log':
-                            f.save(f"log/{f.filename}")
-                            messages = ['File uploaded']
-                        else:
-                            f.save(f"src/{f.filename}")
-                            messages = ['File uploaded']
-                    except Exception as e:
-                        return str(e)
-            if 'edit_btn' in keys:
-                log(web_data, 'edit options', [form], log_type='web', author=web_data.author)
-                response = await web_options_edit(web_data, form)
-        except Exception as e:
-            errors = [str(e)]
-            log(web_data, 'error', [str(e)], log_type='web', author=web_data.author)
-
-        if response:
-            if response.response:
-                messages = [response.message]
-            else:
-                errors = [response.message]
+        response = ReturnData(False, 'idk')
 
 
-    if int(user['id']) in authorized_users:
-        return render_template('nav/admin.html', user=user, guild=guild.values(), languages_dict=languages_dict, errors=errors, messages=messages)
+    if response:
+        # serialize response
+        serialized_response = pickle.dumps(response)
+        await send_msg(client, serialized_response)
 
-    return render_template('base/message.html', message="403 Forbidden", message4='You do not have permission.', errors=None, user=user, title='403 Forbidden'), 403
+    client.close()
 
+async def run_server():
+    # IPC parameters
+    HOST = '127.0.0.1'  # Standard loopback interface address (localhost)
+    PORT = 5421  # Port to listen on (non-privileged ports are > 1023)
 
-# Error Handling
+    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server.bind((HOST, PORT))
+    server.listen(8)
+    # server.setblocking(False)
 
-@app.errorhandler(404)
-async def page_not_found(_):
-    log(request.remote_addr, f'{request.path} -> 404', log_type='ip')
-    if 'discord_user' in session.keys():
-        user = session['discord_user']
-    else:
-        user = None
-    return render_template('base/message.html', message="404 Not Found", message4='The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.' , errors=None, user=user, title='404 Not Found'), 404
+    log(None, f'IPC server is running on {HOST}:{PORT}')
 
+    loop = asyncio.get_event_loop()
+
+    while True:
+        client, _ = await loop.sock_accept(server)
+        loop.create_task(handle_client(client))
+
+def ipc_run():
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+
+    loop.run_until_complete(run_server())
+    loop.close()
+
+# ------ APP ---------
 
 def application():
-    web_thread = threading.Thread(target=app.run, kwargs={'debug': False, 'host': '0.0.0.0', 'port': int(os.environ.get('PORT', 5420))})
+    web_thread = threading.Thread(target=ipc_run)
     bot_thread = threading.Thread(target=bot.run, kwargs={'token':config.BOT_TOKEN})
 
     web_thread.start()
