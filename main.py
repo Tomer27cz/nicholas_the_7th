@@ -77,6 +77,7 @@ class Bot(commands.Bot):
             await voice_state.disconnect()
             log(member.guild.id, "-->> Disconnecting when last person left <<--")
             now_to_history(member.guild.id)
+            guild[member.guild.id].queue.clear() # clear queue when last person leaves
         if not member.id == self.user.id:
             return
         elif before.channel is None:
@@ -95,6 +96,9 @@ class Bot(commands.Bot):
                     now_to_history(member.guild.id)
                 if not voice.is_connected():
                     break
+        elif after.channel is None:
+            guild[member.guild.id].queue.clear() # clear queue when bot leaves
+            log(member.guild.id, f"-->> Cleared Queue after bot Disconnected <<--")
 
     async def on_command_error(self, ctx, error):
         if isinstance(error, commands.CheckFailure):
@@ -637,18 +641,18 @@ log(None, "--------------------------------------- NEW / REBOOTED --------------
 
 build_new_guilds = False
 
-with open('src/radio.json', 'r') as file:
+with open('src/radio.json', 'r', encoding='utf-8') as file:
     radio_dict = json.load(file)
 log(None, 'Loaded radio.json')
 
 
-with open('src/languages.json', 'r') as file:
+with open('src/languages.json', 'r', encoding='utf-8') as file:
     languages_dict = json.load(file)
     text = languages_dict['en']
 log(None, 'Loaded languages.json')
 
 
-with open('src/other.json', 'r') as file:
+with open('src/other.json', 'r', encoding='utf-8') as file:
     other = json.load(file)
     react_dict = other['reactions']
     prefix = other['prefix']
@@ -683,7 +687,7 @@ log(None, 'SoundCloud API initialized')
 
 if build_new_guilds:
     log(None, 'Building new guilds.json ...')
-    with open('src/guilds.json', 'r') as file:
+    with open('src/guilds.json', 'r', encoding='utf-8') as file:
         jf = json.load(file)
     guild = dict(zip(jf.keys(), [Guild(int(guild)) for guild in jf.keys()]))
 
@@ -698,7 +702,7 @@ if build_new_guilds:
     exit(0)
 
 
-with open('src/guilds.json', 'r') as file:
+with open('src/guilds.json', 'r', encoding='utf-8') as file:
     guild = json_to_guilds(json.load(file))
 log(None, 'Loaded guilds.json')
 
@@ -1119,8 +1123,6 @@ def get_update_list() -> list or None:
 
 def push_update(guild_id: int):
     guild[guild_id].options.update = True
-    print(f'pushed update: {guild_id}')
-    print(f'is now: {guild[guild_id].options.update}')
 
 # ---------------------------------------------- CHECK ---------------------------------------------------------
 
@@ -1217,7 +1219,6 @@ async def to_queue(guild_id: int, video: VideoClass, position: int = None, ctx=N
         guild[guild_id].queue.insert(position, video)
 
     push_update(guild_id)
-    print(f'to queue after push: {guild[guild_id].options.update}')
     save_json()
 
     if return_message:
@@ -1785,7 +1786,7 @@ async def change_options(ctx: commands.Context, stopped: bool = None, loop: bool
 
 # --------------------------------------------- COMMAND FUNCTIONS ------------------------------------------------------
 
-def ctx_check(ctx: commands.Context | WebData) -> (bool, int, int, discord.Guild):
+def ctx_check(ctx: commands.Context or WebData) -> (bool, int, int, discord.Guild):
     """
     This function checks if the context is a discord context or a web context and returns the relevant information.
 
@@ -2316,6 +2317,9 @@ async def play_def(ctx, url=None, force=False, mute_response=False, after=False)
 
         position = 0 if force else None
         response = await queue_command_def(ctx, url=url, position=position, mute_response=True, force=force, from_play=True)
+
+        if not response:
+            return response
 
         if not response.response:
             return response
@@ -3861,7 +3865,7 @@ async def execute_function(request_dict) -> ReturnData:
 
     return ReturnData(False, f'Unknown function: {func_name}')
 
-async def execute_get_data(request_dict) -> ReturnData:
+async def execute_get_data(request_dict):
     data_type = request_dict['data_type']
 
     if data_type == 'guild':
@@ -3931,7 +3935,6 @@ async def handle_client(client):
     else:
         response = ReturnData(False, 'idk')
 
-
     if response:
         # serialize response
         serialized_response = pickle.dumps(response)
@@ -3947,7 +3950,7 @@ async def run_server():
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server.bind((HOST, PORT))
     server.listen(8)
-    # server.setblocking(False)
+    server.setblocking(False)
 
     log(None, f'IPC server is running on {HOST}:{PORT}')
 

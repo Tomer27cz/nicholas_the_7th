@@ -4,6 +4,7 @@ import pickle
 import json
 import os
 from time import gmtime, strftime, time
+from io import BytesIO
 
 from flask import Flask, render_template, request, url_for, redirect, session, send_file
 
@@ -13,14 +14,14 @@ from oauth import Oauth
 
 # --------------------------------------------- LOAD DATA --------------------------------------------- #
 
-with open('src/radio.json', 'r') as file:
+with open('src/radio.json', 'r', encoding='utf-8') as file:
     radio_dict = json.load(file)
 
-with open('src/languages.json', 'r') as file:
+with open('src/languages.json', 'r', encoding='utf-8') as file:
     languages_dict = json.load(file)
     text = languages_dict['en']
 
-with open('src/other.json', 'r') as file:
+with open('src/other.json', 'r', encoding='utf-8') as file:
     other = json.load(file)
     react_dict = other['reactions']
     prefix = other['prefix']
@@ -159,6 +160,25 @@ PORT = 5421  # The port used by the server
 
 # --------------------------------------------- OTHER FUNCTIONS --------------------------------------------- #
 
+class CustomUnpickler(pickle.Unpickler):
+    def find_class(self, module, name):
+        if name == 'ReturnData':
+            return ReturnData
+        if name == 'WebData':
+            return WebData
+        if name == 'Options':
+            return Options
+        if name == 'GuildData':
+            return GuildData
+        if name == 'Guild':
+            return Guild
+        if name == 'VideoClass':
+            return VideoClass
+        return super().find_class(module, name)
+
+def unpickle(data):
+    return CustomUnpickler(BytesIO(data)).load()
+
 def struct_to_time(struct_time, first='date') -> str:
     """
     Converts struct_time to time string
@@ -221,7 +241,8 @@ def tg(guild_id: int, content: str) -> str:
     :return: str - translated text
     """
     global guild
-    lang = guild[guild_id].options.language
+    # lang = guild[guild_id].options.language
+    lang = 'en'
     try:
         to_return = languages_dict[lang][content]
     except KeyError:
@@ -315,7 +336,7 @@ def send_arg(arg_dict: dict, get_response: bool=True):
         if response is None:
             return None
 
-        return pickle.loads(response)
+        return unpickle(response)
 
 def recv_msg(sock) -> bytes or None:
     """
