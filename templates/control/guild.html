@@ -4,6 +4,12 @@
 
 {% block nav %}
 
+  {% if not guild.connected %}
+    <div class="alert alert-warning div-align fade show sticky-top" role="alert">
+      {{ tg(gi, 'Bot is not connected to this guild -> Disabled') }}
+    </div>
+  {% endif %}
+
   {% if errors %}
     {% for error in errors %}
         <div class="alert alert-danger div-align alert-dismissible fade show sticky-top" role="alert">
@@ -27,7 +33,7 @@
 {% block content %}
 <!-- Guild -->
 <div>
-  <div class="div-align">
+  <div class="div-align margin-bottom-1">
     <div class="accordion" id="accordionFlushExample">
       <div class="accordion-item">
         <div class="accordion-header div-options">
@@ -196,14 +202,14 @@
   <div class="q-div div-con">
     <div class="q-item1">
       <div class="e-div">
-        <button class="btn btn-dark e-item1" type="button" data-bs-toggle="modal" data-bs-target="#joinModal" title="{{ tg(gi, 'Join Channel') }}" >
+        <button class="btn btn-dark e-item1" type="button" data-bs-toggle="modal" data-bs-target="#joinModal" title="{{ tg(gi, 'Join Channel') }}"{% if not guild.connected %}disabled{% endif %}>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#198754" viewBox="0 0 16 16">
             <path d="M14 2H16V3H14V5H13V3H11V2H13V0H14V2Z"></path>
             <path d="M6.5 8.00667C7.88 8.00667 9 6.88667 9 5.50667C9 4.12667 7.88 3.00667 6.5 3.00667C5.12 3.00667 4 4.12667 4 5.50667C4 6.88667 5.12 8.00667 6.5 8.00667Z"></path>
             <path d="M6.5 8.34C3.26 8.34 1 9.98666 1 12.34V13.0067H12V12.34C12 9.98 9.74 8.34 6.5 8.34Z"></path>
           </svg>
         </button>
-        <button class="btn btn-dark e-item1" type="submit" name="disconnect_btn" title="{{ tg(gi, 'Disconnect') }}">
+        <button class="btn btn-dark e-item1" type="submit" name="disconnect_btn" title="{{ tg(gi, 'Disconnect') }}"{% if not guild.connected %}disabled{% endif %}>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#dc3545" viewBox="0 0 24 24">
             <path d="M21.1169 1.11603L22.8839 2.88403L19.7679 6.00003L22.8839 9.11603L21.1169 10.884L17.9999 7.76803L14.8839 10.884L13.1169 9.11603L16.2329 6.00003L13.1169 2.88403L14.8839 1.11603L17.9999 4.23203L21.1169 1.11603ZM18 22H13C6.925 22 2 17.075 2 11V6C2 5.447 2.448 5 3 5H7C7.553 5 8 5.447 8 6V10C8 10.553 7.553 11 7 11H6C6.063 14.938 9 18 13 18V17C13 16.447 13.447 16 14 16H18C18.553 16 19 16.447 19 17V21C19 21.553 18.553 22 18 22Z"></path>
           </svg>
@@ -212,22 +218,22 @@
     </div>
     <div class="q-item1">
       <div class="e-div">
-        <button class="btn btn-dark e-item1" type="submit" name="play_btn" title="{{ tg(gi, 'Play') }}" >
+        <button class="btn btn-dark e-item1" type="submit" name="play_btn" title="{{ tg(gi, 'Play') }}"{% if not guild.connected %}disabled{% endif %}>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#0d6efd" viewBox="0 0 384 512">
             <path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"></path>
           </svg>
         </button>
-        <button class="btn btn-dark e-item1" type="submit" name="skip_btn" title="{{ tg(gi, 'Skip') }}">
+        <button class="btn btn-dark e-item1" type="submit" name="skip_btn" title="{{ tg(gi, 'Skip') }}"{% if not guild.connected %}disabled{% endif %}>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 512 512">
             <path d="M52.5 440.6c-9.5 7.9-22.8 9.7-34.1 4.4S0 428.4 0 416V96C0 83.6 7.2 72.3 18.4 67s24.5-3.6 34.1 4.4L224 214.3V256v41.7L52.5 440.6zM256 352V256 128 96c0-12.4 7.2-23.7 18.4-29s24.5-3.6 34.1 4.4l192 160c7.3 6.1 11.5 15.1 11.5 24.6s-4.2 18.5-11.5 24.6l-192 160c-9.5 7.9-22.8 9.7-34.1 4.4s-18.4-16.6-18.4-29V352z"></path>
           </svg>
         </button>
-        <button class="btn btn-dark e-item1" type="submit" name="pause_btn" title="{{ tg(gi, 'Pause') }}">
+        <button class="btn btn-dark e-item1" type="submit" name="pause_btn" title="{{ tg(gi, 'Pause') }}"{% if not guild.connected %}disabled{% endif %}>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 320 512">
             <path d="M48 64C21.5 64 0 85.5 0 112V400c0 26.5 21.5 48 48 48H80c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48H48zm192 0c-26.5 0-48 21.5-48 48V400c0 26.5 21.5 48 48 48h32c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48H240z"></path>
           </svg>
         </button>
-        <button class="btn btn-dark e-item1" type="submit" name="stop_btn" title="{{ tg(gi, 'Stop') }}">
+        <button class="btn btn-dark e-item1" type="submit" name="stop_btn" title="{{ tg(gi, 'Stop') }}"{% if not guild.connected %}disabled{% endif %}>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#dc3545" viewBox="0 0 384 512">
             <path d="M0 128C0 92.7 28.7 64 64 64H320c35.3 0 64 28.7 64 64V384c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V128z"></path>
           </svg>
@@ -237,10 +243,10 @@
     <div class="q-item1">
       <div class="d-flex">
         <div class="btn-m">
-          <input type="number" class="form-c form-control btn-m flex-fill" name="volumeInput" min="0" max="200" value="100" oninput="this.form.volumeRange.value=this.value">
+          <input type="number" class="form-c form-control btn-m flex-fill" name="volumeInput" min="0" max="200" value="100" oninput="this.form.volumeRange.value=this.value"{% if not guild.connected %}disabled{% endif %}>
         </div>
-        <input type="range" class="form-r form-range btn-m" name="volumeRange" min="0" max="200" value="100" oninput="this.form.volumeInput.value=this.value">
-        <button class="btn btn-outline btn-primary btn-sm btn-m flex-fill" type="submit" name="volume_btn" title="{{ tg(gi, 'Set Volume') }}">Set</button>
+        <input type="range" class="form-r form-range btn-m" name="volumeRange" min="0" max="200" value="100" oninput="this.form.volumeInput.value=this.value"{% if not guild.connected %}disabled{% endif %}>
+        <button class="btn btn-outline btn-primary btn-sm btn-m flex-fill" type="submit" name="volume_btn" title="{{ tg(gi, 'Set Volume') }}" {% if not guild.connected %}disabled{% endif %}>Set</button>
       </div>
     </div>
   </div>
