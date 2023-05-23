@@ -1,158 +1,7 @@
 {
-    "1008145667622969397": {
-        "id": 1008145667622969397,
-        "options": {
-            "id": 1008145667622969397,
-            "stopped": false,
-            "loop": false,
-            "is_radio": false,
-            "language": "cs",
-            "response_type": "short",
-            "search_query": "song",
-            "buttons": false,
-            "volume": 1.0,
-            "buffer": 600,
-            "history_length": 10,
-            "update": false
-        },
-        "data": {
-            "id": 1008145667622969397,
-            "name": "Tomer27cz's server",
-            "key": "0qzk5v",
-            "member_count": 7,
-            "owner_id": 349164237605568513,
-            "owner_name": "Tomer27cz",
-            "created_at": "13/08/2022 22:50:57",
-            "description": null,
-            "large": false,
-            "icon": null,
-            "banner": null,
-            "splash": null,
-            "discovery_splash": null,
-            "voice_channels": [
-                {
-                    "name": "Bol\u00edvia accidental",
-                    "id": 1008145669946626106
-                },
-                {
-                    "name": "Immernachtreich voice \u0161anel",
-                    "id": 1008145669946626107
-                },
-                {
-                    "name": "Mazda showroom in Iwo Jima idk",
-                    "id": 1008145670206664795
-                },
-                {
-                    "name": "\ud06c\ub9bd\ud1a0 \uba54\uc778\uc758 \uc740\uc2e0\ucc98",
-                    "id": 1008145670206664796
-                }
-            ]
-        },
-        "queue": {},
-        "search_list": {
-            "0": {
-                "class_type": "Video",
-                "author": 349164237605568513,
-                "created_at": 1683701289,
-                "played_at": null,
-                "stopped_at": null,
-                "url": "https://www.youtube.com/watch?v=DMRNUyG86Qs",
-                "title": "Alessandra - Queen of Kings (LIVE) | Norway \ud83c\uddf3\ud83c\uddf4 | First Semi-Final | Eurovision 2023",
-                "picture": "https://img.youtube.com/vi/DMRNUyG86Qs/default.jpg",
-                "duration": "189",
-                "channel_name": "Eurovision Song Contest",
-                "channel_link": "https://www.youtube.com/channel/UCRpjHHu8ivVWs73uxHlWwFA",
-                "radio_name": null,
-                "radio_website": null,
-                "local_number": null
-            },
-            "1": {
-                "class_type": "Video",
-                "author": 349164237605568513,
-                "created_at": 1683701289,
-                "played_at": null,
-                "stopped_at": null,
-                "url": "https://www.youtube.com/watch?v=030C6mx4ByQ",
-                "title": "Imagine Dragons - Bones (Lyrics) // The Boys TikTok Trending Song //",
-                "picture": "https://img.youtube.com/vi/030C6mx4ByQ/default.jpg",
-                "duration": "164",
-                "channel_name": "Nick Multimusic",
-                "channel_link": "https://www.youtube.com/channel/UCEWFaI9Bhy5FcpG3Obm27kQ",
-                "radio_name": null,
-                "radio_website": null,
-                "local_number": null
-            },
-            "2": {
-                "class_type": "Video",
-                "author": 349164237605568513,
-                "created_at": 1683701290,
-                "played_at": null,
-                "stopped_at": null,
-                "url": "https://www.youtube.com/watch?v=TMuOAwUb2LE",
-                "title": "BEST REGGAE MIX 2023 - RELAXING ROAD TRIP REGGAE SONGS - OLDIES BUT GOODIES REGGAE NONSTOP SONGS",
-                "picture": "https://img.youtube.com/vi/TMuOAwUb2LE/default.jpg",
-                "duration": "3119",
-                "channel_name": "Library Music",
-                "channel_link": "https://www.youtube.com/channel/UCO2faeQ0TTn-bp0QsM7ro6Q",
-                "radio_name": null,
-                "radio_website": null,
-                "local_number": null
-            },
-            "3": {
-                "class_type": "Video",
-                "author": 349164237605568513,
-                "created_at": 1683701290,
-                "played_at": null,
-                "stopped_at": null,
-                "url": "https://www.youtube.com/watch?v=VsxGov7f0Kk",
-                "title": "Best of Arijit Singhs 2023 \ud83d\udc96  Hindi Romantic Songs 2023 \ud83d\udc96  Arijit Singh Hits Songs  \ud83d\udc96",
-                "picture": "https://img.youtube.com/vi/VsxGov7f0Kk/default.jpg",
-                "duration": "5647",
-                "channel_name": "Music Superhit",
-                "channel_link": "https://www.youtube.com/channel/UCT3mf7MNaSJoCuXlgla_Nig",
-                "radio_name": null,
-                "radio_website": null,
-                "local_number": null
-            },
-            "4": {
-                "class_type": "Video",
-                "author": 349164237605568513,
-                "created_at": 1683701291,
-                "played_at": null,
-                "stopped_at": null,
-                "url": "https://www.youtube.com/watch?v=fMr5A_i1Xj8",
-                "title": "Pasilyo - Sunkissed Lola | Tagalog Love Songs Top Trends - New OPM Playlist 2023",
-                "picture": "https://img.youtube.com/vi/fMr5A_i1Xj8/default.jpg",
-                "duration": "4708",
-                "channel_name": "MUSIC SKY",
-                "channel_link": "https://www.youtube.com/channel/UC415ChPGehljJjM9C71AA3g",
-                "radio_name": null,
-                "radio_website": null,
-                "local_number": null
-            }
-        },
-        "history": {
-            "0": {
-                "class_type": "Video",
-                "author": 349164237605568513,
-                "created_at": 1000212400,
-                "played_at": null,
-                "stopped_at": null,
-                "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-                "title": "Never gonna give you up",
-                "picture": "https://img.youtube.com/vi/dQw4w9WgXcQ/default.jpg",
-                "duration": "3:33",
-                "channel_name": "Rick Astley",
-                "channel_link": "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw",
-                "radio_name": null,
-                "radio_website": null,
-                "local_number": null
-            }
-        },
-        "now_playing": {}
-    },
     "892403162315644928": {
         "id": 892403162315644928,
+        "connected": true,
         "options": {
             "id": 892403162315644928,
             "stopped": false,
@@ -164,7 +13,8 @@
             "buttons": false,
             "volume": 1.0,
             "buffer": 600,
-            "history_length": 10
+            "history_length": 10,
+            "update": false
         },
         "data": {
             "id": 892403162315644928,
@@ -215,6 +65,7 @@
     },
     "892404682285256735": {
         "id": 892404682285256735,
+        "connected": true,
         "options": {
             "id": 892404682285256735,
             "stopped": false,
@@ -226,7 +77,8 @@
             "buttons": false,
             "volume": 1.0,
             "buffer": 600,
-            "history_length": 10
+            "history_length": 10,
+            "update": false
         },
         "data": {
             "id": 892404682285256735,
@@ -273,6 +125,7 @@
     },
     "1092207263843880983": {
         "id": 1092207263843880983,
+        "connected": true,
         "options": {
             "id": 1092207263843880983,
             "stopped": false,
@@ -284,7 +137,8 @@
             "buttons": false,
             "volume": 1.0,
             "buffer": 600,
-            "history_length": 10
+            "history_length": 10,
+            "update": false
         },
         "data": {
             "id": 1092207263843880983,
@@ -331,6 +185,7 @@
     },
     "1092205538202353764": {
         "id": 1092205538202353764,
+        "connected": true,
         "options": {
             "id": 1092205538202353764,
             "stopped": false,
@@ -342,7 +197,8 @@
             "buttons": false,
             "volume": 1.0,
             "buffer": 600,
-            "history_length": 10
+            "history_length": 10,
+            "update": false
         },
         "data": {
             "id": 1092205538202353764,
@@ -389,6 +245,7 @@
     },
     "1092212185553449023": {
         "id": 1092212185553449023,
+        "connected": true,
         "options": {
             "id": 1092212185553449023,
             "stopped": false,
@@ -400,7 +257,8 @@
             "buttons": false,
             "volume": 1.0,
             "buffer": 600,
-            "history_length": 10
+            "history_length": 10,
+            "update": false
         },
         "data": {
             "id": 1092212185553449023,
@@ -447,6 +305,7 @@
     },
     "837695985625858048": {
         "id": 837695985625858048,
+        "connected": false,
         "options": {
             "id": 837695985625858048,
             "stopped": false,
@@ -458,23 +317,112 @@
             "buttons": false,
             "volume": 1.0,
             "buffer": 600,
-            "history_length": 10
+            "history_length": 10,
+            "update": false
         },
         "data": {
             "id": 837695985625858048,
-            "name": null,
-            "key": null,
-            "member_count": null,
-            "owner_id": null,
-            "owner_name": null,
-            "created_at": null,
+            "name": "\u0421\u043e\u0432\u0435\u0442\u0441\u043a\u0438\u0439 \u0421\u043e\u044e\u0437",
+            "key": "g7oins",
+            "member_count": 39,
+            "owner_id": 416254812339044365,
+            "owner_name": "ElClassifido",
+            "created_at": "30/04/2021 14:24:46",
             "description": null,
-            "large": null,
+            "large": false,
+            "icon": "https://cdn.discordapp.com/icons/837695985625858048/56eef8957d6c9442cefd6308cb653251.png?size=1024",
+            "banner": null,
+            "splash": null,
+            "voice_channels": [
+                {
+                    "name": "Espa\u00f1a Imperial",
+                    "id": 837695988054360168
+                },
+                {
+                    "name": "Moria Imperial",
+                    "id": 837695988054360169
+                },
+                {
+                    "name": "Ceuta Imperial",
+                    "id": 837695988054360170
+                },
+                {
+                    "name": "Melilla Imperial",
+                    "id": 837695988054360171
+                }
+            ]
+        },
+        "queue": {},
+        "search_list": {},
+        "history": {
+            "0": {
+                "class_type": "Video",
+                "author": 349164237605568513,
+                "created_at": 1000212400,
+                "played_at": null,
+                "stopped_at": null,
+                "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+                "title": "Never gonna give you up",
+                "picture": "https://img.youtube.com/vi/dQw4w9WgXcQ/default.jpg",
+                "duration": "3:33",
+                "channel_name": "Rick Astley",
+                "channel_link": "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw",
+                "radio_name": null,
+                "radio_website": null,
+                "local_number": null
+            }
+        },
+        "now_playing": {}
+    },
+    "1008145667622969397": {
+        "id": 1008145667622969397,
+        "connected": true,
+        "options": {
+            "id": 1008145667622969397,
+            "stopped": false,
+            "loop": false,
+            "is_radio": false,
+            "language": "cs",
+            "response_type": "short",
+            "search_query": "Never gonna give you up",
+            "buttons": false,
+            "volume": 1.0,
+            "buffer": 600,
+            "history_length": 10,
+            "update": false
+        },
+        "data": {
+            "id": 1008145667622969397,
+            "name": "Tomer27cz's server",
+            "key": "0qzk5v",
+            "member_count": 7,
+            "owner_id": 349164237605568513,
+            "owner_name": "Tomer27cz",
+            "created_at": "13/08/2022 22:50:57",
+            "description": null,
+            "large": false,
             "icon": null,
             "banner": null,
             "splash": null,
             "discovery_splash": null,
-            "voice_channels": null
+            "voice_channels": [
+                {
+                    "name": "Bol\u00edvia accidental",
+                    "id": 1008145669946626106
+                },
+                {
+                    "name": "Immernachtreich voice \u0161anel",
+                    "id": 1008145669946626107
+                },
+                {
+                    "name": "Mazda showroom in Iwo Jima idk",
+                    "id": 1008145670206664795
+                },
+                {
+                    "name": "\ud06c\ub9bd\ud1a0 \uba54\uc778\uc758 \uc740\uc2e0\ucc98",
+                    "id": 1008145670206664796
+                }
+            ]
         },
         "queue": {},
         "search_list": {},

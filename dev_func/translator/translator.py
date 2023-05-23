@@ -4,7 +4,11 @@ import six
 from google.cloud import translate_v2 as translate
 from google.auth.credentials import Credentials
 
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'credentials.json'
+
+# with open(os.path.dirname(__file__) + '/credentials.json') as f:
+#     cred = json.load(f)
+
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = os.path.dirname(__file__) + '/credentials.json'
 
 """
 This is a program that checks if all the keys in languages.json match
@@ -63,7 +67,7 @@ def translate_text_google_cloud(text, target, source='en'):
 #     return trans_result
 
 
-with open('../../src/languages.json') as f:
+with open(os.path.dirname(__file__) + '/../../src/languages.json') as f:
     x = json.load(f)
 
 languages = x.keys()
@@ -86,7 +90,7 @@ for lang in languages:
 print("----------------------------------------------")
 print("Writing to file...")
 
-with open('../../src/languages.json', 'w') as f:
+with open(os.path.dirname(__file__) + '/../../src/languages.json', 'w') as f:
     f.write(json.dumps(x, indent=4))
 
 print("----------------------------------------------")

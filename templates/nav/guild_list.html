@@ -23,10 +23,18 @@
         <div class="d-card">
           <a href="/guild/{{guild_object.data.id}}">
             {% if guild_object.data.id in mutual_guild_ids %}
-              {% if guild_object.data.icon is not none %}
-                <img loading="lazy" src="{{guild_object.data.icon}}" class="green-border" />
+              {% if guild_object.connected %}
+                {% if guild_object.data.icon is not none %}
+                  <img loading="lazy" src="{{guild_object.data.icon}}" class="green-border" />
+                {% else %}
+                  <img loading="lazy" src="/static/img/discord_icon.svg" class="green-border" />
+                {% endif %}
               {% else %}
-                <img loading="lazy" src="/static/img/discord_icon.svg" class="green-border" />
+                {% if guild_object.data.icon is not none %}
+                  <img loading="lazy" src="{{guild_object.data.icon}}" class="yellow-border" />
+                {% else %}
+                  <img loading="lazy" src="/static/img/discord_icon.svg" class="yellow-border" />
+                {% endif %}
               {% endif %}
             {% else %}
               {% if guild_object.data.icon is not none %}

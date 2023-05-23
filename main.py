@@ -50,11 +50,10 @@ class Bot(commands.Bot):
         await bot.change_presence(activity=discord.Game(name=f"/help"))
         log(None, f'Logged in as:\n{bot.user.name}\n{bot.user.id}')
 
-        for guild_object in bot.guilds:
-            guild[guild_object.id].renew()
+        update_guilds()
 
     async def on_guild_join(self, guild_object):
-        log(guild_object.id, f"Joined guild {guild_object.name} with {guild_object.member_count} members and {len(guild_object.voice_channels)} voice channels")
+        log(None, f"Joined guild ({guild_object.name})({guild_object.id}) with {guild_object.member_count} members and {len(guild_object.voice_channels)} voice channels")
         guild[guild_object.id] = Guild(guild_object.id)
         save_json()
         text_channels = guild_object.text_channels
@@ -67,6 +66,12 @@ class Bot(commands.Bot):
                 return
         else:
             await text_channels[0].send(message)
+
+    @staticmethod
+    async def on_guild_remove(guild_object):
+        log(None,
+            f"Left guild ({guild_object.name})({guild_object.id}) with {guild_object.member_count} members and {len(guild_object.voice_channels)} voice channels")
+        save_json()
 
 
     async def on_voice_state_update(self, member, before, after):
@@ -101,7 +106,14 @@ class Bot(commands.Bot):
             log(member.guild.id, f"-->> Cleared Queue after bot Disconnected <<--")
 
     async def on_command_error(self, ctx, error):
-        if isinstance(error, commands.CheckFailure):
+        if isinstance(error, commands.CommandInvokeError):
+            log(ctx, 'error.CommandInvokeError', [error, error.original], log_type='error', author=ctx.author)
+
+        elif isinstance(error, discord.errors.Forbidden):
+            log(ctx, 'error.Forbidden', [error, ], log_type='error', author=ctx.author)
+            await ctx.send("The command failed because I don't have the required permissions.\n Please give me the required permissions and try again.")
+
+        elif isinstance(error, commands.CheckFailure):
             log(ctx, f'Error for ({ctx.author}) -> ({ctx.command}) with error ({error})')
             await ctx.reply("（ ͡° ͜ʖ ͡°)つ━☆・。\n"
                             "⊂　　 ノ 　　　・゜+.\n"
@@ -350,13 +362,12 @@ class GuildData:
     """
     Stores and updates the data for each guild
     """
-    def __init__(self, guild_id):
+    def __init__(self, guild_id, old_data=None):
         self.id = guild_id
 
         guild_object = bot.get_guild(int(guild_id))
         if guild_object:
             self.name = guild_object.name
-            self.id = guild_object.id
 
             random.seed(self.id)
             self.key = ''.join(random.choice('abcdefghijklmnopqrstuvwxyz0123456789') for _ in range(6))
@@ -386,40 +397,36 @@ class GuildData:
                 self.voice_channels = None
 
         else:
-            if 'guild' in globals():
-                if guild:
-                    if guild_id in guild.keys():
-                        if guild[guild_id].data.name is not None:
-                            self.name = guild[guild_id].data.name
-                            self.id = guild[guild_id].data.id
-                            self.key = guild[guild_id].data.key
-                            self.member_count = guild[guild_id].data.member_count
-                            self.owner_id = guild[guild_id].data.owner_id
-                            self.owner_name = guild[guild_id].data.owner_name
-                            self.created_at = guild[guild_id].data.created_at
-                            self.description = guild[guild_id].data.description
-                            self.large = guild[guild_id].data.large
-                            self.icon = guild[guild_id].data.icon
-                            self.banner = guild[guild_id].data.banner
-                            self.splash = guild[guild_id].data.splash
-                            self.discovery_splash = guild[guild_id].data.discovery_splash
-                            self.voice_channels = guild[guild_id].data.voice_channels
-                            return
+            if old_data:
+                self.name = old_data.name
+                self.key = old_data.key
+                self.member_count = old_data.member_count
+                self.owner_id = old_data.owner_id
+                self.owner_name = old_data.owner_name
+                self.created_at = old_data.created_at
+                self.description = old_data.description
+                self.large = old_data.large
+                self.icon = old_data.icon
+                self.banner = old_data.banner
+                self.splash = old_data.splash
+                self.voice_channels = old_data.voice_channels
+            else:
+                self.name = None
 
-            self.name = None
-            self.id = guild_id
-            self.key = None
-            self.member_count = None
-            self.owner_id = None
-            self.owner_name = None
-            self.created_at = None
-            self.description = None
-            self.large = None
-            self.icon = None
-            self.banner = None
-            self.splash = None
-            self.discovery_splash = None
-            self.voice_channels = None
+                random.seed(self.id)
+                self.key = ''.join(random.choice('abcdefghijklmnopqrstuvwxyz0123456789') for _ in range(6))
+
+                self.member_count = None
+                self.owner_id = None
+                self.owner_name = None
+                self.created_at = None
+                self.description = None
+                self.large = None
+                self.icon = None
+                self.banner = None
+                self.splash = None
+                self.discovery_splash = None
+                self.voice_channels = None
 
 
 class Guild:
@@ -442,9 +449,10 @@ class Guild:
                                    channel_name='Rick Astley',
                                    channel_link='https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw')]
         self.data = GuildData(guild_id)
+        self.connected = True
 
     def renew(self):
-        self.data = GuildData(self.id)
+        self.data = GuildData(self.id, self.data)
 
 # -------- Get SoundEffects ------------
 
@@ -518,6 +526,8 @@ def log(ctx, text_data, options=None, log_type='text', author=None) -> None:
         message = f"{now_time_str} | T {guild_id} | {text_data}"
     elif log_type == 'ip':
         message = f"{now_time_str} | I {guild_id} | Requested: {text_data}"
+    elif log_type == 'error':
+        message = f"{now_time_str} | E {guild_id} | {text_data} -> {options}"
     else:
         raise ValueError('Wrong log_type')
 
@@ -552,8 +562,9 @@ def guild_to_json(guild_object):
             history_dict[index] = video.__dict__
 
     guild_dict['id'] = guild_object.id
+    guild_dict['connected'] = guild_object.connected
     guild_dict['options'] = guild_object.options.__dict__
-    guild_dict['data'] = GuildData(guild_object.id).__dict__
+    guild_dict['data'] = guild_object.data.__dict__
     guild_dict['queue'] = queue_dict
     guild_dict['search_list'] = search_dict
     guild_dict['history'] = history_dict
@@ -621,6 +632,7 @@ def json_to_guild(guild_dict):
     guild_object.search_list = [json_to_video(video_dict) for video_dict in guild_dict['search_list'].values()]
     guild_object.history = [json_to_video(video_dict) for video_dict in guild_dict['history'].values()]
     guild_object.now_playing = json_to_video(guild_dict['now_playing'])
+    guild_object.connected = guild_dict['connected']
 
     return guild_object
 
@@ -715,14 +727,37 @@ load_sound_effects()
 
 def save_json():
     """
-    Saves guild object to guilds.json
+    Updates guild objects and
+    Saves guild objects to guilds.json
     :return: None
     """
-    for guild_object in guild.values():
-        guild_object.renew()
+    update_guilds()
 
     with open('src/guilds.json', 'w') as f:
         json.dump(guilds_to_json(guild), f, indent=4)
+
+def update_guilds():
+    """
+    Checks if bot is in a new guild or left a guild
+    and renews all guild objects
+    :return: None
+    """
+    bot_guilds = [guild_object.id for guild_object in bot.guilds]
+    guilds_json = [int(guild_id) for guild_id in guild.keys()]
+
+    for bot_guild_id in bot_guilds:
+        if bot_guild_id not in guilds_json:
+            bot_guild_object = bot.get_guild(bot_guild_id)
+            guild[bot_guild_id] = Guild(bot_guild_id)
+            log(None, f'Discovered a New guild: {bot_guild_id} = {bot_guild_object.name} -> Added to guilds.json')
+
+    for guild_object in guild.values():
+        if guild_object.id not in bot_guilds:
+            if guild_object.connected:
+                log(None, f'Guild left: {guild_object.id} = {guild_object.data.name} -> Marked as disconnected')
+                guild[guild_object.id].connected = False
+
+        guild_object.renew()
 
 # ---------------------------------------------- TEXT ----------------------------------------------------------
 
@@ -735,7 +770,12 @@ def tg(guild_id: int, content: str) -> str:
     :param content: str - translation key
     :return: str - translated text
     """
-    lang = guild[guild_id].options.language
+    try:
+        lang = guild[guild_id].options.language
+    except KeyError:
+        log(guild_id, f'KeyError: {guild_id} in guild')
+        lang = 'en'
+
     try:
         to_return = languages_dict[lang][content]
     except KeyError:
@@ -1727,6 +1767,14 @@ async def key_command(ctx: commands.Context):
 
     await key_def(ctx)
 
+# noinspection PyTypeHints
+@bot.hybrid_command(name='options', with_app_command=True, description=text['options'], help=text['options'])
+@app_commands.describe(volume='In percentage (200 max)', buffer='In seconds (what time to wait after no music is playing to disconnect)', language='Language code', response_type='short/long -> embeds/plain text', buttons='Whether to show player control buttons on messages', loop='True, False', history_length='Number of items in history (100 max)')
+async def options_command(ctx: commands.Context, loop: bool = None, language: Literal[tuple(languages_dict.keys())] = None, response_type: Literal['short', 'long'] = None, buttons: bool = None, volume=None, buffer: int = None, history_length: int = None):
+    log(ctx, 'options', [loop, language, response_type, buttons, volume, buffer, history_length], log_type='command', author=ctx.author)
+
+    await options_command_def(ctx, loop=loop, language=language, response_type=response_type, buttons=buttons, volume=volume, buffer=buffer, history_length=history_length)
+
 # ---------------------------------------- ADMIN --------------------------------------------------
 
 async def is_authorised(ctx):
@@ -1740,19 +1788,12 @@ async def announce_command(ctx: commands.Context, message):
 
     await announce_command_def(ctx, message)
 
-@bot.hybrid_command(name='zz_earrape_play', with_app_command=True)
-@commands.check(is_authorised)
-async def earrape_play_command(ctx: commands.Context, effect_number: int = None, channel_id = None):
-    log(ctx, 'zz_ear_rape_play', [effect_number, channel_id], log_type='command', author=ctx.author)
-
-    await rape_play_command_def(ctx, effect_number, channel_id)
-
 @bot.hybrid_command(name='zz_earrape', with_app_command=True)
 @commands.check(is_authorised)
 async def earrape_command(ctx: commands.Context):
     log(ctx, 'earrape', [], log_type='command', author=ctx.author)
 
-    await ear_rape_command_def(ctx)
+    await earrape_command_def(ctx)
 
 @bot.hybrid_command(name='zz_kys', with_app_command=True)
 @commands.check(is_authorised)
@@ -1761,28 +1802,22 @@ async def kys(ctx: commands.Context):
 
     await kys_def(ctx)
 
-@bot.hybrid_command(name='zz_config', with_app_command=True)
+@bot.hybrid_command(name='zz_file', with_app_command=True)
 @commands.check(is_authorised)
-async def config_command(ctx: commands.Context, config_file: discord.Attachment, config_type:  Literal['guilds', 'other', 'radio', 'languages'] = 'guilds'):
-    log(ctx, 'config', [config_file, config_type], log_type='command', author=ctx.author)
+async def file_command(ctx: commands.Context, config_file: discord.Attachment=None, config_type:  Literal['guilds', 'other', 'radio', 'languages', 'log', 'data', 'activity', 'apache_activity', 'apache_error'] = 'guilds'):
+    log(ctx, 'zz_file', [config_file, config_type], log_type='command', author=ctx.author)
 
-    await config_command_def(ctx, config_file, config_type)
-
-@bot.hybrid_command(name='zz_log', with_app_command=True)
-@commands.check(is_authorised)
-async def log_command(ctx: commands.Context, log_type: Literal['log.log', 'guilds.json', 'other.json', 'radio.json', 'languages.json', 'activity.log', 'data.log'] = 'log.log'):
-    log(ctx, 'log', [log_type], log_type='command', author=ctx.author)
-
-    await log_command_def(ctx, log_type)
+    await file_command_def(ctx, config_file, config_type)
 
 # noinspection PyTypeHints
-@bot.hybrid_command(name='zz_change_options', with_app_command=True)
+@bot.hybrid_command(name='zz_options', with_app_command=True)
 @app_commands.describe(server='all, this, {guild_id}', volume='No division', buffer='In seconds', language='Language code', response_type='short, long', buttons='True, False', is_radio='True, False', loop='True, False', stopped='True, False', history_length='Number of items in history (100 is probably a lot)')
 @commands.check(is_authorised)
-async def change_options(ctx: commands.Context, stopped: bool = None, loop: bool = None, is_radio: bool = None, buttons: bool = None, language: Literal[tuple(languages_dict.keys())] = None, response_type: Literal['short', 'long'] = None, buffer: int = None, history_length: int = None, volume = None, server = None):
-    log(ctx, 'zz_change_options', [stopped, loop, is_radio, buttons, language, response_type, buffer, history_length, volume, server], log_type='command', author=ctx.author)
+async def change_options(ctx: commands.Context, server = None, stopped: bool = None, loop: bool = None, is_radio: bool = None, buttons: bool = None, language: Literal[tuple(languages_dict.keys())] = None, response_type: Literal['short', 'long'] = None, buffer: int = None, history_length: int = None, volume: int = None, search_query: str = None, update: bool = None):
+    log(ctx, 'zz_change_options', [server, stopped, loop, is_radio, buttons, language, response_type, buffer, history_length, volume, search_query, update], log_type='command', author=ctx.author)
 
-    await change_options_def(ctx, stopped, loop, is_radio, buttons, language, response_type, buffer, history_length, volume, server)
+    await options_def(ctx, server=str(server), stopped=str(stopped), loop=str(loop), is_radio=str(is_radio), buttons=str(buttons), language=str(language), response_type=str(response_type), buffer=str(buffer), history_length=str(history_length), volume=str(volume), search_query=str(search_query), update=str(update))
+
 
 # --------------------------------------------- COMMAND FUNCTIONS ------------------------------------------------------
 
@@ -2310,6 +2345,10 @@ async def play_def(ctx, url=None, force=False, mute_response=False, after=False)
                 await ctx.reply(message)
             return ReturnData(False, message)
 
+    if is_ctx:
+        if not ctx.interaction.response.is_done():
+            await ctx.defer()
+
     if url:
         if voice:
             if not voice.is_playing():
@@ -2775,38 +2814,59 @@ async def join_def(ctx, channel_id=None, mute_response: bool = False) -> ReturnD
     log(ctx, 'join_def', [channel_id, mute_response], log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
 
+    # if video in now_playing -> add to history
     now_to_history(guild_id)
 
+    # define author channel (for ide)
+    author_channel = None
+
     if not channel_id:
+        # if not from ctx and no channel_id provided return False
         if not is_ctx:
             return ReturnData(False, 'No channel_id provided')
+
         if ctx.author.voice:
-            channel = ctx.message.author.voice.channel
+            # get author voice channel
+            author_channel = ctx.message.author.voice.channel
+
             if ctx.voice_client:
-                if ctx.voice_client.channel != channel:
-                    await ctx.voice_client.disconnect(force=True)
-                else:
+                # if bot is already connected to author channel return True
+                if ctx.voice_client.channel == author_channel:
                     message = tg(guild_id, "I'm already in this channel")
                     if not mute_response:
                         await ctx.reply(message, ephemeral=True)
                     return ReturnData(True, message)
-            await channel.connect()
-            await ctx.guild.change_voice_state(channel=channel, self_deaf=True)
-
-            message = f"{tg(guild_id, 'Joined voice channel:')}  `{channel.name}`"
-            if not mute_response:
-                await ctx.reply(message, ephemeral=True)
-            return ReturnData(True, message)
-
-        message = tg(guild_id, "You are **not connected** to a voice channel")
-        await ctx.reply(message, ephemeral=True)
-        return ReturnData(False, message)
+        else:
+            # if author is not connected to a voice channel return False
+            message = tg(guild_id, "You are **not connected** to a voice channel")
+            await ctx.reply(message, ephemeral=True)
+            return ReturnData(False, message)
 
     try:
-        voice_channel = bot.get_channel(int(channel_id))
+        # get voice channel
+        if author_channel:
+            voice_channel = author_channel
+        else:
+            voice_channel = bot.get_channel(int(channel_id))
+
+        # check if bot has permission to join channel
+        if not voice_channel.permissions_for(guild_object.me).connect:
+            message = tg(guild_id, "I don't have permission to join this channel")
+            await ctx.reply(message, ephemeral=True)
+            return ReturnData(False, message)
+
+        # check if bot has permission to speak in channel
+        if not voice_channel.permissions_for(guild_object.me).speak:
+            message = tg(guild_id, "I don't have permission to speak in this channel")
+            await ctx.reply(message, ephemeral=True)
+            return ReturnData(False, message)
+
+        # disconnect from voice channel if connected
         if guild_object.voice_client:
             await guild_object.voice_client.disconnect(force=True)
+        # connect to voice channel
         await voice_channel.connect()
+        # deafen bot
         await guild_object.change_voice_state(channel=voice_channel, self_deaf=True)
 
         message = f"{tg(guild_id, 'Joined voice channel:')}  `{voice_channel.name}`"
@@ -2815,7 +2875,6 @@ async def join_def(ctx, channel_id=None, mute_response: bool = False) -> ReturnD
         return ReturnData(True, message)
 
     except (discord.ext.commands.errors.CommandInvokeError, discord.errors.ClientException, AttributeError, ValueError, TypeError):
-
         log(ctx, "------------------------------- join -------------------------")
         tb = traceback.format_exc()
         log(ctx, tb)
@@ -2900,7 +2959,7 @@ async def ping_def(ctx) -> ReturnData:
     log(ctx, 'ping_def', [], log_type='function', author=ctx.author)
     save_json()
 
-
+    update_guilds()
     push_update(ctx.guild.id)
 
     message = f'**Pong!** Latency: {round(bot.latency * 1000)}ms'
@@ -2998,9 +3057,21 @@ async def key_def(ctx: commands.Context) -> ReturnData:
     await ctx.reply(message)
     return ReturnData(True, message)
 
+async def options_command_def(ctx, loop=None, language=None, response_type=None, buttons=None, volume=None, buffer=None, history_length=None) -> ReturnData:
+    log(ctx, 'options_command_def', [loop, language, response_type, buttons, volume, buffer, history_length], log_type='function', author=ctx.author)
+    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
+
+    if not is_ctx:
+        return ReturnData(False, 'Command cannot be used in WEB')
+
+    if all(v is None for v in [loop, language, response_type, buttons, volume, buffer, history_length]):
+        return await options_def(ctx, server=None, ephemeral=False)
+
+    return await options_def(ctx, server=guild_id, ephemeral=False, loop=str(loop), language=str(language), response_type=str(response_type), buttons=str(buttons), volume=str(volume), buffer=str(buffer), history_length=str(history_length))
+
 # ---------------------------------------- ADMIN --------------------------------------------------
 
-async def announce_command_def(ctx: commands.Context, message: str, ephemeral: bool=False) -> ReturnData:
+async def announce_command_def(ctx, message: str, ephemeral: bool=False) -> ReturnData:
     """
     Announce message to all servers
     :param ctx: Context
@@ -3013,40 +3084,13 @@ async def announce_command_def(ctx: commands.Context, message: str, ephemeral: b
         try:
             await guild_object.system_channel.send(message)
         except Exception as e:
-            print(f"Error while announcing message to ({guild_object.name}): {e}")
-            pass
+            log(ctx, f"Error while announcing message to ({guild_object.name}): {e}", [guild_object.id, ephemeral], log_type='error', author=ctx.author)
 
     message = f'Announced message to all servers: `{message}`'
     await ctx.reply(message, ephemeral=ephemeral)
     return ReturnData(True, message)
 
-async def rape_play_command_def(ctx: commands.Context, effect_number: int = None, channel_id = None) -> ReturnData:
-    log(ctx, 'rape_play_command_def', [effect_number, channel_id], log_type='function', author=ctx.author)
-
-    if not effect_number and effect_number != 0:
-        effect_number = 1
-
-    if not channel_id:
-        join_response = await join_def(ctx, None, True)
-        if join_response.response:
-            pass
-        else:
-            await ctx.reply(f'You need to be in a voice channel to use this command', ephemeral=True)
-            return
-    else:
-        join_response = await join_def(ctx, channel_id, True)
-        if join_response.response:
-            pass
-        else:
-            await ctx.reply(f'An error occurred when connecting to the voice channel', ephemeral=True)
-            return
-
-    await ps_def(ctx, effect_number, True)
-    await ear_rape_command_def(ctx)
-
-    await ctx.reply(f'Playing effect `{effect_number}` with ear rape in `{channel_id if channel_id else "user channel"}` >>> effect can only be turned off by `/disconnect`', ephemeral=True)
-
-async def ear_rape_command_def(ctx: commands.Context):
+async def earrape_command_def(ctx: commands.Context):
     log(ctx, 'ear_rape_command_def', [], log_type='function', author=ctx.author)
     guild_id = ctx.guild.id
     times = 10
@@ -3076,19 +3120,58 @@ async def kys_def(ctx: commands.Context):
     await ctx.reply(tg(guild_id, "Committing seppuku..."))
     sys.exit(3)
 
-async def config_command_def(ctx: commands.Context, config_file: discord.Attachment, config_type:  Literal['guilds', 'other', 'radio', 'languages'] = 'guilds'):
+async def file_command_def(ctx: commands.Context, config_file: discord.Attachment=None, config_type:  Literal['guilds', 'other', 'radio', 'languages', 'log', 'data', 'activity', 'apache_activity', 'apache_error'] = 'log'):
     log(ctx, 'config_command_def', [config_file, config_type], log_type='function', author=ctx.author)
 
-    if config_file.filename != f'{config_type}.json':
-        await ctx.reply(f'You need to upload a `{config_type}.json` file', ephemeral=True)
-        return
+    config_types = {
+        'guilds': '.json',
+        'other': '.json',
+        'radio': '.json',
+        'languages': '.json',
+        'log': '.log',
+        'data': '.log',
+        'activity': '.log',
+        'apache_activity': '.log',
+        'apache_error': '.log'
+    }
+
+    if config_file is None:
+        if config_type in ['guilds', 'other', 'languages', 'radio']:
+            file_path = f'src/{config_type}{config_types[config_type]}'
+        else:
+            file_path = f'log/{config_type}{config_types[config_type]}'
+
+        if not path.exists(file_path):
+            message = f'File `{config_type}{config_types[config_type]}` does not exist'
+            await ctx.reply(message, ephemeral=True)
+            return ReturnData(False, message)
+
+        file_to_send = discord.File(file_path, filename=f"{config_type}{config_types[config_type]}")
+        await ctx.reply(file=file_to_send)
+        return ReturnData(True, f"Sent file: `{config_type}{config_types[config_type]}`")
+
+    filename = config_file.filename
+    filename_type = filename.split('.')[-1]
+    filename_name = ''.join(filename.split('.')[:-1])
+
+    if not filename_type in config_types.values():
+        message = 'You need to upload a `.json` or `.log` file'
+        await ctx.reply(message, ephemeral=True)
+        return ReturnData(False, message)
+
+    if not filename_name in config_types.keys():
+        message = 'You need to upload a file with a valid name (guilds, other, radio, languages, log, data, activity, apache_activity, apache_error)'
+        await ctx.reply(message, ephemeral=True)
+        return ReturnData(False, message)
 
     content = config_file.read()
-    if not content:
-        await ctx.reply(f"no content in file: `{config_type}`")
-        return
 
-    with open(f'src/{config_type}.json', 'wb') as f:
+    if not content:
+        message = f"no content in file: `{config_type}`"
+        await ctx.reply(message, ephemeral=True)
+        return ReturnData(False, message)
+
+    with open(f'src/{config_type}{config_types[config_type]}', 'wb') as f:
         f.write(content)
 
     if config_type == 'guilds':
@@ -3100,87 +3183,118 @@ async def config_command_def(ctx: commands.Context, config_file: discord.Attachm
     else:
         await ctx.reply(f"Saved new `{config_type}.json`", ephemeral=True)
 
-async def log_command_def(ctx: commands.Context, log_type: Literal['log.log', 'guilds.json', 'other.json', 'radio.json', 'languages.json', 'activity.log', 'data.log'] = 'log.log'):
-    log(ctx, 'log_command_def', [log_type], log_type='function', author=ctx.author)
-    save_json()
-    if log_type == 'log.log':
-        file_to_send = discord.File('log/log.log')
-    elif log_type == 'data.log':
-        file_to_send = discord.File('log/data.log')
-    elif log_type == 'other.json':
-        file_to_send = discord.File('src/other.json')
-    elif log_type == 'radio.json':
-        file_to_send = discord.File('src/radio.json')
-    elif log_type == 'languages.json':
-        file_to_send = discord.File('src/languages.json')
-    elif log_type == 'guilds.json':
-        file_to_send = discord.File('src/guilds.json')
-    elif log_type == 'activity.log':
-        try:
-            file_to_send = discord.File('log/activity.log')
-        except FileNotFoundError:
-            await ctx.reply(f'`activity.log` does not exist', ephemeral=True)
-            return
-    else:
-        file_to_send = discord.File('log/log.log')
-    await ctx.reply(file=file_to_send, ephemeral=True)
+async def options_def(ctx: commands.Context, server=None, stopped: str=None, loop: str=None, is_radio: str=None, buttons: str=None, language: str=None, response_type: str=None, buffer: str=None, history_length: str=None, volume: str=None, search_query: str=None, update: str=None, ephemeral=True):
+    log(ctx, 'options_def', [stopped, loop, is_radio, buttons, language, response_type, buffer, history_length, volume, server], log_type='function', author=ctx.author)
+    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
 
-# noinspection PyTypeHints
-async def change_options_def(ctx: commands.Context, stopped: bool = None, loop: bool = None, is_radio: bool = None, buttons: bool = None, language: Literal[tuple(languages_dict.keys())] = None, response_type: Literal['short', 'long'] = None, buffer: int = None, history_length: int = None, volume = None, server = None):
-    log(ctx, 'change_options_def', [stopped, loop, is_radio, buttons, language, response_type, buffer, history_length, volume, server], log_type='function', author=ctx.author)
-    guild_id = ctx.guild.id
+    if not server:
+        options = guild[guild_id].options
 
-    save_json()
+        message = f"""
+        **Options:**
+        stopped -> `{options.stopped}`
+        loop -> `{options.loop}`
+        is_radio -> `{options.is_radio}`
+        buttons -> `{options.buttons}`
+        language -> `{options.language}`
+        response_type -> `{options.response_type}`
+        buffer -> `{options.buffer}`
+        history_length -> `{options.history_length}`
+        volume -> `{options.volume}`
+        search_query -> `{options.search_query}`
+        update -> `{options.update}`
+        """
+
+        await ctx.reply(message, ephemeral=ephemeral)
+        return ReturnData(True, message)
 
     guilds = []
 
-    if not server:
-        server = 'this'
+    if server == 'this':
+        guilds.append(guild_id)
 
-    if server == 'all':
-        for guild_id, guild_class in guild:
+    elif server == 'all':
+        for guild_id in guild.keys():
             guilds.append(guild_id)
-    elif server == 'this':
-        guilds.append(ctx.guild.id)
+
     else:
         try:
-            if int(server) in bot.guilds:
-                guilds.append(int(server))
-            else:
-                await ctx.reply(tg(guild_id, "That guild doesn't exist or the bot is not in it"), ephemeral=True)
-                return
+            server = int(server)
         except (ValueError, TypeError):
-            await ctx.reply(tg(guild_id, "That is not a **guild id!**"), ephemeral=True)
-            return
+            message = tg(guild_id, "That is not a **guild id!**")
+            await ctx.reply(message, ephemeral=ephemeral)
+            return ReturnData(False, message)
 
-    for guild_id in guilds:
-        if stopped:
-            guild[guild_id].options.stopped = stopped
-        if loop:
-            guild[guild_id].options.loop = loop
-        if is_radio:
-            guild[guild_id].options.is_radio = is_radio
-        if buttons:
-            guild[guild_id].options.buttons = buttons
-        if language:
-            guild[guild_id].options.language = language
-        if response_type:
-            guild[guild_id].options.response_type = response_type
-        if volume:
-            guild[guild_id].options.volume = volume
-        if buffer:
-            guild[guild_id].options.buffer = buffer
-        if history_length:
-            guild[guild_id].options.history_length = history_length
+        if not server in guild.keys():
+            message = tg(guild_id, "That guild doesn't exist or the bot is not in it")
+            await ctx.reply(message, ephemeral=ephemeral)
+            return ReturnData(False, message)
 
-        config_text = f'`stopped={guild[guild_id].options.stopped}`, `loop={guild[guild_id].options.loop}`,' \
-                      f' `is_radio={guild[guild_id].options.is_radio}`, `buttons={guild[guild_id].options.buttons}`,' \
-                      f' `language={guild[guild_id].options.language}`, `response_type={guild[guild_id].options.response_type}`,' \
-                      f' `volume={guild[guild_id].options.volume}`, `buffer={guild[guild_id].options.buffer}`'
+        guilds.append(server)
+
+    for for_guild_id in guilds:
+        options = guild[for_guild_id].options
+
+        bool_list_t = ['True', 'true', '1']
+        bool_list_f = ['False', 'false', '0']
+        bool_list = bool_list_f + bool_list_t
+        response_types = ['long', 'short']
+
+        if stopped not in bool_list and stopped is not None:
+            return ReturnData(False, f'stopped has to be: {bool_list} --> {stopped}')
+        if loop not in bool_list and loop is not None:
+            return ReturnData(False, f'loop has to be: {bool_list} --> {loop}')
+        if is_radio not in bool_list and is_radio is not None:
+            return ReturnData(False, f'is_radio has to be: {bool_list} --> {is_radio}')
+        if buttons not in bool_list and buttons is not None:
+            return ReturnData(False, f'buttons has to be: {bool_list} --> {buttons}')
+        if update not in bool_list and update is not None:
+            return ReturnData(False, f'update has to be: {bool_list} --> {update}')
+
+        if response_type not in response_types and response_type is not None:
+            return ReturnData(False, f'response_type has to be: {response_types} --> {response_type}')
+
+        if language not in languages_dict and language is not None:
+            return ReturnData(False, f'language has to be: {languages_dict}')
+
+        if not is_float(volume) and volume is not None:
+            return ReturnData(False, f'volume has to be a number: {volume}')
+        if not buffer.isdigit() and buffer is not None:
+            return ReturnData(False, f'buffer has to be a number: {buffer}')
+        if not history_length.isdigit() and history_length is not None:
+            return ReturnData(False, f'history_length has to be a number: {history_length}')
+
+        if stopped is not None:
+            options.stopped = to_bool(stopped)
+        if loop is not None:
+            options.loop = to_bool(loop)
+        if is_radio is not None:
+            options.is_radio = to_bool(is_radio)
+        if buttons is not None:
+            options.buttons = to_bool(buttons)
+        if update is not None:
+            options.update = to_bool(update)
+
+        if language is not None:
+            options.language = language
+        if search_query is not None:
+            options.search_query = search_query
+        if response_type is not None:
+            options.response_type = response_type
+
+        if volume is not None:
+            options.volume = float(volume)
+        if buffer is not None:
+            options.buffer = int(buffer)
+        if history_length is not None:
+            options.history_length = int(history_length)
 
         save_json()
 
-        await ctx.reply(f'**Config for guild `{guild_id}`**\n {config_text}', ephemeral=True)
+    message = tg(guild_id, f'Edited options successfully!')
+    await ctx.reply(message, ephemeral=ephemeral)
+    return ReturnData(True, message)
+
 
 # --------------------------------------------- HELP COMMAND -----------------------------------------------------------
 
@@ -3539,8 +3653,58 @@ async def web_disconnect(web_data) -> ReturnData:
 
     return task.result()
 
-async def web_edit(web_data, form) -> ReturnData:
-    log(web_data, 'web_edit', [form], log_type='function', author=web_data.author)
+# user edit
+async def web_user_options_edit(web_data, form) -> ReturnData:
+    log(web_data, 'web_user_options_edit', [form], log_type='function', author=web_data.author)
+    options = guild[web_data.guild_id].options
+
+    loop = form['loop']
+    language = form['language']
+    response_type = form['response_type']
+    buttons = form['buttons']
+    volume = form['volume']
+    buffer = form['buffer']
+    history_length = form['history_length']
+
+    bool_list_t = ['True', 'true', '1']
+    bool_list_f = ['False', 'false', '0']
+    bool_list = bool_list_f + bool_list_t
+    response_types = ['long', 'short']
+
+    if loop not in bool_list:
+        return ReturnData(False, f'loop has to be: {bool_list} --> {loop}')
+    if buttons not in bool_list:
+        return ReturnData(False, f'buttons has to be: {bool_list} --> {buttons}')
+
+    if response_type not in response_types:
+        return ReturnData(False, f'response_type has to be: {response_types} --> {response_type}')
+
+    if language not in languages_dict:
+        return ReturnData(False, f'language has to be: {languages_dict}')
+
+
+    if not volume.isdigit():
+        return ReturnData(False, f'volume has to be a number: {volume}')
+    if not buffer.isdigit():
+        return ReturnData(False, f'buffer has to be a number: {buffer}')
+    if not history_length.isdigit():
+        return ReturnData(False, f'history_length has to be a number: {history_length}')
+
+    options.loop = to_bool(loop)
+    options.buttons = to_bool(buttons)
+
+    options.language = language
+    options.response_type = response_type
+
+    options.volume = float(int(volume)*0.01)
+    options.buffer = int(buffer)
+    options.history_length = int(history_length)
+
+    return ReturnData(True, f'Edited options successfully!')
+
+# admin
+async def web_video_edit(web_data, form) -> ReturnData:
+    log(web_data, 'web_video_edit', [form], log_type='function', author=web_data.author)
     guild_id = web_data.guild_id
     index = form['edit_btn']
     is_queue = True
@@ -3627,11 +3791,6 @@ async def web_edit(web_data, form) -> ReturnData:
 
 async def web_options_edit(web_data, form) -> ReturnData:
     log(web_data, 'web_options_edit', [form], log_type='function', author=web_data.author)
-    try:
-        guild_id = int(form['id'])
-        options  = guild[guild_id].options
-    except (TypeError, ValueError, KeyError):
-        return ReturnData(False, f'Invalid guild id: {form["id"]}')
 
     stopped = form['stopped']
     loop = form['loop']
@@ -3645,99 +3804,46 @@ async def web_options_edit(web_data, form) -> ReturnData:
     history_length = form['history_length']
     update = form['update']
 
-    bool_list_t = ['True', 'true', '1']
-    bool_list_f = ['False', 'false', '0']
-    bool_list = bool_list_f + bool_list_t
-    response_types = ['long', 'short']
+    return await options_def(web_data, server='this', stopped=stopped, loop=loop, is_radio=is_radio, language=language, response_type=response_type, search_query=search_query, buttons=buttons, volume=volume, buffer=buffer, history_length=history_length, update=update)
 
-    if stopped not in bool_list:
-        return ReturnData(False, f'stopped has to be: {bool_list} --> {stopped}')
-    if loop not in bool_list:
-        return ReturnData(False, f'loop has to be: {bool_list} --> {loop}')
-    if is_radio not in bool_list:
-        return ReturnData(False, f'is_radio has to be: {bool_list} --> {is_radio}')
-    if buttons not in bool_list:
-        return ReturnData(False, f'buttons has to be: {bool_list} --> {buttons}')
-    if update not in bool_list:
-        return ReturnData(False, f'update has to be: {bool_list} --> {update}')
+async def web_delete_guild(web_data, guild_id) -> ReturnData:
+    log(web_data, 'web_delete_guild', [guild_id], log_type='function', author=web_data.author)
+    try:
+        guild_id = int(guild_id)
+    except (TypeError, ValueError):
+        return ReturnData(False, f'Invalid guild id: {guild_id}')
 
-    if response_type not in response_types:
-        return ReturnData(False, f'response_type has to be: {response_types} --> {response_type}')
+    if guild_id not in guild.keys():
+        return ReturnData(False, f'Guild not found: {guild_id}')
 
-    if language not in languages_dict:
-        return ReturnData(False, f'language has to be: {languages_dict}')
+    del guild[guild_id]
 
+    save_json()
 
-    if not is_float(volume):
-        return ReturnData(False, f'volume has to be a number: {volume}')
-    if not buffer.isdigit():
-        return ReturnData(False, f'buffer has to be a number: {buffer}')
-    if not history_length.isdigit():
-        return ReturnData(False, f'history_length has to be a number: {history_length}')
+    return ReturnData(True, f'Deleted guild {guild_id} successfully!')
 
-    options.stopped = to_bool(stopped)
-    options.loop = to_bool(loop)
-    options.is_radio = to_bool(is_radio)
-    options.buttons = to_bool(buttons)
-    options.update = to_bool(update)
+async def web_disconnect_guild(web_data, guild_id) -> ReturnData:
+    log(web_data, 'web_disconnect_guild', [guild_id], log_type='function', author=web_data.author)
+    try:
+        guild_id = int(guild_id)
+    except (TypeError, ValueError):
+        return ReturnData(False, f'Invalid guild id: {guild_id}')
 
-    options.language = language
-    options.search_query = search_query
-    options.response_type = response_type
+    bot_guild_ids = [guild_object.id for guild_object in bot.guilds]
 
-    options.volume = float(volume)
-    options.buffer = int(buffer)
-    options.history_length = int(history_length)
+    if guild_id not in bot_guild_ids:
+        return ReturnData(False, f'Guild not found in bot.guilds: {guild_id}')
 
-    return ReturnData(True, f'Edited options successfully!')
+    guild_to_disconnect = bot.get_guild(guild_id)
 
-async def web_user_options_edit(web_data, form) -> ReturnData:
-    log(web_data, 'web_user_options_edit', [form], log_type='function', author=web_data.author)
-    options = guild[web_data.guild_id].options
+    try:
+        await guild_to_disconnect.leave()
+    except discord.HTTPException as e:
+        return ReturnData(False, f"Something Failed -> HTTPException: {e}")
 
-    loop = form['loop']
-    language = form['language']
-    response_type = form['response_type']
-    buttons = form['buttons']
-    volume = form['volume']
-    buffer = form['buffer']
-    history_length = form['history_length']
+    save_json()
 
-    bool_list_t = ['True', 'true', '1']
-    bool_list_f = ['False', 'false', '0']
-    bool_list = bool_list_f + bool_list_t
-    response_types = ['long', 'short']
-
-    if loop not in bool_list:
-        return ReturnData(False, f'loop has to be: {bool_list} --> {loop}')
-    if buttons not in bool_list:
-        return ReturnData(False, f'buttons has to be: {bool_list} --> {buttons}')
-
-    if response_type not in response_types:
-        return ReturnData(False, f'response_type has to be: {response_types} --> {response_type}')
-
-    if language not in languages_dict:
-        return ReturnData(False, f'language has to be: {languages_dict}')
-
-
-    if not volume.isdigit():
-        return ReturnData(False, f'volume has to be a number: {volume}')
-    if not buffer.isdigit():
-        return ReturnData(False, f'buffer has to be a number: {buffer}')
-    if not history_length.isdigit():
-        return ReturnData(False, f'history_length has to be a number: {history_length}')
-
-    options.loop = to_bool(loop)
-    options.buttons = to_bool(buttons)
-
-    options.language = language
-    options.response_type = response_type
-
-    options.volume = float(int(volume)*0.01)
-    options.buffer = int(buffer)
-    options.history_length = int(history_length)
-
-    return ReturnData(True, f'Edited options successfully!')
+    return ReturnData(True, f'Left guild {guild_id} successfully!')
 
 # --------------------------------------------- IPC SERVER --------------------------------------------- #
 
@@ -3853,15 +3959,24 @@ async def execute_function(request_dict) -> ReturnData:
         if func_name == 'volume_command_def':
             return await volume_command_def(web_data, volume=args['volume'])
 
-        if func_name == 'web_edit':
-            return await web_edit(web_data, form=args['form'])
-        if func_name == 'web_options_edit':
-            return await web_options_edit(web_data, form=args['form'])
+        # user edit
         if func_name == 'web_user_options_edit':
             return await web_user_options_edit(web_data, form=args['form'])
 
-    except KeyError:
-        return ReturnData(False, f'Wrong args for ({func_name}): {args} --> Internal error (contact developer)')
+        # admin
+        if func_name == 'web_video_edit':
+            return await web_video_edit(web_data, form=args['form'])
+        if func_name == 'web_options_edit':
+            return await web_options_edit(web_data, form=args['form'])
+
+        if func_name == 'web_delete_guild':
+            return await web_delete_guild(web_data, guild_id=args['guild_id'])
+        if func_name == 'web_disconnect_guild':
+            return asyncio.run_coroutine_threadsafe(web_disconnect_guild(web_data, args['guild_id']), bot.loop).result()
+            # return await web_disconnect_guild(web_data, guild_id=args['guild_id'])
+
+    except KeyError as e:
+        return ReturnData(False, f'Wrong args for ({func_name}): {e} --> Internal error (contact developer)')
 
     return ReturnData(False, f'Unknown function: {func_name}')
 
@@ -3870,18 +3985,27 @@ async def execute_get_data(request_dict):
 
     if data_type == 'guild':
         guild_id = request_dict['guild_id']
-        return guild[guild_id]
+        try:
+            return guild[guild_id]
+        except KeyError:
+            return None
     if data_type == 'guilds':
         return guild
     if data_type == 'update':
         guild_id = request_dict['guild_id']
-        return guild[guild_id].options.update
+        try:
+            return guild[guild_id].options.update
+        except KeyError:
+            return None
     if data_type == 'user':
         user_id = request_dict['user_id']
         return get_username(user_id)
     if data_type == 'language':
         guild_id = request_dict['guild_id']
-        return guild[guild_id].options.language
+        try:
+            return guild[guild_id].options.language
+        except KeyError:
+            return None
     if data_type == 'renew':
         radio_website = request_dict['radio_website']
         url = request_dict['url']
@@ -3907,6 +4031,9 @@ async def execute_get_data(request_dict):
             raise ValueError("Invalid radio website")
 
         return [picture, channel_name, title, duration]
+    if data_type == 'bot_guilds':
+        update_guilds()
+        return bot.guilds
 
 async def execute_set_data(request_dict) -> None:
     data_type = request_dict['data_type']

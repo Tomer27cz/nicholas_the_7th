@@ -4,9 +4,11 @@ import pickle
 import json
 import os
 from time import gmtime, strftime, time
-from io import BytesIO
 
-from flask import Flask, render_template, request, url_for, redirect, session, send_file
+from io import BytesIO
+from pathlib import Path
+
+from flask import Flask, render_template, request, url_for, redirect, session, send_file, abort
 
 import config
 from oauth import Oauth
@@ -30,7 +32,7 @@ with open('src/other.json', 'r', encoding='utf-8') as file:
     vlc_logo = other['logo']
     authorized_users = other['authorized'] + [my_id, 349164237605568513]
 
-guild = []
+guild = {}
 
 # --------------------------------------------- CLASSES --------------------------------------------- #
 
@@ -249,6 +251,23 @@ def tg(guild_id: int, content: str) -> str:
         to_return = content
     return to_return
 
+# --------------------------------------------- FILE FUNCTIONS --------------------------------------------- #
+
+def getReadableByteSize(num, suffix='B') -> str:
+    for unit in ['', 'K', 'M', 'G', 'T', 'P', 'E', 'Z']:
+        if abs(num) < 1024.0:
+            return "%3.1f%s%s" % (num, unit, suffix)
+        num /= 1024.0
+    return "%.1f%s%s" % (num, 'Y', suffix)
+
+def getIconClassForFilename(fName):
+    fileExt = Path(fName).suffix
+    fileExt = fileExt[1:] if fileExt.startswith(".") else fileExt
+    fileTypes = ["aac", "ai", "bmp", "cs", "css", "csv", "doc", "docx", "exe", "gif", "heic", "html", "java", "jpg", "js", "json", "jsx", "key", "m4p", "md", "mdx", "mov", "mp3",
+                 "mp4", "otf", "pdf", "php", "png", "pptx", "psd", "py", "raw", "rb", "sass", "scss", "sh", "sql", "svg", "tiff", "tsx", "ttf", "txt", "wav", "woff", "xlsx", "xml", "yml"]
+    fileIconClass = f"bi bi-filetype-{fileExt}" if fileExt in fileTypes else "bi bi-file-earmark"
+    return fileIconClass
+
 # --------------------------------------------- LOG --------------------------------------------- #
 
 def log(ctx, text_data, options=None, log_type='text', author=None) -> None:
@@ -384,6 +403,22 @@ def execute_function(function_name: str, web_data: WebData, **kwargs) -> ReturnD
         return ReturnData(False, 'An unexpected error occurred')
 
     return response
+
+# admin
+
+def check_admin(session_data):
+    global guild
+    if session_data is None:
+        raise ValueError('Session data is None')
+
+    user_id = int(session_data['discord_user']['id'])
+    if user_id in authorized_users:
+        if guild is None:
+            guild = get_guilds()
+        return list(guild.keys())
+
+    return session_data['mutual_guild_ids']
+
 
 # --------------------------------------------- DATABASE FUNCTIONS --------------------------------------------- #
 
@@ -523,10 +558,11 @@ async def about_page():
 # Guild pages
 @app.route('/guild')
 async def guilds_page():
+    global guild
     log(request.remote_addr, '/guild', log_type='ip')
     if 'discord_user' in session.keys():
         user = session['discord_user']
-        mutual_guild_ids = session['mutual_guild_ids']
+        mutual_guild_ids = check_admin(session)
     elif 'mutual_guild_ids' in session.keys():
         mutual_guild_ids = session['mutual_guild_ids']
         user = None
@@ -548,10 +584,11 @@ async def guilds_page():
 
 @app.route('/guild/<int:guild_id>', methods=['GET', 'POST'])
 async def guild_get_key_page(guild_id):
+    global guild
     log(request.remote_addr, f'/guild/{guild_id}', log_type='ip')
     if 'discord_user' in session.keys():
         user = session['discord_user']
-        mutual_guild_ids = session['mutual_guild_ids']
+        mutual_guild_ids = check_admin(session)
     elif 'mutual_guild_ids' in session.keys():
         mutual_guild_ids = session['mutual_guild_ids']
         user = None
@@ -587,25 +624,29 @@ async def guild_get_key_page(guild_id):
 
 @app.route('/guild/<int:guild_id>&key=<key>', methods=['GET', 'POST'])
 async def guild_page(guild_id, key):
+    global guild
     log(request.remote_addr, f'/guild/{guild_id}&key={key}', log_type='ip')
-    admin = False
-    user = None
-    user_name, user_id = request.remote_addr, 'WEB Guest'
     errors = []
     messages = []
     scroll_position = 0
+    admin = False
 
     if 'discord_user' in session.keys():
         user = session['discord_user']
         user_name, user_id = user['username'], int(user['id'])
-        mutual_guild_ids = session['mutual_guild_ids']
+        mutual_guild_ids = check_admin(session)
+        if user_id in authorized_users:
+            admin = True
     elif 'mutual_guild_ids' in session.keys():
         mutual_guild_ids = session['mutual_guild_ids']
+        user = None
+        user_name, user_id = request.remote_addr, 'WEB Guest'
+        admin = False
     else:
         mutual_guild_ids = []
-
-    if user_id in authorized_users:
-        admin = True
+        user = None
+        user_name, user_id = request.remote_addr, 'WEB Guest'
+        admin = False
 
     if request.method == 'POST':
         web_data = WebData(int(guild_id), user_name, user_id)
@@ -669,8 +710,8 @@ async def guild_page(guild_id, key):
             response = execute_function('remove_def', web_data=web_data, number=int(request.form['hdel_btn'][1:]), list_type='history')
 
         if 'edit_btn' in keys:
-            log(web_data, 'web_edit', [request.form['edit_btn']], log_type='web', author=web_data.author)
-            response = execute_function('web_edit', web_data=web_data, form=request.form)
+            log(web_data, 'web_video_edit', [request.form['edit_btn']], log_type='web', author=web_data.author)
+            response = execute_function('web_video_edit', web_data=web_data, form=request.form)
         if 'options_btn' in keys:
             log(web_data, 'web_options', [request.form], log_type='web', author=web_data.author)
             response = execute_function('web_user_options_edit', web_data=web_data, form=request.form)
@@ -703,7 +744,6 @@ async def guild_page(guild_id, key):
     if key != guild_object.data.key:
         if guild_object.id in mutual_guild_ids:
             return redirect(f'/guild/{guild_id}&key={guild_object.data.key}')
-
         return redirect(url_for('guild_get_key_page', guild_id=guild_id))
 
     mutual_guild_ids.append(guild_object.id)
@@ -801,6 +841,7 @@ async def invite_page():
 # Admin
 @app.route('/admin', methods=['GET', 'POST'])
 async def admin_page():
+    global guild
     log(request.remote_addr, '/admin', log_type='ip')
     if 'discord_user' in session.keys():
         user = session['discord_user']
@@ -824,7 +865,7 @@ async def admin_page():
                 file_name = request.form['download_file']
                 log(web_data, 'download file', [file_name], log_type='web', author=web_data.author)
                 try:
-                    if file_name == 'log.log' or file_name == 'data.log' or file_name == 'activity.log':
+                    if file_name in ['log.log', 'data.log', 'activity.log', 'apache_error.log', 'apache_activity.log']:
                         return send_file(f'log/{file_name}', as_attachment=True)
                     else:
                         return send_file(f'src/{file_name}', as_attachment=True)
@@ -837,10 +878,10 @@ async def admin_page():
                 if not f:
                     errors = ['No file']
                 elif file_name != f.filename:
-                    errors = ['File name does not match']
+                    errors = ['File name does not match the one in the input field']
                 else:
                     try:
-                        if file_name == 'log.log' or file_name == 'data.log' or file_name == 'activity.log':
+                        if file_name in ['log.log', 'data.log', 'activity.log', 'apache_error.log', 'apache_activity.log']:
                             f.save(f"log/{f.filename}")
                             messages = ['File uploaded']
                         else:
@@ -866,7 +907,103 @@ async def admin_page():
         guild = get_guilds()
         return render_template('nav/admin.html', user=user, guild=guild.values(), languages_dict=languages_dict, errors=errors, messages=messages)
 
-    return render_template('base/message.html', message="403 Forbidden", message4='You do not have permission.', errors=None, user=user, title='403 Forbidden'), 403
+    return abort(403)
+
+# Admin file
+@app.route('/admin/file/', defaults={'reqPath': '.'})
+@app.route('/admin/file/<path:reqPath>')
+def getFiles(reqPath):
+    log(request.remote_addr, f'/admin/file/{reqPath}', log_type='ip')
+    if 'discord_user' in session.keys():
+        user = session['discord_user']
+    else:
+        return render_template('base/message.html', message="403 Forbidden", message4='You have to be logged in.', errors=None, user=None, title='403 Forbidden'), 403
+
+    if int(user['id']) not in authorized_users:
+        return abort(403)
+
+    # Return 404 if path doesn't exist
+    if not os.path.exists(reqPath):
+        return abort(404)
+
+    # Check if path is a file and serve
+    if os.path.isfile(reqPath):
+        return send_file(reqPath)
+
+    # Show directory contents
+    def fObjFromScan(x):
+        fileStat = x.stat()
+        # return file information for rendering
+        return {'name': x.name,
+                'fIcon': "bi bi-folder-fill" if os.path.isdir(x.path) else getIconClassForFilename(x.name),
+                'relPath': x.path,
+                'mTime': struct_to_time(fileStat.st_mtime),
+                'size': getReadableByteSize(fileStat.st_size)
+                }
+
+    fileObjs = [fObjFromScan(x) for x in os.scandir(reqPath)]
+    # get parent directory url
+
+    try:
+        parentFolderPath = Path(reqPath).parents[0]
+    except IndexError:
+        parentFolderPath = reqPath
+
+    return render_template('admin/files.html', data={'files': fileObjs, 'parentFolder': parentFolderPath}, title='Admin File', user=user, errors=None, messages=None)
+
+# Admin guild
+@app.route('/admin/guild', methods=['GET', 'POST'])
+async def admin_guild_redirect():
+    log(request.remote_addr, '/admin/guild', log_type='ip')
+    return redirect('/admin')
+
+@app.route('/admin/guild/<int:guild_id>', methods=['GET', 'POST'])
+async def admin_guild(guild_id):
+    global guild
+    log(request.remote_addr, f'/admin/guild/{guild_id}', log_type='ip')
+    if 'discord_user' in session.keys():
+        user = session['discord_user']
+        user_name = user['username']
+        user_id = user['id']
+    else:
+        return render_template('base/message.html', message="403 Forbidden", message4='You have to be logged in.', errors=None, user=None, title='403 Forbidden'), 403
+
+    errors = []
+    messages = []
+    response = None
+
+    if request.method == 'POST':
+        web_data = WebData(guild_id, user_name, user_id)
+
+        keys = request.form.keys()
+        form = request.form
+        try:
+            if 'edit_btn' in keys:
+                log(web_data, 'web_options_edit', [form], log_type='web', author=web_data.author)
+                response = execute_function('web_options_edit', web_data, form=form)
+            if 'delete_guild_btn' in keys:
+                log(web_data, 'web_delete_guild', [guild_id], log_type='web', author=web_data.author)
+                response = execute_function('web_delete_guild', web_data, guild_id=guild_id)
+            if 'disconnect_guild_btn' in keys:
+                log(web_data, 'web_disconnect_guild', [guild_id], log_type='web', author=web_data.author)
+                response = execute_function('web_disconnect_guild', web_data, guild_id=guild_id)
+        except Exception as e:
+            errors = [str(e)]
+            log(web_data, 'error', [str(e)], log_type='web', author=web_data.author)
+
+        if response:
+            if response.response:
+                messages = [response.message]
+            else:
+                errors = [response.message]
+
+    if int(user['id']) in authorized_users:
+        guild_object = get_guild(int(guild_id))
+        if guild_object is None:
+            return abort(404)
+        return render_template('admin/guild.html', user=user, guild_object=guild_object, languages_dict=languages_dict, errors=errors, messages=messages)
+
+    return abort(403)
 
 
 # Error Handling
@@ -878,10 +1015,18 @@ async def page_not_found(_):
     else:
         user = None
     return render_template('base/message.html', message="404 Not Found", message4='The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.' , errors=None, user=user, title='404 Not Found'), 404
+@app.errorhandler(403)
+async def page_forbidden(_):
+    log(request.remote_addr, f'{request.path} -> 403', log_type='ip')
+    if 'discord_user' in session.keys():
+        user = session['discord_user']
+    else:
+        user = None
+    return render_template('base/message.html', message="403 Forbidden", message4='You do not have permission.', user=user, errors=None, title='403 Forbidden'), 403
 
 
 def main():
-    get_guilds()
+    # get_guilds()
     app.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 5420)))
 
 if __name__ == '__main__':
