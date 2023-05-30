@@ -3,21 +3,22 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   <link rel="icon" href="{{ url_for('static', filename='favicon/favicon.png') }}" sizes="any">
-  <title>Nicholas the 7th | {{title}}</title>
+  <title>Nicholas the 7th | {{ title }}</title>
   <script>
-      if ( window.history.replaceState ) {
-          window.history.replaceState( null, null, window.location.href );
+      if (window.history.replaceState) {
+          window.history.replaceState(null, null, window.location.href);
       }
-      document.addEventListener("DOMContentLoaded", function(event) {
+      document.addEventListener("DOMContentLoaded", function (event) {
           let scroll_pos = localStorage.getItem('scrollpos');
           if (scroll_pos) window.scrollTo((0, scroll_pos, 'auto'));
       });
 
-      window.onbeforeunload = function(e) {
+      window.onbeforeunload = function (e) {
           localStorage.setItem('scrollpos', window.scrollY);
       };
   </script>
@@ -28,12 +29,15 @@
   <nav class="navbar sticky-top navbar-expand-lg navbar-dark nav-discord" data-bs-theme="dark">
     <div class="container-fluid">
       <a class="navbar-brand" href="/">
-        <svg xmlns="http://www.w3.org/2000/svg" width="30px" height="30px" viewBox="0 0 314 337" style="margin-right:0.5rem">
-          <path fill-rule="evenodd"  fill="rgb(255, 255, 255)" d="M-0.000,0.000 L59.000,0.000 L190.000,118.000 L190.000,0.000 L244.000,0.000 L244.000,257.000 L190.000,210.000 L190.000,168.000 L55.000,49.000 L55.000,337.000 L-0.000,337.000 L-0.000,0.000 ZM67.000,337.000 L124.000,337.000 L124.000,223.000 L253.000,337.000 L314.000,337.000 L314.000,0.000 L257.000,0.000 L257.000,286.000 L124.000,169.000 L124.000,128.000 L67.000,77.000 L67.000,337.000 Z"></path>
+        <svg xmlns="http://www.w3.org/2000/svg" width="30px" height="30px" viewBox="0 0 314 337"
+             style="margin-right:0.5rem">
+          <path fill-rule="evenodd" fill="rgb(255, 255, 255)"
+                d="M-0.000,0.000 L59.000,0.000 L190.000,118.000 L190.000,0.000 L244.000,0.000 L244.000,257.000 L190.000,210.000 L190.000,168.000 L55.000,49.000 L55.000,337.000 L-0.000,337.000 L-0.000,0.000 ZM67.000,337.000 L124.000,337.000 L124.000,223.000 L253.000,337.000 L314.000,337.000 L314.000,0.000 L257.000,0.000 L257.000,286.000 L124.000,169.000 L124.000,128.000 L67.000,77.000 L67.000,337.000 Z"></path>
         </svg>
         Nicholas the 7th
       </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+              aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -54,9 +58,10 @@
         </div>
         <div>
           {% if user %}
-            <a class="user-color">{{user['username']}}</a>
+            <a class="user-color">{{ user['username'] }}</a>
             {% if user['avatar'] != None %}
-              <img src="https://cdn.discordapp.com/avatars/{{user['id']}}/{{user['avatar']}}.png?size=32" class="rounded-circle" alt="avatar">
+              <img src="https://cdn.discordapp.com/avatars/{{ user['id'] }}/{{ user['avatar'] }}.png?size=32"
+                   class="rounded-circle" alt="avatar">
             {% endif %}
             {% if user['id'] == '349164237605568513' %}
               <a class="btn btn-outline-primary btn-sm btn-m" href="/admin">Admin Panel</a>
@@ -78,15 +83,27 @@
   <div class="container py-4 py-md-5 px-4 px-md-3 text-body-secondary">
     <div class="row">
       <div class="col-lg-4 mb-2">
-        <a class="d-inline-flex align-items-center mb-2 text-body-emphasis text-decoration-none" href="/" aria-label="Nicholas The 7th">
-          <svg xmlns="http://www.w3.org/2000/svg" width="35px" height="35px" viewBox="0 0 314 337" style="margin-right:0.5rem">
-            <path fill-rule="evenodd"  fill="rgb(255, 255, 255)" d="M-0.000,0.000 L59.000,0.000 L190.000,118.000 L190.000,0.000 L244.000,0.000 L244.000,257.000 L190.000,210.000 L190.000,168.000 L55.000,49.000 L55.000,337.000 L-0.000,337.000 L-0.000,0.000 ZM67.000,337.000 L124.000,337.000 L124.000,223.000 L253.000,337.000 L314.000,337.000 L314.000,0.000 L257.000,0.000 L257.000,286.000 L124.000,169.000 L124.000,128.000 L67.000,77.000 L67.000,337.000 Z"></path>
+        <a class="d-inline-flex align-items-center mb-2 text-body-emphasis text-decoration-none" href="/"
+           aria-label="Nicholas The 7th">
+          <svg xmlns="http://www.w3.org/2000/svg" width="35px" height="35px" viewBox="0 0 314 337"
+               style="margin-right:0.5rem">
+            <path fill-rule="evenodd" fill="rgb(255, 255, 255)"
+                  d="M-0.000,0.000 L59.000,0.000 L190.000,118.000 L190.000,0.000 L244.000,0.000 L244.000,257.000 L190.000,210.000 L190.000,168.000 L55.000,49.000 L55.000,337.000 L-0.000,337.000 L-0.000,0.000 ZM67.000,337.000 L124.000,337.000 L124.000,223.000 L253.000,337.000 L314.000,337.000 L314.000,0.000 L257.000,0.000 L257.000,286.000 L124.000,169.000 L124.000,128.000 L67.000,77.000 L67.000,337.000 Z"></path>
           </svg>
           <span class="fs-5">Nicholas the 7th</span>
         </a>
         <ul class="list-unstyled small">
-          <li class="mb-2">Designed and built by <a href="https://discordapp.com/users/349164237605568513">Tomer27cz#4272</a>, using open source repositories <a href="https://github.com/Rapptz/discord.py">discord.py</a>, <a href="https://github.com/pallets/flask/">flask</a>, <a href="https://github.com/yt-dlp/yt-dlp">yt-dlp</a>, <a href="https://github.com/alexmercerind/youtube-search-python">youtube-search-python</a>, <a href="https://www.crummy.com/software/BeautifulSoup/">bs4</a>, <a href="https://github.com/twbs/bootstrap">bootstrap</a>.</li>
-          <li class="mb-2">Code licensed <a href="https://github.com/Tomer27cz/discord_bot_stanley_the_7th/blob/main/LICENSE" target="_blank" rel="license noopener">MIT</a></li>
+          <li class="mb-2">Designed and built by <a href="https://discordapp.com/users/349164237605568513">Tomer27cz#4272</a>,
+            using open source repositories <a href="https://github.com/Rapptz/discord.py">discord.py</a>, <a
+                href="https://github.com/pallets/flask/">flask</a>, <a
+                href="https://github.com/yt-dlp/yt-dlp">yt-dlp</a>, <a
+                href="https://github.com/alexmercerind/youtube-search-python">youtube-search-python</a>, <a
+                href="https://www.crummy.com/software/BeautifulSoup/">bs4</a>, <a
+                href="https://github.com/twbs/bootstrap">bootstrap</a>.
+          </li>
+          <li class="mb-2">Code licensed <a
+              href="https://github.com/Tomer27cz/discord_bot_stanley_the_7th/blob/main/LICENSE" target="_blank"
+              rel="license noopener">MIT</a></li>
           <li class="mb-2">Currently v7.0</li>
         </ul>
       </div>
@@ -116,6 +133,8 @@
     </div>
   </div>
 </footer>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js" integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N"
+        crossorigin="anonymous"></script>
 </body>
 </html>

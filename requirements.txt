@@ -12,3 +12,4 @@ asgiref
 flask
 spotipy
 soundcloud-lib
+werkzeug

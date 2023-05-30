@@ -1,0 +1,66 @@
+{% extends "base/base.html" %}
+
+{% set title = title %}
+
+{% block content %}
+  {% if errors %}
+    {% for error in errors %}
+      <div class="alert alert-danger div-align alert-dismissible fade show" role="alert">
+        {{ error }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  <div class="l-div e-wrap align-left div-login">
+    <div class="q-item1">
+      <h3>Users in: {{ guild_object.data.name }}</h3>
+    </div>
+    <div class="q-item1">
+      <h3>Users: {{ guild_object.data.member_count }}</h3>
+    </div>
+    <a class="btn btn-primary q-item1 div-align-center" href="/admin/guild/{{ guild_object.id }}">Return to Guild Dashboard</a>
+  </div>
+
+  <div class="l-div e-wrap">
+    {% if users %}
+      {% for user in users %}
+      <div class="q-container q-item1">
+        <div class="">
+          <img loading="lazy" class="q-img" src="{{ user.avatar }}" alt="User Avatar">
+          <div class="q-item1">
+            <p class="q-text q-1">Name</p>
+            <p class="q-text q-2">{{ user.name }} #{{ user.discriminator }}</p>
+          </div>
+          <div class="q-item1">
+            <p class="q-text q-1">ID</p>
+            <p class="q-text q-2">{{ user.id }}</p>
+          </div>
+          <div class="q-item1">
+            <p class="q-text q-1">Joined at</p>
+            <p class="q-text q-2">{{ user.joined_at }}</p>
+          </div>
+          <div class="q-item1">
+            <p class="q-text q-1">Status</p>
+            {% if user.status == 'online' %}
+              <p class="q-text c-green">{{ user.status }}</p>
+            {% elif user.status == 'offline' %}
+              <p class="q-text c-red">{{ user.status }}</p>
+            {% else %}
+              <p class="q-text q-2">{{ user.status }}</p>
+            {% endif %}
+          </div>
+          <div class="q-item0 div-align-center">
+            <a class="btn btn-primary" href="/admin/user/{{ user.id }}">Full Info</a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <div class="q-item1">
+        <h3>No users found</h3>
+      </div>
+    {% endif %}
+  </div>
+
+{% endblock %}

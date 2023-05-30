@@ -1,0 +1,48 @@
+{% extends "base/base.html" %}
+
+{% set title = title %}
+
+{% block content %}
+  {% if errors %}
+    {% for error in errors %}
+      <div class="alert alert-danger div-align alert-dismissible fade show" role="alert">
+        {{ error }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  <div class="container">
+    <div class="l-div div-align-center">
+      <h1 class="q-item1">User Info</h1>
+      <a href="/admin" class="btn btn-primary q-item1">Return to Admin Panel</a>
+    </div>
+    <div class="div-login div-align-center">
+      <div class="l-div">
+        <div class="q-item1">
+          <img src="{{ data.avatar }}" alt="Avatar" class="q-img">
+        </div>
+        <div class="q-item1">
+          <h3>{{ data.name }} #{{ data.discriminator }}</h3>
+        </div>
+      </div>
+      <div class="l-div">
+        <div class="q-item1">
+          <h4>ID: {{ data.id }}</h4>
+        </div>
+        <div class="q-item1">
+          <h4>Display Name: {{ data.display_name }}</h4>
+        </div>
+      </div>
+      <div class="l-div">
+        <div class="q-item1">
+          <h4>BOT: {{ data.bot }}</h4>
+        </div>
+        <div class="q-item1">
+          <h4>Created At: {{ data.created_at }}</h4>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
