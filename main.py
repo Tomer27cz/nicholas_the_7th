@@ -3349,16 +3349,16 @@ async def ping_def(ctx) -> ReturnData:
     log(ctx, 'ping_def', [], log_type='function', author=ctx.author)
     save_json()
 
-    await ctx.defer(ephemeral=True)
-
-    # await download_guild_channel(ctx, ctx.channel.id)
+    # await ctx.defer(ephemeral=True)
     #
-    # await asyncio.sleep(10)
-
-    await get_guild(ctx, ctx.guild.id)
-
-    update_guilds()
-    push_update(ctx.guild.id)
+    # # await download_guild_channel(ctx, ctx.channel.id)
+    # #
+    # # await asyncio.sleep(10)
+    #
+    # await get_guild(ctx, ctx.guild.id)
+    #
+    # update_guilds()
+    # push_update(ctx.guild.id)
 
     message = f'**Pong!** Latency: {round(bot.latency * 1000)}ms'
     await ctx.reply(message)
