@@ -8,6 +8,7 @@ body {
 }
 
 :root {
+    --d-g0: #80848d;
     --d-g1: #313338;
     --d-g2: #2b2d31;
     --d-g3: #1e1f22;
@@ -629,6 +630,96 @@ input.radio-checkbox[type=radio] + label {
 .gap1 {
     gap: 1rem;
 }
+
+/* progress bar */
+.p-div {
+    display: flex;
+    height: 1rem;
+    overflow: hidden;
+    font-size: 0.25rem;
+    background-color: #343a40;
+    border-radius: 0.375rem;
+}
+.p-div-m {
+    display: flex;
+    height: 1rem;
+    font-size: 0.25rem;
+    border-radius: 0.375rem;
+    position: relative;
+    top: 1rem;
+}
+
+.p-bar {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    background-color: #0d6efd;
+    transition: width 0.6s ease;
+}
+
+.p-text {
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin: auto;
+    bottom: 1rem;
+    font-size: 1rem;
+    display: none;
+}
+
+.p-ch {
+    background: None;
+    transition: 0.5s ease;
+}
+.p-ch:hover {
+    background: rgba(255,255,255, 25%);
+}
+.p-ch:hover div {
+    display: block;
+}
+
+/* discord viewer */
+.dv-div1 {
+    height: 100vh;
+}
+
+.dv-div {
+    clear: none;
+    height: 95%;
+}
+.dv-channels {
+    background: var(--d-g3);
+    float: left;
+    width: 15%;
+    height: 100%;
+    overflow-y: scroll;
+    display: flex;
+    justify-items: left;
+    justify-content: left;
+    padding-top: 1rem;
+    padding-right: 1rem;
+    padding-bottom: 1rem;
+}
+.dv-content {
+    width: 85%;
+    float: left;
+    height: 100%;
+    overflow-y: scroll;
+}
+
+
+.dv-items {
+    list-style: none;
+}
+.dv-item {
+    margin-bottom: 0.5rem;
+    text-decoration: none;
+    color: var(--d-g0)
+}
+
 
 /* div table */
 

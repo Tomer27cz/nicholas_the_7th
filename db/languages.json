@@ -186,7 +186,10 @@
         "Clear": "Clear up",
         "There is nothing in the queue": "There is nothing in the queue",
         "Bot is not connected to this guild -> Disabled": "Bot is not connected to this guild -> Disabled",
-        "Edited options successfully!": "Edited options successfully!"
+        "Edited options successfully!": "Edited options successfully!",
+        "Time": "Time",
+        "Chapter": "Chapter",
+        "Duplicate": "Duplicate"
     },
     "cs": {
         "search": "Vyhledejte na youtube zadan\u00fd dotaz",
@@ -376,7 +379,10 @@
         "There is nothing in the queue": "Ve front\u011b nic nen\u00ed",
         "options": "Upravit mo\u017enosti robota",
         "Bot is not connected to this guild -> Disabled": "Bot nen\u00ed p\u0159ipojen k t\u00e9to guild\u011b -&gt; Zak\u00e1z\u00e1no",
-        "Edited options successfully!": "Mo\u017enosti byly \u00fasp\u011b\u0161n\u011b upraveny!"
+        "Edited options successfully!": "Mo\u017enosti byly \u00fasp\u011b\u0161n\u011b upraveny!",
+        "Time": "\u010cas",
+        "Chapter": "Kapitola",
+        "Duplicate": "Duplik\u00e1t"
     },
     "de": {
         "search": "Suchen Sie YouTube nach der bereitgestellten Abfrage",
@@ -566,7 +572,10 @@
         "Clear": "Kl\u00e4ren",
         "options": "Bot-Optionen bearbeiten",
         "Bot is not connected to this guild -> Disabled": "Bot ist nicht mit dieser Gilde verbunden -&gt; Deaktiviert",
-        "Edited options successfully!": "Optionen erfolgreich bearbeitet!"
+        "Edited options successfully!": "Optionen erfolgreich bearbeitet!",
+        "Time": "Zeit",
+        "Chapter": "Kapitel",
+        "Duplicate": "Duplikat"
     },
     "eo": {
         "search": "Ser\u0109u YouTube",
@@ -756,7 +765,10 @@
         "Clear": "Klarigi",
         "options": "Redaktu bot-opciojn",
         "Bot is not connected to this guild -> Disabled": "Bot ne estas konektita al \u0109i tiu gildo -&gt; Mal\u015daltita",
-        "Edited options successfully!": "Redaktitaj opcioj sukcese!"
+        "Edited options successfully!": "Redaktitaj opcioj sukcese!",
+        "Time": "Tempo",
+        "Chapter": "\u0108apitro",
+        "Duplicate": "Duobligi"
     },
     "es": {
         "search": "Busque en YouTube la consulta proporcionada",
@@ -946,7 +958,10 @@
         "Clear": "Aclarar",
         "options": "Editar opciones de bot",
         "Bot is not connected to this guild -> Disabled": "El bot no est\u00e1 conectado a este gremio -&gt; Deshabilitado",
-        "Edited options successfully!": "\u00a1Opciones editadas con \u00e9xito!"
+        "Edited options successfully!": "\u00a1Opciones editadas con \u00e9xito!",
+        "Time": "Tiempo",
+        "Chapter": "Cap\u00edtulo",
+        "Duplicate": "Duplicar"
     },
     "fr": {
         "search": "Recherchez YouTube pour la requ\u00eate fournie",
@@ -1136,7 +1151,10 @@
         "Clear": "Nettoyer",
         "options": "Modifier les options du bot",
         "Bot is not connected to this guild -> Disabled": "Le bot n&#39;est pas connect\u00e9 \u00e0 cette guilde -&gt; D\u00e9sactiv\u00e9",
-        "Edited options successfully!": "Options modifi\u00e9es avec succ\u00e8s\u00a0!"
+        "Edited options successfully!": "Options modifi\u00e9es avec succ\u00e8s\u00a0!",
+        "Time": "Temps",
+        "Chapter": "Chapitre",
+        "Duplicate": "Dupliquer"
     },
     "it": {
         "search": "Cerca YouTube per la query fornita",
@@ -1326,7 +1344,10 @@
         "Clear": "Mettere in ordine",
         "options": "Modifica le opzioni del bot",
         "Bot is not connected to this guild -> Disabled": "Il bot non \u00e8 connesso a questa gilda -&gt; Disabilitato",
-        "Edited options successfully!": "Opzioni modificate con successo!"
+        "Edited options successfully!": "Opzioni modificate con successo!",
+        "Time": "Tempo",
+        "Chapter": "Capitolo",
+        "Duplicate": "Duplicare"
     },
     "ja": {
         "search": "YouTube\u3092\u691c\u7d22\u3057\u3066\u304f\u3060\u3055\u3044",
@@ -1516,7 +1537,10 @@
         "Clear": "\u7247\u4ed8\u3051\u308b",
         "options": "\u30dc\u30c3\u30c8\u30aa\u30d7\u30b7\u30e7\u30f3\u3092\u7de8\u96c6\u3059\u308b",
         "Bot is not connected to this guild -> Disabled": "\u30dc\u30c3\u30c8\u306f\u3053\u306e\u30ae\u30eb\u30c9\u306b\u63a5\u7d9a\u3055\u308c\u3066\u3044\u307e\u305b\u3093 -&gt; \u7121\u52b9\u306b\u306a\u3063\u3066\u3044\u307e\u3059",
-        "Edited options successfully!": "\u30aa\u30d7\u30b7\u30e7\u30f3\u304c\u6b63\u5e38\u306b\u7de8\u96c6\u3055\u308c\u307e\u3057\u305f\u3002"
+        "Edited options successfully!": "\u30aa\u30d7\u30b7\u30e7\u30f3\u304c\u6b63\u5e38\u306b\u7de8\u96c6\u3055\u308c\u307e\u3057\u305f\u3002",
+        "Time": "\u6642\u9593",
+        "Chapter": "\u7ae0",
+        "Duplicate": "\u8907\u88fd"
     },
     "ko": {
         "search": "\uc81c\uacf5\ub41c \ucffc\ub9ac\ub97c \uac80\uc0c9\ud558\uc2ed\uc2dc\uc624",
@@ -1706,7 +1730,10 @@
         "Clear": "\uc815\ub9ac",
         "options": "\ubd07 \uc635\uc158 \ud3b8\uc9d1",
         "Bot is not connected to this guild -> Disabled": "\uc774 \uae38\ub4dc\uc5d0 \ubd07\uc774 \uc5f0\uacb0\ub418\uc5b4 \uc788\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4 -&gt; \ube44\ud65c\uc131\ud654\ub428",
-        "Edited options successfully!": "\uc635\uc158\uc744 \uc131\uacf5\uc801\uc73c\ub85c \ud3b8\uc9d1\ud588\uc2b5\ub2c8\ub2e4!"
+        "Edited options successfully!": "\uc635\uc158\uc744 \uc131\uacf5\uc801\uc73c\ub85c \ud3b8\uc9d1\ud588\uc2b5\ub2c8\ub2e4!",
+        "Time": "\uc2dc\uac04",
+        "Chapter": "\uc7a5",
+        "Duplicate": "\ubcf5\uc81c\ud558\ub2e4"
     },
     "la": {
         "search": "Search YouTube pro provisum query",
@@ -1896,7 +1923,10 @@
         "Clear": "Videlicet sursum",
         "options": "Recensere bot options",
         "Bot is not connected to this guild -> Disabled": "Bot non coniungitur huic sodalitio -&gt; Disabled",
-        "Edited options successfully!": "Bene feliciter edidit!"
+        "Edited options successfully!": "Bene feliciter edidit!",
+        "Time": "Tempus",
+        "Chapter": "Caput",
+        "Duplicate": "Duplicare"
     },
     "zh": {
         "search": "\u641c\u7d22YouTube\u63d0\u4f9b\u7684\u67e5\u8be2",
@@ -2086,7 +2116,10 @@
         "Clear": "\u6536\u62fe",
         "options": "\u7f16\u8f91\u673a\u5668\u4eba\u9009\u9879",
         "Bot is not connected to this guild -> Disabled": "Bot \u672a\u8fde\u63a5\u5230\u8be5\u516c\u4f1a -&gt; \u5df2\u7981\u7528",
-        "Edited options successfully!": "\u7f16\u8f91\u9009\u9879\u6210\u529f\uff01"
+        "Edited options successfully!": "\u7f16\u8f91\u9009\u9879\u6210\u529f\uff01",
+        "Time": "\u65f6\u95f4",
+        "Chapter": "\u7ae0\u8282",
+        "Duplicate": "\u590d\u5236"
     },
     "nl": {
         "search": "Zoek YouTube naar de verstrekte query",
@@ -2276,7 +2309,10 @@
         "Clear": "Opruimen",
         "options": "Botopties bewerken",
         "Bot is not connected to this guild -> Disabled": "Bot is niet verbonden met deze gilde -&gt; Uitgeschakeld",
-        "Edited options successfully!": "Bewerkte opties succesvol!"
+        "Edited options successfully!": "Bewerkte opties succesvol!",
+        "Time": "Tijd",
+        "Chapter": "Hoofdstuk",
+        "Duplicate": "Duplicaat"
     },
     "pl": {
         "search": "Wyszukaj YouTube, aby uzyska\u0107 dostarczone zapytanie",
@@ -2466,7 +2502,10 @@
         "Clear": "Oczy\u015bci\u0107",
         "options": "Edytuj opcje bota",
         "Bot is not connected to this guild -> Disabled": "Bot nie jest po\u0142\u0105czony z t\u0105 gildi\u0105 -&gt; Wy\u0142\u0105czony",
-        "Edited options successfully!": "Edytowano opcje pomy\u015blnie!"
+        "Edited options successfully!": "Edytowano opcje pomy\u015blnie!",
+        "Time": "Czas",
+        "Chapter": "Rozdzia\u0142",
+        "Duplicate": "Duplikowa\u0107"
     },
     "pt": {
         "search": "Pesquise o YouTube pela consulta fornecida",
@@ -2656,7 +2695,10 @@
         "Clear": "Limpar",
         "options": "Editar op\u00e7\u00f5es de bot",
         "Bot is not connected to this guild -> Disabled": "O bot n\u00e3o est\u00e1 conectado a esta guilda -&gt; Desativado",
-        "Edited options successfully!": "Op\u00e7\u00f5es editadas com sucesso!"
+        "Edited options successfully!": "Op\u00e7\u00f5es editadas com sucesso!",
+        "Time": "Tempo",
+        "Chapter": "Cap\u00edtulo",
+        "Duplicate": "Duplicado"
     },
     "ru": {
         "search": "\u041f\u043e\u0438\u0441\u043a YouTube \u0434\u043b\u044f \u043f\u0440\u0435\u0434\u043e\u0441\u0442\u0430\u0432\u043b\u0435\u043d\u043d\u043e\u0433\u043e \u0437\u0430\u043f\u0440\u043e\u0441\u0430",
@@ -2846,7 +2888,10 @@
         "Clear": "\u041f\u0440\u043e\u044f\u0441\u043d\u044f\u0442\u044c\u0441\u044f",
         "options": "\u0418\u0437\u043c\u0435\u043d\u0438\u0442\u044c \u043f\u0430\u0440\u0430\u043c\u0435\u0442\u0440\u044b \u0431\u043e\u0442\u0430",
         "Bot is not connected to this guild -> Disabled": "\u0411\u043e\u0442 \u043d\u0435 \u043f\u043e\u0434\u043a\u043b\u044e\u0447\u0435\u043d \u043a \u044d\u0442\u043e\u0439 \u0433\u0438\u043b\u044c\u0434\u0438\u0438 -&gt; \u041e\u0442\u043a\u043b\u044e\u0447\u0435\u043d\u043e",
-        "Edited options successfully!": "\u041f\u0430\u0440\u0430\u043c\u0435\u0442\u0440\u044b \u0443\u0441\u043f\u0435\u0448\u043d\u043e \u0438\u0437\u043c\u0435\u043d\u0435\u043d\u044b!"
+        "Edited options successfully!": "\u041f\u0430\u0440\u0430\u043c\u0435\u0442\u0440\u044b \u0443\u0441\u043f\u0435\u0448\u043d\u043e \u0438\u0437\u043c\u0435\u043d\u0435\u043d\u044b!",
+        "Time": "\u0412\u0440\u0435\u043c\u044f",
+        "Chapter": "\u0413\u043b\u0430\u0432\u0430",
+        "Duplicate": "\u0414\u0443\u0431\u043b\u0438\u0440\u043e\u0432\u0430\u0442\u044c"
     },
     "sv": {
         "search": "S\u00f6k YouTube efter den medf\u00f6ljande fr\u00e5gan",
@@ -3036,7 +3081,10 @@
         "Clear": "Reda upp",
         "options": "Redigera botalternativ",
         "Bot is not connected to this guild -> Disabled": "Bot \u00e4r inte ansluten till denna guild -&gt; Inaktiverad",
-        "Edited options successfully!": "Redigerade alternativ framg\u00e5ngsrikt!"
+        "Edited options successfully!": "Redigerade alternativ framg\u00e5ngsrikt!",
+        "Time": "Tid",
+        "Chapter": "Kapitel",
+        "Duplicate": "Duplicera"
     },
     "tr": {
         "search": "Verilen sorgu i\u00e7in youtube aray\u0131n",
@@ -3226,6 +3274,9 @@
         "Clear": "temizle",
         "options": "bot se\u00e7eneklerini d\u00fczenle",
         "Bot is not connected to this guild -> Disabled": "Bot bu loncaya ba\u011fl\u0131 de\u011fil -&gt; Devre d\u0131\u015f\u0131",
-        "Edited options successfully!": "D\u00fczenlenen se\u00e7enekler ba\u015far\u0131yla!"
+        "Edited options successfully!": "D\u00fczenlenen se\u00e7enekler ba\u015far\u0131yla!",
+        "Time": "Zaman",
+        "Chapter": "B\u00f6l\u00fcm",
+        "Duplicate": "Kopyalamak"
     }
 }

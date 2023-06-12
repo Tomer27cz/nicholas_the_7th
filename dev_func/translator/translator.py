@@ -67,7 +67,7 @@ def translate_text_google_cloud(text, target, source='en'):
 #     return trans_result
 
 
-with open(os.path.dirname(__file__) + '/../../src/languages.json') as f:
+with open(os.path.dirname(__file__) + '/../../db/languages.json') as f:
     x = json.load(f)
 
 languages = x.keys()
@@ -90,7 +90,7 @@ for lang in languages:
 print("----------------------------------------------")
 print("Writing to file...")
 
-with open(os.path.dirname(__file__) + '/../../src/languages.json', 'w') as f:
+with open(os.path.dirname(__file__) + '/../../db/languages.json', 'w') as f:
     f.write(json.dumps(x, indent=4))
 
 print("----------------------------------------------")

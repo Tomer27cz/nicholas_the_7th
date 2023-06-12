@@ -90,7 +90,7 @@
     </div>
   </div>
 
-  <!-- Now and Last Playing -->
+  <!-- Now and History -->
   <div class="accordion" id="accordionPanelsStayOpenExample">
     <div class="accordion-item">
       <div class="accordion-header">
@@ -117,8 +117,8 @@
                 </div>
                 <div class="q-item3 q-items-center">
                   <p class="q-text q-1">{{ tg(gi, 'From/To') }}</p>
-                  <p class="q-text q-2">{{ struct_to_time(track.played_at, first='time') }}</p>
-                  <p class="q-text q-2">{{ struct_to_time(track.stopped_at, first='time') }}</p>
+                  <p class="q-text q-2">{{ struct_to_time(track.played_duration[0]['start'], first='time') }}</p>
+                  <p class="q-text q-2">{{ struct_to_time(track.played_duration[-1]['end'], first='time') }}</p>
                 </div>
                 <div class="q-item2 q-items-center">
                   <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer"
@@ -146,6 +146,9 @@
                       <li>
                         <button class="dropdown-item" type="submit" name="nextup_btn"
                                 value="h{{ guild.history.index(track) }}">{{ tg(gi, 'Play next') }}</button>
+                      </li>
+                      <li>
+                        <hr class="dropdown-divider">
                       </li>
                       <li>
                         <button class="dropdown-item" type="button" data-bs-toggle="modal"
@@ -192,7 +195,7 @@
               </div>
               <div class="q-item3 q-items-center">
                 <p class="q-text q-1">{{ tg(gi, 'Played at') }}</p>
-                <p class="q-text q-2">{{ struct_to_time(guild.now_playing.played_at, first='time') }}</p>
+                <p class="q-text q-2">{{ struct_to_time(guild.now_playing.played_duration[0]['start'], first='time') }}</p>
               </div>
               <div class="q-item2 q-items-center">
                 <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer"
@@ -220,12 +223,39 @@
                               value="np">{{ tg(gi, 'Play next') }}</button>
                     </li>
                     <li>
+                      <hr class="dropdown-divider">
+                    </li>
+                    <li>
                       <button class="dropdown-item" type="button" data-bs-toggle="modal"
                               data-bs-target=#videoModal_np>{{ tg(gi, 'Info') }}</button>
                     </li>
                   </ul>
                 </form>
               </div>
+            </div>
+            <div>
+              {% if guild.now_playing.chapters %}
+                <div class="p-div-m">
+                  {% for chapter in guild.now_playing.chapters %}
+                    <div class="vr"></div>
+                    <div class="p-bar p-ch"
+                         style="width: {{ ((chapter['end_time'] - chapter['start_time']) / int(guild.now_playing.duration))*100 }}%">
+                      <div class="p-text">{{ chapter['title'] }} ({{ convert_duration(chapter['start_time']) }} - {{ convert_duration(chapter['end_time']) }})</div>
+                    </div>
+                  {% endfor %}
+                </div>
+              {% endif %}
+              {% if check_isdigit(guild.now_playing.duration) %}
+                <div class="p-div">
+                  <div class="p-bar"
+                       style="width: {{ (video_time_played(guild.now_playing) / int(guild.now_playing.duration))*100 }}%"
+                       id="np_progress"></div>
+                </div>
+              {% else %}
+                <div class="p-div">
+                  <div class="p-bar" style="width: 100%"></div>
+                </div>
+              {% endif %}
             </div>
           {% else %}
             <div class="div-align">
@@ -241,25 +271,8 @@
   <form action="" method="POST" onsubmit="setScroll();">
     <input type="hidden" name="scroll" value="0" id="scrollPos3">
     <div class="q-div div-con">
-      <div class="q-item1">
-        <div class="e-div">
-          <button class="btn btn-dark e-item1" type="button" data-bs-toggle="modal" data-bs-target="#joinModal"
-                  title="{{ tg(gi, 'Join Channel') }}" {% if not guild.connected %}disabled{% endif %}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#198754" viewBox="0 0 16 16">
-              <path d="M14 2H16V3H14V5H13V3H11V2H13V0H14V2Z"></path>
-              <path
-                  d="M6.5 8.00667C7.88 8.00667 9 6.88667 9 5.50667C9 4.12667 7.88 3.00667 6.5 3.00667C5.12 3.00667 4 4.12667 4 5.50667C4 6.88667 5.12 8.00667 6.5 8.00667Z"></path>
-              <path d="M6.5 8.34C3.26 8.34 1 9.98666 1 12.34V13.0067H12V12.34C12 9.98 9.74 8.34 6.5 8.34Z"></path>
-            </svg>
-          </button>
-          <button class="btn btn-dark e-item1" type="submit" name="disconnect_btn" title="{{ tg(gi, 'Disconnect') }}"
-                  {% if not guild.connected %}disabled{% endif %}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#dc3545" viewBox="0 0 24 24">
-              <path
-                  d="M21.1169 1.11603L22.8839 2.88403L19.7679 6.00003L22.8839 9.11603L21.1169 10.884L17.9999 7.76803L14.8839 10.884L13.1169 9.11603L16.2329 6.00003L13.1169 2.88403L14.8839 1.11603L17.9999 4.23203L21.1169 1.11603ZM18 22H13C6.925 22 2 17.075 2 11V6C2 5.447 2.448 5 3 5H7C7.553 5 8 5.447 8 6V10C8 10.553 7.553 11 7 11H6C6.063 14.938 9 18 13 18V17C13 16.447 13.447 16 14 16H18C18.553 16 19 16.447 19 17V21C19 21.553 18.553 22 18 22Z"></path>
-            </svg>
-          </button>
-        </div>
+      <div class="q-item0 div-align-center">
+        <h4><span id="progress_time">0:00</span> / {% if guild.now_playing %}{{ convert_duration(guild.now_playing.duration) }}{% else %}0:00{% endif %}</h4>
       </div>
       <div class="q-item1">
         <div class="e-div">
@@ -293,20 +306,43 @@
           </button>
         </div>
       </div>
+      <div class="q-item1"></div>
       <div class="q-item1">
-        <div class="d-flex">
-          <div class="btn-m">
-            <input type="number" class="form-c form-control btn-m flex-fill" name="volumeInput" min="0" max="200"
-                   value="100" oninput="this.form.volumeRange.value=this.value"
-                   {% if not guild.connected %}disabled{% endif %}>
-          </div>
-          <input type="range" class="form-r form-range btn-m" name="volumeRange" min="0" max="200" value="100"
-                 oninput="this.form.volumeInput.value=this.value" {% if not guild.connected %}disabled{% endif %}>
-          <button class="btn btn-outline btn-primary btn-sm btn-m flex-fill" type="submit" name="volume_btn"
-                  title="{{ tg(gi, 'Set Volume') }}" {% if not guild.connected %}disabled{% endif %}>Set
+        <div class="e-div">
+          <button class="btn btn-dark e-item1" type="button" data-bs-toggle="modal" data-bs-target="#joinModal"
+                  title="{{ tg(gi, 'Join Channel') }}" {% if not guild.connected %}disabled{% endif %}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#198754" viewBox="0 0 16 16">
+              <path d="M14 2H16V3H14V5H13V3H11V2H13V0H14V2Z"></path>
+              <path
+                  d="M6.5 8.00667C7.88 8.00667 9 6.88667 9 5.50667C9 4.12667 7.88 3.00667 6.5 3.00667C5.12 3.00667 4 4.12667 4 5.50667C4 6.88667 5.12 8.00667 6.5 8.00667Z"></path>
+              <path d="M6.5 8.34C3.26 8.34 1 9.98666 1 12.34V13.0067H12V12.34C12 9.98 9.74 8.34 6.5 8.34Z"></path>
+            </svg>
+          </button>
+          <button class="btn btn-dark e-item1" type="submit" name="disconnect_btn" title="{{ tg(gi, 'Disconnect') }}"
+                  {% if not guild.connected %}disabled{% endif %}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#dc3545" viewBox="0 0 24 24">
+              <path
+                  d="M21.1169 1.11603L22.8839 2.88403L19.7679 6.00003L22.8839 9.11603L21.1169 10.884L17.9999 7.76803L14.8839 10.884L13.1169 9.11603L16.2329 6.00003L13.1169 2.88403L14.8839 1.11603L17.9999 4.23203L21.1169 1.11603ZM18 22H13C6.925 22 2 17.075 2 11V6C2 5.447 2.448 5 3 5H7C7.553 5 8 5.447 8 6V10C8 10.553 7.553 11 7 11H6C6.063 14.938 9 18 13 18V17C13 16.447 13.447 16 14 16H18C18.553 16 19 16.447 19 17V21C19 21.553 18.553 22 18 22Z"></path>
+            </svg>
           </button>
         </div>
       </div>
+      {% if admin == True %}
+        <div class="q-item1">
+          <div class="d-flex">
+            <div class="btn-m">
+              <input type="number" class="form-c form-control btn-m flex-fill" name="volumeInput" min="0" max="200"
+                     value="100" oninput="this.form.volumeRange.value=this.value"
+                     {% if not guild.connected %}disabled{% endif %}>
+            </div>
+            <input type="range" class="form-r form-range btn-m" name="volumeRange" min="0" max="200" value="100"
+                   oninput="this.form.volumeInput.value=this.value" {% if not guild.connected %}disabled{% endif %}>
+            <button class="btn btn-outline btn-primary btn-sm btn-m flex-fill" type="submit" name="volume_btn"
+                    title="{{ tg(gi, 'Set Volume') }}" {% if not guild.connected %}disabled{% endif %}>Set
+            </button>
+          </div>
+        </div>
+      {% endif %}
     </div>
   </form>
 
@@ -392,6 +428,16 @@
                   <li>
                     <button class="dropdown-item" type="submit" name="bottom_btn"
                             value={{ guild.queue.index(track) }}>{{ tg(gi, 'Move to Bottom') }}</button>
+                  </li>
+                  <li>
+                    <hr class="dropdown-divider">
+                  </li>
+                  <li>
+                    <button class="dropdown-item" type="submit" name="duplicate_btn"
+                            value={{ guild.queue.index(track) }}>{{ tg(gi, 'Duplicate') }}</button>
+                  </li>
+                  <li>
+                    <hr class="dropdown-divider">
                   </li>
                   <li>
                     <button class="dropdown-item" type="button" data-bs-toggle="modal"
@@ -538,14 +584,14 @@
     {% for track in guild.history %}
       <div class="modal fade" id="videoEditModal_h{{ guild.history.index(track) }}" data-bs-keyboard="false"
            tabindex="-1" aria-labelledby="videoEditLabel_h{{ guild.history.index(track) }}" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl r-modal">
           <div class="modal-content">
             <div class="modal-header">
               <h1 class="modal-title fs-5"
                   id="videoEditLabel{{ guild.history.index(track) }}">{{ tg(gi, 'Video History') }} {{ guild.history.index(track) }} {{ tg(gi, 'Edit') }}</h1>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="info-modal">
+            <div class="info-modal modal-body">
               <br>
               <form method="POST" onsubmit="setScroll();">
                 <input type="hidden" name="scroll" value="0" id="scrollPos9">
@@ -584,7 +630,8 @@
                 {% for key, value in guild.now_playing.__dict__.items() %}
                   <div class="e-div">
                     <label for="np_{{ key }}" class="e-label">{{ key }}</label>
-                    <input type="text" id="np_{{ key }}" name="{{ key }}" value="{{ value }}" class="e-input e-input-color">
+                    <input type="text" id="np_{{ key }}" name="{{ key }}" value="{{ value }}"
+                           class="e-input e-input-color">
                   </div>
                 {% endfor %}
                 <div class="e-div">
@@ -648,17 +695,19 @@
 
             <div class="e-div">
               <label for="volume" class="e-label">volume (%)</label>
-              <input type="number" id="volume" name="volume" value="100" min="0" max="200" class="e-input e-input-color">
+              <input type="number" id="volume" name="volume" value="{{ int(guild.options.volume * 100) }}" min="0" max="200"
+                     class="e-input e-input-color">
             </div>
 
             <div class="e-div">
               <label for="buffer" class="e-label">buffer (s)</label>
-              <input type="number" id="buffer" name="buffer" value="600" min="1" max="1800" class="e-input e-input-color">
+              <input type="number" id="buffer" name="buffer" value="{{ guild.options.buffer }}" min="1" max="1800"
+                     class="e-input e-input-color">
             </div>
 
             <div class="e-div">
               <label for="history_length" class="e-label">history_length</label>
-              <input type="number" id="history_length" name="history_length" value="10" min="1" max="100"
+              <input type="number" id="history_length" name="history_length" value="{{ guild.options.history_length }}" min="1" max="100"
                      class="e-input e-input-color">
             </div>
 
@@ -775,51 +824,157 @@
   </div>
 
   <script type="text/javascript" charset="utf-8">
-      function httpGet(theUrl) {
-          let xmlHttp = new XMLHttpRequest();
-          xmlHttp.open("GET", theUrl, false); // false for synchronous request
-          xmlHttp.send(null);
-          return xmlHttp.responseText;
+  function convertSeconds(secs) {
+      let hours = Math.floor(secs / 3600)
+      let minutes = Math.floor((secs % 3600) / 60)
+      let seconds = secs % 60
+
+      function pad(num, totalLength) {
+          return String(num).padStart(totalLength, '0');
       }
 
-      function getUpdate() {
-          let url = 'http://' + document.domain + ':' + location.port + '/guild/{{guild.data.id}}/update';
-          let response = httpGet(url);
-          if (response === "True") {
-              location.reload();
+      if (hours) {
+          return `${hours}:${pad(minutes, 2)}:${pad(seconds, 2)}`
+      } else {
+          return `${minutes}:${pad(seconds, 2)}`
+      }
+  }
+
+  {% if guild.now_playing %}
+
+  function getSecsPlayed(played_duration) {
+      let len_played_duration = played_duration.length;
+      if (len_played_duration === 0){
+          return 0.0;
+      }
+      if (len_played_duration < 2){
+          let start = played_duration[0]['start'];
+          let end = played_duration[0]['end'];
+          if (start === null){
+              return 0.0;
+          }
+          if (end === null){
+              return Math.round(Date.now() / 1000) - start;
+          }
+          return end - start;
+      }
+
+      let total = 0.0;
+      for (let i = 0; i < len_played_duration; i++) {
+          let segment = played_duration[i];
+          let start = segment['start'];
+          let end = segment['end'];
+          if (start === null){
+              return 0.0;
+          }
+          if (end === null){
+              total += (Math.round(Date.now() / 1000) - start);
+          } else {
+              total += (end - start);
+          }
+      }
+      return total;
+  }
+
+  function npProgress() {
+      console.log("npProgress");
+      {% if check_isdigit(guild.now_playing.duration) %}
+      let duration = {{ guild.now_playing.duration }};
+      {% else %}
+      let duration = null;
+      {% endif %}
+
+      let played_duration = {{ pd|safe }};
+      let bar_elem = document.getElementById("np_progress");
+      let text_elem = document.getElementById("progress_time");
+
+      if (duration != null) {
+          let sec_remaining = duration - getSecsPlayed(played_duration);
+
+          if (Math.sign(sec_remaining) === -1) {
+              bar_elem.style.width = 100 + '%';
+              text_elem.innerText = convertSeconds(getSecsPlayed(played_duration));
           }
       }
 
-      function submitRadioForm(id) {
-          let form = document.getElementById('RadioForm');
-          let delayInMilliseconds = 100; //0.1 second
+      let inter = setInterval(addProgress, 1000);
 
-          setTimeout(function () {
-              form.submit();
-          }, delayInMilliseconds);
+      function addProgress() {
+          text_elem.innerText = convertSeconds(getSecsPlayed(played_duration));
+
+          if (duration != null) {
+              let sec_remaining_add = duration - getSecsPlayed(played_duration);
+              let percentage = 100 - (sec_remaining_add / duration) * 100;
+
+              bar_elem.style.width = percentage + '%';
+
+              if (percentage === 100 || sec_remaining === 1 || sec_remaining === 0) {
+                  clearInterval(inter);
+                  setTimeout(function () {
+                      location.reload();
+                  }, 3000);
+              }
+          }
+      }
+  }
+
+  npProgress();
+  {% endif %}
+
+  function httpGet(theUrl) {
+      let xmlHttp = new XMLHttpRequest();
+      xmlHttp.open("GET", theUrl, false); // false for synchronous request
+      xmlHttp.send(null);
+      return xmlHttp.responseText;
+  }
+
+  function getUpdate() {
+      let url = 'http://' + document.domain + ':' + location.port + '/guild/{{guild.data.id}}/update';
+      let response = httpGet(url);
+      if (response === "True") {
+          location.reload();
+      }
+  }
+
+  function submitRadioForm(id) {
+      let form = document.getElementById('RadioForm');
+      let delayInMilliseconds = 100; //0.1 second
+
+      setTimeout(function () {
+          form.submit();
+      }, delayInMilliseconds);
+  }
+
+  function setScroll() {
+      let elements = ['scrollPos1', 'scrollPos2', 'scrollPos3', 'scrollPos4', 'scrollPos5', 'scrollPos6', 'scrollPos7', 'scrollPos8', 'scrollPos9', 'scrollPos10', 'scrollPos11', 'scrollPos12'];
+      for (let i = 0; i < elements.length; i++) {
+          let elem = document.getElementById(elements[i]);
+          if (elem) {
+              elem.value = window.scrollY;
+          }
       }
 
-      function setScroll() {
-          document.getElementById("scrollPos1").value = window.scrollY;
-          document.getElementById("scrollPos2").value = window.scrollY;
-          document.getElementById("scrollPos3").value = window.scrollY;
-          document.getElementById("scrollPos4").value = window.scrollY;
-          document.getElementById("scrollPos5").value = window.scrollY;
-          document.getElementById("scrollPos6").value = window.scrollY;
-          document.getElementById("scrollPos7").value = window.scrollY;
-          document.getElementById("scrollPos8").value = window.scrollY;
-          document.getElementById("scrollPos9").value = window.scrollY;
-          document.getElementById("scrollPos10").value = window.scrollY;
-          document.getElementById("scrollPos11").value = window.scrollY;
-          document.getElementById("scrollPos12").value = window.scrollY;
-      }
+      onSubmitDisable()
+  }
 
-      function scrollNow(scroll_pos) {
-          window.scrollTo({top: scroll_pos, left: 0, behavior: "instant"});
-      }
+  function onSubmitDisable() {
+      setTimeout(disableButtons, 10);
 
-      scrollNow({{scroll_position}})
-      setInterval(getUpdate, 15000)
+      function disableButtons() {
+          console.log("disable buttons")
+          let buttons = document.querySelectorAll(".btn");
+          for (let i = 0; i < buttons.length; i++) {
+              buttons[i].setAttribute('disabled', '');
+          }
+      }
+  }
+
+  function scrollNow(scroll_pos) {
+      window.scrollTo({top: scroll_pos, left: 0, behavior: "instant"});
+  }
+
+  scrollNow({{scroll_position}})
+  setInterval(getUpdate, 15000)
   </script>
 
 {% endblock %}

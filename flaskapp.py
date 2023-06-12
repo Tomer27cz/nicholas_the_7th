@@ -16,14 +16,14 @@ from oauth import Oauth
 
 # --------------------------------------------- LOAD DATA --------------------------------------------- #
 
-with open(f'{config.PARENT_DIR}src/radio.json', 'r', encoding='utf-8') as file:
+with open(f'{config.PARENT_DIR}db/radio.json', 'r', encoding='utf-8') as file:
     radio_dict = json.load(file)
 
-with open(f'{config.PARENT_DIR}src/languages.json', 'r', encoding='utf-8') as file:
+with open(f'{config.PARENT_DIR}db/languages.json', 'r', encoding='utf-8') as file:
     languages_dict = json.load(file)
     text = languages_dict['en']
 
-with open(f'{config.PARENT_DIR}src/other.json', 'r', encoding='utf-8') as file:
+with open(f'{config.PARENT_DIR}db/other.json', 'r', encoding='utf-8') as file:
     other = json.load(file)
     react_dict = other['reactions']
     prefix = other['prefix']
@@ -140,8 +140,7 @@ class VideoClass:
         self.class_type = None
         self.author = None
         self.created_at = None
-        self.played_at = None
-        self.stopped_at = None
+        self.played_duration = None
         self.url = None
         self.title = None
         self.picture = None
@@ -151,6 +150,7 @@ class VideoClass:
         self.radio_name = None
         self.radio_website = None
         self.local_number = None
+        self.chapters = None
 
     def renew(self):
         if self.class_type == 'Radio':
@@ -160,6 +160,29 @@ class VideoClass:
                 self.channel_name = response[1]
                 self.title = response[2]
                 self.duration = response[3]
+
+    def current_chapter(self):
+        if self.played_duration is None:
+            return None
+        if self.chapters is None:
+            return None
+        if self.played_duration[-1]['end'] is not None:
+            return None
+
+        time_from_play = int(video_time_played(self))
+
+        try:
+            duration = int(self.duration)
+            if time_from_play > duration:
+                return None
+        except (ValueError, TypeError):
+            return None
+
+        # {'start_time': 0.0, 'title': '1. Omen', 'end_time': 127.0}, {'start_time': 127.0, 'title': '2. The Night Unfurls', 'end_time': 253.0}
+
+        for chapter in self.chapters:
+            if chapter['start_time'] < time_from_play < chapter['end_time']:
+                return chapter['title']
 
 class DiscordUser:
     def __init__(self):
@@ -270,26 +293,20 @@ def convert_duration(duration) -> str or None:
     :param duration: duration in sec
     :return: str - duration in HH:MM:SS format
     """
+    if duration is None or duration == 0 or duration == '0':
+        return 'Stream'
+
     try:
-        if duration is None or duration == 0 or duration == '0':
-            return 'Stream'
-        seconds = int(duration) % (24 * 3600)
-        hour = seconds // 3600
-        seconds %= 3600
-        minutes = seconds // 60
-        seconds %= 60
-        if hour:
-            if not minutes:
-                minutes = 00
-            if not seconds:
-                seconds = 00
-            return "%d:%02d:%02d" % (hour, minutes, seconds)
-        if not hour:
-            if not minutes:
-                minutes = 00
-            if not seconds:
-                seconds = 00
-            return "%02d:%02d" % (minutes, seconds)
+        duration = int(duration)
+
+        hours = duration // 3600
+        minutes = (duration % 3600) // 60
+        seconds = duration % 60
+
+        if hours:
+            return f'{hours}:{minutes:02}:{seconds:02}'
+        else:
+            return f'{minutes}:{seconds:02}'
     except (ValueError, TypeError):
         return str(duration)
 
@@ -311,16 +328,59 @@ def tg(guild_id: int, content: str) -> str:
         to_return = content
     return to_return
 
+def video_time_played(video: VideoClass) -> float:
+    len_played_duration = len(video.played_duration)
+    if len_played_duration == 0:
+        return 0.0
+    if len_played_duration < 2:
+        start = video.played_duration[0]['start']
+        end = video.played_duration[0]['end']
+        if start is None:
+            return 0.0
+
+        if end is None:
+            return int(time()) - start
+
+        return end - start
+
+    total = 0.0
+    for segment in video.played_duration:
+        start = segment['start']
+        end = segment['end']
+        if start is None:
+            return 0.0
+
+        if end is None:
+            total += int(time()) - start
+        else:
+            total += end - start
+
+    return total
+
+def check_isdigit(var) -> bool:
+    try:
+        int(var)
+        return True
+    except (ValueError, TypeError):
+        return False
+
+
 # --------------------------------------------- FILE FUNCTIONS --------------------------------------------- #
 
-def getReadableByteSize(num, suffix='B') -> str:
+def getReadableByteSize(num, suffix='B', relPath=None) -> str:
+    if num is None or num == 0:
+        try:
+            num = getFolderSize(relPath)
+        except (FileNotFoundError, TypeError, PermissionError):
+            pass
+
     for unit in ['', 'K', 'M', 'G', 'T', 'P', 'E', 'Z']:
         if abs(num) < 1024.0:
             return "%3.1f%s%s" % (num, unit, suffix)
         num /= 1024.0
     return "%.1f%s%s" % (num, 'Y', suffix)
 
-def getIconClassForFilename(fName):
+def getIconClassForFilename(fName) -> str:
     fileExt = Path(fName).suffix
     fileExt = fileExt[1:] if fileExt.startswith(".") else fileExt
     fileTypes = ["aac", "ai", "bmp", "cs", "css", "csv", "doc", "docx", "exe", "gif", "heic", "html", "java", "jpg",
@@ -329,6 +389,29 @@ def getIconClassForFilename(fName):
                  "svg", "tiff", "tsx", "ttf", "txt", "wav", "woff", "xlsx", "xml", "yml"]
     fileIconClass = f"bi bi-filetype-{fileExt}" if fileExt in fileTypes else "bi bi-file-earmark"
     return fileIconClass
+
+def getFolderSize(relPath) -> int:
+    totalSize = 0
+    for dirpath, dirnames, filenames in os.walk(relPath):
+        for f in filenames:
+            fp = os.path.join(dirpath, f)
+            totalSize += os.path.getsize(fp)
+    return totalSize
+
+def get_guild_text_channels_file(guild_id: int):
+    path = f'{config.PARENT_DIR}db/guilds/{guild_id}/channels.json'
+    if os.path.exists(path):
+        with open(path, 'r') as f:
+            data = json.load(f)
+
+        if data:
+            channel_list = []
+            for channel_id, channel_data in data.items():
+                channel_class = DiscordChannel()
+                channel_class.__dict__ = channel_data
+                channel_list.append(channel_class)
+            return channel_list
+    return None
 
 # --------------------------------------------- LOG --------------------------------------------- #
 
@@ -555,7 +638,10 @@ def get_guild_text_channels(guild_id: int):
         'guild_id': guild_id
     }
     # send argument dictionary
-    return send_arg(arg_dict)
+    response = send_arg(arg_dict)
+    if response is None:
+        return get_guild_text_channels_file(guild_id)
+    return response
 
 def get_guild_members(guild_id: int):
     """
@@ -631,6 +717,22 @@ def get_language(guild_id: int):
     }
     # send argument dictionary
     return send_arg(arg_dict)
+
+def get_channel_content(guild_id: int, channel_id: int):
+    try:
+        path = f'db/guilds/{guild_id}/{channel_id}'
+        if not os.path.exists(path):
+            return None
+
+        files = os.listdir(path)
+        if len(files) == 0:
+            return None
+
+        path = f'{path}/{files[0]}'
+        with open(path, 'r') as f:
+            return f.read()
+    except (FileNotFoundError, IndexError, PermissionError):
+        return None
 
 # user specific data
 
@@ -844,6 +946,9 @@ async def guild_page(guild_id, key):
         if 'bottom_btn' in keys:
             log(web_data, 'bottom', [request.form['bottom_btn']], log_type='web', author=web_data.author)
             response = execute_function('web_bottom', web_data=web_data, number=request.form['bottom_btn'])
+        if 'duplicate_btn' in keys:
+            log(web_data, 'duplicate', [request.form['duplicate_btn']], log_type='web', author=web_data.author)
+            response = execute_function('web_duplicate', web_data=web_data, number=request.form['duplicate_btn'])
 
         if 'play_btn' in keys:
             log(web_data, 'play', [], log_type='web', author=web_data.author)
@@ -898,7 +1003,7 @@ async def guild_page(guild_id, key):
         if 'volume_btn' in keys:
             log(web_data, 'volume_command_def', [request.form['volumeRange'], request.form['volumeInput']],
                 log_type='web', author=web_data.author)
-            response = execute_function('volume_command_def', web_data=web_data, volume=request.form['volumeRange'])
+            response = execute_function('volume_command_def', web_data=web_data, volume=int(request.form['volumeRange']))
 
         if 'ytURL' in keys:
             log(web_data, 'queue_command_def', [request.form['ytURL']], log_type='web', author=web_data.author)
@@ -910,7 +1015,13 @@ async def guild_page(guild_id, key):
                                         radio_name=request.form['radio-checkbox'])
 
         if 'scroll' in keys:
-            scroll_position = int(request.form['scroll'])
+            try:
+                scroll_position = int(request.form['scroll'])
+            except ValueError:
+                try:
+                    scroll_position = int(float(request.form['scroll']))
+                except ValueError:
+                    scroll_position = 0
 
         if response:
             if not response.response:
@@ -932,11 +1043,17 @@ async def guild_page(guild_id, key):
     mutual_guild_ids.append(guild_object.id)
     session['mutual_guild_ids'] = mutual_guild_ids
 
+    if guild_object.now_playing:
+        pd = guild_object.now_playing.played_duration
+    else:
+        pd = [{'start': None, 'end': None}]
+
     return render_template('control/guild.html', guild=guild_object, struct_to_time=struct_to_time,
                            convert_duration=convert_duration, get_username=get_username, errors=errors,
                            messages=messages, user=user, admin=admin, volume=round(guild_object.options.volume * 100),
                            radios=list(radio_dict.values()), scroll_position=scroll_position,
-                           languages_dict=languages_dict, tg=tg, gi=int(guild_id))
+                           languages_dict=languages_dict, tg=tg, gi=int(guild_id), time=time, int=int,
+                           video_time_played=video_time_played, pd=json.dumps(pd), check_isdigit=check_isdigit)
 
 @app.route('/guild/<int:guild_id>/update')
 async def update_page(guild_id):
@@ -1064,7 +1181,7 @@ async def admin_page():
                     if file_name in ['log.log', 'data.log', 'activity.log', 'apache_error.log', 'apache_activity.log']:
                         return send_file(f'log/{file_name}', as_attachment=True)
                     else:
-                        return send_file(f'src/{file_name}', as_attachment=True)
+                        return send_file(f'db/{file_name}', as_attachment=True)
                 except Exception as e:
                     return str(e)
             if 'upload_btn' in keys:
@@ -1082,7 +1199,7 @@ async def admin_page():
                             f.save(f"log/{f.filename}")
                             messages = ['File uploaded']
                         else:
-                            f.save(f"src/{f.filename}")
+                            f.save(f"db/{f.filename}")
                             messages = ['File uploaded']
                     except Exception as e:
                         return str(e)
@@ -1153,7 +1270,7 @@ def getFiles(reqPath):
                 'fIcon': "bi bi-folder-fill" if os.path.isdir(x.path) else getIconClassForFilename(x.name),
                 'relPath': os.path.relpath(x.path, config.PARENT_DIR).replace("\\", "/"),
                 'mTime': struct_to_time(fileStat.st_mtime),
-                'size': getReadableByteSize(fileStat.st_size)}
+                'size': getReadableByteSize(num=fileStat.st_size, relPath=os.path.relpath(x.path, config.PARENT_DIR).replace("\\", "/"))}
 
     fileObjs = [fObjFromScan(x) for x in os.scandir(absPath)]
 
@@ -1351,6 +1468,59 @@ async def admin_guild_invites(guild_id):
     return render_template('admin/data/guild_invites.html', user=user, invites=guild_invites,
                            guild_object=guild_object, title='Invites', type=type, DiscordUser=DiscordUser)
 
+# Admin Chat
+@app.route('/admin/guild/<int:guild_id>/chat/', defaults={'channel_id': 0}, methods=['GET', 'POST'])
+@app.route('/admin/guild/<int:guild_id>/chat/<int:channel_id>', methods=['GET', 'POST'])
+def admin_chat(guild_id, channel_id):
+    log(request.remote_addr, f'/admin/guild/{guild_id}/chat/{channel_id}', log_type='ip')
+    if 'discord_user' in session.keys():
+        user = session['discord_user']
+        user_name = user['username']
+        user_id = user['id']
+    else:
+        return render_template('base/message.html', message="403 Forbidden", message4='You have to be logged in.',
+                               errors=None, user=None, title='403 Forbidden'), 403
+
+    if int(user['id']) not in authorized_users:
+        return abort(403)
+
+    guild_text_channels = get_guild_text_channels(int(guild_id))
+    if guild_text_channels is None:
+        return abort(404)
+
+    errors = []
+    messages = []
+    response = None
+
+    if request.method == 'POST':
+        web_data = WebData(guild_id, user_name, user_id)
+
+        keys = request.form.keys()
+        form = request.form
+        try:
+            if 'download_btn' in keys:
+                log(web_data, 'download_guild_channel', [form['download_btn']], log_type='web', author=web_data.author)
+                response = execute_function('download_guild_channel', web_data, channel_id=form['download_btn'])
+            if 'download_guild_btn' in keys:
+                log(web_data, 'download_guild', [form['download_guild_btn']], log_type='web', author=web_data.author)
+                response = execute_function('download_guild', web_data, guild_id=form['download_guild_btn'])
+        except Exception as e:
+            errors = [str(e)]
+            log(web_data, 'error', [str(e)], log_type='web', author=web_data.author)
+
+        if response:
+            if response.response:
+                messages = [response.message]
+            else:
+                errors = [response.message]
+
+
+    if channel_id == 0:
+        content = 0
+    else:
+        content = get_channel_content(int(guild_id), int(channel_id))
+
+    return render_template('admin/data/chat.html', user=user, guild_id=guild_id, channel_id=channel_id,  channels=guild_text_channels, content=content, title='Chat', errors=errors, messages=messages)
 
 # Error Handling
 @app.errorhandler(404)

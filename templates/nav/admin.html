@@ -21,7 +21,7 @@
   {% endif %}
 
 
-  <form action="#" method="POST">
+  <form onsubmit="onSubmitDisable();" action="#" method="POST">
     <div class="div-align-center">
       <h1 class="btn-m">Admin</h1>
     </div>
@@ -112,7 +112,7 @@
           <h1 class="modal-title fs-5" id="staticBackdropLabel">Join a Guild with invite link</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <form method="POST" action="#">
+        <form onsubmit="onSubmitDisable();" method="POST" action="#">
           <div class="modal-body">
             <div class="mb-3">
               <label for="inviteURL" class="btn-m">Discord invite URL</label>
