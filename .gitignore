@@ -6,6 +6,7 @@ config.py
 config_real.py
 credentials.json
 dev_func/translator/credentials.json
+testing.py
 *.py[cod]
 
 # C extensions

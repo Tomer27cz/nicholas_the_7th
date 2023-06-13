@@ -259,6 +259,16 @@ class CustomUnpickler(pickle.Unpickler):
             return Guild
         if name == 'VideoClass':
             return VideoClass
+        if name == 'DiscordUser':
+            return DiscordUser
+        if name == 'DiscordMember':
+            return DiscordMember
+        if name == 'DiscordChannel':
+            return DiscordChannel
+        if name == 'DiscordRole':
+            return DiscordRole
+        if name == 'DiscordInvite':
+            return DiscordInvite
         return super().find_class(module, name)
 
 def unpickle(data):

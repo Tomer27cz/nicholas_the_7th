@@ -3316,6 +3316,14 @@ async def volume_command_def(ctx, volume: int = None, ephemeral: bool = False,
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
 
     if volume:
+        try:
+            volume = int(volume)
+        except (ValueError, TypeError):
+            message = f'Invalid volume'
+            if not mute_response:
+                await ctx.reply(message, ephemeral=ephemeral)
+            return ReturnData(False, message)
+
         new_volume = volume / 100
 
         guild[guild_id].options.volume = new_volume
@@ -3626,7 +3634,7 @@ async def options_def(ctx: commands.Context, server=None, stopped: str = None, l
                       history_length: str = None, volume: str = None, search_query: str = None, update: str = None,
                       ephemeral=True):
     log(ctx, 'options_def',
-        [stopped, loop, is_radio, buttons, language, response_type, buffer, history_length, volume, server],
+        [server, stopped, loop, is_radio, buttons, language, response_type, buffer, history_length, volume, search_query, update, ephemeral],
         log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
 
@@ -3683,53 +3691,73 @@ async def options_def(ctx: commands.Context, server=None, stopped: str = None, l
         bool_list = bool_list_f + bool_list_t
         response_types = ['long', 'short']
 
-        if stopped not in bool_list and stopped is not None:
-            return ReturnData(False, f'stopped has to be: {bool_list} --> {stopped}')
-        if loop not in bool_list and loop is not None:
-            return ReturnData(False, f'loop has to be: {bool_list} --> {loop}')
-        if is_radio not in bool_list and is_radio is not None:
-            return ReturnData(False, f'is_radio has to be: {bool_list} --> {is_radio}')
-        if buttons not in bool_list and buttons is not None:
-            return ReturnData(False, f'buttons has to be: {bool_list} --> {buttons}')
-        if update not in bool_list and update is not None:
-            return ReturnData(False, f'update has to be: {bool_list} --> {update}')
+        if stopped not in bool_list and stopped is not None and stopped != 'None':
+            msg = f'stopped has to be: {bool_list} --> {stopped}'
+            await ctx.reply(msg, ephemeral=ephemeral)
+            return ReturnData(False, msg)
+        if loop not in bool_list and loop is not None and loop != 'None':
+            msg = f'loop has to be: {bool_list} --> {loop}'
+            await ctx.reply(msg, ephemeral=ephemeral)
+            return ReturnData(False, msg)
+        if is_radio not in bool_list and is_radio is not None and is_radio != 'None':
+            msg = f'is_radio has to be: {bool_list} --> {is_radio}'
+            await ctx.reply(msg, ephemeral=ephemeral)
+            return ReturnData(False, msg)
+        if buttons not in bool_list and buttons is not None and buttons != 'None':
+            msg = f'buttons has to be: {bool_list} --> {buttons}'
+            await ctx.reply(msg, ephemeral=ephemeral)
+            return ReturnData(False, msg)
+        if update not in bool_list and update is not None and update != 'None':
+            msg = f'update has to be: {bool_list} --> {update}'
+            await ctx.reply(msg, ephemeral=ephemeral)
+            return ReturnData(False, msg)
 
-        if response_type not in response_types and response_type is not None:
-            return ReturnData(False, f'response_type has to be: {response_types} --> {response_type}')
+        if response_type not in response_types and response_type is not None and response_type != 'None':
+            msg = f'response_type has to be: {response_types} --> {response_type}'
+            await ctx.reply(msg, ephemeral=ephemeral)
+            return ReturnData(False, msg)
 
-        if language not in languages_dict and language is not None:
-            return ReturnData(False, f'language has to be: {languages_dict}')
+        if language not in languages_dict and language is not None and language != 'None':
+            msg = f'language has to be: {languages_dict} --> {language}'
+            await ctx.reply(msg, ephemeral=ephemeral)
+            return ReturnData(False, msg)
 
-        if not is_float(volume) and volume is not None:
-            return ReturnData(False, f'volume has to be a number: {volume}')
-        if not buffer.isdigit() and buffer is not None:
-            return ReturnData(False, f'buffer has to be a number: {buffer}')
-        if not history_length.isdigit() and history_length is not None:
-            return ReturnData(False, f'history_length has to be a number: {history_length}')
+        if not is_float(volume) and volume is not None and volume != 'None':
+            msg = f'volume has to be a number: {volume}'
+            await ctx.reply(msg, ephemeral=ephemeral)
+            return ReturnData(False, msg)
+        if not buffer.isdigit() and buffer is not None and buffer != 'None':
+            msg = f'buffer has to be a number: {buffer}'
+            await ctx.reply(msg, ephemeral=ephemeral)
+            return ReturnData(False, msg)
+        if not history_length.isdigit() and history_length is not None and history_length != 'None':
+            msg = f'history_length has to be a number: {history_length}'
+            await ctx.reply(msg, ephemeral=ephemeral)
+            return ReturnData(False, msg)
 
-        if stopped is not None:
+        if stopped is not None and stopped != 'None':
             options.stopped = to_bool(stopped)
-        if loop is not None:
+        if loop is not None and loop != 'None':
             options.loop = to_bool(loop)
-        if is_radio is not None:
+        if is_radio is not None and is_radio != 'None':
             options.is_radio = to_bool(is_radio)
-        if buttons is not None:
+        if buttons is not None and buttons != 'None':
             options.buttons = to_bool(buttons)
-        if update is not None:
+        if update is not None and update != 'None':
             options.update = to_bool(update)
 
-        if language is not None:
+        if language is not None and language != 'None':
             options.language = language
-        if search_query is not None:
+        if search_query is not None and search_query != 'None':
             options.search_query = search_query
-        if response_type is not None:
+        if response_type is not None and response_type != 'None':
             options.response_type = response_type
 
-        if volume is not None:
-            options.volume = float(volume / 100)
-        if buffer is not None:
+        if volume is not None and volume != 'None':
+            options.volume = float(int(volume) / 100)
+        if buffer is not None and buffer != 'None':
             options.buffer = int(buffer)
-        if history_length is not None:
+        if history_length is not None and history_length != 'None':
             options.history_length = int(history_length)
 
         save_json()
