@@ -9,7 +9,7 @@ import subprocess
 import sys
 import threading
 import traceback
-from os import path, listdir
+from os import path, listdir, makedirs
 from time import time, strftime, gmtime
 from typing import Literal
 import copy
@@ -161,10 +161,12 @@ class VideoClass:
         if created_at is None:
             self.created_at = int(time())
 
-        # {'start': ***, 'end': ***}
         self.played_duration = played_duration
         if played_duration is None:
-            self.played_duration = [{'start': None, 'end': None}]
+            self.played_duration = [{
+                'start': {'epoch': None, 'time_stamp': None},
+                'end': {'epoch': None, 'time_stamp': None}
+            }]
         self.chapters = chapters
 
         if self.class_type == 'Video':
@@ -318,10 +320,10 @@ class VideoClass:
             return None
         if self.chapters is None:
             return None
-        if self.played_duration[-1]['end'] is not None:
+        if self.played_duration[-1]['end']['epoch'] is not None:
             return None
 
-        time_from_play = int(video_time_played(self))
+        time_from_play = int(video_time_from_start(self))
 
         try:
             duration = int(self.duration)
@@ -339,10 +341,10 @@ class VideoClass:
     def time(self):
         if self.duration is None:
             return '0:00 / 0:00'
-        if self.played_duration[-1]['end'] is not None:
+        if self.played_duration[-1]['end']['epoch'] is not None:
             return '0:00 / ' + convert_duration(self.duration)
 
-        time_from_play = int(video_time_played(self))
+        time_from_play = int(video_time_from_start(self))
 
         try:
             duration = int(self.duration)
@@ -1304,7 +1306,7 @@ async def get_url_probe_data(url: str) -> (tuple or None, str or None):
 # ---------------------------------------------- CLI -----------------------------------------------------------
 
 def execute(cmd):
-    popen = subprocess.Popen(cmd, stdout=subprocess.PIPE, universal_newlines=True, stderr=subprocess.PIPE, shell=True, cwd=path.dirname(__file__))
+    popen = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, universal_newlines=True)
     for stdout_line in iter(popen.stdout.readline, ""):
         yield stdout_line
     error = popen.stderr.read()
@@ -1314,7 +1316,6 @@ def execute(cmd):
     return_code = popen.wait()
     if return_code:
         raise subprocess.CalledProcessError(return_code, cmd)
-    print("execute done")
 
 # ---------------------------------------------- GET -----------------------------------------------------------
 
@@ -1387,13 +1388,13 @@ def push_update(guild_id: int):
 
 # --------------------------------------------- VIDEO TIME -----------------------------------------------------
 
-def video_time_played(video: VideoClass) -> float:
+def video_time_from_start(video: VideoClass) -> float:
     len_played_duration = len(video.played_duration)
     if len_played_duration == 0:
         return 0.0
     if len_played_duration < 2:
-        start = video.played_duration[0]['start']
-        end = video.played_duration[0]['end']
+        start = video.played_duration[0]['start']['epoch']
+        end = video.played_duration[0]['end']['epoch']
         if start is None:
             return 0.0
 
@@ -1401,33 +1402,37 @@ def video_time_played(video: VideoClass) -> float:
             return int(time()) - start
 
         # noinspection PyUnresolvedReferences
-        return end - start
+        return video.played_duration[0]['end']['time_stamp']
 
-    total = 0.0
-    for segment in video.played_duration:
-        start = segment['start']
-        end = segment['end']
-        if start is None:
-            return 0.0
+    last_segment = video.played_duration[-1]
+    if last_segment['end']['epoch'] is not None:
+        return last_segment['end']['time_stamp']
 
-        if end is None:
-            total += int(time()) - start
-        else:
-            # noinspection PyUnresolvedReferences
-            total += end - start
+    start_of_segment = last_segment['start']['epoch']
+    start_of_segment_time_stamp = last_segment['start']['time_stamp']
 
-    return total
+    return (int(time()) - start_of_segment) + start_of_segment_time_stamp
 
 def set_stopped(video: VideoClass):
     # noinspection PyTypedDict
-    video.played_duration[-1]['end'] = int(time())
+    video.played_duration[-1]['end']['epoch'] = int(time())
+
+    start = video.played_duration[-1]['start']
+    end = video.played_duration[-1]['end']
+    # noinspection PyTypedDict,PyUnresolvedReferences
+    video.played_duration[-1]['end']['time_stamp'] = (end['epoch'] - start['epoch']) + start['time_stamp']
 
 def set_started(video: VideoClass):
     # noinspection PyTypedDict
-    video.played_duration[-1]['start'] = int(time())
+    video.played_duration[-1]['start']['epoch'] = int(time())
+    # noinspection PyTypedDict
+    video.played_duration[-1]['start']['time_stamp'] = 0.0
 
 def set_resumed(video: VideoClass):
-    video.played_duration += [{'start': int(time()), 'end': None}]
+    start_dict = {'epoch': int(time()), 'time_stamp': video.played_duration[-1]['end']['time_stamp']}
+    end_dict = {'epoch': None, 'time_stamp': None}
+
+    video.played_duration += [{'start': start_dict, 'end': end_dict}]
 
 # ---------------------------------------------- CHECK ---------------------------------------------------------
 
@@ -1475,7 +1480,7 @@ def create_embed(video: VideoClass, name: str, guild_id: int, embed_colour: (int
         requested_by = video.author
     time_played = video.time()
     current_chapter = video.current_chapter()
-    started_at = struct_to_time(video.played_duration[0]["start"], "time")
+    started_at = struct_to_time(video.played_duration[0]["start"]["epoch"], "time")
     requested_at = struct_to_time(video.created_at, "time")
 
     embed = (discord.Embed(title=name, description=f'```\n{video.title}\n```', color=discord.Color.from_rgb(*embed_colour)))
@@ -1547,7 +1552,7 @@ async def to_queue(guild_id: int, video: VideoClass, position: int = None, ctx=N
         video = copy.deepcopy(video)
 
     # strip video of time data
-    video.played_duration = [{'start': None, 'end': None}]
+    video.played_duration = [{'start': {'epoch': None, 'time_stamp': None}, 'end': {'epoch': None, 'time_stamp': None}}]
     # set new creation date
     video.created_at = int(time())
 
@@ -2936,11 +2941,11 @@ async def ps_def(ctx, effect_number: app_commands.Range[int, 1, len(all_sound_ef
             await ctx.reply(message, ephemeral=True)
         return ReturnData(False, message)
 
-    filename = "sound_effects/" + name + ".mp3"
+    filename = f"{config.PARENT_DIR}sound_effects/{name}.mp3"
     if path.exists(filename):
         source = FFmpegPCMAudio(filename)
     else:
-        filename = "sound_effects/" + name + ".wav"
+        filename = f"{config.PARENT_DIR}sound_effects/{name}.wav"
         if path.exists(filename):
             source = FFmpegPCMAudio(filename)
         else:
@@ -3548,9 +3553,9 @@ async def file_command_def(ctx: commands.Context, config_file: discord.Attachmen
     }
 
     if config_type in ['guilds', 'other', 'languages', 'radio']:
-        file_path = f'db/{config_type}{config_types[config_type]}'
+        file_path = f'{config.PARENT_DIR}db/{config_type}{config_types[config_type]}'
     else:
-        file_path = f'log/{config_type}{config_types[config_type]}'
+        file_path = f'{config.PARENT_DIR}log/{config_type}{config_types[config_type]}'
 
     if config_file is None:
         if not path.exists(file_path):
@@ -3589,7 +3594,7 @@ async def file_command_def(ctx: commands.Context, config_file: discord.Attachmen
         return ReturnData(False, message)
 
     # get original content
-    with open(file_path, 'rb') as f:
+    with open(file_path, 'rb', encoding='utf-8') as f:
         org_content = f.read()
 
     if config_type == 'guilds':
@@ -3601,7 +3606,7 @@ async def file_command_def(ctx: commands.Context, config_file: discord.Attachmen
             await ctx.reply(message, ephemeral=True)
             return ReturnData(False, message)
 
-    with open(file_path, 'wb') as f:
+    with open(file_path, 'wb', encoding='utf-8') as f:
         try:
             # write new content
             f.write(content)
@@ -3786,7 +3791,10 @@ async def save_channel_info_to_file(guild_id: int, file_path) -> ReturnData:
     for channel in channels:
         channels_dict[int(channel.id)] = DiscordChannel(channel.id, no_members=True).__dict__
 
-    with open(f'{file_path}/channels.json', 'w') as f:
+    file_path_rel = f'{file_path}/channels.json'
+    makedirs(path.dirname(file_path_rel), exist_ok=True)
+
+    with open(file_path_rel, 'w', encoding='utf-8') as f:
         f.write(json.dumps(channels_dict, indent=4))
 
     return ReturnData(True, f'Saved channels of ({guild_id}) to file')
@@ -3810,16 +3818,16 @@ async def download_guild_channel(ctx, channel_id: int, mute_response: bool=False
         return ReturnData(False, message)
 
     guild_id = channel_object.guild.id
-    response = await save_channel_info_to_file(guild_id, f'db/guilds/{guild_id}')
+    response = await save_channel_info_to_file(guild_id, f'{config.PARENT_DIR}db/guilds/{guild_id}')
     if not response.response:
         message = f'Error while saving channel info to file: {response.message}'
         if not mute_response:
             await ctx.reply(message, ephemeral=ephemeral)
         return ReturnData(False, message)
 
-    rel_path = 'src/DCE/DiscordChatExporter.Cli.dll'
-    output_file_path = f'db/guilds/%g/%c/file.html'
-    command = f'dotnet {rel_path} export -c {channel_id} -t {config.BOT_TOKEN} -o {output_file_path} -p 1mb --dateformat "dd/MM/yyyy HH:mm:ss"'
+    rel_path = f'{config.PARENT_DIR}src/DCE/DiscordChatExporter.Cli.dll'
+    output_file_path = f'{config.PARENT_DIR}db/guilds/%g/%c/file.html'
+    command = f'dotnet "{rel_path}" export -c {channel_id} -t {config.BOT_TOKEN} -o "{output_file_path}" -p 1mb --dateformat "dd/MM/yyyy HH:mm:ss"'
 
     log(ctx, f'download_guild_channel -> executing command: {command}')
     msg = f'Guild channel ({channel_id}) will be downloaded'
@@ -3856,16 +3864,16 @@ async def download_guild(ctx, guild_id: int, mute_response: bool=False, ephemera
         return ReturnData(False, message)
 
     guild_id = guild_object.id
-    response = await save_channel_info_to_file(guild_id, f'db/guilds/{guild_id}')
+    response = await save_channel_info_to_file(guild_id, f'{config.PARENT_DIR}db/guilds/{guild_id}')
     if not response.response:
         message = f'Error while saving channel info to file: {response.message}'
         if not mute_response:
             await ctx.reply(message, ephemeral=ephemeral)
         return ReturnData(False, message)
 
-    rel_path = 'src/DCE/DiscordChatExporter.Cli.dll'
-    output_file_path = f'db/guilds/%g/%c/file.html'
-    command = f'dotnet {rel_path} exportguild -g {guild_id} -t {config.BOT_TOKEN} -o {output_file_path} -p 1mb --dateformat "dd/MM/yyyy HH:mm:ss"'
+    rel_path = f'{config.PARENT_DIR}src/DCE/DiscordChatExporter.Cli.dll'
+    output_file_path = f'{config.PARENT_DIR}db/guilds/%g/%c/file.html'
+    command = f'dotnet "{rel_path}" exportguild -g {guild_id} -t {config.BOT_TOKEN} -o "{output_file_path}" -p 1mb --dateformat "dd/MM/yyyy HH:mm:ss"'
 
     log(ctx, f'download_guild_channel -> executing command: {command}')
     msg = f'Guild ({guild_id}) will be downloaded (can take more than 1min depending on the size)'
@@ -3906,7 +3914,7 @@ async def get_guild_channel(ctx, channel_id: int, mute_response: bool=False, gui
         guild_id = channel_object.guild.id
         channel_name = channel_object.name
 
-    path_of_folder = f'db/guilds/{guild_id}/{channel_id}'
+    path_of_folder = f'{config.PARENT_DIR}db/guilds/{guild_id}/{channel_id}'
 
     if not path.exists(path_of_folder):
         message = f'Channel ({channel_id}) has not been downloaded'
@@ -3944,7 +3952,7 @@ async def get_guild(ctx, guild_id: int, mute_response: bool=False, ephemeral: bo
         if not ctx.interaction.response.is_done():
             await ctx.defer(ephemeral=ephemeral)
 
-    path_of_folder = f'db/guilds/{guild_id}'
+    path_of_folder = f'{config.PARENT_DIR}db/guilds/{guild_id}'
 
     if not path.exists(path_of_folder):
         message = f'Guild ({guild_id}) has not been downloaded'

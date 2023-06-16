@@ -166,10 +166,10 @@ class VideoClass:
             return None
         if self.chapters is None:
             return None
-        if self.played_duration[-1]['end'] is not None:
+        if self.played_duration[-1]['end']['epoch'] is not None:
             return None
 
-        time_from_play = int(video_time_played(self))
+        time_from_play = int(video_time_from_start(self))
 
         try:
             duration = int(self.duration)
@@ -183,6 +183,24 @@ class VideoClass:
         for chapter in self.chapters:
             if chapter['start_time'] < time_from_play < chapter['end_time']:
                 return chapter['title']
+
+    def time(self):
+        if self.duration is None:
+            return '0:00 / 0:00'
+        if self.played_duration[-1]['end']['epoch'] is not None:
+            return '0:00 / ' + convert_duration(self.duration)
+
+        time_from_play = int(video_time_from_start(self))
+
+        try:
+            duration = int(self.duration)
+        except (ValueError, TypeError):
+            return f'{convert_duration(time_from_play)} / {self.duration}'
+
+        if time_from_play == 0:
+            return '0:00 / ' + convert_duration(duration)
+
+        return f'{convert_duration(time_from_play)} / {convert_duration(duration)}'
 
 class DiscordUser:
     def __init__(self):
@@ -272,6 +290,7 @@ class CustomUnpickler(pickle.Unpickler):
         return super().find_class(module, name)
 
 def unpickle(data):
+    # if having a problem with unpickling, make sure that you have all the classes in CustomUnpickler
     return CustomUnpickler(BytesIO(data)).load()
 
 def struct_to_time(struct_time, first='date') -> str:
@@ -338,34 +357,30 @@ def tg(guild_id: int, content: str) -> str:
         to_return = content
     return to_return
 
-def video_time_played(video: VideoClass) -> float:
+def video_time_from_start(video: VideoClass) -> float:
     len_played_duration = len(video.played_duration)
     if len_played_duration == 0:
         return 0.0
     if len_played_duration < 2:
-        start = video.played_duration[0]['start']
-        end = video.played_duration[0]['end']
+        start = video.played_duration[0]['start']['epoch']
+        end = video.played_duration[0]['end']['epoch']
         if start is None:
             return 0.0
 
         if end is None:
             return int(time()) - start
 
-        return end - start
+        # noinspection PyUnresolvedReferences
+        return video.played_duration[0]['end']['time_stamp']
 
-    total = 0.0
-    for segment in video.played_duration:
-        start = segment['start']
-        end = segment['end']
-        if start is None:
-            return 0.0
+    last_segment = video.played_duration[-1]
+    if last_segment['end']['epoch'] is not None:
+        return last_segment['end']['time_stamp']
 
-        if end is None:
-            total += int(time()) - start
-        else:
-            total += end - start
+    start_of_segment = last_segment['start']['epoch']
+    start_of_segment_time_stamp = last_segment['start']['time_stamp']
 
-    return total
+    return (int(time()) - start_of_segment) + start_of_segment_time_stamp
 
 def check_isdigit(var) -> bool:
     try:
@@ -373,7 +388,6 @@ def check_isdigit(var) -> bool:
         return True
     except (ValueError, TypeError):
         return False
-
 
 # --------------------------------------------- FILE FUNCTIONS --------------------------------------------- #
 
@@ -411,7 +425,7 @@ def getFolderSize(relPath) -> int:
 def get_guild_text_channels_file(guild_id: int):
     path = f'{config.PARENT_DIR}db/guilds/{guild_id}/channels.json'
     if os.path.exists(path):
-        with open(path, 'r') as f:
+        with open(path, 'r', encoding='utf-8') as f:
             data = json.load(f)
 
         if data:
@@ -543,7 +557,6 @@ def recv_all(sock, n) -> bytes or None:
     return data
 
 # Socket connection
-
 def execute_function(function_name: str, web_data: WebData, **kwargs) -> ReturnData:
     # create argument dictionary
     arg_dict = {
@@ -560,7 +573,6 @@ def execute_function(function_name: str, web_data: WebData, **kwargs) -> ReturnD
     return response
 
 # admin
-
 def check_admin(session_data):
     global guild
     if session_data is None:
@@ -619,7 +631,6 @@ def get_bot_guilds():
     return bot_guilds
 
 # guild specific data
-
 def get_guild_channels(guild_id: int):
     """
     Get the guild channels list from database
@@ -730,7 +741,7 @@ def get_language(guild_id: int):
 
 def get_channel_content(guild_id: int, channel_id: int):
     try:
-        path = f'db/guilds/{guild_id}/{channel_id}'
+        path = f'{config.PARENT_DIR}db/guilds/{guild_id}/{channel_id}'
         if not os.path.exists(path):
             return None
 
@@ -739,13 +750,12 @@ def get_channel_content(guild_id: int, channel_id: int):
             return None
 
         path = f'{path}/{files[0]}'
-        with open(path, 'r') as f:
+        with open(path, 'r', encoding='utf-8') as f:
             return f.read()
     except (FileNotFoundError, IndexError, PermissionError):
         return None
 
 # user specific data
-
 def get_username(user_id: int):
     """
     Get a user from the database
@@ -794,7 +804,6 @@ def get_renew(radio_website, url):
     return send_arg(arg_dict)
 
 # Set Data
-
 def set_update(guild_id: int, update: bool):
     """
     Set update variable state in the database
@@ -1063,7 +1072,7 @@ async def guild_page(guild_id, key):
                            messages=messages, user=user, admin=admin, volume=round(guild_object.options.volume * 100),
                            radios=list(radio_dict.values()), scroll_position=scroll_position,
                            languages_dict=languages_dict, tg=tg, gi=int(guild_id), time=time, int=int,
-                           video_time_played=video_time_played, pd=json.dumps(pd), check_isdigit=check_isdigit)
+                           video_time_played=video_time_from_start, pd=json.dumps(pd), check_isdigit=check_isdigit)
 
 @app.route('/guild/<int:guild_id>/update')
 async def update_page(guild_id):

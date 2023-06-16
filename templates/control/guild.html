@@ -117,8 +117,8 @@
                 </div>
                 <div class="q-item3 q-items-center">
                   <p class="q-text q-1">{{ tg(gi, 'From/To') }}</p>
-                  <p class="q-text q-2">{{ struct_to_time(track.played_duration[0]['start'], first='time') }}</p>
-                  <p class="q-text q-2">{{ struct_to_time(track.played_duration[-1]['end'], first='time') }}</p>
+                  <p class="q-text q-2">{{ struct_to_time(track.played_duration[0]['start']['epoch'], first='time') }}</p>
+                  <p class="q-text q-2">{{ struct_to_time(track.played_duration[-1]['end']['epoch'], first='time') }}</p>
                 </div>
                 <div class="q-item2 q-items-center">
                   <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer"
@@ -195,7 +195,7 @@
               </div>
               <div class="q-item3 q-items-center">
                 <p class="q-text q-1">{{ tg(gi, 'Played at') }}</p>
-                <p class="q-text q-2">{{ struct_to_time(guild.now_playing.played_duration[0]['start'], first='time') }}</p>
+                <p class="q-text q-2">{{ struct_to_time(guild.now_playing.played_duration[0]['start']['epoch'], first='time') }}</p>
               </div>
               <div class="q-item2 q-items-center">
                 <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer"
@@ -848,32 +848,25 @@
           return 0.0;
       }
       if (len_played_duration < 2){
-          let start = played_duration[0]['start'];
-          let end = played_duration[0]['end'];
+          let start = played_duration[0]['start']['epoch'];
+          let end = played_duration[0]['end']['epoch'];
           if (start === null){
               return 0.0;
           }
           if (end === null){
               return Math.round(Date.now() / 1000) - start;
           }
-          return end - start;
+          return played_duration[0]['end']['time_stamp'];
       }
 
-      let total = 0.0;
-      for (let i = 0; i < len_played_duration; i++) {
-          let segment = played_duration[i];
-          let start = segment['start'];
-          let end = segment['end'];
-          if (start === null){
-              return 0.0;
-          }
-          if (end === null){
-              total += (Math.round(Date.now() / 1000) - start);
-          } else {
-              total += (end - start);
-          }
+      let last_segment = played_duration[len_played_duration - 1];
+      if (last_segment['end']['epoch'] != null){
+          return last_segment['end']['time_stamp'];
       }
-      return total;
+
+      let start_of_segment = last_segment['start']['epoch'];
+      let start_of_segment_time = last_segment['start']['time_stamp'];
+      return (Math.round(Date.now() / 1000) - start_of_segment) + start_of_segment_time;
   }
 
   function npProgress() {
@@ -908,7 +901,7 @@
 
               bar_elem.style.width = percentage + '%';
 
-              if (percentage === 100 || sec_remaining === 1 || sec_remaining === 0) {
+              if (percentage > 99.99 || sec_remaining_add < 2) {
                   clearInterval(inter);
                   setTimeout(function () {
                       location.reload();
