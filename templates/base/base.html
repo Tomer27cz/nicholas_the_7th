@@ -15,9 +15,8 @@
       }
       document.addEventListener("DOMContentLoaded", function (event) {
           let scroll_pos = localStorage.getItem('scrollpos');
-          if (scroll_pos) window.scrollTo((0, scroll_pos, 'auto'));
+          if (scroll_pos) window.scrollTo({top: Number(scroll_pos), behavior: 'smooth'});
       });
-
       window.onbeforeunload = function (e) {
           localStorage.setItem('scrollpos', window.scrollY);
       };

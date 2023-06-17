@@ -238,10 +238,22 @@
                 <div class="p-div-m">
                   {% for chapter in guild.now_playing.chapters %}
                     <div class="vr"></div>
-                    <div class="p-bar p-ch"
-                         style="width: {{ ((chapter['end_time'] - chapter['start_time']) / int(guild.now_playing.duration))*100 }}%">
-                      <div class="p-text">{{ chapter['title'] }} ({{ convert_duration(chapter['start_time']) }} - {{ convert_duration(chapter['end_time']) }})</div>
-                    </div>
+
+                    <label for="chapter-checkbox{{ chapter['start_time'] }}" class="p-bar p-ch"
+                           style="width: {{ ((chapter['end_time'] - chapter['start_time']) / int(guild.now_playing.duration))*100 }}%">
+                      <input  type="radio" name="chapter-checkbox" id="chapter-checkbox{{ chapter['start_time'] }}">
+                        <div class="p-text">
+                          <form method="POST" action="" onsubmit="setScroll();">
+                            <input type="hidden" name="scroll" value="0" id="scrollPos13">
+                            <div class="ch-div">
+                              {{ chapter['title'] }} ({{ convert_duration(chapter['start_time']) }} - {{ convert_duration(chapter['end_time']) }})
+                              <button type="submit" class="btn btn-primary btn-sm" name="jump_btn" value={{ chapter['start_time'] }}>{{ tg(gi, 'Jump') }}</button>
+                            </div>
+                          </form>
+                        </div>
+                      </input>
+                    </label>
+
                   {% endfor %}
                 </div>
               {% endif %}
@@ -339,6 +351,14 @@
                    oninput="this.form.volumeInput.value=this.value" {% if not guild.connected %}disabled{% endif %}>
             <button class="btn btn-outline btn-primary btn-sm btn-m flex-fill" type="submit" name="volume_btn"
                     title="{{ tg(gi, 'Set Volume') }}" {% if not guild.connected %}disabled{% endif %}>Set
+            </button>
+            <div class="vr btn-m"></div>
+            <div class="btn-m">
+              <input type="number" class="form-c form-control btn-m" name="timeInput" min="0"
+                     max="{{ guild.now_playing.duration }}" value="0" {% if not guild.connected %}disabled{% endif %}>
+            </div>
+            <button class="btn btn-outline btn-primary btn-sm btn-m" type="submit" name="time_btn"
+                    title="{{ tg(gi, 'Set Time') }}" {% if not guild.connected %}disabled{% endif %}>Set
             </button>
           </div>
         </div>
@@ -870,7 +890,6 @@
   }
 
   function npProgress() {
-      console.log("npProgress");
       {% if check_isdigit(guild.now_playing.duration) %}
       let duration = {{ guild.now_playing.duration }};
       {% else %}
@@ -923,8 +942,8 @@
 
   function getUpdate() {
       let url = 'http://' + document.domain + ':' + location.port + '/guild/{{guild.data.id}}/update';
-      let response = httpGet(url);
-      if (response === "True") {
+      let response = Number(httpGet(url));
+      if (response > last_update) {
           location.reload();
       }
   }
@@ -939,7 +958,7 @@
   }
 
   function setScroll() {
-      let elements = ['scrollPos1', 'scrollPos2', 'scrollPos3', 'scrollPos4', 'scrollPos5', 'scrollPos6', 'scrollPos7', 'scrollPos8', 'scrollPos9', 'scrollPos10', 'scrollPos11', 'scrollPos12'];
+      let elements = ['scrollPos1', 'scrollPos2', 'scrollPos3', 'scrollPos4', 'scrollPos5', 'scrollPos6', 'scrollPos7', 'scrollPos8', 'scrollPos9', 'scrollPos10', 'scrollPos11', 'scrollPos12', 'scrollPos13'];
       for (let i = 0; i < elements.length; i++) {
           let elem = document.getElementById(elements[i]);
           if (elem) {
@@ -954,7 +973,6 @@
       setTimeout(disableButtons, 10);
 
       function disableButtons() {
-          console.log("disable buttons")
           let buttons = document.querySelectorAll(".btn");
           for (let i = 0; i < buttons.length; i++) {
               buttons[i].setAttribute('disabled', '');
@@ -967,6 +985,7 @@
   }
 
   scrollNow({{scroll_position}})
+  let last_update = Math.round(Date.now() / 1000);
   setInterval(getUpdate, 15000)
   </script>
 

@@ -20,7 +20,7 @@ import spotipy
 import youtubesearchpython
 import yt_dlp
 from bs4 import BeautifulSoup
-from discord import FFmpegPCMAudio, app_commands
+from discord import app_commands
 from discord.ext import commands
 from discord.ui import View
 from sclib import SoundcloudAPI, Track, Playlist
@@ -153,7 +153,7 @@ class VideoClass:
 
     def __init__(self, class_type: str, author, url=None, title=None, picture=None, duration=None, channel_name=None,
                  channel_link=None, radio_name=None, radio_website=None, local_number=None, created_at=None,
-                 played_duration=None, chapters=None):
+                 played_duration=None, chapters=None, stream_url=None):
         self.class_type = class_type
         self.author = author
 
@@ -168,6 +168,7 @@ class VideoClass:
                 'end': {'epoch': None, 'time_stamp': None}
             }]
         self.chapters = chapters
+        self.stream_url = stream_url
 
         if self.class_type == 'Video':
             if url is None:
@@ -215,7 +216,6 @@ class VideoClass:
                 self.channel_name = radio_dict[radio_name]['type']
                 self.channel_link = self.url
                 self.radio_website = radio_dict[radio_name]['type']
-
 
             else:
                 self.url = url
@@ -410,7 +410,7 @@ class Options:
         self.volume = 1.0
         self.buffer = 600  # how many seconds of nothing before it disconnects | 600 = 10min
         self.history_length = 10
-        self.update = False
+        self.last_updated = int(time())
 
 class GuildData:
     """
@@ -1370,21 +1370,21 @@ def get_content_of_message(message: discord.Message) -> (str, list or None):
 
     return url, probe_data
 
-def get_update_list() -> list or None:
-    guild_values = guild.values()
-    update_list = []
-
-    for guild_object in guild_values:
-        if guild_object.options.update:
-            update_list.append(guild_object.id)
-
-    if not update_list:
-        return None
-
-    return update_list
+# def get_update_list() -> list or None:
+#     guild_values = guild.values()
+#     update_list = []
+#
+#     for guild_object in guild_values:
+#         if guild_object.options.update:
+#             update_list.append(guild_object.id)
+#
+#     if not update_list:
+#         return None
+#
+#     return update_list
 
 def push_update(guild_id: int):
-    guild[guild_id].options.update = True
+    guild[guild_id].options.last_updated = int(time())
 
 # --------------------------------------------- VIDEO TIME -----------------------------------------------------
 
@@ -1430,6 +1430,15 @@ def set_started(video: VideoClass):
 
 def set_resumed(video: VideoClass):
     start_dict = {'epoch': int(time()), 'time_stamp': video.played_duration[-1]['end']['time_stamp']}
+    end_dict = {'epoch': None, 'time_stamp': None}
+
+    video.played_duration += [{'start': start_dict, 'end': end_dict}]
+
+def set_new_time(video: VideoClass, time_stamp: int):
+    if video.played_duration[-1]['end']['epoch'] is None:
+        set_stopped(video)
+
+    start_dict = {'epoch': int(time()), 'time_stamp': time_stamp}
     end_dict = {'epoch': None, 'time_stamp': None}
 
     video.played_duration += [{'start': start_dict, 'end': end_dict}]
@@ -1516,11 +1525,10 @@ def now_to_history(guild_id: int):
         guild[guild_id].now_playing = None
 
         if video.class_type == 'Radio':
-            video.url = video.radio_link
             video.title = video.radio_name
             video.picture = radio_dict[video.radio_name]['thumbnail']
             video.channel_name = radio_dict[video.radio_name]['type']
-            video.channel_link = video.radio_link
+            video.channel_link = video.radio_website
 
         set_stopped(video)
         video.chapters = None
@@ -1600,7 +1608,7 @@ class GetSource(discord.PCMVolumeTransformer):
         super().__init__(source, guild[guild_id].options.volume)
 
     @classmethod
-    async def create_source(cls, guild_id: int, url: str, source_type: str = 'Video'):
+    async def create_source(cls, guild_id: int, url: str, source_type: str = 'Video', time_stamp: int=None, video_class: VideoClass=None):
         """
         Get source from url
 
@@ -1610,16 +1618,24 @@ class GetSource(discord.PCMVolumeTransformer):
 
         :param guild_id: int
         :param url: str
-        :param source_type: str ('Video', 'SoundCloud') - default: 'Video'
+        :param video_class: VideoClass
+        :param source_type: str ('Video', 'SoundCloud') - default: 'Video' > anything else for direct url
+        :param time_stamp: int - time stamp in seconds
 
         :return source: discord.FFmpegPCMAudio
         """
+        SOURCE_FFMPEG_OPTIONS = {
+            'before_options': f'{f"-ss {time_stamp} " if time_stamp else ""}-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
+            'options': '-vn'
+        }
         chapters = None
+
         if source_type == 'Video':
             loop = asyncio.get_event_loop()
             data = await loop.run_in_executor(None, lambda: cls.ytdl.extract_info(url, download=False))
 
-            chapters = data['chapters']
+            if 'chapters' in data:
+                chapters = data['chapters']
 
             if 'entries' in data:
                 data = data['entries'][0]
@@ -1630,7 +1646,16 @@ class GetSource(discord.PCMVolumeTransformer):
             track = sc.resolve(url)
             url = track.get_stream_url()
 
-        return cls(guild_id, discord.FFmpegPCMAudio(url, **FFMPEG_OPTIONS)), chapters
+        if source_type == 'Local':
+            SOURCE_FFMPEG_OPTIONS = {
+                'before_options': f'{f"-ss {time_stamp} " if time_stamp else ""}',
+                'options': '-vn'
+            }
+
+        if video_class:
+            video_class.stream_url = url
+
+        return cls(guild_id, discord.FFmpegPCMAudio(url, **SOURCE_FFMPEG_OPTIONS)), chapters
 
 # ------------------------------------ View Classes --------------------------------------------------------------------
 
@@ -2146,15 +2171,15 @@ async def change_options(ctx: commands.Context, server=None, stopped: bool = Non
                          is_radio: bool = None, buttons: bool = None,
                          language: Literal[tuple(languages_dict.keys())] = None,
                          response_type: Literal['short', 'long'] = None, buffer: int = None, history_length: int = None,
-                         volume: int = None, search_query: str = None, update: bool = None):
+                         volume: int = None, search_query: str = None, last_updated: int = None):
     log(ctx, 'zz_change_options',
         [server, stopped, loop, is_radio, buttons, language, response_type, buffer, history_length, volume,
-         search_query, update], log_type='command', author=ctx.author)
+         search_query, last_updated], log_type='command', author=ctx.author)
 
     await options_def(ctx, server=str(server), stopped=str(stopped), loop=str(loop), is_radio=str(is_radio),
                       buttons=str(buttons), language=str(language), response_type=str(response_type),
                       buffer=str(buffer), history_length=str(history_length), volume=str(volume),
-                      search_query=str(search_query), update=str(update))
+                      search_query=str(search_query), last_updated=str(last_updated))
 
 @bot.hybrid_command(name='zz_download_guild', with_app_command=True)
 @commands.check(is_authorised)
@@ -2183,6 +2208,13 @@ async def get_guild_channel_command(ctx: commands.Context, channel_id, ephemeral
     log(ctx, 'get_guild_channel', [channel_id, ephemeral], log_type='command', author=ctx.author)
 
     await get_guild_channel(ctx, channel_id, ephemeral=ephemeral)
+
+@bot.hybrid_command(name='zz_set_time', with_app_command=True)
+@commands.check(is_authorised)
+async def set_time_command(ctx: commands.Context, time_stamp: int, ephemeral: bool=True, mute_response: bool=False):
+    log(ctx, 'set_time', [time_stamp, ephemeral, mute_response], log_type='command', author=ctx.author)
+
+    await set_video_time(ctx, time_stamp, ephemeral=ephemeral, mute_response=mute_response)
 
 # --------------------------------------------- COMMAND FUNCTIONS ------------------------------------------------------
 
@@ -2806,7 +2838,7 @@ async def play_def(ctx, url=None, force=False, mute_response=False, after=False)
         guild[guild_id].options.stopped = False
 
     try:
-        source, chapters = await GetSource.create_source(guild_id, video.url, source_type=video.class_type)
+        source, chapters = await GetSource.create_source(guild_id, video.url, source_type=video.class_type, video_class=video)
         voice.play(source, after=lambda e: asyncio.run_coroutine_threadsafe(play_def(ctx, after=True), bot.loop))
 
         await volume_command_def(ctx, guild[guild_id].options.volume * 100, False, True)
@@ -2898,14 +2930,14 @@ async def radio_def(ctx, favourite_radio: Literal[
     if guild_object.voice_client.is_playing():
         await stop_def(ctx, mute_response=True)
 
-    video = VideoClass('Radio', author_id, radio_name=radio_type)
-    set_started(video)
-    guild[guild_id].now_playing = video
-
     guild[guild_id].options.is_radio = True
 
     url = radio_dict[radio_type]['stream']
-    source = discord.FFmpegPCMAudio(url, **FFMPEG_OPTIONS)
+    video = VideoClass('Radio', author_id, radio_name=radio_type, stream_url=url)
+    set_started(video)
+    guild[guild_id].now_playing = video
+
+    source, chapters = await GetSource.create_source(guild_id, url, source_type='Radio', video_class=video)
     guild_object.voice_client.play(source)
 
     await volume_command_def(ctx, guild[guild_id].options.volume * 100, False, True)
@@ -2943,11 +2975,11 @@ async def ps_def(ctx, effect_number: app_commands.Range[int, 1, len(all_sound_ef
 
     filename = f"{config.PARENT_DIR}sound_effects/{name}.mp3"
     if path.exists(filename):
-        source = FFmpegPCMAudio(filename)
+        source, chapters = await GetSource.create_source(guild_id, filename, source_type='Local')
     else:
         filename = f"{config.PARENT_DIR}sound_effects/{name}.wav"
         if path.exists(filename):
-            source = FFmpegPCMAudio(filename)
+            source, chapters = await GetSource.create_source(guild_id, filename, source_type='Local')
         else:
             message = tg(guild_id, "No such file/website supported")
             if not mute_response:
@@ -2959,17 +2991,16 @@ async def ps_def(ctx, effect_number: app_commands.Range[int, 1, len(all_sound_ef
         if not join_response.response:
             return join_response
 
-    video = VideoClass('Local', author_id, title=name, duration='Unknown', local_number=effect_number)
+    stop_response = await stop_def(ctx, mute_response=True)
+    if not stop_response.response:
+        return stop_response
+
+    video = VideoClass('Local', author_id, title=name, duration='Unknown', local_number=effect_number, stream_url=filename)
     set_started(video)
     guild[guild_id].now_playing = video
     save_json()
 
     voice = guild_object.voice_client
-
-    stop_response = await stop_def(ctx, mute_response=True)
-    if not stop_response.response:
-        return stop_response
-
     voice.play(source)
     await volume_command_def(ctx, guild[guild_id].options.volume * 100, False, True)
 
@@ -3373,6 +3404,8 @@ async def ping_def(ctx) -> ReturnData:
     # update_guilds()
     # push_update(ctx.guild.id)
 
+    # await set_video_time(ctx, 60)
+
     message = f'**Pong!** Latency: {round(bot.latency * 1000)}ms'
     await ctx.reply(message)
     return ReturnData(True, message)
@@ -3636,10 +3669,10 @@ async def file_command_def(ctx: commands.Context, config_file: discord.Attachmen
 
 async def options_def(ctx: commands.Context, server=None, stopped: str = None, loop: str = None, is_radio: str = None,
                       buttons: str = None, language: str = None, response_type: str = None, buffer: str = None,
-                      history_length: str = None, volume: str = None, search_query: str = None, update: str = None,
+                      history_length: str = None, volume: str = None, search_query: str = None, last_updated: str = None,
                       ephemeral=True):
     log(ctx, 'options_def',
-        [server, stopped, loop, is_radio, buttons, language, response_type, buffer, history_length, volume, search_query, update, ephemeral],
+        [server, stopped, loop, is_radio, buttons, language, response_type, buffer, history_length, volume, search_query, last_updated, ephemeral],
         log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
 
@@ -3658,7 +3691,7 @@ async def options_def(ctx: commands.Context, server=None, stopped: str = None, l
         history_length -> `{options.history_length}`
         volume -> `{options.volume}`
         search_query -> `{options.search_query}`
-        update -> `{options.update}`
+        last_updated -> `{options.last_updated}`
         """
 
         await ctx.reply(message, ephemeral=ephemeral)
@@ -3712,10 +3745,6 @@ async def options_def(ctx: commands.Context, server=None, stopped: str = None, l
             msg = f'buttons has to be: {bool_list} --> {buttons}'
             await ctx.reply(msg, ephemeral=ephemeral)
             return ReturnData(False, msg)
-        if update not in bool_list and update is not None and update != 'None':
-            msg = f'update has to be: {bool_list} --> {update}'
-            await ctx.reply(msg, ephemeral=ephemeral)
-            return ReturnData(False, msg)
 
         if response_type not in response_types and response_type is not None and response_type != 'None':
             msg = f'response_type has to be: {response_types} --> {response_type}'
@@ -3739,6 +3768,10 @@ async def options_def(ctx: commands.Context, server=None, stopped: str = None, l
             msg = f'history_length has to be a number: {history_length}'
             await ctx.reply(msg, ephemeral=ephemeral)
             return ReturnData(False, msg)
+        if not last_updated.isdigit() and last_updated is not None and last_updated != 'None':
+            msg = f'last_updated has to be a number: {last_updated}'
+            await ctx.reply(msg, ephemeral=ephemeral)
+            return ReturnData(False, msg)
 
         if stopped is not None and stopped != 'None':
             options.stopped = to_bool(stopped)
@@ -3748,8 +3781,7 @@ async def options_def(ctx: commands.Context, server=None, stopped: str = None, l
             options.is_radio = to_bool(is_radio)
         if buttons is not None and buttons != 'None':
             options.buttons = to_bool(buttons)
-        if update is not None and update != 'None':
-            options.update = to_bool(update)
+
 
         if language is not None and language != 'None':
             options.language = language
@@ -3764,6 +3796,8 @@ async def options_def(ctx: commands.Context, server=None, stopped: str = None, l
             options.buffer = int(buffer)
         if history_length is not None and history_length != 'None':
             options.history_length = int(history_length)
+        if last_updated is not None and last_updated != 'None':
+            options.last_updated = int(last_updated)
 
         save_json()
 
@@ -3971,6 +4005,56 @@ async def get_guild(ctx, guild_id: int, mute_response: bool=False, ephemeral: bo
         return ReturnData(False, message)
 
     return ReturnData(True, 'files sent')
+
+# --------------------------------------- VIDEO TIME --------------------------------------
+
+async def set_video_time(ctx, time_stamp: int, mute_response: bool=False, ephemeral: bool=False):
+    log(ctx, 'set_video_time', [time_stamp, mute_response, ephemeral], log_type='function')
+    is_ctx, ctx_guild_id, author_id, ctx_guild_object = ctx_check(ctx)
+    try:
+        time_stamp = int(time_stamp)
+    except (ValueError, TypeError):
+        try:
+            time_stamp = int(float(time_stamp))
+        except (ValueError, TypeError):
+            message = f'({time_stamp}) is not an int'
+            if not mute_response:
+                await ctx.reply(message, ephemeral=ephemeral)
+            return ReturnData(False, message)
+
+    voice = ctx_guild_object.voice_client
+    if not voice:
+        message = f'Bot is not in a voice channel'
+        if not mute_response:
+            await ctx.reply(message, ephemeral=ephemeral)
+        return ReturnData(False, message)
+
+    # if not voice.is_playing():
+    #     message = f'Bot is not playing anything'
+    #     if not mute_response:
+    #         await ctx.reply(message, ephemeral=ephemeral)
+    #     return ReturnData(False, message)
+
+    now_playing_video = guild[ctx_guild_id].now_playing
+    if not now_playing_video:
+        message = f'Bot is not playing anything'
+        if not mute_response:
+            await ctx.reply(message, ephemeral=ephemeral)
+        return ReturnData(False, message)
+
+    url = now_playing_video.stream_url
+    if not url:
+        url = now_playing_video.url
+
+    new_source, new_chapters = await GetSource.create_source(ctx_guild_id, url, time_stamp=time_stamp, video_class=now_playing_video, source_type=now_playing_video.class_type)
+
+    voice.source = new_source
+    set_new_time(now_playing_video, time_stamp)
+
+    message = f'Video time set to {time_stamp}'
+    if not mute_response:
+        await ctx.reply(message, ephemeral=ephemeral)
+    return ReturnData(True, message)
 
 # --------------------------------------------- HELP COMMAND -----------------------------------------------------------
 
@@ -4505,11 +4589,11 @@ async def web_options_edit(web_data, form) -> ReturnData:
     volume = form['volume']
     buffer = form['buffer']
     history_length = form['history_length']
-    update = form['update']
+    last_updated = form['last_updated']
 
     return await options_def(web_data, server='this', stopped=stopped, loop=loop, is_radio=is_radio, language=language,
                              response_type=response_type, search_query=search_query, buttons=buttons, volume=volume,
-                             buffer=buffer, history_length=history_length, update=update)
+                             buffer=buffer, history_length=history_length, last_updated=last_updated)
 
 async def web_delete_guild(web_data, guild_id) -> ReturnData:
     log(web_data, 'web_delete_guild', [guild_id], log_type='function', author=web_data.author)
@@ -4696,6 +4780,8 @@ async def execute_function(request_dict) -> ReturnData:
 
         if func_name == 'volume_command_def':
             return await volume_command_def(web_data, volume=args['volume'])
+        if func_name == 'set_video_time':
+            return await set_video_time(web_data, time_stamp=args['time_stamp'])
 
         # user edit
         if func_name == 'web_user_options_edit':
@@ -4807,7 +4893,7 @@ async def execute_get_data(request_dict):
     if data_type == 'update':
         guild_id = request_dict['guild_id']
         try:
-            return guild[guild_id].options.update
+            return str(guild[guild_id].options.last_updated)
         except KeyError:
             return None
     if data_type == 'renew':
@@ -4843,16 +4929,6 @@ async def execute_get_data(request_dict):
             bot_guilds.append(to_append)
         return bot_guilds
 
-async def execute_set_data(request_dict) -> None:
-    data_type = request_dict['data_type']
-
-    if data_type == 'update':
-        guild_id = request_dict['guild_id']
-        update_value = request_dict['update']
-        guild[guild_id].options.update = update_value
-    else:
-        pass
-
 # handle client
 async def handle_client(client):
     request_data = await recv_msg(client)
@@ -4864,8 +4940,6 @@ async def handle_client(client):
         response = await execute_get_data(request_dict)
     elif request_type == 'function':
         response = await execute_function(request_dict)
-    elif request_type == 'set_data':
-        response = await execute_set_data(request_dict)
     else:
         response = ReturnData(False, 'idk')
 

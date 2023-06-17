@@ -189,7 +189,10 @@
         "Edited options successfully!": "Edited options successfully!",
         "Time": "Time",
         "Chapter": "Chapter",
-        "Duplicate": "Duplicate"
+        "Duplicate": "Duplicate",
+        "Jump": "Jump",
+        "Jump to": "Jump to",
+        "Set Time": "Set Time"
     },
     "cs": {
         "search": "Vyhledejte na youtube zadan\u00fd dotaz",
@@ -382,7 +385,10 @@
         "Edited options successfully!": "Mo\u017enosti byly \u00fasp\u011b\u0161n\u011b upraveny!",
         "Time": "\u010cas",
         "Chapter": "Kapitola",
-        "Duplicate": "Duplik\u00e1t"
+        "Duplicate": "Duplik\u00e1t",
+        "Jump": "Skok",
+        "Jump to": "Sko\u010dit do",
+        "Set Time": "Nastavit \u010das"
     },
     "de": {
         "search": "Suchen Sie YouTube nach der bereitgestellten Abfrage",
@@ -575,7 +581,10 @@
         "Edited options successfully!": "Optionen erfolgreich bearbeitet!",
         "Time": "Zeit",
         "Chapter": "Kapitel",
-        "Duplicate": "Duplikat"
+        "Duplicate": "Duplikat",
+        "Jump": "Springen",
+        "Jump to": "Springen zu",
+        "Set Time": "Zeit einstellen"
     },
     "eo": {
         "search": "Ser\u0109u YouTube",
@@ -768,7 +777,10 @@
         "Edited options successfully!": "Redaktitaj opcioj sukcese!",
         "Time": "Tempo",
         "Chapter": "\u0108apitro",
-        "Duplicate": "Duobligi"
+        "Duplicate": "Duobligi",
+        "Jump": "Saltu",
+        "Jump to": "Saltu al",
+        "Set Time": "Agordu Tempon"
     },
     "es": {
         "search": "Busque en YouTube la consulta proporcionada",
@@ -961,7 +973,10 @@
         "Edited options successfully!": "\u00a1Opciones editadas con \u00e9xito!",
         "Time": "Tiempo",
         "Chapter": "Cap\u00edtulo",
-        "Duplicate": "Duplicar"
+        "Duplicate": "Duplicar",
+        "Jump": "Saltar",
+        "Jump to": "Salta a",
+        "Set Time": "Fijar tiempo"
     },
     "fr": {
         "search": "Recherchez YouTube pour la requ\u00eate fournie",
@@ -1154,7 +1169,10 @@
         "Edited options successfully!": "Options modifi\u00e9es avec succ\u00e8s\u00a0!",
         "Time": "Temps",
         "Chapter": "Chapitre",
-        "Duplicate": "Dupliquer"
+        "Duplicate": "Dupliquer",
+        "Jump": "Saut",
+        "Jump to": "Sauter \u00e0",
+        "Set Time": "R\u00e9gler le temps"
     },
     "it": {
         "search": "Cerca YouTube per la query fornita",
@@ -1347,7 +1365,10 @@
         "Edited options successfully!": "Opzioni modificate con successo!",
         "Time": "Tempo",
         "Chapter": "Capitolo",
-        "Duplicate": "Duplicare"
+        "Duplicate": "Duplicare",
+        "Jump": "Salto",
+        "Jump to": "Salta a",
+        "Set Time": "Tempo impostato"
     },
     "ja": {
         "search": "YouTube\u3092\u691c\u7d22\u3057\u3066\u304f\u3060\u3055\u3044",
@@ -1540,7 +1561,10 @@
         "Edited options successfully!": "\u30aa\u30d7\u30b7\u30e7\u30f3\u304c\u6b63\u5e38\u306b\u7de8\u96c6\u3055\u308c\u307e\u3057\u305f\u3002",
         "Time": "\u6642\u9593",
         "Chapter": "\u7ae0",
-        "Duplicate": "\u8907\u88fd"
+        "Duplicate": "\u8907\u88fd",
+        "Jump": "\u30b8\u30e3\u30f3\u30d7",
+        "Jump to": "\u306b\u30b8\u30e3\u30f3\u30d7",
+        "Set Time": "\u6642\u9593\u3092\u8a2d\u5b9a\u3059\u308b"
     },
     "ko": {
         "search": "\uc81c\uacf5\ub41c \ucffc\ub9ac\ub97c \uac80\uc0c9\ud558\uc2ed\uc2dc\uc624",
@@ -1733,7 +1757,10 @@
         "Edited options successfully!": "\uc635\uc158\uc744 \uc131\uacf5\uc801\uc73c\ub85c \ud3b8\uc9d1\ud588\uc2b5\ub2c8\ub2e4!",
         "Time": "\uc2dc\uac04",
         "Chapter": "\uc7a5",
-        "Duplicate": "\ubcf5\uc81c\ud558\ub2e4"
+        "Duplicate": "\ubcf5\uc81c\ud558\ub2e4",
+        "Jump": "\ub3c4\uc57d",
+        "Jump to": "\uc774\ub3d9",
+        "Set Time": "\uc2dc\uac04 \uc124\uc815"
     },
     "la": {
         "search": "Search YouTube pro provisum query",
@@ -1926,7 +1953,10 @@
         "Edited options successfully!": "Bene feliciter edidit!",
         "Time": "Tempus",
         "Chapter": "Caput",
-        "Duplicate": "Duplicare"
+        "Duplicate": "Duplicare",
+        "Jump": "Salire",
+        "Jump to": "Salire ad",
+        "Set Time": "Set Tempus"
     },
     "zh": {
         "search": "\u641c\u7d22YouTube\u63d0\u4f9b\u7684\u67e5\u8be2",
@@ -2119,7 +2149,10 @@
         "Edited options successfully!": "\u7f16\u8f91\u9009\u9879\u6210\u529f\uff01",
         "Time": "\u65f6\u95f4",
         "Chapter": "\u7ae0\u8282",
-        "Duplicate": "\u590d\u5236"
+        "Duplicate": "\u590d\u5236",
+        "Jump": "\u8df3",
+        "Jump to": "\u8df3\u5230",
+        "Set Time": "\u8bbe\u7f6e\u65f6\u95f4"
     },
     "nl": {
         "search": "Zoek YouTube naar de verstrekte query",
@@ -2312,7 +2345,10 @@
         "Edited options successfully!": "Bewerkte opties succesvol!",
         "Time": "Tijd",
         "Chapter": "Hoofdstuk",
-        "Duplicate": "Duplicaat"
+        "Duplicate": "Duplicaat",
+        "Jump": "Springen",
+        "Jump to": "Spring naar",
+        "Set Time": "Tijd instellen"
     },
     "pl": {
         "search": "Wyszukaj YouTube, aby uzyska\u0107 dostarczone zapytanie",
@@ -2505,7 +2541,10 @@
         "Edited options successfully!": "Edytowano opcje pomy\u015blnie!",
         "Time": "Czas",
         "Chapter": "Rozdzia\u0142",
-        "Duplicate": "Duplikowa\u0107"
+        "Duplicate": "Duplikowa\u0107",
+        "Jump": "Skok",
+        "Jump to": "Skocz do",
+        "Set Time": "Ustaw czas"
     },
     "pt": {
         "search": "Pesquise o YouTube pela consulta fornecida",
@@ -2698,7 +2737,10 @@
         "Edited options successfully!": "Op\u00e7\u00f5es editadas com sucesso!",
         "Time": "Tempo",
         "Chapter": "Cap\u00edtulo",
-        "Duplicate": "Duplicado"
+        "Duplicate": "Duplicado",
+        "Jump": "Pular",
+        "Jump to": "Pule para",
+        "Set Time": "Definir tempo"
     },
     "ru": {
         "search": "\u041f\u043e\u0438\u0441\u043a YouTube \u0434\u043b\u044f \u043f\u0440\u0435\u0434\u043e\u0441\u0442\u0430\u0432\u043b\u0435\u043d\u043d\u043e\u0433\u043e \u0437\u0430\u043f\u0440\u043e\u0441\u0430",
@@ -2891,7 +2933,10 @@
         "Edited options successfully!": "\u041f\u0430\u0440\u0430\u043c\u0435\u0442\u0440\u044b \u0443\u0441\u043f\u0435\u0448\u043d\u043e \u0438\u0437\u043c\u0435\u043d\u0435\u043d\u044b!",
         "Time": "\u0412\u0440\u0435\u043c\u044f",
         "Chapter": "\u0413\u043b\u0430\u0432\u0430",
-        "Duplicate": "\u0414\u0443\u0431\u043b\u0438\u0440\u043e\u0432\u0430\u0442\u044c"
+        "Duplicate": "\u0414\u0443\u0431\u043b\u0438\u0440\u043e\u0432\u0430\u0442\u044c",
+        "Jump": "\u041f\u0440\u044b\u0433\u0430\u0442\u044c",
+        "Jump to": "\u041f\u0435\u0440\u0435\u0439\u0442\u0438 \u043a",
+        "Set Time": "\u0423\u0441\u0442\u0430\u043d\u043e\u0432\u0438\u0442\u044c \u0432\u0440\u0435\u043c\u044f"
     },
     "sv": {
         "search": "S\u00f6k YouTube efter den medf\u00f6ljande fr\u00e5gan",
@@ -3084,7 +3129,10 @@
         "Edited options successfully!": "Redigerade alternativ framg\u00e5ngsrikt!",
         "Time": "Tid",
         "Chapter": "Kapitel",
-        "Duplicate": "Duplicera"
+        "Duplicate": "Duplicera",
+        "Jump": "Hoppa",
+        "Jump to": "Hoppa till",
+        "Set Time": "St\u00e4ll klockan"
     },
     "tr": {
         "search": "Verilen sorgu i\u00e7in youtube aray\u0131n",
@@ -3277,6 +3325,9 @@
         "Edited options successfully!": "D\u00fczenlenen se\u00e7enekler ba\u015far\u0131yla!",
         "Time": "Zaman",
         "Chapter": "B\u00f6l\u00fcm",
-        "Duplicate": "Kopyalamak"
+        "Duplicate": "Kopyalamak",
+        "Jump": "Z\u0131plamak",
+        "Jump to": "Atlamak",
+        "Set Time": "Ayarlanan zaman"
     }
 }

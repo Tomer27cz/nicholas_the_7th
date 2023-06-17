@@ -804,22 +804,6 @@ def get_renew(radio_website, url):
     return send_arg(arg_dict)
 
 # Set Data
-def set_update(guild_id: int, update: bool):
-    """
-    Set update variable state in the database
-    :param guild_id: guild id
-    :param update: update variable state
-    :return: None
-    """
-    # create argument dictionary
-    arg_dict = {
-        'type': 'set_data',
-        'data_type': 'update',
-        'guild_id': guild_id,
-        'update': update
-    }
-    # send argument dictionary
-    return send_arg(arg_dict, get_response=False)
 
 # --------------------------------------------- WEB SERVER --------------------------------------------- #
 
@@ -1023,6 +1007,12 @@ async def guild_page(guild_id, key):
             log(web_data, 'volume_command_def', [request.form['volumeRange'], request.form['volumeInput']],
                 log_type='web', author=web_data.author)
             response = execute_function('volume_command_def', web_data=web_data, volume=int(request.form['volumeRange']))
+        if 'jump_btn' in keys:
+            log(web_data, 'set_video_time', [request.form['jump_btn']], log_type='web', author=web_data.author)
+            response = execute_function('set_video_time', web_data=web_data, time_stamp=request.form['jump_btn'])
+        if 'time_btn' in keys:
+            log(web_data, 'set_video_time', [request.form['timeInput']], log_type='web', author=web_data.author)
+            response = execute_function('set_video_time', web_data=web_data, time_stamp=request.form['timeInput'])
 
         if 'ytURL' in keys:
             log(web_data, 'queue_command_def', [request.form['ytURL']], log_type='web', author=web_data.author)
@@ -1079,15 +1069,14 @@ async def update_page(guild_id):
     try:
         guild_id = int(guild_id)
     except (ValueError, TypeError):
-        print('invalid url')
-        return 'False'
+        await abort(404)
 
-    update = get_update(guild_id)
+    response = get_update(guild_id)
+    print(response)
 
-    if update is True:
-        set_update(guild_id, False)
-        return 'True'
-    return 'False'
+    if response:
+        return response
+    return None
 
 # User Login
 @app.route('/login')
