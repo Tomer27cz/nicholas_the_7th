@@ -1,8 +1,12 @@
+[![Icon](https://raw.githubusercontent.com/Tomer27cz/discord_bot_stanley_the_7th/master/.github/icon.svg)](#readme)
+
 ## About
 
-This is a discord bot that I made for a few discord servers. It is a work in progress and I will be adding more features as I go along.
+This is a discord bot that I made for a few discord servers. It is a work in progress, and I will be adding more features as I go along.
 
 It is not meant to be used by anyone else, but if you want to use it, feel free to do so.
+
+[![Dashboard](https://raw.githubusercontent.com/Tomer27cz/discord_bot_stanley_the_7th/master/.github/dashboard.png)](#readme)
 
 ## Invite
 
