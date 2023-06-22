@@ -403,7 +403,7 @@ class Options:
         self.stopped = False
         self.loop = False
         self.is_radio = False
-        self.language = 'cs'
+        self.language = 'en'
         self.response_type = 'short'  # long or short
         self.search_query = 'Never gonna give you up'
         self.buttons = False
@@ -739,12 +739,13 @@ def log(ctx, text_data, options=None, log_type='text', author=None) -> None:
 
     now_time_str = struct_to_time(time())
 
-    if type(ctx) == commands.Context:
+    try:
         guild_id = ctx.guild.id
-    elif type(ctx) == WebData:
-        guild_id = ctx.guild_id
-    else:
-        guild_id = ctx
+    except AttributeError:
+        try:
+            guild_id = ctx.guild_id
+        except AttributeError:
+            guild_id = ctx
 
     if log_type == 'command':
         message = f"{now_time_str} | C {guild_id} | Command ({text_data}) was requested by ({author}) -> {options}"

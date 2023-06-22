@@ -452,10 +452,13 @@ def log(ctx, text_data, options=None, log_type='text', author=None) -> None:
 
     now_time_str = struct_to_time(time())
 
-    if type(ctx) == WebData:
+    try:
         guild_id = ctx.guild_id
-    else:
-        guild_id = ctx
+    except AttributeError:
+        try:
+            guild_id = ctx.guild.id
+        except AttributeError:
+            guild_id = ctx
 
     if log_type == 'command':
         message = f"{now_time_str} | C {guild_id} | Command ({text_data}) was requested by ({author}) -> {options}"
@@ -1072,7 +1075,6 @@ async def update_page(guild_id):
         await abort(404)
 
     response = get_update(guild_id)
-    print(response)
 
     if response:
         return response
