@@ -340,29 +340,29 @@
         </div>
       </div>
       {% if admin == True %}
-        <div class="q-item1">
-          <div class="d-flex">
-            <div class="btn-m">
-              <input type="number" class="form-c form-control btn-m flex-fill" name="volumeInput" min="0" max="200"
-                     value="100" oninput="this.form.volumeRange.value=this.value"
-                     {% if not guild.connected %}disabled{% endif %}>
-            </div>
-            <input type="range" class="form-r form-range btn-m" name="volumeRange" min="0" max="200" value="100"
-                   oninput="this.form.volumeInput.value=this.value" {% if not guild.connected %}disabled{% endif %}>
-            <button class="btn btn-outline btn-primary btn-sm btn-m flex-fill" type="submit" name="volume_btn"
-                    title="{{ tg(gi, 'Set Volume') }}" {% if not guild.connected %}disabled{% endif %}>Set
-            </button>
-            <div class="vr btn-m"></div>
-            <div class="btn-m">
-              <input type="number" class="form-c form-control btn-m" name="timeInput" min="0"
-                     max="{{ guild.now_playing.duration }}" value="0" {% if not guild.connected %}disabled{% endif %}>
-            </div>
-            <button class="btn btn-outline btn-primary btn-sm btn-m" type="submit" name="time_btn"
-                    title="{{ tg(gi, 'Set Time') }}" {% if not guild.connected %}disabled{% endif %}>Set
-            </button>
+        <div class="d-flex">
+          <div class="btn-m">
+            <input style="width: 5rem" type="number" class="form-c form-control btn-m" name="timeInput" min="0" max="{{ guild.now_playing.duration }}" value="0" {% if not guild.connected %}disabled{% endif %}>
           </div>
+          <button class="btn btn-outline btn-primary btn-sm btn-m" type="submit" name="time_btn" title="{{ tg(gi, 'Set Time') }}" {% if not guild.connected %}disabled{% endif %}>Set</button>
+
         </div>
+        <div class="vr btm-m"></div>
       {% endif %}
+      <div class="q-item1">
+        <div class="d-flex">
+          <div class="btn-m">
+            <input type="number" class="form-c form-control btn-m flex-fill" name="volumeInput" min="0" max="200"
+                   value="{{ int(guild.options.volume*100) }}" oninput="this.form.volumeRange.value=this.value"
+                   {% if not guild.connected %}disabled{% endif %}>
+          </div>
+          <input type="range" class="form-r form-range btn-m" name="volumeRange" min="0" max="200" value="{{ int(guild.options.volume*100) }}"
+                 oninput="this.form.volumeInput.value=this.value" {% if not guild.connected %}disabled{% endif %}>
+          <button class="btn btn-outline btn-primary btn-sm btn-m flex-fill" type="submit" name="volume_btn"
+                  title="{{ tg(gi, 'Set Volume') }}" {% if not guild.connected %}disabled{% endif %}>Set
+          </button>
+        </div>
+      </div>
     </div>
   </form>
 
@@ -500,7 +500,7 @@
   {% for track in guild.queue %}
     <div class="modal fade" id="videoModal_{{ guild.queue.index(track) }}" data-bs-keyboard="false" tabindex="-1"
          aria-labelledby="videoLabel_{{ guild.queue.index(track) }}" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg r-modal">
         <div class="modal-content">
           <div class="modal-header">
             <h1 class="modal-title fs-5"
@@ -524,7 +524,7 @@
   {% for track in guild.history %}
     <div class="modal fade" id="videoModal_h{{ guild.history.index(track) }}" data-bs-keyboard="false" tabindex="-1"
          aria-labelledby="videoLabel_h{{ guild.history.index(track) }}" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg r-modal">
         <div class="modal-content">
           <div class="modal-header">
             <h1 class="modal-title fs-5"
@@ -548,7 +548,7 @@
   {% if guild.now_playing %}
     <div class="modal fade" id="videoModal_np" data-bs-keyboard="false" tabindex="-1" aria-labelledby="videoLabel_np"
          aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl r-modal">
         <div class="modal-content">
           <div class="modal-header">
             <h1 class="modal-title fs-5" id="videoLabel_np">{{ tg(gi, 'Video Now Playing Info') }}</h1>
@@ -571,7 +571,7 @@
     {% for track in guild.queue %}
       <div class="modal fade" id="videoEditModal_{{ guild.queue.index(track) }}" data-bs-keyboard="false" tabindex="-1"
            aria-labelledby="videoEditLabel_{{ guild.queue.index(track) }}" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg r-modal">
           <div class="modal-content">
             <div class="modal-header">
               <h1 class="modal-title fs-5"
@@ -637,7 +637,7 @@
     {% if guild.now_playing %}
       <div class="modal fade" id="videoEditModal_np" data-bs-keyboard="false" tabindex="-1"
            aria-labelledby="videoEditLabel_np" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg r-modal">
           <div class="modal-content">
             <div class="modal-header">
               <h1 class="modal-title fs-5" id="videoEditLabel_np">{{ tg(gi, 'Now playing Video Edit') }}</h1>
@@ -671,7 +671,7 @@
   <!-- Modals -->
   <div class="modal fade" id="optionsModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="optionsLabel"
        aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg r-modal">
       <div class="modal-content">
         <div class="modal-header">
           <h1 class="modal-title fs-5" id="optionsLabel">Options</h1>

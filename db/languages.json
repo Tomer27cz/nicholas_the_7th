@@ -192,7 +192,9 @@
         "Duplicate": "Duplicate",
         "Jump": "Jump",
         "Jump to": "Jump to",
-        "Set Time": "Set Time"
+        "Set Time": "Set Time",
+        "Loop mode is already enabled": "Loop mode is already enabled",
+        "The channel is empty": "The channel is empty"
     },
     "cs": {
         "search": "Vyhledejte na youtube zadan\u00fd dotaz",
@@ -388,7 +390,9 @@
         "Duplicate": "Duplik\u00e1t",
         "Jump": "Skok",
         "Jump to": "Sko\u010dit do",
-        "Set Time": "Nastavit \u010das"
+        "Set Time": "Nastavit \u010das",
+        "Loop mode is already enabled": "Re\u017eim smy\u010dky je ji\u017e povolen",
+        "The channel is empty": "Kan\u00e1l je pr\u00e1zdn\u00fd"
     },
     "de": {
         "search": "Suchen Sie YouTube nach der bereitgestellten Abfrage",
@@ -584,7 +588,9 @@
         "Duplicate": "Duplikat",
         "Jump": "Springen",
         "Jump to": "Springen zu",
-        "Set Time": "Zeit einstellen"
+        "Set Time": "Zeit einstellen",
+        "Loop mode is already enabled": "Der Loop-Modus ist bereits aktiviert",
+        "The channel is empty": "Der Kanal ist leer"
     },
     "eo": {
         "search": "Ser\u0109u YouTube",
@@ -780,7 +786,9 @@
         "Duplicate": "Duobligi",
         "Jump": "Saltu",
         "Jump to": "Saltu al",
-        "Set Time": "Agordu Tempon"
+        "Set Time": "Agordu Tempon",
+        "Loop mode is already enabled": "Buklore\u011dimo jam estas ebligita",
+        "The channel is empty": "La kanalo estas malplena"
     },
     "es": {
         "search": "Busque en YouTube la consulta proporcionada",
@@ -976,7 +984,9 @@
         "Duplicate": "Duplicar",
         "Jump": "Saltar",
         "Jump to": "Salta a",
-        "Set Time": "Fijar tiempo"
+        "Set Time": "Fijar tiempo",
+        "Loop mode is already enabled": "El modo de bucle ya est\u00e1 habilitado",
+        "The channel is empty": "el canal esta vacio"
     },
     "fr": {
         "search": "Recherchez YouTube pour la requ\u00eate fournie",
@@ -1172,7 +1182,9 @@
         "Duplicate": "Dupliquer",
         "Jump": "Saut",
         "Jump to": "Sauter \u00e0",
-        "Set Time": "R\u00e9gler le temps"
+        "Set Time": "R\u00e9gler le temps",
+        "Loop mode is already enabled": "Le mode boucle est d\u00e9j\u00e0 activ\u00e9",
+        "The channel is empty": "Le canal est vide"
     },
     "it": {
         "search": "Cerca YouTube per la query fornita",
@@ -1368,7 +1380,9 @@
         "Duplicate": "Duplicare",
         "Jump": "Salto",
         "Jump to": "Salta a",
-        "Set Time": "Tempo impostato"
+        "Set Time": "Tempo impostato",
+        "Loop mode is already enabled": "La modalit\u00e0 Loop \u00e8 gi\u00e0 abilitata",
+        "The channel is empty": "Il canale \u00e8 vuoto"
     },
     "ja": {
         "search": "YouTube\u3092\u691c\u7d22\u3057\u3066\u304f\u3060\u3055\u3044",
@@ -1564,7 +1578,9 @@
         "Duplicate": "\u8907\u88fd",
         "Jump": "\u30b8\u30e3\u30f3\u30d7",
         "Jump to": "\u306b\u30b8\u30e3\u30f3\u30d7",
-        "Set Time": "\u6642\u9593\u3092\u8a2d\u5b9a\u3059\u308b"
+        "Set Time": "\u6642\u9593\u3092\u8a2d\u5b9a\u3059\u308b",
+        "Loop mode is already enabled": "\u30eb\u30fc\u30d7\u30e2\u30fc\u30c9\u306f\u3059\u3067\u306b\u6709\u52b9\u306b\u306a\u3063\u3066\u3044\u307e\u3059",
+        "The channel is empty": "\u30c1\u30e3\u30f3\u30cd\u30eb\u304c\u7a7a\u3067\u3059"
     },
     "ko": {
         "search": "\uc81c\uacf5\ub41c \ucffc\ub9ac\ub97c \uac80\uc0c9\ud558\uc2ed\uc2dc\uc624",
@@ -1760,7 +1776,9 @@
         "Duplicate": "\ubcf5\uc81c\ud558\ub2e4",
         "Jump": "\ub3c4\uc57d",
         "Jump to": "\uc774\ub3d9",
-        "Set Time": "\uc2dc\uac04 \uc124\uc815"
+        "Set Time": "\uc2dc\uac04 \uc124\uc815",
+        "Loop mode is already enabled": "\ub8e8\ud504 \ubaa8\ub4dc\uac00 \uc774\ubbf8 \ud65c\uc131\ud654\ub428",
+        "The channel is empty": "\ucc44\ub110\uc774 \ube44\uc5b4 \uc788\uc2b5\ub2c8\ub2e4."
     },
     "la": {
         "search": "Search YouTube pro provisum query",
@@ -1956,7 +1974,9 @@
         "Duplicate": "Duplicare",
         "Jump": "Salire",
         "Jump to": "Salire ad",
-        "Set Time": "Set Tempus"
+        "Set Time": "Set Tempus",
+        "Loop mode is already enabled": "Loop modus iam para",
+        "The channel is empty": "Canalis inanis est"
     },
     "zh": {
         "search": "\u641c\u7d22YouTube\u63d0\u4f9b\u7684\u67e5\u8be2",
@@ -2152,7 +2172,9 @@
         "Duplicate": "\u590d\u5236",
         "Jump": "\u8df3",
         "Jump to": "\u8df3\u5230",
-        "Set Time": "\u8bbe\u7f6e\u65f6\u95f4"
+        "Set Time": "\u8bbe\u7f6e\u65f6\u95f4",
+        "Loop mode is already enabled": "\u5faa\u73af\u6a21\u5f0f\u5df2\u542f\u7528",
+        "The channel is empty": "\u9891\u9053\u662f\u7a7a\u7684"
     },
     "nl": {
         "search": "Zoek YouTube naar de verstrekte query",
@@ -2348,7 +2370,9 @@
         "Duplicate": "Duplicaat",
         "Jump": "Springen",
         "Jump to": "Spring naar",
-        "Set Time": "Tijd instellen"
+        "Set Time": "Tijd instellen",
+        "Loop mode is already enabled": "Loop-modus is al ingeschakeld",
+        "The channel is empty": "Het kanaal is leeg"
     },
     "pl": {
         "search": "Wyszukaj YouTube, aby uzyska\u0107 dostarczone zapytanie",
@@ -2544,7 +2568,9 @@
         "Duplicate": "Duplikowa\u0107",
         "Jump": "Skok",
         "Jump to": "Skocz do",
-        "Set Time": "Ustaw czas"
+        "Set Time": "Ustaw czas",
+        "Loop mode is already enabled": "Tryb p\u0119tli jest ju\u017c w\u0142\u0105czony",
+        "The channel is empty": "Kana\u0142 jest pusty"
     },
     "pt": {
         "search": "Pesquise o YouTube pela consulta fornecida",
@@ -2740,7 +2766,9 @@
         "Duplicate": "Duplicado",
         "Jump": "Pular",
         "Jump to": "Pule para",
-        "Set Time": "Definir tempo"
+        "Set Time": "Definir tempo",
+        "Loop mode is already enabled": "O modo loop j\u00e1 est\u00e1 ativado",
+        "The channel is empty": "O canal est\u00e1 vazio"
     },
     "ru": {
         "search": "\u041f\u043e\u0438\u0441\u043a YouTube \u0434\u043b\u044f \u043f\u0440\u0435\u0434\u043e\u0441\u0442\u0430\u0432\u043b\u0435\u043d\u043d\u043e\u0433\u043e \u0437\u0430\u043f\u0440\u043e\u0441\u0430",
@@ -2936,7 +2964,9 @@
         "Duplicate": "\u0414\u0443\u0431\u043b\u0438\u0440\u043e\u0432\u0430\u0442\u044c",
         "Jump": "\u041f\u0440\u044b\u0433\u0430\u0442\u044c",
         "Jump to": "\u041f\u0435\u0440\u0435\u0439\u0442\u0438 \u043a",
-        "Set Time": "\u0423\u0441\u0442\u0430\u043d\u043e\u0432\u0438\u0442\u044c \u0432\u0440\u0435\u043c\u044f"
+        "Set Time": "\u0423\u0441\u0442\u0430\u043d\u043e\u0432\u0438\u0442\u044c \u0432\u0440\u0435\u043c\u044f",
+        "Loop mode is already enabled": "\u0420\u0435\u0436\u0438\u043c \u043f\u0435\u0442\u043b\u0438 \u0443\u0436\u0435 \u0432\u043a\u043b\u044e\u0447\u0435\u043d",
+        "The channel is empty": "\u041a\u0430\u043d\u0430\u043b \u043f\u0443\u0441\u0442"
     },
     "sv": {
         "search": "S\u00f6k YouTube efter den medf\u00f6ljande fr\u00e5gan",
@@ -3132,7 +3162,9 @@
         "Duplicate": "Duplicera",
         "Jump": "Hoppa",
         "Jump to": "Hoppa till",
-        "Set Time": "St\u00e4ll klockan"
+        "Set Time": "St\u00e4ll klockan",
+        "Loop mode is already enabled": "Loop-l\u00e4get \u00e4r redan aktiverat",
+        "The channel is empty": "Kanalen \u00e4r tom"
     },
     "tr": {
         "search": "Verilen sorgu i\u00e7in youtube aray\u0131n",
@@ -3328,6 +3360,8 @@
         "Duplicate": "Kopyalamak",
         "Jump": "Z\u0131plamak",
         "Jump to": "Atlamak",
-        "Set Time": "Ayarlanan zaman"
+        "Set Time": "Ayarlanan zaman",
+        "Loop mode is already enabled": "D\u00f6ng\u00fc modu zaten etkin",
+        "The channel is empty": "kanal bo\u015f"
     }
 }

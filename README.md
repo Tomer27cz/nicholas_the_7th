@@ -48,6 +48,9 @@ SPOTIPY_REDIRECT_URI='https://localhost:8888/callback' # This is the redirect ur
 
 # SoundCloud
 SOUNDCLOUD_CLIENT_ID = 'YOUR_SOUNDCLOUD_ID' # SoundCloud ID (you can use your accounts id -> developer tools)
+
+# Parent Directory
+PARENT_DIR = r'C:/Users/Tomer27cz/Desktop/Files/CODING/Discord Bot/Python/nicholas_the_7th/' # Leave blank if running from root directory (has to be absolute path and have / at the end)
 ```
 more detailed guide will be added later (maby)
 - Run the bot
