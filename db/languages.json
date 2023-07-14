@@ -194,7 +194,9 @@
         "Jump to": "Jump to",
         "Set Time": "Set Time",
         "Loop mode is already enabled": "Loop mode is already enabled",
-        "The channel is empty": "The channel is empty"
+        "The channel is empty": "The channel is empty",
+        "queue_string": "A text-based/code representation of the queue (from the /queue_export command)",
+        "guild_id": "The id of the guild"
     },
     "cs": {
         "search": "Vyhledejte na youtube zadan\u00fd dotaz",
@@ -392,7 +394,9 @@
         "Jump to": "Sko\u010dit do",
         "Set Time": "Nastavit \u010das",
         "Loop mode is already enabled": "Re\u017eim smy\u010dky je ji\u017e povolen",
-        "The channel is empty": "Kan\u00e1l je pr\u00e1zdn\u00fd"
+        "The channel is empty": "Kan\u00e1l je pr\u00e1zdn\u00fd",
+        "queue_string": "Textov\u00e1/k\u00f3dov\u00e1 reprezentace fronty (z p\u0159\u00edkazu /queue_export)",
+        "guild_id": "ID cechu"
     },
     "de": {
         "search": "Suchen Sie YouTube nach der bereitgestellten Abfrage",
@@ -590,7 +594,9 @@
         "Jump to": "Springen zu",
         "Set Time": "Zeit einstellen",
         "Loop mode is already enabled": "Der Loop-Modus ist bereits aktiviert",
-        "The channel is empty": "Der Kanal ist leer"
+        "The channel is empty": "Der Kanal ist leer",
+        "queue_string": "Eine textbasierte/Code-Darstellung der Warteschlange (vom Befehl /queue_export)",
+        "guild_id": "Die ID der Gilde"
     },
     "eo": {
         "search": "Ser\u0109u YouTube",
@@ -788,7 +794,9 @@
         "Jump to": "Saltu al",
         "Set Time": "Agordu Tempon",
         "Loop mode is already enabled": "Buklore\u011dimo jam estas ebligita",
-        "The channel is empty": "La kanalo estas malplena"
+        "The channel is empty": "La kanalo estas malplena",
+        "queue_string": "Tekst-bazita/koda reprezentado de la atendovico (de la komando /queue_export)",
+        "guild_id": "La identigilo de la gildo"
     },
     "es": {
         "search": "Busque en YouTube la consulta proporcionada",
@@ -986,7 +994,9 @@
         "Jump to": "Salta a",
         "Set Time": "Fijar tiempo",
         "Loop mode is already enabled": "El modo de bucle ya est\u00e1 habilitado",
-        "The channel is empty": "el canal esta vacio"
+        "The channel is empty": "el canal esta vacio",
+        "queue_string": "Una representaci\u00f3n basada en texto/c\u00f3digo de la cola (del comando /queue_export)",
+        "guild_id": "El id del gremio"
     },
     "fr": {
         "search": "Recherchez YouTube pour la requ\u00eate fournie",
@@ -1184,7 +1194,9 @@
         "Jump to": "Sauter \u00e0",
         "Set Time": "R\u00e9gler le temps",
         "Loop mode is already enabled": "Le mode boucle est d\u00e9j\u00e0 activ\u00e9",
-        "The channel is empty": "Le canal est vide"
+        "The channel is empty": "Le canal est vide",
+        "queue_string": "Une repr\u00e9sentation textuelle/code de la file d&#39;attente (\u00e0 partir de la commande /queue_export)",
+        "guild_id": "L&#39;identifiant de la guilde"
     },
     "it": {
         "search": "Cerca YouTube per la query fornita",
@@ -1382,7 +1394,9 @@
         "Jump to": "Salta a",
         "Set Time": "Tempo impostato",
         "Loop mode is already enabled": "La modalit\u00e0 Loop \u00e8 gi\u00e0 abilitata",
-        "The channel is empty": "Il canale \u00e8 vuoto"
+        "The channel is empty": "Il canale \u00e8 vuoto",
+        "queue_string": "Una rappresentazione basata su testo/codice della coda (dal comando /queue_export)",
+        "guild_id": "L&#39;id della gilda"
     },
     "ja": {
         "search": "YouTube\u3092\u691c\u7d22\u3057\u3066\u304f\u3060\u3055\u3044",
@@ -1580,7 +1594,9 @@
         "Jump to": "\u306b\u30b8\u30e3\u30f3\u30d7",
         "Set Time": "\u6642\u9593\u3092\u8a2d\u5b9a\u3059\u308b",
         "Loop mode is already enabled": "\u30eb\u30fc\u30d7\u30e2\u30fc\u30c9\u306f\u3059\u3067\u306b\u6709\u52b9\u306b\u306a\u3063\u3066\u3044\u307e\u3059",
-        "The channel is empty": "\u30c1\u30e3\u30f3\u30cd\u30eb\u304c\u7a7a\u3067\u3059"
+        "The channel is empty": "\u30c1\u30e3\u30f3\u30cd\u30eb\u304c\u7a7a\u3067\u3059",
+        "queue_string": "\u30ad\u30e5\u30fc\u306e\u30c6\u30ad\u30b9\u30c8\u30d9\u30fc\u30b9/\u30b3\u30fc\u30c9\u8868\u73fe (/queue_export \u30b3\u30de\u30f3\u30c9\u304b\u3089)",
+        "guild_id": "\u30ae\u30eb\u30c9\u306eID"
     },
     "ko": {
         "search": "\uc81c\uacf5\ub41c \ucffc\ub9ac\ub97c \uac80\uc0c9\ud558\uc2ed\uc2dc\uc624",
@@ -1778,7 +1794,9 @@
         "Jump to": "\uc774\ub3d9",
         "Set Time": "\uc2dc\uac04 \uc124\uc815",
         "Loop mode is already enabled": "\ub8e8\ud504 \ubaa8\ub4dc\uac00 \uc774\ubbf8 \ud65c\uc131\ud654\ub428",
-        "The channel is empty": "\ucc44\ub110\uc774 \ube44\uc5b4 \uc788\uc2b5\ub2c8\ub2e4."
+        "The channel is empty": "\ucc44\ub110\uc774 \ube44\uc5b4 \uc788\uc2b5\ub2c8\ub2e4.",
+        "queue_string": "\ub300\uae30\uc5f4\uc758 \ud14d\uc2a4\ud2b8 \uae30\ubc18/\ucf54\ub4dc \ud45c\ud604(/queue_export \uba85\ub839\uc5d0\uc11c)",
+        "guild_id": "\uae38\ub4dc\uc758 \uc544\uc774\ub514"
     },
     "la": {
         "search": "Search YouTube pro provisum query",
@@ -1976,7 +1994,9 @@
         "Jump to": "Salire ad",
         "Set Time": "Set Tempus",
         "Loop mode is already enabled": "Loop modus iam para",
-        "The channel is empty": "Canalis inanis est"
+        "The channel is empty": "Canalis inanis est",
+        "queue_string": "Textus substructio / codice repraesentatio queue (ex / queue_export imperium)",
+        "guild_id": "Id est sodalitio"
     },
     "zh": {
         "search": "\u641c\u7d22YouTube\u63d0\u4f9b\u7684\u67e5\u8be2",
@@ -2174,7 +2194,9 @@
         "Jump to": "\u8df3\u5230",
         "Set Time": "\u8bbe\u7f6e\u65f6\u95f4",
         "Loop mode is already enabled": "\u5faa\u73af\u6a21\u5f0f\u5df2\u542f\u7528",
-        "The channel is empty": "\u9891\u9053\u662f\u7a7a\u7684"
+        "The channel is empty": "\u9891\u9053\u662f\u7a7a\u7684",
+        "queue_string": "\u961f\u5217\u7684\u57fa\u4e8e\u6587\u672c/\u4ee3\u7801\u8868\u793a\uff08\u6765\u81ea /queue_export \u547d\u4ee4\uff09",
+        "guild_id": "\u516c\u4f1aid"
     },
     "nl": {
         "search": "Zoek YouTube naar de verstrekte query",
@@ -2372,7 +2394,9 @@
         "Jump to": "Spring naar",
         "Set Time": "Tijd instellen",
         "Loop mode is already enabled": "Loop-modus is al ingeschakeld",
-        "The channel is empty": "Het kanaal is leeg"
+        "The channel is empty": "Het kanaal is leeg",
+        "queue_string": "Een op tekst gebaseerde/coderepresentatie van de wachtrij (van de opdracht /queue_export)",
+        "guild_id": "Het ID van het gilde"
     },
     "pl": {
         "search": "Wyszukaj YouTube, aby uzyska\u0107 dostarczone zapytanie",
@@ -2570,7 +2594,9 @@
         "Jump to": "Skocz do",
         "Set Time": "Ustaw czas",
         "Loop mode is already enabled": "Tryb p\u0119tli jest ju\u017c w\u0142\u0105czony",
-        "The channel is empty": "Kana\u0142 jest pusty"
+        "The channel is empty": "Kana\u0142 jest pusty",
+        "queue_string": "Tekstowa/kodowa reprezentacja kolejki (z komendy /queue_export)",
+        "guild_id": "Identyfikator gildii"
     },
     "pt": {
         "search": "Pesquise o YouTube pela consulta fornecida",
@@ -2768,7 +2794,9 @@
         "Jump to": "Pule para",
         "Set Time": "Definir tempo",
         "Loop mode is already enabled": "O modo loop j\u00e1 est\u00e1 ativado",
-        "The channel is empty": "O canal est\u00e1 vazio"
+        "The channel is empty": "O canal est\u00e1 vazio",
+        "queue_string": "Uma representa\u00e7\u00e3o baseada em texto/c\u00f3digo da fila (do comando /queue_export)",
+        "guild_id": "id da guilda"
     },
     "ru": {
         "search": "\u041f\u043e\u0438\u0441\u043a YouTube \u0434\u043b\u044f \u043f\u0440\u0435\u0434\u043e\u0441\u0442\u0430\u0432\u043b\u0435\u043d\u043d\u043e\u0433\u043e \u0437\u0430\u043f\u0440\u043e\u0441\u0430",
@@ -2966,7 +2994,9 @@
         "Jump to": "\u041f\u0435\u0440\u0435\u0439\u0442\u0438 \u043a",
         "Set Time": "\u0423\u0441\u0442\u0430\u043d\u043e\u0432\u0438\u0442\u044c \u0432\u0440\u0435\u043c\u044f",
         "Loop mode is already enabled": "\u0420\u0435\u0436\u0438\u043c \u043f\u0435\u0442\u043b\u0438 \u0443\u0436\u0435 \u0432\u043a\u043b\u044e\u0447\u0435\u043d",
-        "The channel is empty": "\u041a\u0430\u043d\u0430\u043b \u043f\u0443\u0441\u0442"
+        "The channel is empty": "\u041a\u0430\u043d\u0430\u043b \u043f\u0443\u0441\u0442",
+        "queue_string": "\u0422\u0435\u043a\u0441\u0442\u043e\u0432\u043e\u0435/\u043a\u043e\u0434\u043e\u0432\u043e\u0435 \u043f\u0440\u0435\u0434\u0441\u0442\u0430\u0432\u043b\u0435\u043d\u0438\u0435 \u043e\u0447\u0435\u0440\u0435\u0434\u0438 (\u0438\u0437 \u043a\u043e\u043c\u0430\u043d\u0434\u044b /queue_export)",
+        "guild_id": "\u0418\u0434\u0435\u043d\u0442\u0438\u0444\u0438\u043a\u0430\u0442\u043e\u0440 \u0433\u0438\u043b\u044c\u0434\u0438\u0438"
     },
     "sv": {
         "search": "S\u00f6k YouTube efter den medf\u00f6ljande fr\u00e5gan",
@@ -3164,7 +3194,9 @@
         "Jump to": "Hoppa till",
         "Set Time": "St\u00e4ll klockan",
         "Loop mode is already enabled": "Loop-l\u00e4get \u00e4r redan aktiverat",
-        "The channel is empty": "Kanalen \u00e4r tom"
+        "The channel is empty": "Kanalen \u00e4r tom",
+        "queue_string": "En textbaserad/kodrepresentation av k\u00f6n (fr\u00e5n kommandot /queue_export)",
+        "guild_id": "Gildets id"
     },
     "tr": {
         "search": "Verilen sorgu i\u00e7in youtube aray\u0131n",
@@ -3362,6 +3394,8 @@
         "Jump to": "Atlamak",
         "Set Time": "Ayarlanan zaman",
         "Loop mode is already enabled": "D\u00f6ng\u00fc modu zaten etkin",
-        "The channel is empty": "kanal bo\u015f"
+        "The channel is empty": "kanal bo\u015f",
+        "queue_string": "Kuyru\u011fun metin tabanl\u0131/kod g\u00f6sterimi (/queue_export komutundan)",
+        "guild_id": "lonca kimli\u011fi"
     }
 }
