@@ -162,26 +162,23 @@
 
             <div class="e-div">
               <label for="volume" class="e-label">volume (%)</label>
-              <input type="number" id="volume" name="volume" value="100" min="0" max="200" class="e-input e-input-color">
+              <input type="number" id="volume" name="volume" value="{{ int(guild_object.options.volume*100) }}" min="0" max="200" class="e-input e-input-color">
             </div>
 
             <div class="e-div">
               <label for="buffer" class="e-label">buffer (s)</label>
-              <input type="number" id="buffer" name="buffer" value="600" min="1" max="1800" class="e-input e-input-color">
+              <input type="number" id="buffer" name="buffer" value="{{ guild_object.options.buffer }}" min="1" max="1800" class="e-input e-input-color">
             </div>
 
             <div class="e-div">
               <label for="history_length" class="e-label">history_length</label>
-              <input type="number" id="history_length" name="history_length" value="10" min="1" max="100"
+              <input type="number" id="history_length" name="history_length" value="{{ guild_object.options.history_length }}" min="1" max="100"
                      class="e-input e-input-color">
             </div>
 
             <div class="e-div">
-              <label for="update" class="e-label">update</label>
-              <select class="e-input e-input-color" id="update" name="update">
-                <option value="True" {{ 'selected' if guild_object.options.update == True }}>True</option>
-                <option value="False" {{ 'selected' if guild_object.options.update == False }}>False</option>
-              </select>
+              <label for="last_updated" class="e-label">last_updated</label>
+              <input type="number" id="last_updated" name="last_updated" value="{{ guild_object.options.last_updated }}" min="0" class="e-input e-input-color">
             </div>
 
             <div class="e-div">

@@ -180,12 +180,18 @@
       <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse show">
         <div class="accordion-body">
           {% if guild.now_playing is not none %}
-            <div class="div-none">
-              {{ guild.now_playing.renew() }}
-            </div>
             <div class="q-div q-history">
+              {% if guild.now_playing.radio_info is not none and 'picture' in guild.now_playing.radio_info.keys() %}
+              <div class="q-item0 q-div div-radio3">
+                <img loading="lazy" class="q-img" src="{{ guild.now_playing.radio_info['picture'] }}" alt="thumbnail">
+                <div class="q-item1 q-wd">
+                  <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="{{ guild.now_playing.url }}">{{ guild.now_playing.radio_info['title'] }}</a></p>
+                  <p class="q-text"><a class="q-2" target="_blank" rel="noopener noreferrer" href="{{ guild.now_playing.channel_link }}">{{ guild.now_playing.radio_info['channel_name'] }}</a></p>
+                </div>
+              </div>
+              {% endif %}
               <img loading="lazy" class="q-img" src="{{ guild.now_playing.picture }}" alt="thumbnail">
-              <div class="q-item1 q-wd">
+              <div class="q-item1">
                 <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer"
                                      href="{{ guild.now_playing.url }}">{{ guild.now_playing.title }}</a></p>
                 <p class="q-text"><a class="q-2" target="_blank" rel="noopener noreferrer"
@@ -418,12 +424,19 @@
         {% for track in guild.queue %}
           <div class="q-container">
             <div class="q-div">
+              {% if track.radio_info is not none and 'picture' in track.radio_info.keys() %}
+              <div class="q-item0 q-div div-radio2 r-w1">
+                <img loading="lazy" class="q-img" src="{{ track.radio_info['picture'] }}" alt="thumbnail">
+                <div class="q-item1 q-wd">
+                  <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="{{ track.url }}">{{ track.radio_info['title'] }}</a></p>
+                  <p class="q-text"><a class="q-2" target="_blank" rel="noopener noreferrer" href="{{ track.channel_link }}">{{ track.radio_info['channel_name'] }}</a></p>
+                </div>
+              </div>
+              {% endif %}
               <img loading="lazy" class="q-img" src="{{ track.picture }}" alt="thumbnail">
-              <div class="q-item1 q-wd">
-                <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer"
-                                     href="{{ track.url }}">{{ track.title }}</a></p>
-                <p class="q-text"><a class="q-2" target="_blank" rel="noopener noreferrer"
-                                     href="{{ track.channel_link }}">{{ track.channel_name }}</a></p>
+              <div class="q-item1 {% if track.radio_info is not none and 'picture' in track.radio_info.keys() %}r-w2{% else %}q-wd{% endif %}">
+                <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="{{ track.url }}">{{ track.title }}</a></p>
+                <p class="q-text"><a class="q-2" target="_blank" rel="noopener noreferrer" href="{{ track.channel_link }}">{{ track.channel_name }}</a></p>
                 <p class="q-text q-3">{{ convert_duration(track.duration) }}</p>
               </div>
               <div class="q-item2 q-items-center">

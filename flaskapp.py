@@ -147,60 +147,9 @@ class VideoClass:
         self.duration = None
         self.channel_name = None
         self.channel_link = None
-        self.radio_name = None
-        self.radio_website = None
+        self.radio_info = None
         self.local_number = None
         self.chapters = None
-
-    def renew(self):
-        if self.class_type == 'Radio':
-            response = get_renew(self.radio_website, self.url)
-            if response is not None:
-                self.picture = response[0]
-                self.channel_name = response[1]
-                self.title = response[2]
-                self.duration = response[3]
-
-    def current_chapter(self):
-        if self.played_duration is None:
-            return None
-        if self.chapters is None:
-            return None
-        if self.played_duration[-1]['end']['epoch'] is not None:
-            return None
-
-        time_from_play = int(video_time_from_start(self))
-
-        try:
-            duration = int(self.duration)
-            if time_from_play > duration:
-                return None
-        except (ValueError, TypeError):
-            return None
-
-        # {'start_time': 0.0, 'title': '1. Omen', 'end_time': 127.0}, {'start_time': 127.0, 'title': '2. The Night Unfurls', 'end_time': 253.0}
-
-        for chapter in self.chapters:
-            if chapter['start_time'] < time_from_play < chapter['end_time']:
-                return chapter['title']
-
-    def time(self):
-        if self.duration is None:
-            return '0:00 / 0:00'
-        if self.played_duration[-1]['end']['epoch'] is not None:
-            return '0:00 / ' + convert_duration(self.duration)
-
-        time_from_play = int(video_time_from_start(self))
-
-        try:
-            duration = int(self.duration)
-        except (ValueError, TypeError):
-            return f'{convert_duration(time_from_play)} / {self.duration}'
-
-        if time_from_play == 0:
-            return '0:00 / ' + convert_duration(duration)
-
-        return f'{convert_duration(time_from_play)} / {convert_duration(duration)}'
 
 class DiscordUser:
     def __init__(self):
@@ -758,6 +707,25 @@ def get_channel_content(guild_id: int, channel_id: int):
     except (FileNotFoundError, IndexError, PermissionError):
         return None
 
+def get_renew(guild_id: int, queue_type: str, index: int):
+    """
+    Get a renew from the database
+    :param guild_id: guild id
+    :param queue_type: queue or now_playing
+    :param index: index in queue
+    :return: renew object
+    """
+    # create argument dictionary
+    arg_dict = {
+        'type': 'get_data',
+        'data_type': 'renew',
+        'guild_id': guild_id,
+        'queue_type': queue_type,
+        'index': index
+    }
+    # send argument dictionary
+    return send_arg(arg_dict)
+
 # user specific data
 def get_username(user_id: int):
     """
@@ -785,23 +753,6 @@ def get_user_data(user_id: int):
         'type': 'get_data',
         'data_type': 'user_data',
         'user_id': user_id
-    }
-    # send argument dictionary
-    return send_arg(arg_dict)
-
-def get_renew(radio_website, url):
-    """
-    Get a renew from the database
-    :param radio_website: radio website
-    :param url: url
-    :return: renew object
-    """
-    # create argument dictionary
-    arg_dict = {
-        'type': 'get_data',
-        'data_type': 'renew',
-        'radio_website': radio_website,
-        'url': url
     }
     # send argument dictionary
     return send_arg(arg_dict)
@@ -1059,6 +1010,13 @@ async def guild_page(guild_id, key):
         pd = guild_object.now_playing.played_duration
     else:
         pd = [{'start': None, 'end': None}]
+
+    if guild_object.now_playing:
+        get_renew(guild_object.id, 'now_playing', 0)
+
+    if guild_object.queue:
+        for i, video in enumerate(guild_object.queue):
+            get_renew(guild_object.id, 'queue', i)
 
     return render_template('control/guild.html', guild=guild_object, struct_to_time=struct_to_time,
                            convert_duration=convert_duration, get_username=get_username, errors=errors,
@@ -1389,7 +1347,7 @@ async def admin_guild(guild_id):
     if guild_object is None:
         return abort(404)
     return render_template('admin/guild.html', user=user, guild_object=guild_object, languages_dict=languages_dict,
-                           errors=errors, messages=messages, title='Admin Guild Dashboard')
+                           errors=errors, messages=messages, title='Admin Guild Dashboard', int=int)
 
 # Admin guild data
 @app.route('/admin/guild/<int:guild_id>/users', methods=['GET', 'POST'])
