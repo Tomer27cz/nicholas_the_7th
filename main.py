@@ -75,9 +75,11 @@ class Bot(commands.Bot):
         if sys_channel is not None:
             if sys_channel.permissions_for(guild_object.me).send_messages:
                 await sys_channel.send(message)
-                return
         else:
             await text_channels[0].send(message)
+
+        # download all channels
+        await download_guild(WebData(guild_object.id, bot.user.name, bot.user.id), guild_object.id, mute_response=True, ephemeral=True)
 
     @staticmethod
     async def on_guild_remove(guild_object):
@@ -548,6 +550,7 @@ class Guild:
     def __init__(self, guild_id):
         self.id = guild_id
         self.options = Options(guild_id)
+        self.saves = []
         self.queue = []
         self.search_list = []
         self.now_playing = None
@@ -557,7 +560,7 @@ class Guild:
                                    author=my_id,
                                    title='Never gonna give you up',
                                    picture='https://img.youtube.com/vi/dQw4w9WgXcQ/default.jpg',
-                                   duration='3:33',
+                                   duration=213,
                                    channel_name='Rick Astley',
                                    channel_link='https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw')]
         self.data = GuildData(guild_id)
@@ -846,6 +849,7 @@ def guild_to_json(guild_object):
     guild_dict['connected'] = guild_object.connected
     guild_dict['options'] = guild_object.options.__dict__
     guild_dict['data'] = guild_object.data.__dict__
+    guild_dict['saves'] = guild_object.saves
     guild_dict['queue'] = queue_dict
     guild_dict['search_list'] = search_dict
     guild_dict['history'] = history_dict
@@ -908,6 +912,7 @@ def json_to_guild(guild_dict):
     guild_object = Guild(guild_dict['id'])
     guild_object.options.__dict__ = guild_dict['options']
     guild_object.data.__dict__ = guild_dict['data']
+    guild_object.saves = guild_dict['saves']
     guild_object.queue = [json_to_video(video_dict) for video_dict in guild_dict['queue'].values()]
     guild_object.search_list = [json_to_video(video_dict) for video_dict in guild_dict['search_list'].values()]
     guild_object.history = [json_to_video(video_dict) for video_dict in guild_dict['history'].values()]
@@ -1039,6 +1044,146 @@ def update_guilds():
                 guild[guild_object.id].connected = True
 
         guild_object.renew()
+
+# ---------------------------------------------- SAVED QUEUE ---------------------------------------------------
+
+def new_queue_save(guild_id: int, save_name: str) -> ReturnData:
+    """
+    Creates new queue save
+    :param guild_id: int - id of guild
+    :param save_name: str - name of save
+    :return: ReturnData - return data
+    """
+    save_name = ascii_nospace(save_name)
+    if save_name is False:
+        return ReturnData(False, tg(guild_id, 'Save name must be alphanumeric'))
+
+    if save_name in guild[guild_id].saves:
+        return ReturnData(False, tg(guild_id, 'save already exists'))
+
+    if not guild[guild_id].queue:
+        return ReturnData(False, tg(guild_id, 'Queue is empty'))
+
+    with open(f'db/saves.json', 'r', encoding='utf-8') as f:
+        saves = json.load(f)
+
+    guild[guild_id].saves.append(save_name)
+
+    if str(guild_id) not in saves.keys():
+        guild[guild_id].saves = [save_name]
+        saves[str(guild_id)] = {}
+
+    if not list(saves[str(guild_id)].keys()) == guild[guild_id].saves:
+        guild[guild_id].saves = list(saves[str(guild_id)].keys())
+
+    queue_dict = {}
+    for index, video in enumerate(guild[guild_id].queue):
+        queue_dict[index] = video.__dict__
+    saves[str(guild_id)][save_name] = queue_dict
+
+    with open(f'db/saves.json', 'w', encoding='utf-8') as f:
+        f.write(json.dumps(saves, indent=4))
+
+    del saves
+
+    return ReturnData(True, tg(guild_id, 'queue saved'))
+
+def load_queue_save(guild_id: int, save_name: str) -> ReturnData:
+    """
+    Loads queue save
+    :param guild_id: int - id of guild
+    :param save_name: str - name of save
+    :return: ReturnData - return data
+    """
+    with open(f'db/saves.json', 'r', encoding='utf-8') as f:
+        saves = json.loads(f.read())
+
+    if guild_id not in guild.keys():
+        return ReturnData(False, tg(guild_id, 'no guild found for specified guild id'))
+
+    if str(guild_id) not in saves.keys():
+        guild[guild_id].saves = []
+        return ReturnData(False, tg(guild_id, 'no saves found for specified guild'))
+
+    if save_name not in saves[str(guild_id)].keys():
+        return ReturnData(False, tg(guild_id, 'save not found'))
+
+    guild[guild_id].queue = [json_to_video(video_dict) for video_dict in saves[str(guild_id)][save_name].values()]
+
+    del saves
+
+    return ReturnData(True, tg(guild_id, 'queue loaded'))
+
+def delete_queue_save(guild_id: int, save_name: str) -> ReturnData:
+    """
+    Deletes queue save
+    :param guild_id: int - id of guild
+    :param save_name: str - name of save
+    :return: ReturnData - return data
+    """
+    with open(f'db/saves.json', 'r', encoding='utf-8') as f:
+        saves = json.loads(f.read())
+
+    if guild_id not in guild.keys():
+        return ReturnData(False, tg(guild_id, 'no guild found for specified guild id'))
+
+    if str(guild_id) not in saves.keys():
+        guild[guild_id].saves = []
+        return ReturnData(False, tg(guild_id, 'no saves found for specified guild'))
+
+    if save_name not in saves[str(guild_id)].keys():
+        return ReturnData(False, tg(guild_id, 'save not found'))
+
+    del saves[str(guild_id)][save_name]
+
+    with open(f'db/saves.json', 'w', encoding='utf-8') as f:
+        f.write(json.dumps(saves, indent=4))
+
+    guild[guild_id].saves = list(saves[str(guild_id)].keys())
+
+    del saves
+
+    return ReturnData(True, tg(guild_id, 'queue save deleted'))
+
+def rename_queue_save(guild_id: int, old_name: str, new_name: str) -> ReturnData:
+    """
+    Renames queue save
+    :param guild_id: int - id of guild
+    :param old_name: str - old name of save
+    :param new_name: str - new name of save
+    :return: ReturnData - return data
+    """
+    new_name = ascii_nospace(new_name)
+    if new_name is False:
+        return ReturnData(False, tg(guild_id, 'Save name must be alphanumeric'))
+
+    if guild_id not in guild.keys():
+        return ReturnData(False, tg(guild_id, 'no guild found for specified guild id'))
+
+    with open(f'db/saves.json', 'r', encoding='utf-8') as f:
+        saves = json.loads(f.read())
+
+    if str(guild_id) not in saves.keys():
+        guild[guild_id].saves = []
+        return ReturnData(False, tg(guild_id, 'no saves found for specified guild'))
+
+    if old_name not in saves[str(guild_id)].keys():
+        return ReturnData(False, tg(guild_id, 'save not found'))
+
+    if new_name in saves[str(guild_id)].keys():
+        return ReturnData(False, tg(guild_id, 'save already exists'))
+
+    saves[str(guild_id)][new_name] = saves[str(guild_id)][old_name]
+    del saves[str(guild_id)][old_name]
+
+    with open(f'db/saves.json', 'w', encoding='utf-8') as f:
+        f.write(json.dumps(saves, indent=4))
+
+    guild[guild_id].saves = list(saves[str(guild_id)].keys())
+
+    del saves
+
+    return ReturnData(True, tg(guild_id, 'queue save renamed'))
 
 # ---------------------------------------------- TEXT ----------------------------------------------------------
 
@@ -1535,6 +1680,15 @@ def is_float(value) -> bool:
         return True
     except:
         return False
+
+def ascii_nospace(string: str):
+    if type(string) is not str:
+        raise TypeError(f"string must be str not {type(string)}")
+
+    if not string.isascii():
+        return False
+
+    return string.replace(" ", "_")
 
 # ---------------------------------------------- DISCORD -------------------------------------------------------
 
@@ -3671,6 +3825,7 @@ async def file_command_def(ctx: commands.Context, config_file: discord.Attachmen
         'other': '.json',
         'radio': '.json',
         'languages': '.json',
+        'saves': '.json',
         'log': '.log',
         'data': '.log',
         'activity': '.log',
@@ -3678,7 +3833,7 @@ async def file_command_def(ctx: commands.Context, config_file: discord.Attachmen
         'apache_error': '.log'
     }
 
-    if config_type in ['guilds', 'other', 'languages', 'radio']:
+    if config_type in ['guilds', 'other', 'languages', 'radio', 'saves']:
         file_path = f'{config.PARENT_DIR}db/{config_type}{config_types[config_type]}'
     else:
         file_path = f'{config.PARENT_DIR}log/{config_type}{config_types[config_type]}'
@@ -3705,7 +3860,7 @@ async def file_command_def(ctx: commands.Context, config_file: discord.Attachmen
         return ReturnData(False, message)
 
     if not filename_name in config_types.keys():
-        message = 'You need to upload a file with a valid name (guilds, other, radio, languages, log, data, activity, apache_activity, apache_error)'
+        message = 'You need to upload a file with a valid name (guilds, other, radio, languages, saves, log, data, activity, apache_activity, apache_error)'
         await ctx.reply(message, ephemeral=True)
         return ReturnData(False, message)
 
@@ -3965,7 +4120,7 @@ async def download_guild_channel(ctx, channel_id: int, mute_response: bool=False
         # for path_output in execute(command):
         #     print(path_output)
     except subprocess.CalledProcessError as e:
-        message = tg(guild_id, f'Command raised an error') + e
+        message = tg(ctx_guild_id, f'Command raised an error') + e
         if not mute_response and is_ctx:
             await org_msg.edit(content=message)
         return ReturnData(False, message)
@@ -3978,14 +4133,14 @@ async def download_guild(ctx, guild_id: int, mute_response: bool=False, ephemera
     try:
         guild_id = int(guild_id)
     except (ValueError, TypeError):
-        message = f'({guild_id}) ' + tg(guild_id, 'is not an id')
+        message = f'({guild_id}) ' + tg(ctx_guild_id, 'is not an id')
         if not mute_response:
             await ctx.reply(message, ephemeral=ephemeral)
         return ReturnData(False, message)
 
     guild_object = bot.get_guild(guild_id)
     if not guild_object:
-        message = f'Guild ({guild_id}) ' + tg(guild_id, 'is not accessible')
+        message = f'Guild ({guild_id}) ' + tg(ctx_guild_id, 'is not accessible')
         if not mute_response:
             await ctx.reply(message, ephemeral=ephemeral)
         return ReturnData(False, message)
@@ -3993,7 +4148,7 @@ async def download_guild(ctx, guild_id: int, mute_response: bool=False, ephemera
     guild_id = guild_object.id
     response = await save_channel_info_to_file(guild_id, f'{config.PARENT_DIR}db/guilds/{guild_id}')
     if not response.response:
-        message = tg(guild_id, f'Error while saving channel info to file') + ":" + response.message
+        message = tg(ctx_guild_id, f'Error while saving channel info to file') + ":" + response.message
         if not mute_response:
             await ctx.reply(message, ephemeral=ephemeral)
         return ReturnData(False, message)
@@ -4012,7 +4167,7 @@ async def download_guild(ctx, guild_id: int, mute_response: bool=False, ephemera
         #     print(path_output)
     except subprocess.CalledProcessError as e:
         log(ctx, f'download_guild_channel -> error: {e}')
-        message = tg(guild_id, f'Command raised an error')
+        message = tg(ctx_guild_id, f'Command raised an error')
         if not mute_response and is_ctx:
             await org_msg.edit(content=message)
         return ReturnData(False, message)
@@ -4026,7 +4181,7 @@ async def get_guild_channel(ctx, channel_id: int, mute_response: bool=False, gui
     try:
         channel_id = int(channel_id)
     except (ValueError, TypeError):
-        message = f'({channel_id}) ' + tg(guild_id, 'is not an id')
+        message = f'({channel_id}) ' + tg(ctx_guild_id, 'is not an id')
         if not mute_response:
             await ctx.reply(message, ephemeral=ephemeral)
         return ReturnData(False, message)
@@ -4070,7 +4225,7 @@ async def get_guild(ctx, guild_id: int, mute_response: bool=False, ephemeral: bo
     try:
         guild_id = int(guild_id)
     except (ValueError, TypeError):
-        message = f'({guild_id}) ' + tg(guild_id, 'is not an id')
+        message = f'({guild_id}) ' + tg(ctx_guild_id, 'is not an id')
         if not mute_response:
             await ctx.reply(message, ephemeral=ephemeral)
         return ReturnData(False, message)
@@ -4114,7 +4269,7 @@ async def export_queue(ctx, guild_id: int=None, ephemeral: bool=False):
     try:
         guild_id = int(guild_id)
     except (ValueError, TypeError):
-        message = f'({guild_id}) ' + tg(guild_id, 'is not an id')
+        message = f'({guild_id}) ' + tg(ctx_guild_id, 'is not an id')
         await ctx.reply(message, ephemeral=ephemeral)
         return ReturnData(False, message)
 
@@ -4126,7 +4281,7 @@ async def export_queue(ctx, guild_id: int=None, ephemeral: bool=False):
         return ReturnData(False, message)
 
     if not queue_dict:
-        message = tg(guild_id, f"Queue is empty")
+        message = tg(ctx_guild_id, f"Queue is empty")
         await ctx.reply(message, ephemeral=ephemeral)
         return ReturnData(False, message)
 
@@ -4176,7 +4331,7 @@ async def import_queue(ctx, queue_data, guild_id: int=None, ephemeral: bool=Fals
     try:
         guild_id = int(guild_id)
     except (ValueError, TypeError):
-        message = f'({guild_id}) ' + tg(guild_id, 'is not an id')
+        message = f'({guild_id}) ' + tg(ctx_guild_id, 'is not an id')
         await ctx.reply(message, ephemeral=ephemeral)
         return ReturnData(False, message)
 
@@ -4220,14 +4375,14 @@ async def set_video_time(ctx, time_stamp: int, mute_response: bool=False, epheme
         try:
             time_stamp = int(float(time_stamp))
         except (ValueError, TypeError):
-            message = f'({time_stamp}) ' + tg(guild_id, 'is not an int')
+            message = f'({time_stamp}) ' + tg(ctx_guild_id, 'is not an int')
             if not mute_response:
                 await ctx.reply(message, ephemeral=ephemeral)
             return ReturnData(False, message)
 
     voice = ctx_guild_object.voice_client
     if not voice:
-        message = tg(guild_id, f'Bot is not in a voice channel')
+        message = tg(ctx_guild_id, f'Bot is not in a voice channel')
         if not mute_response:
             await ctx.reply(message, ephemeral=ephemeral)
         return ReturnData(False, message)
@@ -4240,7 +4395,7 @@ async def set_video_time(ctx, time_stamp: int, mute_response: bool=False, epheme
 
     now_playing_video = guild[ctx_guild_id].now_playing
     if not now_playing_video:
-        message = tg(guild_id, f'Bot is not playing anything')
+        message = tg(ctx_guild_id, f'Bot is not playing anything')
         if not mute_response:
             await ctx.reply(message, ephemeral=ephemeral)
         return ReturnData(False, message)
@@ -4254,7 +4409,7 @@ async def set_video_time(ctx, time_stamp: int, mute_response: bool=False, epheme
     voice.source = new_source
     set_new_time(now_playing_video, time_stamp)
 
-    message = tg(guild_id, f'Video time set to') + time_stamp
+    message = tg(ctx_guild_id, f'Video time set to') + time_stamp
     if not mute_response:
         await ctx.reply(message, ephemeral=ephemeral)
     return ReturnData(True, message)
@@ -4501,13 +4656,14 @@ async def move_def(ctx, org_number, destination_number, ephemeral=True) -> Retur
 
 async def web_up(web_data, number) -> ReturnData:
     log(web_data, 'web_up', [number], log_type='function', author=web_data.author)
+    is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data)
     guild_id = web_data.guild_id
     queue_length = len(guild[guild_id].queue)
     number = int(number)
 
     if queue_length == 0:
         log(guild_id, "web_up -> No songs in queue")
-        return ReturnData(False, tg(guild_id, 'No songs in queue'))
+        return ReturnData(False, tg(ctx_guild_id, 'No songs in queue'))
 
     if number == 0:
         return await move_def(web_data, 0, queue_length - 1)
@@ -4516,13 +4672,14 @@ async def web_up(web_data, number) -> ReturnData:
 
 async def web_down(web_data, number) -> ReturnData:
     log(web_data, 'web_down', [number], log_type='function', author=web_data.author)
+    is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data)
     guild_id = web_data.guild_id
     queue_length = len(guild[guild_id].queue)
     number = int(number)
 
     if queue_length == 0:
         log(guild_id, "web_down -> No songs in queue")
-        return ReturnData(False, tg(guild_id, 'No songs in queue'))
+        return ReturnData(False, tg(ctx_guild_id, 'No songs in queue'))
 
     if number == queue_length - 1:
         return await move_def(web_data, number, 0)
@@ -4531,57 +4688,61 @@ async def web_down(web_data, number) -> ReturnData:
 
 async def web_top(web_data, number) -> ReturnData:
     log(web_data, 'web_top', [number], log_type='function', author=web_data.author)
+    is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data)
     guild_id = web_data.guild_id
     queue_length = len(guild[guild_id].queue)
     number = int(number)
 
     if queue_length == 0:
         log(guild_id, "web_top -> No songs in queue")
-        return ReturnData(False, tg(guild_id, 'No songs in queue'))
+        return ReturnData(False, tg(ctx_guild_id, 'No songs in queue'))
 
     if number == 0:
         log(guild_id, "web_top -> Already at the top")
-        return ReturnData(False, tg(guild_id, 'Already at the top'))
+        return ReturnData(False, tg(ctx_guild_id, 'Already at the top'))
 
     return await move_def(web_data, number, 0)
 
 async def web_bottom(web_data, number) -> ReturnData:
     log(web_data, 'web_bottom', [number], log_type='function', author=web_data.author)
+    is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data)
     guild_id = web_data.guild_id
     queue_length = len(guild[guild_id].queue)
     number = int(number)
 
     if queue_length == 0:
         log(guild_id, "web_bottom -> No songs in queue")
-        return ReturnData(False, tg(guild_id, 'No songs in queue'))
+        return ReturnData(False, tg(ctx_guild_id, 'No songs in queue'))
 
     if number == queue_length - 1:
         log(guild_id, "web_bottom -> Already at the bottom")
-        return ReturnData(False, tg(guild_id, 'Already at the bottom'))
+        return ReturnData(False, tg(ctx_guild_id, 'Already at the bottom'))
 
     return await move_def(web_data, number, queue_length - 1)
 
 async def web_duplicate(web_data, number) -> ReturnData:
     log(web_data, 'web_duplicate', [number], log_type='function', author=web_data.author)
+    is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data)
     guild_id = web_data.guild_id
     queue_length = len(guild[guild_id].queue)
     number = int(number)
 
     if queue_length == 0:
         log(guild_id, "web_duplicate -> No songs in queue")
-        return ReturnData(False, tg(guild_id, 'No songs in queue'))
+        return ReturnData(False, tg(ctx_guild_id, 'No songs in queue'))
 
     video = guild[guild_id].queue[number]
 
     to_queue(guild_id, video, position=number+1)
 
-    message = f'{tg(guild_id, "Duplicated")} #{number} : {video.title}'
+    message = f'{tg(ctx_guild_id, "Duplicated")} #{number} : {video.title}'
     log(guild_id, f"web_duplicate -> {message}")
     return ReturnData(True, message)
 
 # web queue
 async def web_queue(web_data, video_type, position=None) -> ReturnData:
     log(web_data, 'web_queue', [video_type, position], log_type='function', author=web_data.author)
+    is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data)
     guild_id = web_data.guild_id
 
     if video_type == 'np':
@@ -4592,7 +4753,7 @@ async def web_queue(web_data, video_type, position=None) -> ReturnData:
             video = guild[guild_id].history[index]
         except (TypeError, ValueError, IndexError):
             log(guild_id, "web_queue -> Invalid video type")
-            return ReturnData(False, tg(guild_id, 'Invalid video type (Internal web error -> contact developer)'))
+            return ReturnData(False, tg(ctx_guild_id, 'Invalid video type (Internal web error -> contact developer)'))
 
     if video.class_type == 'Radio':
         return await web_queue_from_radio(web_data, video.radio_info['name'], position)
@@ -4602,14 +4763,15 @@ async def web_queue(web_data, video_type, position=None) -> ReturnData:
 
         save_json()
         log(guild_id, f"web_queue -> Queued: {video.url}")
-        return ReturnData(True, f'{tg(guild_id, "Queued")} {video.title}', video)
+        return ReturnData(True, f'{tg(ctx_guild_id, "Queued")} {video.title}', video)
 
     except Exception as e:
         log(guild_id, f"web_queue -> Error while queuing: {e}")
-        return ReturnData(False, tg(guild_id, 'Error while queuing (Internal web error -> contact developer)'))
+        return ReturnData(False, tg(ctx_guild_id, 'Error while queuing (Internal web error -> contact developer)'))
 
 async def web_queue_from_radio(web_data, radio_name, position=None) -> ReturnData:
     log(web_data, 'web_queue_from_radio', [radio_name, position], log_type='function', author=web_data.author)
+    is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data)
 
     if radio_name in radio_dict.keys():
         video = VideoClass('Radio', web_data.author_id, radio_info={'name': radio_name})
@@ -4620,29 +4782,30 @@ async def web_queue_from_radio(web_data, radio_name, position=None) -> ReturnDat
         else:
             to_queue(web_data.guild_id, video, copy_video=False)
 
-        message = f'`{video.title}` ' + tg(guild_id, 'added to queue!')
+        message = f'`{video.title}` ' + tg(ctx_guild_id, 'added to queue!')
         save_json()
         return ReturnData(True, message, video)
 
     else:
-        message = tg(guild_id, 'Radio station') + f' `{radio_name}` ' + tg(guild_id, 'does not exist!')
+        message = tg(ctx_guild_id, 'Radio station') + f' `{radio_name}` ' + tg(ctx_guild_id, 'does not exist!')
         save_json()
         return ReturnData(False, message)
 
 async def web_join(web_data, form) -> ReturnData:
     log(web_data, 'web_join', [form], log_type='function', author=web_data.author)
+    is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data)
 
     if form['join_btn'] == 'id':
         channel_id = form['channel_id']
     elif form['join_btn'] == 'name':
         channel_id = form['channel_name']
     else:
-        return ReturnData(False, tg(guild_id, 'Invalid channel id (Internal web error -> contact developer)'))
+        return ReturnData(False, tg(ctx_guild_id, 'Invalid channel id (Internal web error -> contact developer)'))
 
     try:
         channel_id = int(channel_id)
     except ValueError:
-        return ReturnData(False, tg(guild_id, 'Invalid channel id') + f': {channel_id}')
+        return ReturnData(False, tg(ctx_guild_id, 'Invalid channel id') + f': {channel_id}')
 
     task = asyncio.run_coroutine_threadsafe(join_def(web_data, channel_id), bot.loop)
 
@@ -4658,6 +4821,7 @@ async def web_disconnect(web_data) -> ReturnData:
 # user edit
 async def web_user_options_edit(web_data, form) -> ReturnData:
     log(web_data, 'web_user_options_edit', [form], log_type='function', author=web_data.author)
+    is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data)
     options = guild[web_data.guild_id].options
 
     loop = form['loop']
@@ -4701,11 +4865,12 @@ async def web_user_options_edit(web_data, form) -> ReturnData:
     options.buffer = int(buffer)
     options.history_length = int(history_length)
 
-    return ReturnData(True, tg(guild_id, f'Edited options successfully!'))
+    return ReturnData(True, tg(ctx_guild_id, f'Edited options successfully!'))
 
 # admin
 async def web_video_edit(web_data, form) -> ReturnData:
     log(web_data, 'web_video_edit', [form], log_type='function', author=web_data.author)
+    is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data)
     guild_id = web_data.guild_id
     index = form['edit_btn']
     is_queue = True
@@ -4719,18 +4884,18 @@ async def web_video_edit(web_data, form) -> ReturnData:
         try:
             index = int(index[1:])
             if index < 0 or index >= len(guild[guild_id].history):
-                return ReturnData(False, tg(guild_id, 'Invalid index (out of range)'))
+                return ReturnData(False, tg(ctx_guild_id, 'Invalid index (out of range)'))
         except (TypeError, ValueError, IndexError):
-            return ReturnData(False, tg(guild_id, 'Invalid index (not a number)'))
+            return ReturnData(False, tg(ctx_guild_id, 'Invalid index (not a number)'))
 
     elif index.isdigit():
         is_queue = True
         index = int(index)
         if index < 0 or index >= len(guild[guild_id].queue):
-            return ReturnData(False, tg(guild_id, 'Invalid index (out of range)'))
+            return ReturnData(False, tg(ctx_guild_id, 'Invalid index (out of range)'))
 
     else:
-        return ReturnData(False, tg(guild_id, 'Invalid index (not a number)'))
+        return ReturnData(False, tg(ctx_guild_id, 'Invalid index (not a number)'))
 
     class_type = form['class_type']
     author = form['author']
@@ -4788,7 +4953,7 @@ async def web_video_edit(web_data, form) -> ReturnData:
         try:
             radio_info = ast.literal_eval(radio_info)
             assert type(radio_info) == dict
-        except (TypeError, ValueError, json.decoder.JSONDecodeError, AssertionError):
+        except (TypeError, ValueError, json.decoder.JSONDecodeError, AssertionError, SyntaxError):
             return ReturnData(False, f'Invalid radio info: {radio_info}')
 
     if played_duration:
@@ -4802,14 +4967,14 @@ async def web_video_edit(web_data, form) -> ReturnData:
         try:
             chapters = ast.literal_eval(chapters)
             assert type(chapters) == list
-        except (TypeError, ValueError, json.decoder.JSONDecodeError, AssertionError):
+        except (TypeError, ValueError, json.decoder.JSONDecodeError, AssertionError, SyntaxError):
             return ReturnData(False, f'Invalid chapters: {chapters}')
 
     if discord_channel:
         try:
             discord_channel = ast.literal_eval(discord_channel)
             assert type(discord_channel) == dict
-        except (TypeError, ValueError, json.decoder.JSONDecodeError, AssertionError):
+        except (TypeError, ValueError, json.decoder.JSONDecodeError, AssertionError, SyntaxError):
             return ReturnData(False, f'Invalid discord channel: {discord_channel}')
 
     video = VideoClass(class_type, author, url=url, title=title, picture=picture, duration=duration, channel_name=channel_name, channel_link=channel_link, radio_info=radio_info, local_number=local_number, created_at=created_at, played_duration=played_duration, chapters=chapters, discord_channel=discord_channel, stream_url=stream_url)
@@ -4824,10 +4989,11 @@ async def web_video_edit(web_data, form) -> ReturnData:
 
     save_json()
 
-    return ReturnData(True, tg(guild_id, 'Edited item') + f' {"h" if not is_queue else ""}{index} ' + tg(guild_id, 'successfully!'))
+    return ReturnData(True, tg(ctx_guild_id, 'Edited item') + f' {"h" if not is_queue else ""}{index} ' + tg(ctx_guild_id, 'successfully!'))
 
 async def web_options_edit(web_data, form) -> ReturnData:
     log(web_data, 'web_options_edit', [form], log_type='function', author=web_data.author)
+    is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data)
 
     try:
         stopped = form['stopped']
@@ -4842,7 +5008,7 @@ async def web_options_edit(web_data, form) -> ReturnData:
         history_length = form['history_length']
         last_updated = form['last_updated']
     except KeyError:
-        return ReturnData(False, tg(guild_id, 'Missing form data - please contact the developer (he fucked up when doing an update)'))
+        return ReturnData(False, tg(ctx_guild_id, 'Missing form data - please contact the developer (he fucked up when doing an update)'))
 
     return await options_def(web_data, server='this', stopped=stopped, loop=loop, is_radio=is_radio, language=language,
                              response_type=response_type, search_query=search_query, buttons=buttons, volume=volume,
@@ -4850,31 +5016,33 @@ async def web_options_edit(web_data, form) -> ReturnData:
 
 async def web_delete_guild(web_data, guild_id) -> ReturnData:
     log(web_data, 'web_delete_guild', [guild_id], log_type='function', author=web_data.author)
+    is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data)
     try:
         guild_id = int(guild_id)
     except (TypeError, ValueError):
-        return ReturnData(False, tg(guild_id, 'Invalid guild id') + f': {guild_id}')
+        return ReturnData(False, tg(ctx_guild_id, 'Invalid guild id') + f': {guild_id}')
 
     if guild_id not in guild.keys():
-        return ReturnData(False, tg(guild_id, 'Guild not found') + f': {guild_id}')
+        return ReturnData(False, tg(ctx_guild_id, 'Guild not found') + f': {guild_id}')
 
     del guild[guild_id]
 
     save_json()
 
-    return ReturnData(True, tg(guild_id, 'Deleted guild') + f' {guild_id} ' + tg(guild_id, 'successfully!'))
+    return ReturnData(True, tg(ctx_guild_id, 'Deleted guild') + f' {guild_id} ' + tg(ctx_guild_id, 'successfully!'))
 
 async def web_disconnect_guild(web_data, guild_id) -> ReturnData:
     log(web_data, 'web_disconnect_guild', [guild_id], log_type='function', author=web_data.author)
+    is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data)
     try:
         guild_id = int(guild_id)
     except (TypeError, ValueError):
-        return ReturnData(False, tg(guild_id, 'Invalid guild id') + f': {guild_id}')
+        return ReturnData(False, tg(ctx_guild_id, 'Invalid guild id') + f': {guild_id}')
 
     bot_guild_ids = [guild_object.id for guild_object in bot.guilds]
 
     if guild_id not in bot_guild_ids:
-        return ReturnData(False, tg(guild_id, 'Guild not found in bot.guilds') + f': {guild_id}')
+        return ReturnData(False, tg(ctx_guild_id, 'Guild not found in bot.guilds') + f': {guild_id}')
 
     guild_to_disconnect = bot.get_guild(guild_id)
 
@@ -4885,22 +5053,23 @@ async def web_disconnect_guild(web_data, guild_id) -> ReturnData:
 
     save_json()
 
-    return ReturnData(True, tg(guild_id, 'Left guild') + f' {guild_id} ' + tg(guild_id, 'successfully!'))
+    return ReturnData(True, tg(ctx_guild_id, 'Left guild') + f' {guild_id} ' + tg(ctx_guild_id, 'successfully!'))
 
 async def web_create_invite(web_data, guild_id):
     log(web_data, 'web_create_invite', [guild_id], log_type='function', author=web_data.author)
+    is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data)
     try:
         guild_object = bot.get_guild(int(guild_id))
     except (TypeError, ValueError):
-        return ReturnData(False, tg(guild_id, 'Invalid guild id') + f': {guild_id}')
+        return ReturnData(False, tg(ctx_guild_id, 'Invalid guild id') + f': {guild_id}')
 
     if not guild_object:
-        return ReturnData(False, tg(guild_id, 'Guild not found:') + f' {guild_id}')
+        return ReturnData(False, tg(ctx_guild_id, 'Guild not found:') + f' {guild_id}')
 
     try:
         guild_object_invites = await guild_object.invites()
     except discord.HTTPException as e:
-        return ReturnData(False, tg(guild_id, "Something Failed -> HTTPException") + f": {e}")
+        return ReturnData(False, tg(ctx_guild_id, "Something Failed -> HTTPException") + f": {e}")
 
     if guild_object_invites:
         message = f'Guild ({guild_object.id}) invites -> {guild_object_invites}'
@@ -4912,12 +5081,12 @@ async def web_create_invite(web_data, guild_id):
         try:
             channel = guild_object.text_channels[0]
             invite = await channel.create_invite()
-            message = tg(guild_id, 'Invite for guild') + f' ({guild_object.id}) -> {invite}'
+            message = tg(ctx_guild_id, 'Invite for guild') + f' ({guild_object.id}) -> {invite}'
             log(None, message)
             await send_to_admin(message)
             return ReturnData(True, message)
         except discord.HTTPException as e:
-            return ReturnData(False, tg(guild_id, "Something Failed -> HTTPException") + f": {e}")
+            return ReturnData(False, tg(ctx_guild_id, "Something Failed -> HTTPException") + f": {e}")
 
 # ------------------------------------------------ IPC SERVER ----------------------------------------------------------
 
@@ -5030,6 +5199,15 @@ async def execute_function(request_dict) -> ReturnData:
             return await queue_command_def(web_data, url=args['url'])
         if func_name == 'web_queue_from_radio':
             return await web_queue_from_radio(web_data, radio_name=args['radio_name'])
+
+        if func_name == 'new_queue_save':
+            return new_queue_save(web_data.guild_id, save_name=args['save_name'])
+        if func_name == 'load_queue_save':
+            return load_queue_save(web_data.guild_id, save_name=args['save_name'])
+        if func_name == 'delete_queue_save':
+            return delete_queue_save(web_data.guild_id, save_name=args['save_name'])
+        if func_name == 'rename_queue_save':
+            return rename_queue_save(web_data.guild_id, old_name=args['old_name'], new_name=args['new_name'])
 
         if func_name == 'volume_command_def':
             return await volume_command_def(web_data, volume=args['volume'])
@@ -5165,7 +5343,10 @@ async def execute_get_data(request_dict):
         if queue_type == 'now_playing':
             guild[guild_id].now_playing.renew()
         elif queue_type == 'queue':
-            guild[guild_id].queue[index].renew()
+            try:
+                guild[guild_id].queue[index].renew()
+            except IndexError:
+                pass
     elif data_type == 'bot_guilds':
         update_guilds()
         bot_guilds = []

@@ -60,9 +60,10 @@
       <a href="/admin" class="btn btn-primary q-item0">Return to Admin Panel</a>
     </div>
   </div>
+  <a class="btn btn-primary q-item1 div-login" href="/guild/{{ guild_object.id }}"><h3>Control Panel</h3></a>
   <div class="l-div e-wrap">
     <a class="btn btn-dark q-item1 div-login" data-bs-toggle="modal" data-bs-target=#guildEditOptionsModal><h3>Edit Options</h3></a>
-    <a class="btn btn-dark q-item1 div-login" href="/guild/{{ guild_object.id }}"><h3>Control Panel</h3></a>
+    <a class="btn btn-dark q-item1 div-login" href="/admin/guild/{{ guild_object.id }}/saves"><h3>Saves</h3></a>
     <a class="btn btn-dark q-item1 div-login" href="/admin/guild/{{ guild_object.id }}/chat"><h3>View Chat</h3></a>
   </div>
   <div class="q-container display-block">
@@ -162,7 +163,8 @@
 
             <div class="e-div">
               <label for="volume" class="e-label">volume (%)</label>
-              <input type="number" id="volume" name="volume" value="{{ int(guild_object.options.volume*100) }}" min="0" max="200" class="e-input e-input-color">
+              <input type="number" id="volume" name="volume" value="{{ int(guild_object.options.volume*100)
+                  }}" min="0" max="200" class="e-input e-input-color">
             </div>
 
             <div class="e-div">

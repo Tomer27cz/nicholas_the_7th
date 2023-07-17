@@ -838,6 +838,10 @@ async def guild_get_key_page(guild_id):
     if guild_object.id in mutual_guild_ids:
         return redirect(f'/guild/{guild_id}&key={guild_object.data.key}')
 
+    if user is not None:
+        if int(user['id']) in authorized_users:
+            return redirect(f'/guild/{guild_id}&key={guild_object.data.key}')
+
     if request.method == 'POST':
         if 'key' in request.form.keys():
             if request.form['key'] == guild_object.data.key:
@@ -853,8 +857,7 @@ async def guild_get_key_page(guild_id):
                                errors=[f'Invalid code: {request.form["key"]} -> do /key in the server'],
                                url=Oauth.discord_login_url, user=user)
 
-    return render_template('control/action/get_key.html', guild_id=guild_id, errors=None, url=Oauth.discord_login_url,
-                           user=user)
+    return render_template('control/action/get_key.html', guild_id=guild_id, errors=None, url=Oauth.discord_login_url, user=user)
 
 @app.route('/guild/<int:guild_id>&key=<key>', methods=['GET', 'POST'])
 async def guild_page(guild_id, key):
@@ -977,6 +980,13 @@ async def guild_page(guild_id, key):
             response = execute_function('web_queue_from_radio', web_data=web_data,
                                         radio_name=request.form['radio-checkbox'])
 
+        if 'saveName' in keys:
+            log(web_data, 'web_save_queue', [request.form['saveName']], log_type='web', author=web_data.author)
+            response = execute_function('new_queue_save', web_data=web_data, save_name=request.form['saveName'])
+        if 'loadName' in keys:
+            log(web_data, 'web_load_queue', [request.form['loadName']], log_type='web', author=web_data.author)
+            response = execute_function('load_queue_save', web_data=web_data, save_name=request.form['loadName'])
+
         if 'scroll' in keys:
             try:
                 scroll_position = int(request.form['scroll'])
@@ -1018,12 +1028,20 @@ async def guild_page(guild_id, key):
         for i, video in enumerate(guild_object.queue):
             get_renew(guild_object.id, 'queue', i)
 
+    with open('db/saves.json', 'r') as f:
+        saves = json.load(f)
+        if str(guild_object.id) in saves.keys():
+            saves = saves[str(guild_object.id)]
+        else:
+            saves = None
+
     return render_template('control/guild.html', guild=guild_object, struct_to_time=struct_to_time,
                            convert_duration=convert_duration, get_username=get_username, errors=errors,
                            messages=messages, user=user, admin=admin, volume=round(guild_object.options.volume * 100),
                            radios=list(radio_dict.values()), scroll_position=scroll_position,
                            languages_dict=languages_dict, tg=tg, gi=int(guild_id), time=time, int=int,
-                           video_time_played=video_time_from_start, pd=json.dumps(pd), check_isdigit=check_isdigit)
+                           video_time_played=video_time_from_start, pd=json.dumps(pd), check_isdigit=check_isdigit,
+                           saves=saves)
 
 @app.route('/guild/<int:guild_id>/update')
 async def update_page(guild_id):
@@ -1435,6 +1453,62 @@ async def admin_guild_invites(guild_id):
     guild_invites = get_guild_invites(int(guild_id))
     return render_template('admin/data/guild_invites.html', user=user, invites=guild_invites,
                            guild_object=guild_object, title='Invites', type=type, DiscordUser=DiscordUser)
+
+@app.route('/admin/guild/<int:guild_id>/saves', methods=['GET', 'POST'])
+async def admin_guild_saves(guild_id):
+    log(request.remote_addr, f'/admin/guild/{guild_id}/saves', log_type='ip')
+    if 'discord_user' in session.keys():
+        user = session['discord_user']
+        user_name, user_id = user['username'], int(user['id'])
+
+    else:
+        return render_template('base/message.html', message="403 Forbidden", message4='You have to be logged in.',
+                               errors=None, user=None, title='403 Forbidden'), 403
+
+    if int(user['id']) not in authorized_users:
+        return abort(403)
+
+    errors = []
+    messages = []
+    response = None
+
+    if request.method == 'POST':
+        web_data = WebData(guild_id, user_name, user_id)
+
+        keys = request.form.keys()
+        form = request.form
+        try:
+            if 'deleteSave' in keys:
+                log(web_data, 'web_delete_save', [form['save_name']], log_type='web', author=web_data.author)
+                response = execute_function('delete_queue_save', web_data, save_name=form['save_name'])
+            if 'renameSave' in keys:
+                log(web_data, 'web_rename_save', [form['old_name'], form['new_name']], log_type='web', author=web_data.author)
+                response = execute_function('rename_queue_save', web_data, old_name=form['old_name'], new_name=form['new_name'])
+        except Exception as e:
+            errors = [str(e)]
+            log(web_data, 'error', [str(e)], log_type='web', author=web_data.author)
+
+        if response:
+            if response.response:
+                messages = [response.message]
+            else:
+                errors = [response.message]
+
+    guild_object = get_guild(int(guild_id))
+
+    with open("db/saves.json", "r") as f:
+        saves = json.load(f)
+
+    guild_saves = None
+    if str(guild_id) in saves.keys():
+        guild_saves = saves[str(guild_id)]
+
+    del saves
+
+    return render_template('admin/saves.html', user=user, saves=guild_saves, len=len,
+                           guild_object=guild_object, title='Saves', get_username=get_username,
+                           struct_to_time=struct_to_time, convert_duration=convert_duration, tg=tg, gi=int(guild_id),
+                           errors=errors, messages=messages)
 
 # Admin Chat
 @app.route('/admin/guild/<int:guild_id>/chat/', defaults={'channel_id': 0}, methods=['GET', 'POST'])
