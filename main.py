@@ -52,7 +52,7 @@ class Bot(commands.Bot):
         await bot.change_presence(activity=discord.Game(name=f"/help"))
         log(None, f'Logged in as:\n{bot.user.name}\n{bot.user.id}')
 
-        update_guilds()
+        save_json()
 
     async def on_guild_join(self, guild_object):
         # log

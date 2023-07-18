@@ -1,74 +1,41 @@
 {
-    "0": {
-        "id": 0,
-        "connected": false,
-        "options": {
-            "id": 0,
-            "stopped": false,
-            "loop": false,
-            "is_radio": false,
-            "language": "en",
-            "response_type": "short",
-            "search_query": "Never gonna give you up",
-            "buttons": false,
-            "volume": 1.0,
-            "buffer": 600,
-            "history_length": 10,
-            "last_updated": 0
-        },
-        "data": {
-            "id": 0,
-            "name": "none",
-            "key": "000000",
-            "member_count": 69,
-            "owner_id": 349164237605568513,
-            "owner_name": "__tomer__",
-            "created_at": "09/11/2001 00:00:00",
-            "description": null,
-            "large": false,
-            "icon": null,
-            "banner": null,
-            "splash": null,
-            "discovery_splash": null,
-            "voice_channels": [
-                {
-                    "name": "General",
-                    "id": 0
-                }
-            ]
-        },
-        "queue": {},
-        "search_list": {},
-        "history": {
-            "0": {
-                "class_type": "Video",
-                "author": 349164237605568513,
-                "created_at": 1000212400,
-                "played_duration": [
-                    {
-                        "start": {
-                            "epoch": null,
-                            "time_stamp": null
-                        },
-                        "end": {
-                            "epoch": null,
-                            "time_stamp": null
-                        }
-                    }
-                ],
-                "chapters": null,
-                "stream_url": null,
-                "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-                "title": "Never gonna give you up",
-                "picture": "https://img.youtube.com/vi/dQw4w9WgXcQ/default.jpg",
-                "duration": "3:33",
-                "channel_name": "Rick Astley",
-                "channel_link": "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw",
-                "radio_name": null,
-                "radio_website": null,
-                "local_number": null
-            }
-        },
-        "now_playing": {}
-    }
+  "0": {
+    "id": 0,
+    "connected": false,
+    "options": {
+      "id": 0,
+      "stopped": false,
+      "loop": false,
+      "is_radio": false,
+      "language": "en",
+      "response_type": "short",
+      "search_query": "Never gonna give you up",
+      "buttons": false,
+      "volume": 1.0,
+      "buffer": 600,
+      "history_length": 10,
+      "last_updated": 0
+    },
+    "data": {
+      "id": 0,
+      "name": "test server",
+      "key": "012345",
+      "member_count": 0,
+      "owner_id": 349164237605568513,
+      "owner_name": "__tomer__",
+      "created_at": "11/09/2001 13:33:33",
+      "description": null,
+      "large": false,
+      "icon": null,
+      "banner": null,
+      "splash": null,
+      "discovery_splash": null,
+      "voice_channels": []
+    },
+    "saves": [],
+    "queue": {},
+    "search_list": {},
+    "history": {},
+    "now_playing": {}
+  }
 }
