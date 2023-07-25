@@ -80,6 +80,7 @@ or [run with apache2](https://example.com)
 - [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/) by Leonard Richardson
 - [spotipy](https://github.com/spotipy-dev/spotipy)
 - [soundcloud-lib](https://github.com/3jackdaws/soundcloud-lib) by 3jackdaws
+- [DiscordChatExporterPy](https://github.com/mahtoid/DiscordChatExporterPy) by mahtoid
 
 ## License
 
