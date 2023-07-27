@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en" data-bs-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="icon" href="{{ url_for('static', filename='favicon/favicon.png') }}" sizes="any">
+  <title>Nicholas the 7th | {{ title }}</title>
+  <script>
+      if (window.history.replaceState) {
+          window.history.replaceState(null, null, window.location.href);
+      }
+      document.addEventListener("DOMContentLoaded", function (event) {
+          let scroll_pos = localStorage.getItem('scrollpos');
+          if (scroll_pos) window.scrollTo((0, scroll_pos, 'auto'));
+      });
+
+      window.onbeforeunload = function (e) {
+          localStorage.setItem('scrollpos', window.scrollY);
+      };
+  </script>
+</head>
+<body>
+<div class="dv-div1">
+
+  <div style="height: 5%">
+    <nav class="navbar navbar-expand-lg navbar-dark nav-discord" data-bs-theme="dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/">
+          <svg xmlns="http://www.w3.org/2000/svg" width="30px" height="30px" viewBox="0 0 314 337"
+               style="margin-right:0.5rem">
+            <path fill-rule="evenodd" fill="rgb(255, 255, 255)"
+                  d="M-0.000,0.000 L59.000,0.000 L190.000,118.000 L190.000,0.000 L244.000,0.000 L244.000,257.000 L190.000,210.000 L190.000,168.000 L55.000,49.000 L55.000,337.000 L-0.000,337.000 L-0.000,0.000 ZM67.000,337.000 L124.000,337.000 L124.000,223.000 L253.000,337.000 L314.000,337.000 L314.000,0.000 L257.000,0.000 L257.000,286.000 L124.000,169.000 L124.000,128.000 L67.000,77.000 L67.000,337.000 Z"></path>
+          </svg>
+          Nicholas the 7th
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link" href="/">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/guild">Servers</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/about">About</a>
+            </li>
+            {% block nav_items %}{% endblock %}
+          </ul>
+          <div class="nav-static-buttons">
+            <a href="/admin/guild/{{ guild_id }}" class="btn btn-outline-primary">Return To Dashboard</a>
+          </div>
+          <div>
+            {% if user %}
+              <a class="user-color">{{ user['username'] }}</a>
+              {% if user['avatar'] != None %}
+                <img src="https://cdn.discordapp.com/avatars/{{ user['id'] }}/{{ user['avatar'] }}.png?size=32"
+                     class="rounded-circle" alt="avatar">
+              {% endif %}
+              {% if user['id'] == '349164237605568513' %}
+                <a class="btn btn-outline-primary btn-sm btn-m" href="/admin">Admin Panel</a>
+              {% endif %}
+              <a class="btn btn-danger" href="/logout">Logout</a>
+              <a class="btn btn-outline-success btn-sm btn-m" href="/login">Update Session</a>
+            {% else %}
+              <a class="btn btn-primary" href="/login">Login</a>
+            {% endif %}
+            <a class="btn btn-outline-danger btn-sm btn-m" href="/reset">Reset Session</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </div>
+  {% if errors %}
+    {% for error in errors %}
+      <div class="alert alert-danger div-align alert-dismissible fade show sticky-top" role="alert">
+        {{ error }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-success div-align alert-dismissible fade show sticky-top" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  <div class="dv-div">
+    <div class="dv-channels">
+      <ul class="dv-items">
+        {% for channel in channels %}
+          <a class="l-div div-align-center dv-item" href="/admin/guild/{{ guild_id }}/fastchat/{{ channel.id }}"
+             {% if channel.id == channel_id %}style="color: currentColor"{% endif %}>
+            <svg width="24" height="24" viewBox="0 0 24 24" class="icon-2W8DHg" aria-hidden="true" role="img">
+              <path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"
+                    d="M5.88657 21C5.57547 21 5.3399 20.7189 5.39427 20.4126L6.00001 17H2.59511C2.28449 17 2.04905 16.7198 2.10259 16.4138L2.27759 15.4138C2.31946 15.1746 2.52722 15 2.77011 15H6.35001L7.41001 9H4.00511C3.69449 9 3.45905 8.71977 3.51259 8.41381L3.68759 7.41381C3.72946 7.17456 3.93722 7 4.18011 7H7.76001L8.39677 3.41262C8.43914 3.17391 8.64664 3 8.88907 3H9.87344C10.1845 3 10.4201 3.28107 10.3657 3.58738L9.76001 7H15.76L16.3968 3.41262C16.4391 3.17391 16.6466 3 16.8891 3H17.8734C18.1845 3 18.4201 3.28107 18.3657 3.58738L17.76 7H21.1649C21.4755 7 21.711 7.28023 21.6574 7.58619L21.4824 8.58619C21.4406 8.82544 21.2328 9 20.9899 9H17.41L16.35 15H19.7549C20.0655 15 20.301 15.2802 20.2474 15.5862L20.0724 16.5862C20.0306 16.8254 19.8228 17 19.5799 17H16L15.3632 20.5874C15.3209 20.8261 15.1134 21 14.8709 21H13.8866C13.5755 21 13.3399 20.7189 13.3943 20.4126L14 17H8.00001L7.36325 20.5874C7.32088 20.8261 7.11337 21 6.87094 21H5.88657ZM9.41045 9L8.35045 15H14.3504L15.4104 9H9.41045Z"></path>
+            </svg>
+            <h6 class="btn-m">{{ channel.name }}</h6>
+          </a>
+        {% endfor %}
+        <br>
+      </ul>
+    </div>
+    <div class="dv-content" id="chat-content">
+      {% if content %}
+        {{ content|safe }}
+      {% elif content == 0 %}
+        <div class="div-login">
+          <h1>Choose a channel to begin</h1>
+        </div>
+      {% else %}
+        <div class="div-login">
+          <h1>Something went wrong (no content)</h1>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+<script>
+    function updateScroll() {
+        let element = document.getElementById("chat-content");
+        element.scrollTop = element.scrollHeight;
+    }
+
+    function onSubmitDisable() {
+      setTimeout(disableButtons, 10);
+
+      function disableButtons() {
+          console.log("disable buttons")
+          let buttons = document.querySelectorAll(".btn");
+          for (let i = 0; i < buttons.length; i++) {
+              buttons[i].setAttribute('disabled', '');
+          }
+      }
+  }
+
+    updateScroll()
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N"
+        crossorigin="anonymous"></script>
+</body>
+</html>

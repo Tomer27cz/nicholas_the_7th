@@ -9,7 +9,7 @@ import subprocess
 import sys
 import threading
 import traceback
-from os import path, listdir, makedirs
+from os import path, listdir, makedirs, remove, R_OK, access
 from time import time, strftime, gmtime
 from typing import Literal
 import copy
@@ -17,6 +17,7 @@ import ast
 
 import discord
 import requests
+import chat_exporter
 import spotipy
 import youtubesearchpython
 import yt_dlp
@@ -461,7 +462,7 @@ class Options:
         self.buttons: bool = False # if buttons are enabled
         self.volume: float = 1.0 # volume of the player
         self.buffer: int = 600  # how many seconds of nothing playing before bot disconnects | 600 = 10min
-        self.history_length: int = 10 # how many songs are stored in the history
+        self.history_length: int = 20 # how many songs are stored in the history
         self.last_updated: int = int(time()) # when was the last time any of the guilds data was updated
 
 class GuildData:
@@ -613,6 +614,12 @@ class DiscordMember:
 
 class DiscordChannel:
     def __init__(self, channel_id: int, no_members=False):
+        self.id = channel_id
+        self.name = None
+        self.created_at = None
+        self.members = []
+        self.html = None
+
         channel_object = bot.get_channel(channel_id)
 
         if channel_object:
@@ -629,11 +636,34 @@ class DiscordChannel:
 
             self.members = members
 
-        else:
-            self.id = None
-            self.name = None
-            self.created_at = None
-            self.members = []
+    async def get_first_messages(self, num_of_messages: int):
+        """
+        Gets the first messages of a channel
+        :param num_of_messages: Number of messages to get
+        :return: ReturnData object
+        """
+        async def get_messages(ch_obj, num):
+            msg_list = [message_object async for message_object in ch_obj.history(limit=num)]
+            return msg_list
+
+        channel_object = bot.get_channel(self.id)
+        if not channel_object:
+            return None
+        if not channel_object.permissions_for(channel_object.guild.me).read_message_history:
+            return None
+
+        messages = asyncio.run_coroutine_threadsafe(get_messages(channel_object, num_of_messages), bot.loop).result()
+
+        transcript = asyncio.run_coroutine_threadsafe(chat_exporter.raw_export(channel=channel_object,
+                                                                               messages=messages,
+                                                                               tz_info='GMT',
+                                                                               guild=channel_object.guild,
+                                                                               bot=bot,
+                                                                               military_time=True,
+                                                                               support_dev=False), bot.loop).result()
+        self.html = transcript
+
+        return self.html
 
 class DiscordRole:
     def __init__(self, role_id: int, guild_id: int):
@@ -5315,6 +5345,11 @@ async def execute_get_data(request_dict):
             guild_invites.append(DiscordInvite(invite))
 
         return guild_invites
+
+    elif data_type == 'channel_transcript':
+        channel_id = request_dict['channel_id']
+        channel_object = DiscordChannel(channel_id)
+        return await channel_object.get_first_messages(100)
 
     elif data_type == 'user_name':
         user_id = request_dict['user_id']

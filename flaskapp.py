@@ -707,6 +707,21 @@ def get_channel_content(guild_id: int, channel_id: int):
     except (FileNotFoundError, IndexError, PermissionError):
         return None
 
+def get_fast_channel_content(channel_id: int):
+    """
+    Get the content of a channel (fast nad up-to-date)
+    :param channel_id: channel id
+    :return: content
+    """
+    # create argument dictionary
+    arg_dict = {
+        'type': 'get_data',
+        'data_type': 'channel_transcript',
+        'channel_id': channel_id
+    }
+    # send argument dictionary
+    return send_arg(arg_dict)
+
 def get_renew(guild_id: int, queue_type: str, index: int):
     """
     Get a renew from the database
@@ -1028,7 +1043,7 @@ async def guild_page(guild_id, key):
         for i, video in enumerate(guild_object.queue):
             get_renew(guild_object.id, 'queue', i)
 
-    with open('db/saves.json', 'r') as f:
+    with open(f'{config.PARENT_DIR}db/saves.json', 'r') as f:
         saves = json.load(f)
         if str(guild_object.id) in saves.keys():
             saves = saves[str(guild_object.id)]
@@ -1165,9 +1180,9 @@ async def admin_page():
                 log(web_data, 'download file', [file_name], log_type='web', author=web_data.author)
                 try:
                     if file_name in ['log.log', 'data.log', 'activity.log', 'apache_error.log', 'apache_activity.log']:
-                        return send_file(f'log/{file_name}', as_attachment=True)
+                        return send_file(f'{config.PARENT_DIR}log/{file_name}', as_attachment=True)
                     else:
-                        return send_file(f'db/{file_name}', as_attachment=True)
+                        return send_file(f'{config.PARENT_DIR}db/{file_name}', as_attachment=True)
                 except Exception as e:
                     return str(e)
             if 'upload_btn' in keys:
@@ -1182,10 +1197,10 @@ async def admin_page():
                     try:
                         if file_name in ['log.log', 'data.log', 'activity.log', 'apache_error.log',
                                          'apache_activity.log']:
-                            f.save(f"log/{f.filename}")
+                            f.save(f"{config.PARENT_DIR}log/{f.filename}")
                             messages = ['File uploaded']
                         else:
-                            f.save(f"db/{f.filename}")
+                            f.save(f"{config.PARENT_DIR}db/{f.filename}")
                             messages = ['File uploaded']
                     except Exception as e:
                         return str(e)
@@ -1496,7 +1511,7 @@ async def admin_guild_saves(guild_id):
 
     guild_object = get_guild(int(guild_id))
 
-    with open("db/saves.json", "r") as f:
+    with open(f"{config.PARENT_DIR}db/saves.json", "r") as f:
         saves = json.load(f)
 
     guild_saves = None
@@ -1563,6 +1578,30 @@ def admin_chat(guild_id, channel_id):
         content = get_channel_content(int(guild_id), int(channel_id))
 
     return render_template('admin/data/chat.html', user=user, guild_id=guild_id, channel_id=channel_id,  channels=guild_text_channels, content=content, title='Chat', errors=errors, messages=messages)
+
+@app.route('/admin/guild/<int:guild_id>/fastchat/', defaults={'channel_id': 0}, methods=['GET', 'POST'])
+@app.route('/admin/guild/<int:guild_id>/fastchat/<int:channel_id>', methods=['GET', 'POST'])
+def admin_fastchat(guild_id, channel_id):
+    log(request.remote_addr, f'/admin/guild/{guild_id}/fastchat/{channel_id}', log_type='ip')
+    if 'discord_user' in session.keys():
+        user = session['discord_user']
+    else:
+        return render_template('base/message.html', message="403 Forbidden", message4='You have to be logged in.',
+                               errors=None, user=None, title='403 Forbidden'), 403
+
+    if int(user['id']) not in authorized_users:
+        return abort(403)
+
+    guild_text_channels = get_guild_text_channels(int(guild_id))
+    if guild_text_channels is None:
+        return abort(404)
+
+    if channel_id == 0:
+        content = 0
+    else:
+        content = get_fast_channel_content(int(channel_id))
+
+    return render_template('admin/data/fastchat.html', user=user, guild_id=guild_id, channel_id=channel_id,  channels=guild_text_channels, content=content, title='Fast Chat')
 
 # Error Handling
 @app.errorhandler(404)

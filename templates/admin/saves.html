@@ -66,36 +66,6 @@
                   <p class="q-text q-2">{{ track['author'] }}</p>
                   <p class="q-text q-3">{{ struct_to_time(track['created_at'], first='time') }}</p>
                 </div>
-{#                <div class="q-item0 q-wa q-self-center q-items-center">#}
-{#                  <form method="POST" action="" onsubmit="setScroll();">#}
-{#                    <input type="hidden" name="scroll" value="0" id="scrollPos1">#}
-{#                    {% if admin == True %}#}
-{#                      <button class="btn btn-outline btn-primary btn-sm btn-m" type="button" data-bs-toggle="modal"#}
-{#                              data-bs-target=#videoEditModal_h{{ guild.history.index(track) }}>{{ tg(gi, 'Edit') }}</button>#}
-{#                      <button class="btn btn-outline btn-danger btn-sm btn-m" type="submit"#}
-{#                              value="h{{ guild.history.index(track) }}" name="hdel_btn">{{ tg(gi, 'Remove') }}</button>#}
-{#                    {% endif %}#}
-{#                    <button type="button" class="btn btn-secondary btn-sm dropdown-toggle btn-m"#}
-{#                            data-bs-toggle="dropdown" aria-expanded="false">{{ tg(gi, 'More') }}</button>#}
-{#                    <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">#}
-{#                      <li>#}
-{#                        <button class="dropdown-item" type="submit" name="queue_btn"#}
-{#                                value="h{{ guild.history.index(track) }}">{{ tg(gi, 'Add to queue') }}</button>#}
-{#                      </li>#}
-{#                      <li>#}
-{#                        <button class="dropdown-item" type="submit" name="nextup_btn"#}
-{#                                value="h{{ guild.history.index(track) }}">{{ tg(gi, 'Play next') }}</button>#}
-{#                      </li>#}
-{#                      <li>#}
-{#                        <hr class="dropdown-divider">#}
-{#                      </li>#}
-{#                      <li>#}
-{#                        <button class="dropdown-item" type="button" data-bs-toggle="modal"#}
-{#                                data-bs-target=#videoModal_h{{ guild.history.index(track) }}>{{ tg(gi, 'Info') }}</button>#}
-{#                      </li>#}
-{#                    </ul>#}
-{#                  </form>#}
-{#                </div>#}
               </div>
             {% endfor %}
           </div>
@@ -114,237 +84,36 @@
   </div>
   {% endif %}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-{#  <div class="l-div e-wrap">#}
-{#    <a class="btn btn-dark q-item1 div-login" data-bs-toggle="modal" data-bs-target=#guildEditOptionsModal><h3>Edit Options</h3></a>#}
-{#    <a class="btn btn-dark q-item1 div-login" href="/guild/{{ guild_object.id }}"><h3>Control Panel</h3></a>#}
-{#    <a class="btn btn-dark q-item1 div-login" href="/admin/guild/{{ guild_object.id }}/chat"><h3>View Chat</h3></a>#}
-{#  </div>#}
-{#  <div class="q-container display-block">#}
-{#    <div class="align-center">#}
-{#      <h3>Data</h3>#}
-{#    </div>#}
-{#    <div class="l-div e-wrap">#}
-{#      <a class="btn btn-dark q-item1 div-login" href="/admin/guild/{{ guild_object.id }}/roles"><h4>List Roles</h4></a>#}
-{#      <a class="btn btn-dark q-item1 div-login" href="/admin/guild/{{ guild_object.id }}/channels"><h4>List Voice Channels</h4></a>#}
-{#      <a class="btn btn-dark q-item1 div-login" href="/admin/guild/{{ guild_object.id }}/textChannels"><h4>List Text Channels</h4></a>#}
-{#      <a class="btn btn-dark q-item1 div-login" href="/admin/guild/{{ guild_object.id }}/users"><h4>List Users</h4></a>#}
-{#    </div>#}
-{#  </div>#}
-{##}
-{#  <form onsubmit="onSubmitDisable();" action="#" method="POST">#}
-{#    <div class="q-container display-block">#}
-{#      <div class="align-center">#}
-{#        <h3>Actions</h3>#}
-{#      </div>#}
-{#      <div class="l-div e-wrap">#}
-{#        <button class="btn btn-dark q-item1 div-login" type="submit" name="invite_btn"><h4>Create Invite</h4></button>#}
-{#        <a class="btn btn-dark q-item1 div-login" href="/admin/guild/{{ guild_object.id }}/invites"><h4>List Invites</h4></a>#}
-{#      </div>#}
-{#    </div>#}
-{#  </form>#}
-{##}
-{#  <form onsubmit="onSubmitDisable();" action="#" method="POST">#}
-{#    <div class="modal fade" id="guildEditOptionsModal" data-bs-keyboard="false" tabindex="-1"#}
-{#         aria-labelledby="guildEditOptionsLabel" aria-hidden="true">#}
-{#      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">#}
-{#        <div class="modal-content">#}
-{#          <div class="modal-header">#}
-{#            <h1 class="modal-title fs-5" id="guildEditOptionsLabel">Guild Options Edit:#}
-{#              {{ guild_object.data.name }}</h1>#}
-{#            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>#}
-{#          </div>#}
-{#          <div class="info-modal">#}
-{#            <div class="e-div">#}
-{#              <label for="id" class="e-label">id</label>#}
-{#              <input class="e-input e-input-color e-input-disabled" id="id" name="id" value="{{ guild_object.options.id }}" readonly>#}
-{#            </div>#}
-{##}
-{#            <div class="e-div">#}
-{#              <label for="stopped" class="e-label">stopped</label>#}
-{#              <select class="e-input e-input-color" id="stopped" name="stopped">#}
-{#                <option value="True" {{ 'selected' if guild_object.options.stopped == True }}>True</option>#}
-{#                <option value="False" {{ 'selected' if guild_object.options.stopped == False }}>False</option>#}
-{#              </select>#}
-{#            </div>#}
-{##}
-{#            <div class="e-div">#}
-{#              <label for="loop" class="e-label">loop</label>#}
-{#              <select class="e-input e-input-color" id="loop" name="loop">#}
-{#                <option value="True" {{ 'selected' if guild_object.options.loop == True }}>True</option>#}
-{#                <option value="False" {{ 'selected' if guild_object.options.loop == False }}>False</option>#}
-{#              </select>#}
-{#            </div>#}
-{##}
-{#            <div class="e-div">#}
-{#              <label for="is_radio" class="e-label">is_radio</label>#}
-{#              <select class="e-input e-input-color" id="is_radio" name="is_radio">#}
-{#                <option value="True" {{ 'selected' if guild_object.options.is_radio == True }}>True</option>#}
-{#                <option value="False" {{ 'selected' if guild_object.options.is_radio == False }}>False</option>#}
-{#              </select>#}
-{#            </div>#}
-{##}
-{#            <div class="e-div">#}
-{#              <label for="language" class="e-label">language</label>#}
-{#              <select class="e-input e-input-color" id="language" name="language">#}
-{#                {% for lang in languages_dict %}#}
-{#                  <option value={{ lang }} {{ 'selected' if guild_object.options.language == lang }}>{{ lang }}</option>#}
-{#                {% endfor %}#}
-{#              </select>#}
-{#            </div>#}
-{##}
-{#            <div class="e-div">#}
-{#              <label for="response_type" class="e-label">response_type</label>#}
-{#              <select class="e-input e-input-color" id="response_type" name="response_type">#}
-{#                <option value="short" {{ 'selected' if guild_object.options.response_type == 'short' }}>short</option>#}
-{#                <option value="long" {{ 'selected' if guild_object.options.response_type == 'long' }}>long</option>#}
-{#              </select>#}
-{#            </div>#}
-{##}
-{#            <div class="e-div">#}
-{#              <label for="search_query" class="e-label">search_query</label>#}
-{#              <input class="e-input e-input-color" id="search_query" name="search_query"#}
-{#                     value="{{ guild_object.options.search_query }}">#}
-{#            </div>#}
-{##}
-{#            <div class="e-div">#}
-{#              <label for="buttons" class="e-label">buttons</label>#}
-{#              <select class="e-input e-input-color" id="buttons" name="buttons">#}
-{#                <option value="True" {{ 'selected' if guild_object.options.buttons == True }}>True</option>#}
-{#                <option value="False" {{ 'selected' if guild_object.options.buttons == False }}>False</option>#}
-{#              </select>#}
-{#            </div>#}
-{##}
-{#            <div class="e-div">#}
-{#              <label for="volume" class="e-label">volume (%)</label>#}
-{#              <input type="number" id="volume" name="volume" value="{{ int(guild_object.options.volume*100)#}
-{#                  }}" min="0" max="200" class="e-input e-input-color">#}
-{#            </div>#}
-{##}
-{#            <div class="e-div">#}
-{#              <label for="buffer" class="e-label">buffer (s)</label>#}
-{#              <input type="number" id="buffer" name="buffer" value="{{ guild_object.options.buffer }}" min="1" max="1800" class="e-input e-input-color">#}
-{#            </div>#}
-{##}
-{#            <div class="e-div">#}
-{#              <label for="history_length" class="e-label">history_length</label>#}
-{#              <input type="number" id="history_length" name="history_length" value="{{ guild_object.options.history_length }}" min="1" max="100"#}
-{#                     class="e-input e-input-color">#}
-{#            </div>#}
-{##}
-{#            <div class="e-div">#}
-{#              <label for="last_updated" class="e-label">last_updated</label>#}
-{#              <input type="number" id="last_updated" name="last_updated" value="{{ guild_object.options.last_updated }}" min="0" class="e-input e-input-color">#}
-{#            </div>#}
-{##}
-{#            <div class="e-div">#}
-{#              <button class="btn e-item1 btn-secondary btn-lg btn-m" type="button" data-bs-dismiss="modal"#}
-{#                      aria-label="Close">Cancel#}
-{#              </button>#}
-{#              <button class="btn e-item1 btn-primary btn-lg btn-m" type="submit" name="edit_btn">Submit</button>#}
-{#            </div>#}
-{#          </div>#}
-{#        </div>#}
-{#      </div>#}
-{#    </div>#}
-{#  </form>#}
-{#  <form onsubmit="onSubmitDisable();" action="/admin" method="POST">#}
-{#    <div class="modal fade" id="guildDelete" data-bs-keyboard="false" tabindex="-1" aria-labelledby="guildDeleteLabel"#}
-{#         aria-hidden="true">#}
-{#      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">#}
-{#        <div class="modal-content">#}
-{#          <div class="modal-header">#}
-{#            <h1 class="modal-title fs-5" id="guildDeleteLabel">Delete from Database -> {{ guild_object.data.name }}</h1>#}
-{#            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>#}
-{#          </div>#}
-{#          <div class="info-modal">#}
-{#            <div class="e-div">#}
-{#              <h4>Are you sure you want to delete this guild from the database?</h4>#}
-{#            </div>#}
-{#            <div class="e-div">#}
-{#              <button class="btn e-item1 btn-outline-danger btn-m" type="submit" name="delete_guild_btn">Delete Guild#}
-{#              </button>#}
-{#              <button class="btn e-item1 btn-secondary btn-lg btn-m" type="button" data-bs-dismiss="modal"#}
-{#                      aria-label="Close">Cancel#}
-{#              </button>#}
-{#            </div>#}
-{#          </div>#}
-{#        </div>#}
-{#      </div>#}
-{#    </div>#}
-{#  </form>#}
-{#  <form onsubmit="onSubmitDisable();" action="#" method="POST">#}
-{#    <div class="modal fade" id="infoModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="infoModalLabel"#}
-{#         aria-hidden="true">#}
-{#      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">#}
-{#        <div class="modal-content">#}
-{#          <div class="modal-header">#}
-{#            <h1 class="modal-title fs-5" id="infoModalLabel">Guild Info: {{ guild_object.data.name }}</h1>#}
-{#            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>#}
-{#          </div>#}
-{#          <div class="info-modal">#}
-{#            <br>#}
-{#            {% for key, value in guild_object.data.__dict__.items() %}#}
-{#              <div class="e-div">#}
-{#                <label for="{{ key }}" class="e-label">{{ key }}</label>#}
-{#                <input type="text" id="{{ key }}" name="{{ key }}" value="{{ value }}" class="e-input e-input-color" readonly>#}
-{#              </div>#}
-{#            {% endfor %}#}
-{#          </div>#}
-{#        </div>#}
-{#      </div>#}
-{#    </div>#}
-{#  </form>#}
-
-
-
-  {% for save_name, queue in saves.items() %}
-  <div class="modal fade" id="renameModal_{{ save_name }}" data-bs-keyboard="false" tabindex="-1" aria-labelledby="renameLabel_{{ save_name }}"
-       aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="renameLabel_{{ save_name }}">{{ tg(gi, 'Rename Save') }} - {{ save_name }}</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  {% if saves %}
+    {% for save_name, queue in saves.items() %}
+    <div class="modal fade" id="renameModal_{{ save_name }}" data-bs-keyboard="false" tabindex="-1" aria-labelledby="renameLabel_{{ save_name }}"
+         aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="renameLabel_{{ save_name }}">{{ tg(gi, 'Rename Save') }} - {{ save_name }}</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <form method="POST" id="renameForm_{{ save_name }}" action="">
+            <input type="hidden" name="scroll" value="0" id="scrollPos14">
+            <div class="modal-body">
+              <div class="div-none">
+                <input type="hidden" name="old_name" value="{{ save_name }}">
+              </div>
+              <div class="mb-3">
+                <label for="new_name" class="btn-m">{{ tg(gi, 'Name') }}</label>
+                <input type="text" class="form-control" name="new_name" id="new_name" required>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-dark" data-bs-dismiss="modal">{{ tg(gi, 'Close') }}</button>
+              <button type="submit" class="btn btn-primary" name="renameSave">{{ tg(gi, 'Rename') }}</button>
+            </div>
+          </form>
         </div>
-        <form method="POST" id="renameForm_{{ save_name }}" action="">
-          <input type="hidden" name="scroll" value="0" id="scrollPos14">
-          <div class="modal-body">
-            <div class="div-none">
-              <input type="hidden" name="old_name" value="{{ save_name }}">
-            </div>
-            <div class="mb-3">
-              <label for="new_name" class="btn-m">{{ tg(gi, 'Name') }}</label>
-              <input type="text" class="form-control" name="new_name" id="new_name" required>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-dark" data-bs-dismiss="modal">{{ tg(gi, 'Close') }}</button>
-            <button type="submit" class="btn btn-primary" name="renameSave">{{ tg(gi, 'Rename') }}</button>
-          </div>
-        </form>
       </div>
     </div>
-  </div>
-  {% endfor %}
+    {% endfor %}
+  {% endif %}
 
 {% endblock %}
