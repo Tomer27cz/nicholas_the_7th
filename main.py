@@ -9,9 +9,10 @@ import subprocess
 import sys
 import threading
 import traceback
-from os import path, listdir, makedirs, remove, R_OK, access
+from os import path, listdir, makedirs
+from io import BytesIO
 from time import time, strftime, gmtime
-from typing import Literal
+from typing import Literal, TypedDict, Optional
 import copy
 import ast
 
@@ -168,13 +169,13 @@ class Bot(commands.Bot):
             log(guild_id, f"-->> Cleared Queue after bot Disconnected <<--")
 
     async def on_command_error(self, ctx, error):
-        if isinstance(error, commands.CommandInvokeError):
-            log(ctx, 'error.CommandInvokeError', [error, error.original], log_type='error', author=ctx.author)
-            await send_to_admin(error.original)
+        # get error traceback
+        error_traceback = traceback.format_exception(type(error), error, error.__traceback__)
+        error_traceback = ''.join(error_traceback)
 
-        elif isinstance(error, discord.errors.Forbidden):
+        if isinstance(error, discord.errors.Forbidden):
             log(ctx, 'error.Forbidden', [error], log_type='error', author=ctx.author)
-            await ctx.send(tg(guild_id, "The command failed because I don't have the required permissions.\n Please give me the required permissions and try again."))
+            await ctx.send(tg(ctx.guild.id, "The command failed because I don't have the required permissions.\n Please give me the required permissions and try again."))
 
         elif isinstance(error, commands.CheckFailure):
             err_msg = f'Error for ({ctx.author}) -> ({ctx.command}) with error ({error})'
@@ -185,11 +186,18 @@ class Bot(commands.Bot):
                             f"　しーＪ　　　°。+ ´¨)\n"
                             f"　　　　　　　　　.· ´¸.·´¨) ¸.·*¨)\n"
                             f"　　　　　　　　　　(¸.·´ (¸.·' ☆ **Fuck off**\n"
-                            f"*{tg(guild_id, 'You dont have permission to use this command')}*")
+                            f"*{tg(ctx.guild.id, 'You dont have permission to use this command')}*")
 
         else:
-            log(ctx, f"{error}", log_type='error', author=ctx.author)
-            await send_to_admin(error)
+            message = f"Error for ({ctx.author}) -> ({ctx.command}) with error ({error})\n{error_traceback}"
+
+            # log
+            log(ctx, message, log_type='error', author=ctx.author)
+
+            # send log to admin
+            await send_to_admin(message)
+
+            # send to user
             await ctx.reply(f"{error}   {bot.get_user(my_id).mention}", ephemeral=True)
 
     async def on_message(self, message):
@@ -214,6 +222,32 @@ class Bot(commands.Bot):
             except discord.errors.Forbidden:
                 pass
 
+# ----------------- Typed Dictionaries ----------------
+
+class TimeSegmentInner(TypedDict):
+    epoch: int | None
+    time_stamp: float | None
+
+class TimeSegment(TypedDict):
+    start: TimeSegmentInner
+    end: TimeSegmentInner
+
+class RadioInfo(TypedDict):
+    name: str
+    website: Optional[str]
+    picture: Optional[str]
+    channel_name: Optional[str]
+    title: Optional[str]
+
+class DiscordChannelInfo(TypedDict):
+    id: int
+    name: str
+
+class VideoChapter(TypedDict):
+    start_time: float
+    title: str
+    end_time: float
+
 # ----------------- Video Class ----------------
 
 class VideoClass:
@@ -226,20 +260,20 @@ class VideoClass:
 
     def __init__(self,
                  class_type: str,
-                 author,
-                 url=None,
-                 title=None,
-                 picture=None,
-                 duration=None,
-                 channel_name=None,
-                 channel_link=None,
-                 radio_info=None,
-                 local_number=None,
-                 created_at=None,
-                 played_duration=None,
-                 chapters=None,
-                 stream_url=None,
-                 discord_channel=None
+                 author: int | str,
+                 url: str=None,
+                 title: str=None,
+                 picture: str=None,
+                 duration: str | int=None,
+                 channel_name: str=None,
+                 channel_link: str=None,
+                 radio_info: RadioInfo=None,
+                 local_number: int=None,
+                 created_at: int=None,
+                 played_duration: [TimeSegment]=None,
+                 chapters: [VideoChapter]=None,
+                 stream_url: str=None,
+                 discord_channel: DiscordChannelInfo=None
                  ):
         self.class_type = class_type
         self.author = author
@@ -260,10 +294,8 @@ class VideoClass:
             self.created_at = int(time())
 
         if played_duration is None:
-            self.played_duration = [{
-                'start': {'epoch': None, 'time_stamp': None},
-                'end': {'epoch': None, 'time_stamp': None}
-            }]
+            # [{'start': {'epoch': None, 'time_stamp': None},'end': {'epoch': None, 'time_stamp': None}}]
+            self.played_duration = []
 
         if self.class_type == 'Video':
             if url is None:
@@ -302,25 +334,25 @@ class VideoClass:
 
         elif self.class_type == 'Local':
             if local_number is None:
-                raise ValueError(tg(guild_id, "Local number required"))
+                raise ValueError("Local number required")
 
             self.picture = vlc_logo
             self.channel_name = 'Local File'
 
         elif self.class_type == 'Probe':
             if url is None:
-                raise ValueError(tg(guild_id, "URL is required"))
+                raise ValueError("URL is required")
 
         elif self.class_type == 'SoundCloud':
             if url is None:
-                raise ValueError(tg(guild_id, "URL is required"))
+                raise ValueError("URL is required")
 
             if any(v is None for v in [title, picture, duration, channel_name, channel_link]):
                 try:
                     track = sc.resolve(self.url)
                     assert type(track) is Track
                 except Exception as e:
-                    raise ValueError(f"{tg(guild_id, 'Not a SoundCloud Track link')}: {e}")
+                    raise ValueError(f"Not a SoundCloud Track link: {e}")
 
                 self.url = track.permalink_url
                 self.title = track.title
@@ -330,7 +362,7 @@ class VideoClass:
                 self.channel_link = 'https://soundcloud.com/' + track.permalink_url.split('/')[-2]
 
         else:
-            raise ValueError(f"{tg(guild_id, 'Invalid class type')}: {class_type}")
+            raise ValueError(f"Invalid class type: {class_type}")
 
         # set stream_url at the end for json readability
         self.stream_url = stream_url
@@ -354,7 +386,7 @@ class VideoClass:
                 self.radio_info['title'] = r['title']
 
             else:
-                raise ValueError(tg(guild_id, "Invalid radio website"))
+                raise ValueError("Invalid radio website")
 
         save_json()
 
@@ -798,7 +830,7 @@ def convert_duration(duration) -> str or None:
 
 # ------------ PRINT --------------------
 
-def log(ctx, text_data, options=None, log_type='text', author=None) -> None:
+def log(ctx: commands.Context | WebData | None | int, text_data, options=None, log_type='text', author=None) -> None:
     """
     Logs data to the console and to the log file
     :param ctx: commands.Context or WebData or guild_id
@@ -848,6 +880,12 @@ async def send_to_admin(data):
     :return: None
     """
     admin = bot.get_user(my_id)
+    # if length of data is more than 2000 symbols send a file
+    if len(data) > 2000:
+        file_to_send = discord.File(BytesIO(data.encode()), filename='data.txt')
+        await admin.send(file=file_to_send)
+        return
+
     await admin.send(data)
 
 # ---------------------------------------------- GUILD <-> JSON --------------------------------------------------------
@@ -1263,7 +1301,8 @@ def spotify_to_yt_video(spotify_url: str, author) -> VideoClass or None:
     if not custom_search.result()['result']:
         return None
 
-    video = custom_search.result()['result'][0]
+    custom_result: dict = custom_search.result()
+    video: dict = custom_result['result'][0]
 
     yt_url = video['link']
     yt_title = video['title']
@@ -1304,7 +1343,8 @@ def spotify_playlist_to_yt_video_list(spotify_playlist_url: str, author) -> list
         if not custom_search.result()['result']:
             continue
 
-        video = custom_search.result()['result'][0]
+        custom_result: dict = custom_search.result()
+        video: dict = custom_result['result'][0]
 
         yt_url = video['link']
         yt_title = video['title']
@@ -1345,7 +1385,8 @@ def spotify_album_to_yt_video_list(spotify_album_url: str, author) -> list or No
         if not custom_search.result()['result']:
             continue
 
-        video = custom_search.result()['result'][0]
+        custom_result: dict = custom_search.result()
+        video: dict = custom_result['result'][0]
 
         yt_url = video['link']
         yt_title = video['title']
@@ -1612,26 +1653,28 @@ def video_time_from_start(video: VideoClass) -> float:
     len_played_duration = len(video.played_duration)
     if len_played_duration == 0:
         return 0.0
-    if len_played_duration < 2:
-        start = video.played_duration[0]['start']['epoch']
-        end = video.played_duration[0]['end']['epoch']
+
+    if len_played_duration == 1:
+        segment: TimeSegment = video.played_duration[0]
+        start: None | int = segment['start']['epoch']
+        end: None | int = segment['end']['epoch']
+
         if start is None:
             return 0.0
 
         if end is None:
             return int(time()) - start
 
-        # noinspection PyUnresolvedReferences
-        return video.played_duration[0]['end']['time_stamp']
+        return segment['end']['time_stamp']
 
-    last_segment = video.played_duration[-1]
-    if last_segment['end']['epoch'] is not None:
-        return last_segment['end']['time_stamp']
+    segment: TimeSegment = video.played_duration[-1]
+    start: TimeSegmentInner = segment['start']
+    end: TimeSegmentInner = segment['end']
 
-    start_of_segment = last_segment['start']['epoch']
-    start_of_segment_time_stamp = last_segment['start']['time_stamp']
+    if end['epoch'] is not None:
+        return end['time_stamp']
 
-    return (int(time()) - start_of_segment) + start_of_segment_time_stamp
+    return (int(time()) - start['epoch']) + start['time_stamp']
 
 def set_stopped(video: VideoClass):
     # noinspection PyTypedDict
@@ -1644,10 +1687,12 @@ def set_stopped(video: VideoClass):
 
     save_json()
 
-def set_started(video: VideoClass, guild_object, chapters=None):
-    # noinspection PyTypedDict
+def set_started(video: VideoClass, guild_object, chapters: list[VideoChapter] | None=None):
+    if len(video.played_duration) == 0:
+        assert video.played_duration == []
+        video.played_duration += [{'start': {'epoch': None, 'time_stamp': None}, 'end': {'epoch': None, 'time_stamp': None}}]
+
     video.played_duration[-1]['start']['epoch'] = int(time())
-    # noinspection PyTypedDict
     video.played_duration[-1]['start']['time_stamp'] = 0.0
 
     if chapters:
@@ -1721,6 +1766,61 @@ def ascii_nospace(string: str):
     return string.replace(" ", "_")
 
 # ---------------------------------------------- DISCORD -------------------------------------------------------
+
+def get_voice_client(iterable, **attrs) -> discord.VoiceClient:
+    """
+    Gets voice_client from voice_clients list
+    :param iterable: list
+    :return: discord.VoiceClient
+    """
+    from operator import attrgetter
+
+    # noinspection PyShadowingNames
+    def _get(iterable, /, **attrs):
+        # global -> local
+        _all = all
+        attrget = attrgetter
+
+        # Special case the single element call
+        if len(attrs) == 1:
+            k, v = attrs.popitem()
+            pred = attrget(k.replace('__', '.'))
+            return next((elem for elem in iterable if pred(elem) == v), None)
+
+        converted = [(attrget(attr.replace('__', '.')), value) for attr, value in attrs.items()]
+        for elem in iterable:
+            if _all(pred(elem) == value for pred, value in converted):
+                return elem
+        return None
+
+    # noinspection PyShadowingNames
+    async def _aget(iterable, /, **attrs):
+        # global -> local
+        _all = all
+        attrget = attrgetter
+
+        # Special case the single element call
+        if len(attrs) == 1:
+            k, v = attrs.popitem()
+            pred = attrget(k.replace('__', '.'))
+            async for elem in iterable:
+                if pred(elem) == v:
+                    return elem
+            return None
+
+        converted = [(attrget(attr.replace('__', '.')), value) for attr, value in attrs.items()]
+
+        async for elem in iterable:
+            if _all(pred(elem) == value for pred, value in converted):
+                return elem
+        return None
+
+
+    return (
+        _aget(iterable, **attrs)  # type: ignore
+        if hasattr(iterable, '__aiter__')  # isinstance(iterable, collections.abc.AsyncIterable) is too slow
+        else _get(iterable, **attrs)  # type: ignore
+    )
 
 def create_embed(video: VideoClass, name: str, guild_id: int, embed_colour: (int, int, int) = (88, 101, 242)) -> discord.Embed:
     """
@@ -1927,7 +2027,7 @@ class PlayerControlView(View):
 
     @discord.ui.button(emoji=react_dict['play'], style=discord.ButtonStyle.blurple, custom_id='play')
     async def callback(self, interaction, button):
-        voice = discord.utils.get(bot.voice_clients, guild=self.guild)
+        voice: discord.voice_client.VoiceClient = get_voice_client(bot.voice_clients, guild=self.guild)
         if voice:
             if voice.is_paused():
                 voice.resume()
@@ -1946,7 +2046,7 @@ class PlayerControlView(View):
 
     @discord.ui.button(emoji=react_dict['pause'], style=discord.ButtonStyle.blurple, custom_id='pause')
     async def pause_callback(self, interaction, button):
-        voice = discord.utils.get(bot.voice_clients, guild=self.guild)
+        voice: discord.voice_client.VoiceClient = get_voice_client(bot.voice_clients, guild=self.guild)
         if voice:
             if voice.is_playing():
                 voice.pause()
@@ -1966,7 +2066,7 @@ class PlayerControlView(View):
     # noinspection PyUnusedLocal
     @discord.ui.button(emoji=react_dict['stop'], style=discord.ButtonStyle.red, custom_id='stop')
     async def stop_callback(self, interaction, button):
-        voice = discord.utils.get(bot.voice_clients, guild=self.guild)
+        voice: discord.voice_client.VoiceClient = get_voice_client(bot.voice_clients, guild=self.guild)
         if voice:
             if voice.is_playing() or voice.is_paused():
                 voice.stop()
@@ -2494,21 +2594,32 @@ def ctx_check(ctx: commands.Context or WebData) -> (bool, int, int, discord.Guil
     """
     This function checks if the context is a discord context or a web context and returns the relevant information.
 
-    :var is_ctx: True if the context is a discord context, False if it is a web context
-    :var guild_id: The guild id of the context
-    :var author_id: The author id of the context
-    :var guild: The guild object of the context
-    :var return: (is_ctx, guild_id, author_id, guild)
+    is_ctx - True if the context is a discord context, False if it is a web context
+    guild_id - The guild id of the context
+    author_id - The author id of the context
+    guild_object - The guild object of the context
 
     :type ctx: commands.Context | WebData
     :param ctx: commands.Context | WebData
-    :return: (bool, int, int, discord.Guild)
+    :return: (is_ctx, guild_id, author_id, guild) - (bool, int, int, discord.Guild)
     """
     save_json()
-    if type(ctx) == commands.Context:
-        return True, ctx.guild.id, ctx.author.id, ctx.guild
+    if type(ctx) == WebData:
+        is_ctx = False
+        guild_id = ctx.guild_id
+        author_id = ctx.author_id
+        guild_object = bot.get_guild(guild_id)
+
+    elif type(ctx) == commands.Context:
+        is_ctx = True
+        guild_id = ctx.guild.id
+        author_id = ctx.author.id
+        guild_object = ctx.guild
+
     else:
-        return False, ctx.guild_id, ctx.author_id, bot.get_guild(ctx.guild_id)
+        raise TypeError(f'ctx_check: ctx is not a valid type: {type(ctx)}')
+
+    return is_ctx, guild_id, author_id, guild_object
 
 # --------------------------------------- QUEUE --------------------------------------------------
 
@@ -2546,8 +2657,8 @@ async def queue_command_def(ctx, url=None, position: int = None, mute_response: 
                 await ctx.defer(ephemeral=ephemeral)
 
         try:
-            playlist_videos = youtubesearchpython.Playlist.getVideos(url)
-            playlist_videos = playlist_videos['videos']
+            playlist_videos_result: dict = youtubesearchpython.Playlist.getVideos(url)
+            playlist_videos: list = playlist_videos_result['videos']
         except KeyError:
             log(ctx, "------------------------------- playlist -------------------------")
             tb = traceback.format_exc()
@@ -2635,7 +2746,7 @@ async def queue_command_def(ctx, url=None, position: int = None, mute_response: 
             except ValueError as e:
                 if not mute_response:
                     await ctx.reply(e, ephemeral=ephemeral)
-                return ReturnData(False, e)
+                return ReturnData(False, f"{e}")
 
             message = to_queue(guild_id, video, position=position, copy_video=False)
             if not mute_response:
@@ -2882,8 +2993,9 @@ async def show_def(ctx, display_type: Literal['short', 'medium', 'long'] = None,
 
     max_embed = 5
     if not show_list:
-        await ctx.reply(tg(guild_id, "Nothing to **show**, queue is **empty!**"), ephemeral=ephemeral)
-        return
+        message = tg(guild_id, "Nothing to **show**, queue is **empty!**")
+        await ctx.reply(message, ephemeral=ephemeral)
+        return ReturnData(True, message)
 
     if not display_type:
         if len(show_list) <= max_embed:
@@ -2989,8 +3101,9 @@ async def search_command_def(ctx, search_query, display_type: Literal['short', '
     view = SearchOptionView(ctx, force, from_play)
 
     if not custom_search.result()['result']:
-        await ctx.reply(tg(guild_id, 'No results found!'), ephemeral=ephemeral)
-        return
+        message = tg(guild_id, 'No results found!')
+        await ctx.reply(message, ephemeral=ephemeral)
+        return ReturnData(False, message)
 
     for i in range(5):
         # noinspection PyTypeChecker
@@ -3186,11 +3299,11 @@ async def radio_def(ctx, favourite_radio: Literal['Rádio BLANÍK', 'Rádio BLAN
         return ReturnData(False, message)
 
     if favourite_radio:
-        radio_type = favourite_radio
+        radio_type: str = favourite_radio
     elif radio_code:
-        radio_type = list(radio_dict.keys())[radio_code]
+        radio_type: str = list(radio_dict.keys())[radio_code]
     else:
-        radio_type = 'Evropa 2'
+        radio_type: str = 'Evropa 2'
 
     if not guild_object.voice_client:
         response = await join_def(ctx, None, True)
@@ -3203,7 +3316,7 @@ async def radio_def(ctx, favourite_radio: Literal['Rádio BLANÍK', 'Rádio BLAN
     guild[guild_id].options.is_radio = True
 
     url = radio_dict[radio_type]['stream']
-    video = VideoClass('Radio', author_id, radio_info={'name': radio_type}, stream_url=url)
+    video = VideoClass('Radio', author_id, radio_info=dict(name=radio_type), stream_url=url)
     video.renew()
 
     source, chapters = await GetSource.create_source(guild_id, url, source_type='Radio', video_class=video)
@@ -3409,7 +3522,7 @@ async def stop_def(ctx, mute_response: bool = False, keep_loop: bool = False) ->
     log(ctx, 'stop_def', [mute_response, keep_loop], log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
 
-    voice = discord.utils.get(bot.voice_clients, guild=guild_object)
+    voice: discord.voice_client.VoiceClient = get_voice_client(bot.voice_clients, guild=guild_object)
 
     if not voice:
         message = tg(guild_id, "Bot is not connected to a voice channel")
@@ -3440,7 +3553,7 @@ async def pause_def(ctx, mute_response: bool = False) -> ReturnData:
     log(ctx, 'pause_def', [mute_response], log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
 
-    voice = discord.utils.get(bot.voice_clients, guild=guild_object)
+    voice: discord.voice_client.VoiceClient = get_voice_client(bot.voice_clients, guild=guild_object)
 
     if voice:
         if voice.is_playing():
@@ -3475,7 +3588,7 @@ async def resume_def(ctx, mute_response: bool = False) -> ReturnData:
     log(ctx, 'resume_def', [mute_response], log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
 
-    voice = discord.utils.get(bot.voice_clients, guild=guild_object)
+    voice: discord.voice_client.VoiceClient = get_voice_client(bot.voice_clients, guild=guild_object)
 
     if voice:
         if voice.is_paused():
@@ -3524,7 +3637,7 @@ async def join_def(ctx, channel_id=None, mute_response: bool = False) -> ReturnD
 
         if ctx.author.voice:
             # get author voice channel
-            author_channel = ctx.message.author.voice.channel
+            author_channel = ctx.author.voice.channel
 
             if ctx.voice_client:
                 # if bot is already connected to author channel return True
@@ -3617,7 +3730,7 @@ async def disconnect_def(ctx, mute_response: bool = False) -> ReturnData:
             await ctx.reply(message, ephemeral=True)
         return ReturnData(False, message)
 
-async def volume_command_def(ctx, volume: int = None, ephemeral: bool = False, mute_response: bool = False) -> ReturnData:
+async def volume_command_def(ctx, volume: int | float = None, ephemeral: bool = False, mute_response: bool = False) -> ReturnData:
     """
     Change volume of player
     :param ctx: Context
@@ -3809,10 +3922,10 @@ async def announce_command_def(ctx, message: str, ephemeral: bool = False) -> Re
         try:
             await guild_object.system_channel.send(message)
         except Exception as e:
-            log(ctx, f"{tg(guild_id, 'Error while announcing message to')} ({guild_object.name}): {e}", [guild_object.id, ephemeral],
+            log(ctx, f"Error while announcing message to ({guild_object.name}): {e}", [guild_object.id, ephemeral],
                 log_type='error', author=ctx.author)
 
-    message = f'{tg(guild_id, "Announced message to all servers")}: `{message}`'
+    message = f'Announced message to all servers: `{message}`'
     await ctx.reply(message, ephemeral=ephemeral)
     return ReturnData(True, message)
 
@@ -3945,7 +4058,7 @@ async def file_command_def(ctx: commands.Context, config_file: discord.Attachmen
     else:
         await ctx.reply(f"Saved new `{config_type}{config_types[config_type]}`", ephemeral=True)
 
-async def options_def(ctx: commands.Context, server=None, stopped: str = None, loop: str = None, is_radio: str = None,
+async def options_def(ctx: commands.Context, server: int| None | str=None, stopped: str = None, loop: str = None, is_radio: str = None,
                       buttons: str = None, language: str = None, response_type: str = None, buffer: str = None,
                       history_length: str = None, volume: str = None, search_query: str = None, last_updated: str = None,
                       ephemeral=True):
@@ -4150,7 +4263,7 @@ async def download_guild_channel(ctx, channel_id: int, mute_response: bool=False
         # for path_output in execute(command):
         #     print(path_output)
     except subprocess.CalledProcessError as e:
-        message = tg(ctx_guild_id, f'Command raised an error') + e
+        message = tg(ctx_guild_id, f'Command raised an error') + ": " + str(e)
         if not mute_response and is_ctx:
             await org_msg.edit(content=message)
         return ReturnData(False, message)
@@ -4371,7 +4484,7 @@ async def import_queue(ctx, queue_data, guild_id: int=None, ephemeral: bool=Fals
         if item[0] == 'Video':
             video = VideoClass('Video', author_id, item[1])
         elif item[0] == 'Radio':
-            video = VideoClass('Radio', author_id, radio_info={'name': item[1]})
+            video = VideoClass('Radio', author_id, radio_info=dict(name=item[1]))
         elif item[0] == 'Local':
             video = VideoClass('Local', author_id, local_number=item[1])
         elif item[0] == 'Probe':
@@ -4439,7 +4552,7 @@ async def set_video_time(ctx, time_stamp: int, mute_response: bool=False, epheme
     voice.source = new_source
     set_new_time(now_playing_video, time_stamp)
 
-    message = tg(ctx_guild_id, f'Video time set to') + time_stamp
+    message = tg(ctx_guild_id, f'Video time set to') + ": " +str(time_stamp)
     if not mute_response:
         await ctx.reply(message, ephemeral=ephemeral)
     return ReturnData(True, message)
@@ -4804,7 +4917,7 @@ async def web_queue_from_radio(web_data, radio_name, position=None) -> ReturnDat
     is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data)
 
     if radio_name in radio_dict.keys():
-        video = VideoClass('Radio', web_data.author_id, radio_info={'name': radio_name})
+        video = VideoClass('Radio', web_data.author_id, radio_info=dict(name=radio_name))
         video.renew()
 
         if position == 'start':
