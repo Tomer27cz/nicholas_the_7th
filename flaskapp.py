@@ -298,8 +298,11 @@ def tg(guild_id: int, content: str) -> str:
     :return: str - translated text
     """
     global guild
-    # lang = guild[guild_id].options.language
-    lang = 'en'
+    try:
+        lang = guild[guild_id].options.language
+    except Exception as e:
+        log(None, f'Error in tg: {e}', log_type='error')
+        lang = 'en'
     try:
         to_return = languages_dict[lang][content]
     except KeyError:
@@ -1076,34 +1079,24 @@ async def update_page(guild_id):
 async def login_page():
     log(request.remote_addr, '/login', log_type='web')
     admin = False
+    update = False
     if 'discord_user' in session.keys():
-        user = Oauth.get_user(session['access_token'])
-        collect_data(user)
-        session['discord_user'] = user
+        access_token = session['access_token']
+        update = True
+    else:
+        code = request.args.get('code')
+        if code is None:
+            return redirect(Oauth.discord_login_url)
 
-        guilds = Oauth.get_user_guilds(session['access_token'])
-        collect_data(f'{user["username"]} -> {guilds}')
+        response = Oauth.get_access_token(code)
+        access_token = response['access_token']
+        session['access_token'] = access_token
 
-        bot_guilds = Oauth.get_bot_guilds()
-        mutual_guilds = [x for x in guilds if x['id'] in map(lambda i: i['id'], bot_guilds)]
+        log(request.remote_addr, 'Got access token', log_type='text')
 
-        mutual_guild_ids = [int(guild_object['id']) for guild_object in mutual_guilds]
-        session['mutual_guild_ids'] = mutual_guild_ids
-
-        return render_template('base/message.html',
-                               message=f"Updated session for {user['username']}#{user['discriminator']}", errors=None,
-                               user=user, title='Update Success')
-
-    code = request.args.get('code')
-    if code is None:
-        return redirect(Oauth.discord_login_url)
-
-    response = Oauth.get_access_token(code)
-    access_token = response['access_token']
-
-    session['access_token'] = access_token
 
     user = Oauth.get_user(access_token)
+
     collect_data(user)
     session['discord_user'] = user
 
@@ -1118,6 +1111,11 @@ async def login_page():
         mutual_guild_ids = [int(guild_object['id']) for guild_object in bot_guilds]
         admin = True
     session['mutual_guild_ids'] = mutual_guild_ids
+
+    if update:
+        return render_template('base/message.html',
+                               message=f"Updated session for {user['username']}#{user['discriminator']}", errors=None,
+                               user=user, title='Update Success')
 
     return render_template('base/message.html',
                            message=f"Success, logged in as {user['username']}#{user['discriminator']}{' -> ADMIN' if admin else ''}",
@@ -1169,7 +1167,7 @@ async def admin_page():
     response = None
 
     if request.method == 'POST':
-        guild_id = None
+        guild_id = 0
         web_data = WebData(guild_id, user_name, user_id)
 
         keys = request.form.keys()
@@ -1220,6 +1218,24 @@ async def admin_page():
     guild = get_guilds()
     return render_template('nav/admin.html', user=user, guild=guild.values(), languages_dict=languages_dict,
                            errors=errors, messages=messages)
+
+# Admin Log
+@app.route('/admin/log', methods=['GET', 'POST'])
+async def admin_log_page():
+    log(request.remote_addr, '/admin/log', log_type='ip')
+    if 'discord_user' in session.keys():
+        user = session['discord_user']
+    else:
+        return render_template('base/message.html', message="403 Forbidden", message4='You have to be logged in.',
+                               errors=None, user=None, title='403 Forbidden'), 403
+
+    if int(user['id']) not in authorized_users:
+        return abort(403)
+
+    with open(f'{config.PARENT_DIR}log/log.log', 'r') as f:
+        log_data = f.read()
+
+    return render_template('admin/log.html', user=user, log_data=log_data, title='Log')
 
 # Admin data
 @app.route('/admin/user/<int:user_id>', methods=['GET', 'POST'])
