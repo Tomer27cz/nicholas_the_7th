@@ -13,3 +13,7 @@ flask
 spotipy
 soundcloud-lib
 werkzeug
+emoji
+aiohttp
+grapheme
+pytz
