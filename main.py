@@ -2032,7 +2032,7 @@ async def join_def(ctx, channel_id=None, mute_response: bool = False) -> ReturnD
             voice_channel = bot.get_channel(int(channel_id))
 
         # check if bot has permission to join channel
-        if not voice_channel.permissionas_for(guild_object.me).connect:
+        if not voice_channel.permissions_for(guild_object.me).connect:
             message = tg(guild_id, "I don't have permission to join this channel")
             await ctx.reply(message, ephemeral=True)
             return ReturnData(False, message)
