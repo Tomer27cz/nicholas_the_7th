@@ -279,7 +279,9 @@
         "Rename Save": "Rename Save",
         "Rename": "Rename",
         "queue save renamed": "queue save renamed",
-        "Save name must be alphanumeric": "Save name must be alphanumeric"
+        "Save name must be alphanumeric": "Save name must be alphanumeric",
+        "Cancel": "Cancel",
+        "Channel": "Channel"
     },
     "cs": {
         "search": "Vyhledejte na youtube zadan\u00fd dotaz",
@@ -562,7 +564,9 @@
         "Rename Save": "P\u0159ejmenovat Ulo\u017eit",
         "Rename": "P\u0159ejmenovat",
         "queue save renamed": "ukl\u00e1d\u00e1n\u00ed do fronty p\u0159ejmenov\u00e1no",
-        "Save name must be alphanumeric": "N\u00e1zev ulo\u017een\u00ed mus\u00ed b\u00fdt alfanumerick\u00fd"
+        "Save name must be alphanumeric": "N\u00e1zev ulo\u017een\u00ed mus\u00ed b\u00fdt alfanumerick\u00fd",
+        "Cancel": "zru\u0161en\u00ed",
+        "Channel": "Kan\u00e1l"
     },
     "de": {
         "search": "Suchen Sie YouTube nach der bereitgestellten Abfrage",
@@ -845,7 +849,9 @@
         "Rename Save": "Umbenennen Speichern",
         "Rename": "Umbenennen",
         "queue save renamed": "Warteschlange speichern umbenannt",
-        "Save name must be alphanumeric": "Der Speichername muss alphanumerisch sein"
+        "Save name must be alphanumeric": "Der Speichername muss alphanumerisch sein",
+        "Cancel": "Stornieren",
+        "Channel": "Kanal"
     },
     "eo": {
         "search": "Ser\u0109u YouTube",
@@ -1128,7 +1134,9 @@
         "Rename Save": "Alinomigu Konservu",
         "Rename": "Alinomi",
         "queue save renamed": "vostokonservado renomita",
-        "Save name must be alphanumeric": "Konservnomo devas esti alfanombra"
+        "Save name must be alphanumeric": "Konservnomo devas esti alfanombra",
+        "Cancel": "Nuligi",
+        "Channel": "Kanalo"
     },
     "es": {
         "search": "Busque en YouTube la consulta proporcionada",
@@ -1411,7 +1419,9 @@
         "Rename Save": "Cambiar nombre Guardar",
         "Rename": "Rebautizar",
         "queue save renamed": "guardado en cola renombrado",
-        "Save name must be alphanumeric": "El nombre guardado debe ser alfanum\u00e9rico"
+        "Save name must be alphanumeric": "El nombre guardado debe ser alfanum\u00e9rico",
+        "Cancel": "Cancelar",
+        "Channel": "Canal"
     },
     "fr": {
         "search": "Recherchez YouTube pour la requ\u00eate fournie",
@@ -1694,7 +1704,9 @@
         "Rename Save": "Renommer Enregistrer",
         "Rename": "Renommer",
         "queue save renamed": "sauvegarde de la file d&#39;attente renomm\u00e9e",
-        "Save name must be alphanumeric": "Le nom de sauvegarde doit \u00eatre alphanum\u00e9rique"
+        "Save name must be alphanumeric": "Le nom de sauvegarde doit \u00eatre alphanum\u00e9rique",
+        "Cancel": "Annuler",
+        "Channel": "Canaliser"
     },
     "it": {
         "search": "Cerca YouTube per la query fornita",
@@ -1977,7 +1989,9 @@
         "Rename Save": "Rinomina Salva",
         "Rename": "Rinominare",
         "queue save renamed": "salvataggio della coda rinominato",
-        "Save name must be alphanumeric": "Il nome di salvataggio deve essere alfanumerico"
+        "Save name must be alphanumeric": "Il nome di salvataggio deve essere alfanumerico",
+        "Cancel": "Annulla",
+        "Channel": "Canale"
     },
     "ja": {
         "search": "YouTube\u3092\u691c\u7d22\u3057\u3066\u304f\u3060\u3055\u3044",
@@ -2260,7 +2274,9 @@
         "Rename Save": "\u540d\u524d\u3092\u5909\u66f4\u3057\u3066\u4fdd\u5b58",
         "Rename": "\u540d\u524d\u306e\u5909\u66f4",
         "queue save renamed": "\u30ad\u30e5\u30fc\u4fdd\u5b58\u306e\u540d\u524d\u304c\u5909\u66f4\u3055\u308c\u307e\u3057\u305f",
-        "Save name must be alphanumeric": "\u4fdd\u5b58\u540d\u306f\u82f1\u6570\u5b57\u3067\u3042\u308b\u5fc5\u8981\u304c\u3042\u308a\u307e\u3059"
+        "Save name must be alphanumeric": "\u4fdd\u5b58\u540d\u306f\u82f1\u6570\u5b57\u3067\u3042\u308b\u5fc5\u8981\u304c\u3042\u308a\u307e\u3059",
+        "Cancel": "\u30ad\u30e3\u30f3\u30bb\u30eb",
+        "Channel": "\u30c1\u30e3\u30cd\u30eb"
     },
     "ko": {
         "search": "\uc81c\uacf5\ub41c \ucffc\ub9ac\ub97c \uac80\uc0c9\ud558\uc2ed\uc2dc\uc624",
@@ -2543,7 +2559,9 @@
         "Rename Save": "\uc774\ub984 \ubc14\uafb8\uae30 \uc800\uc7a5",
         "Rename": "\uc774\ub984 \ubc14\uafb8\uae30",
         "queue save renamed": "\ub300\uae30\uc5f4 \uc800\uc7a5 \uc774\ub984 \ubcc0\uacbd",
-        "Save name must be alphanumeric": "\uc800\uc7a5 \uc774\ub984\uc740 \uc601\uc22b\uc790\uc5ec\uc57c \ud569\ub2c8\ub2e4."
+        "Save name must be alphanumeric": "\uc800\uc7a5 \uc774\ub984\uc740 \uc601\uc22b\uc790\uc5ec\uc57c \ud569\ub2c8\ub2e4.",
+        "Cancel": "\ucde8\uc18c",
+        "Channel": "\ucc44\ub110"
     },
     "la": {
         "search": "Search YouTube pro provisum query",
@@ -2826,7 +2844,9 @@
         "Rename Save": "Rename Save",
         "Rename": "Rename",
         "queue save renamed": "queue nisi renamed",
-        "Save name must be alphanumeric": "Nomen salvum esse debet alphanumeric"
+        "Save name must be alphanumeric": "Nomen salvum esse debet alphanumeric",
+        "Cancel": "Cancel",
+        "Channel": "Channel"
     },
     "zh": {
         "search": "\u641c\u7d22YouTube\u63d0\u4f9b\u7684\u67e5\u8be2",
@@ -3109,7 +3129,9 @@
         "Rename Save": "\u91cd\u547d\u540d\u4fdd\u5b58",
         "Rename": "\u6539\u540d",
         "queue save renamed": "\u961f\u5217\u4fdd\u5b58\u91cd\u547d\u540d",
-        "Save name must be alphanumeric": "\u4fdd\u5b58\u540d\u79f0\u5fc5\u987b\u662f\u5b57\u6bcd\u6570\u5b57"
+        "Save name must be alphanumeric": "\u4fdd\u5b58\u540d\u79f0\u5fc5\u987b\u662f\u5b57\u6bcd\u6570\u5b57",
+        "Cancel": "\u53d6\u6d88",
+        "Channel": "\u6e20\u9053"
     },
     "nl": {
         "search": "Zoek YouTube naar de verstrekte query",
@@ -3392,7 +3414,9 @@
         "Rename Save": "Hernoem Opslaan",
         "Rename": "Hernoemen",
         "queue save renamed": "wachtrij opslaan hernoemd",
-        "Save name must be alphanumeric": "De opslagnaam moet alfanumeriek zijn"
+        "Save name must be alphanumeric": "De opslagnaam moet alfanumeriek zijn",
+        "Cancel": "Annuleren",
+        "Channel": "Kanaal"
     },
     "pl": {
         "search": "Wyszukaj YouTube, aby uzyska\u0107 dostarczone zapytanie",
@@ -3675,7 +3699,9 @@
         "Rename Save": "Zmie\u0144 nazw\u0119 Zapisz",
         "Rename": "Przemianowa\u0107",
         "queue save renamed": "zmieniono nazw\u0119 zapisu kolejki",
-        "Save name must be alphanumeric": "Nazwa zapisu musi by\u0107 alfanumeryczna"
+        "Save name must be alphanumeric": "Nazwa zapisu musi by\u0107 alfanumeryczna",
+        "Cancel": "Anulowa\u0107",
+        "Channel": "Kana\u0142"
     },
     "pt": {
         "search": "Pesquise o YouTube pela consulta fornecida",
@@ -3958,7 +3984,9 @@
         "Rename Save": "Renomear Salvar",
         "Rename": "Renomear",
         "queue save renamed": "salvamento de fila renomeado",
-        "Save name must be alphanumeric": "O nome de salvamento deve ser alfanum\u00e9rico"
+        "Save name must be alphanumeric": "O nome de salvamento deve ser alfanum\u00e9rico",
+        "Cancel": "Cancelar",
+        "Channel": "Canal"
     },
     "ru": {
         "search": "\u041f\u043e\u0438\u0441\u043a YouTube \u0434\u043b\u044f \u043f\u0440\u0435\u0434\u043e\u0441\u0442\u0430\u0432\u043b\u0435\u043d\u043d\u043e\u0433\u043e \u0437\u0430\u043f\u0440\u043e\u0441\u0430",
@@ -4241,7 +4269,9 @@
         "Rename Save": "\u041f\u0435\u0440\u0435\u0438\u043c\u0435\u043d\u043e\u0432\u0430\u0442\u044c \u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c",
         "Rename": "\u041f\u0435\u0440\u0435\u0438\u043c\u0435\u043d\u043e\u0432\u0430\u0442\u044c",
         "queue save renamed": "\u0441\u043e\u0445\u0440\u0430\u043d\u0435\u043d\u0438\u0435 \u0432 \u043e\u0447\u0435\u0440\u0435\u0434\u0438 \u043f\u0435\u0440\u0435\u0438\u043c\u0435\u043d\u043e\u0432\u0430\u043d\u043e",
-        "Save name must be alphanumeric": "\u0418\u043c\u044f \u0441\u043e\u0445\u0440\u0430\u043d\u0435\u043d\u0438\u044f \u0434\u043e\u043b\u0436\u043d\u043e \u0431\u044b\u0442\u044c \u0431\u0443\u043a\u0432\u0435\u043d\u043d\u043e-\u0446\u0438\u0444\u0440\u043e\u0432\u044b\u043c"
+        "Save name must be alphanumeric": "\u0418\u043c\u044f \u0441\u043e\u0445\u0440\u0430\u043d\u0435\u043d\u0438\u044f \u0434\u043e\u043b\u0436\u043d\u043e \u0431\u044b\u0442\u044c \u0431\u0443\u043a\u0432\u0435\u043d\u043d\u043e-\u0446\u0438\u0444\u0440\u043e\u0432\u044b\u043c",
+        "Cancel": "\u041e\u0442\u043c\u0435\u043d\u0430",
+        "Channel": "\u041a\u0430\u043d\u0430\u043b"
     },
     "sv": {
         "search": "S\u00f6k YouTube efter den medf\u00f6ljande fr\u00e5gan",
@@ -4524,7 +4554,9 @@
         "Rename Save": "Byt namn p\u00e5 Spara",
         "Rename": "D\u00f6p om",
         "queue save renamed": "k\u00f6 spara bytt namn",
-        "Save name must be alphanumeric": "Spara namn m\u00e5ste vara alfanumeriskt"
+        "Save name must be alphanumeric": "Spara namn m\u00e5ste vara alfanumeriskt",
+        "Cancel": "Annullera",
+        "Channel": "Kanal"
     },
     "tr": {
         "search": "Verilen sorgu i\u00e7in youtube aray\u0131n",
@@ -4807,6 +4839,8 @@
         "Rename Save": "Kaydetmeyi Yeniden Adland\u0131r",
         "Rename": "Yeniden isimlendirmek",
         "queue save renamed": "s\u0131ra kayd\u0131 yeniden adland\u0131r\u0131ld\u0131",
-        "Save name must be alphanumeric": "Kay\u0131t ad\u0131 alfasay\u0131sal olmal\u0131d\u0131r"
+        "Save name must be alphanumeric": "Kay\u0131t ad\u0131 alfasay\u0131sal olmal\u0131d\u0131r",
+        "Cancel": "\u0130ptal etmek",
+        "Channel": "Kanal"
     }
 }

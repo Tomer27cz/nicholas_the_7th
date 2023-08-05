@@ -9,6 +9,11 @@ dev_func/translator/credentials.json
 testing.py
 dev_func/
 *.py[cod]
+log.log
+data.log
+log/
+log/log.log
+log/data.log
 
 # C extensions
 *.so

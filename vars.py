@@ -1,5 +1,4 @@
-{
-   "reactions":{
+react_dict = {
       "ABCD":"\ud83d\udd20",
       "abcd":"\ud83d\udd21",
       "1234":"\ud83d\udd22",
@@ -23,14 +22,12 @@
       "down":"\u2b07\ufe0f",
       "left":"\u2b05\ufe0f",
       "right":"\u27a1\ufe0f"
-   },
-   "authorized":[
-      416254812339044365,
-      349164237605568513
-   ],
-   "logo": "https://cdn.discordapp.com/attachments/892403162315644931/1008054767379030096/vlc.png",
-   "default_discord_avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
-   "prefix":"cock.",
-   "bot_id":1007004463933952120,
-   "my_id":349164237605568513
 }
+
+authorized_users = [416254812339044365, 349164237605568513]
+
+vlc_logo = "https://cdn.discordapp.com/attachments/892403162315644931/1008054767379030096/vlc.png"
+default_discord_avatar = "https://cdn.discordapp.com/embed/avatars/0.png"
+prefix = "cock."
+bot_id = 1007004463933952120
+my_id = 349164237605568513
