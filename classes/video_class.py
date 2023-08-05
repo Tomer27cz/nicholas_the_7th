@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Union
 if TYPE_CHECKING:
     from classes.typed_dictionaries import *
 
@@ -27,11 +27,11 @@ class VideoClass:
 
     def __init__(self,
                  class_type: str,
-                 author: int | str,
+                 author: Union[str, int],
                  url: str=None,
                  title: str=None,
                  picture: str=None,
-                 duration: str | int=None,
+                 duration: Union[str, int]=None,
                  channel_name: str=None,
                  channel_link: str=None,
                  radio_info: RadioInfo=None,

@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Union
 if TYPE_CHECKING:
     from classes.video_class import VideoClass
     from classes.typed_dictionaries import TimeSegment, TimeSegmentInner, VideoChapter
@@ -20,7 +20,7 @@ def set_stopped(video: VideoClass):
 
     save_json()
 
-def set_started(video: VideoClass, guild_object, chapters: list[VideoChapter] | None = None):
+def set_started(video: VideoClass, guild_object, chapters: Union[list[VideoChapter], None]= None):
     if len(video.played_duration) == 0:
         assert video.played_duration == []
         video.played_duration += [
@@ -70,8 +70,8 @@ def video_time_from_start(video) -> float:
 
     if len_played_duration == 1:
         segment: TimeSegment = video.played_duration[0]
-        start: None | int = segment['start']['epoch']
-        end: None | int = segment['end']['epoch']
+        start: Union[None, int] = segment['start']['epoch']
+        end: Union[None, int] = segment['end']['epoch']
 
         if start is None:
             return 0.0

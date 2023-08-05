@@ -1,8 +1,8 @@
-from typing import TypedDict, Optional
+from typing import TypedDict, Optional, Union
 
 class TimeSegmentInner(TypedDict):
-    epoch: int | None
-    time_stamp: float | None
+    epoch: Union[None, int]
+    time_stamp: Union[None, int]
 
 class TimeSegment(TypedDict):
     start: TimeSegmentInner

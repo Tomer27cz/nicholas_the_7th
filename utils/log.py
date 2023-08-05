@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Union
 if TYPE_CHECKING:
     from classes.data_classes import WebData
 
@@ -16,7 +16,7 @@ import sys
 import discord
 from discord.ext import commands
 
-def log(ctx: commands.Context | WebData | None | int, text_data, options=None, log_type: Literal['command', 'function', 'web', 'text', 'ip', 'error']='text', author=None) -> None:
+def log(ctx: Union[commands.Context, WebData, None, int], text_data, options=None, log_type: Literal['command', 'function', 'web', 'text', 'ip', 'error']='text', author=None) -> None:
     """
     Logs data to the console and to the log file
     :param ctx: commands.Context or WebData or guild_id
