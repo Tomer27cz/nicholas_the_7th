@@ -202,7 +202,7 @@ def get_fast_channel_content(channel_id: int):
     # send argument dictionary
     return send_arg(arg_dict)
 
-def get_renew(guild_id: int, queue_type: str, index: int):
+async def get_renew(guild_id: int, queue_type: str, index: int):
     """
     Get a renew from the database
     :param guild_id: guild id

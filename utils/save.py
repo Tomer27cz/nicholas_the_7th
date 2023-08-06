@@ -25,15 +25,14 @@ def update_guilds():
     and renews all guild objects
     :return: None
     """
-    bot = get_bot()
     guild = get_guild_dict()
 
-    bot_guilds = [guild_object.id for guild_object in bot.guilds]
+    bot_guilds = [guild_object.id for guild_object in get_bot().guilds]
     guilds_json = [int(guild_id) for guild_id in guild.keys()]
 
     for bot_guild_id in bot_guilds:
         if bot_guild_id not in guilds_json:
-            bot_guild_object = bot.get_guild(bot_guild_id)
+            bot_guild_object = get_bot().get_guild(bot_guild_id)
             guild[bot_guild_id] = Guild(bot_guild_id)
             log(None, f'Discovered a New guild: {bot_guild_id} = {bot_guild_object.name} -> Added to guilds.json')
 

@@ -82,8 +82,7 @@ def create_embed(video: VideoClass, name: str, guild_id: int, embed_colour: (int
     :return: discord.Embed
     """
     try:
-        bot = get_bot()
-        requested_by = bot.get_user(video.author).mention
+        requested_by = get_bot().get_user(video.author).mention
     except AttributeError:
         requested_by = video.author
     # set variables
@@ -236,9 +235,8 @@ def get_username(user_id: int) -> str:
     :param user_id: id of user
     :return: str - username of user_id or str(user_id)
     """
-    bot = get_bot()
     # noinspection PyBroadException
     try:
-        return bot.get_user(int(user_id)).name
+        return get_bot().get_user(int(user_id)).name
     except:
         return str(user_id)

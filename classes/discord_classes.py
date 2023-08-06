@@ -7,8 +7,7 @@ import chat_exporter
 
 class DiscordUser:
     def __init__(self, user_id: int):
-        bot = get_bot()
-        user_object = bot.get_user(user_id)
+        user_object = get_bot().get_user(user_id)
 
         if user_object:
             self.name = user_object.name
@@ -54,8 +53,7 @@ class DiscordChannel:
         self.members = []
         self.html = None
 
-        bot = get_bot()
-        channel_object = bot.get_channel(channel_id)
+        channel_object = get_bot().get_channel(channel_id)
 
         if channel_object:
             self.id = channel_object.id
@@ -81,30 +79,29 @@ class DiscordChannel:
             msg_list = [message_object async for message_object in ch_obj.history(limit=num)]
             return msg_list
 
-        bot = get_bot()
-        channel_object = bot.get_channel(self.id)
+
+        channel_object = get_bot().get_channel(self.id)
         if not channel_object:
             return None
         if not channel_object.permissions_for(channel_object.guild.me).read_message_history:
             return None
 
-        messages = asyncio.run_coroutine_threadsafe(get_messages(channel_object, num_of_messages), bot.loop).result()
+        messages = asyncio.run_coroutine_threadsafe(get_messages(channel_object, num_of_messages), get_bot().loop).result()
 
         transcript = asyncio.run_coroutine_threadsafe(chat_exporter.raw_export(channel=channel_object,
                                                                                messages=messages,
                                                                                tz_info='GMT',
                                                                                guild=channel_object.guild,
-                                                                               bot=bot,
+                                                                               bot=get_bot(),
                                                                                military_time=True,
-                                                                               support_dev=False), bot.loop).result()
+                                                                               support_dev=False), get_bot().loop).result()
         self.html = transcript
 
         return self.html
 
 class DiscordRole:
     def __init__(self, role_id: int, guild_id: int):
-        bot = get_bot()
-        role_object = bot.get_guild(guild_id).get_role(role_id)
+        role_object = get_bot().get_guild(guild_id).get_role(role_id)
 
         if role_object:
             self.id = role_object.id

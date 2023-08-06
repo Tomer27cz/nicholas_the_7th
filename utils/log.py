@@ -77,8 +77,7 @@ async def send_to_admin(data):
     :param data: str - data to send
     :return: None
     """
-    bot = get_bot()
-    admin = bot.get_user(my_id)
+    admin = get_bot().get_user(my_id)
     # if length of data is more than 2000 symbols send a file
     if len(data) > 2000:
         file_to_send = discord.File(BytesIO(data.encode()), filename='data.txt')

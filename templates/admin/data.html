@@ -22,9 +22,15 @@
 
   <a href="/admin" class="btn btn-primary">Return to Admin Panel</a>
 
-  <div class="container">
-    <p>{{ data_data }}</p>
+  <div class="div-log-data">
+    {% for line in data_data %}
+    <p>{{ line }}</p>
+    {% endfor %}
   </div>
 
-  <script>window.scrollTo(0, document.body.scrollHeight);</script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function(event) {
+    window.scrollTo(0,document.body.scrollHeight);
+    });
+  </script>
 {% endblock %}

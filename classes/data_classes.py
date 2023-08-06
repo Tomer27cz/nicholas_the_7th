@@ -11,12 +11,12 @@ class ReturnData:
     :type message: str
     :type video: VideoClass
 
-    :param successful: True if successful, False if not
+    :param response: True if successful, False if not
     :param message: Message to be returned
     :param video: VideoClass object to be returned if needed
     """
-    def __init__(self, successful: bool, message: str, video = None):
-        self.response = successful
+    def __init__(self, response: bool, message: str, video = None):
+        self.response = response
         self.message = message
         self.video = video
 
@@ -77,8 +77,7 @@ class GuildData:
     """
     def __init__(self, guild_id, old_data=None):
         self.id: int = guild_id
-        bot = get_bot()
-        guild_object = bot.get_guild(int(guild_id))
+        guild_object = get_bot().get_guild(int(guild_id))
 
         if guild_object:
             self.name = guild_object.name

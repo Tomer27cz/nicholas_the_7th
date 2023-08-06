@@ -226,6 +226,18 @@ h1, h2, h3, h4, h5, h6 {
     border-radius: 1rem;
     padding: 1rem;
 }
+.div-log p {
+    margin-bottom: 0.2rem;
+    margin-right: 1rem;
+    margin-left: 1rem;
+}
+.div-log-data p {
+    margin-bottom: 0.2rem;
+    margin-right: 1rem;
+    margin-left: 1rem;
+    border-top: var(--d-g3) solid 0.5rem;
+}
+
 
 /* radio */
 .r-w1 {

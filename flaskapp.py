@@ -11,7 +11,7 @@ from classes.discord_classes import DiscordUser
 from utils.convert import struct_to_time, convert_duration
 from utils.log import log, collect_data
 from utils.files import getReadableByteSize, getIconClassForFilename
-from utils.translate import tg
+from utils.translate import ftg
 from utils.video_time import video_time_from_start
 from utils.checks import check_isdigit
 from utils.web import *
@@ -304,18 +304,21 @@ async def guild_page(guild_id, key):
     session['mutual_guild_ids'] = mutual_guild_ids
 
     if guild_object.now_playing:
+        await get_renew(guild_object.id, 'now_playing', 0)
         pd = guild_object.now_playing.played_duration
     else:
         pd = [{'start': None, 'end': None}]
 
-    if guild_object.now_playing:
-        get_renew(guild_object.id, 'now_playing', 0)
-
     if guild_object.queue:
         for i, video in enumerate(guild_object.queue):
-            get_renew(guild_object.id, 'queue', i)
+            await get_renew(guild_object.id, 'queue', i)
 
-    with open(f'{config.PARENT_DIR}db/saves.json', 'r') as f:
+    guild_object = get_guild(int(guild_id))
+    if guild_object is None:
+        return render_template('base/message.html', guild_id=guild_id, user=user,
+                               message="That Server doesn't exist or the bot is not in it", errors=None, title='Error')
+
+    with open(f'{config.PARENT_DIR}db/saves.json', 'r', encoding='utf-8') as f:
         saves = json.load(f)
         if str(guild_object.id) in saves.keys():
             saves = saves[str(guild_object.id)]
@@ -326,7 +329,7 @@ async def guild_page(guild_id, key):
                            convert_duration=convert_duration, get_username=get_username, errors=errors,
                            messages=messages, user=user, admin=admin, volume=round(guild_object.options.volume * 100),
                            radios=list(radio_dict.values()), scroll_position=scroll_position,
-                           languages_dict=languages_dict, tg=tg, gi=int(guild_id), time=time, int=int,
+                           languages_dict=languages_dict, tg=ftg, gi=int(guild_id), time=time, int=int,
                            video_time_played=video_time_from_start, pd=json.dumps(pd), check_isdigit=check_isdigit,
                            saves=saves)
 
@@ -501,8 +504,8 @@ async def admin_log_page():
     if int(user['id']) not in authorized_users:
         return abort(403)
 
-    with open(f'{config.PARENT_DIR}log/log.log', 'r') as f:
-        log_data = f.read()
+    with open(f'{config.PARENT_DIR}log/log.log', 'r', encoding='utf-8') as f:
+        log_data = f.readlines()
 
     return render_template('admin/log.html', user=user, log_data=log_data, title='Log')
 
@@ -519,8 +522,8 @@ async def admin_data_page():
     if int(user['id']) not in authorized_users:
         return abort(403)
 
-    with open(f'{config.PARENT_DIR}log/data.log', 'r') as f:
-        data_data = f.read()
+    with open(f'{config.PARENT_DIR}log/data.log', 'r', encoding='utf-8') as f:
+        data_data = f.readlines()
 
     return render_template('admin/data.html', user=user, data_data=data_data, title='Log')
 
@@ -814,7 +817,7 @@ async def admin_guild_saves(guild_id):
 
     guild_object = get_guild(int(guild_id))
 
-    with open(f"{config.PARENT_DIR}db/saves.json", "r") as f:
+    with open(f"{config.PARENT_DIR}db/saves.json", "r", encoding='utf-8') as f:
         saves = json.load(f)
 
     guild_saves = None
@@ -825,7 +828,7 @@ async def admin_guild_saves(guild_id):
 
     return render_template('admin/saves.html', user=user, saves=guild_saves, len=len,
                            guild_object=guild_object, title='Saves', get_username=get_username,
-                           struct_to_time=struct_to_time, convert_duration=convert_duration, tg=tg, gi=int(guild_id),
+                           struct_to_time=struct_to_time, convert_duration=convert_duration, tg=ftg, gi=int(guild_id),
                            errors=errors, messages=messages)
 
 # Admin Chat

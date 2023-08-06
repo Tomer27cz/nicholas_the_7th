@@ -35,3 +35,9 @@ def get_sp():
     if not sp:
         raise Exception("Spotify instance not found")
     return sp
+
+def get_all_sound_effects():
+    sound_effects = __main__.sound_effects
+    if not sound_effects:
+        raise Exception("Sound effects dict not found")
+    return sound_effects
