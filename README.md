@@ -34,7 +34,7 @@ INVITE_URL = f"https://discord.com/api/oauth2/authorize?client_id={CLIENT_ID}&pe
 
 # Discord OAuth2
 REDIRECT_URI = "https://YOUR_WEBSITE:5420/login" # http://127.0.0.1:5420/login is the default redirect uri for the flask server
-DISCORD_LOGIN_URL = "YOUR_DISCORD_LOGIN_URL" # identify guilds - scopes are required for the bot to work
+DISCORD_LOGIN_URL = f"https://discord.com/api/oauth2/authorize?client_id={CLIENT_ID}&redirect_uri={REDIRECT_URI}&response_type=code&scope=identify%20guilds" # identify guilds - scopes are required for the bot to work
 DISCORD_API_ENDPOINT = 'https://discord.com/api/v10' # This is the discord api endpoint (more recent version may be available)
 
 # Web
@@ -42,9 +42,9 @@ WEB_SECRET_KEY = '!secret!' # This is the secret key for the flask server
 WEB_URL = 'YOUR_WEB_URL' # This is the url for the flask server (http://127.0.0.1:5420 is the default url)
 
 # Spotify
-SPOTIPY_CLIENT_ID='YOUR_SPOTIFY_CLIENT_ID' # This is the client id for the spotify api
-SPOTIPY_CLIENT_SECRET='YOUR_SPOTIFY_CLIENT_SECRET' # This is the client secret for the spotify api
-SPOTIPY_REDIRECT_URI='https://localhost:8888/callback' # This is the redirect uri for the spotify api
+SPOTIFY_CLIENT_ID='YOUR_SPOTIFY_CLIENT_ID' # This is the client id for the spotify api
+SPOTIFY_CLIENT_SECRET='YOUR_SPOTIFY_CLIENT_SECRET' # This is the client secret for the spotify api
+SPOTIFY_REDIRECT_URI='https://localhost:8888/callback' # This is the redirect uri for the spotify api
 
 # SoundCloud
 SOUNDCLOUD_CLIENT_ID = 'YOUR_SOUNDCLOUD_ID' # SoundCloud ID (you can use your accounts id -> developer tools)
