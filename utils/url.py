@@ -67,13 +67,13 @@ def get_url_type(string: str):
     first_url = get_first_url(string)
     yt_id = extract_yt_id(string)
 
-    if '/playlist?list=' in string:
+    if '/playlist?list=' in string and extract_yt_id(string) is None:
         extracted_url = get_url_of(string, '/playlist?list=')
         if extracted_url is None:
             return 'String', string
         return 'YouTube Playlist', extracted_url
 
-    if any(param in string for param in {'index=', 'list='}):
+    if any(param in string for param in {'index=', 'list='}) and extract_yt_id(string) is not None:
         extracted_url = get_url_of(string, 'index=')
         if extracted_url is None:
             extracted_url = get_url_of(string, 'list=')

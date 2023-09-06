@@ -19,7 +19,7 @@ def get_languages_dict():
     return languages
 
 def get_sc():
-    sc = __main__.sc
+    sc = __main__.soundcloud_api
     if not sc:
         raise Exception("SoundCloud instance not found")
     return sc
@@ -31,7 +31,7 @@ def get_radio_dict():
     return radio_dict
 
 def get_sp():
-    sp = __main__.sp
+    sp = __main__.spotify_api
     if not sp:
         raise Exception("Spotify instance not found")
     return sp

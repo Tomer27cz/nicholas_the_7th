@@ -117,8 +117,10 @@ class VideoClass:
 
             if any(v is None for v in [title, picture, duration, channel_name, channel_link]):
                 try:
-                    sc = get_sc()
-                    track = sc.resolve(self.url)
+                    soundcloud_api = get_sc()
+                    if soundcloud_api is None:
+                        raise ValueError("SoundCloud API is not initialized")
+                    track = soundcloud_api.resolve(self.url)
                     assert type(track) is Track
                 except Exception as e:
                     raise ValueError(f"Not a SoundCloud Track link: {e}")

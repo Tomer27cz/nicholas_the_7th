@@ -12,8 +12,10 @@ def spotify_to_yt_video(spotify_url: str, author) -> VideoClass or None:
     """
     # noinspection PyBroadException
     try:
-        sp = get_sp()
-        spotify_track = sp.track(spotify_url)
+        spotify_api = get_sp()
+        if not spotify_api:
+            raise Exception("Spotify API not initialized")
+        spotify_track = spotify_api.track(spotify_url)
     except Exception:
         return None
 
@@ -50,8 +52,10 @@ def spotify_playlist_to_yt_video_list(spotify_playlist_url: str, author) -> list
     """
     # noinspection PyBroadException
     try:
-        sp = get_sp()
-        spotify_playlist = sp.playlist_items(spotify_playlist_url, fields='items.track.name, items.track.artists.name')
+        spotify_api = get_sp()
+        if not spotify_api:
+            raise Exception("Spotify API not initialized")
+        spotify_playlist = spotify_api.playlist_items(spotify_playlist_url, fields='items.track.name, items.track.artists.name')
     except Exception:
         return None
 
@@ -95,8 +99,10 @@ def spotify_album_to_yt_video_list(spotify_album_url: str, author) -> list or No
     """
     # noinspection PyBroadException
     try:
-        sp = get_sp()
-        spotify_album = sp.album_tracks(spotify_album_url)
+        spotify_api = get_sp()
+        if not spotify_api:
+            raise Exception("Spotify API not initialized")
+        spotify_album = spotify_api.album_tracks(spotify_album_url)
     except Exception:
         return None
 
@@ -128,3 +134,10 @@ def spotify_album_to_yt_video_list(spotify_album_url: str, author) -> list or No
         video_list.append(video_class)
 
     return video_list
+
+def check_spotify_initialized() -> bool:
+    """
+    Checks if spotify api is initialized
+    :return: bool
+    """
+    return get_sp() is not None

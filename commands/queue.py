@@ -8,7 +8,7 @@ from utils.translate import tg
 from utils.url import get_url_type, extract_yt_id
 from utils.cli import get_url_probe_data
 from utils.discord import to_queue, create_embed
-from utils.spotify import spotify_album_to_yt_video_list, spotify_playlist_to_yt_video_list, spotify_to_yt_video
+from utils.spotify import spotify_album_to_yt_video_list, spotify_playlist_to_yt_video_list, spotify_to_yt_video, check_spotify_initialized
 from utils.save import save_json, push_update
 from utils.convert import convert_duration
 
@@ -94,6 +94,11 @@ async def queue_command_def(ctx, url=None, position: int = None, mute_response: 
         return ReturnData(False, message)
 
     if url_type == 'Spotify Playlist' or url_type == 'Spotify Album':
+        if not check_spotify_initialized():
+            message = tg(guild_id, 'Spotify API is not initialized')
+            if not mute_response:
+                await ctx.reply(message, ephemeral=ephemeral)
+            return ReturnData(False, message)
         adding_message = None
         if is_ctx:
             adding_message = await ctx.reply(tg(guild_id, 'Adding songs to queue... (might take a while)'), ephemeral=ephemeral)
@@ -115,6 +120,11 @@ async def queue_command_def(ctx, url=None, position: int = None, mute_response: 
         return ReturnData(True, message)
 
     if url_type == 'Spotify Track':
+        if not check_spotify_initialized():
+            message = tg(guild_id, 'Spotify API is not initialized')
+            if not mute_response:
+                await ctx.reply(message, ephemeral=ephemeral)
+            return ReturnData(False, message)
         video = spotify_to_yt_video(url, author_id)
         if video is not None:
             message = to_queue(guild_id, video, position=position, copy_video=False)
@@ -123,6 +133,11 @@ async def queue_command_def(ctx, url=None, position: int = None, mute_response: 
             return ReturnData(True, message)
 
     if url_type == 'Spotify URL':
+        if not check_spotify_initialized():
+            message = tg(guild_id, 'Spotify API is not initialized')
+            if not mute_response:
+                await ctx.reply(message, ephemeral=ephemeral)
+            return ReturnData(False, message)
         video = spotify_to_yt_video(url, author_id)
         if video is None:
             message = f'{tg(guild_id, "Invalid spotify url")}: `{url}`'
@@ -137,8 +152,13 @@ async def queue_command_def(ctx, url=None, position: int = None, mute_response: 
 
     if url_type == 'SoundCloud URL':
         try:
-            sc = get_sc()
-            track = sc.resolve(url)
+            soundcloud_api = get_sc()
+            if soundcloud_api is None:
+                message = tg(guild_id, 'SoundCloud API is not initialized')
+                if not mute_response:
+                    await ctx.reply(message, ephemeral=ephemeral)
+                return ReturnData(False, message)
+            track = soundcloud_api.resolve(url)
         except Exception as e:
             message = f'{tg(guild_id, "Invalid SoundCloud url")}: {url} -> {e}'
             if not mute_response:

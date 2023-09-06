@@ -235,16 +235,22 @@ log(None, 'Discord API initialized')
 
 # ---------------------------------------------- SPOTIPY ---------------------------------------------------------------
 
-credentials = SpotifyClientCredentials(client_id=config.SPOTIPY_CLIENT_ID, client_secret=config.SPOTIPY_CLIENT_SECRET)
-sp = spotipy.Spotify(client_credentials_manager=credentials)
-
-log(None, 'Spotify API initialized')
+try:
+    credentials = SpotifyClientCredentials(client_id=config.SPOTIFY_CLIENT_ID, client_secret=config.SPOTIFY_CLIENT_SECRET)
+    spotify_api = spotipy.Spotify(client_credentials_manager=credentials)
+    log(None, 'Spotify API initialized')
+except spotipy.oauth2.SpotifyOauthError:
+    spotify_api = None
+    log(None, 'Failed to initialize Spotify API')
 
 # --------------------------------------------- SOUNDCLOUD -------------------------------------------------------------
 
-sc = SoundcloudAPI(client_id=config.SOUNDCLOUD_CLIENT_ID)
-
-log(None, 'SoundCloud API initialized')
+try:
+    soundcloud_api = SoundcloudAPI(client_id=config.SOUNDCLOUD_CLIENT_ID)
+    log(None, 'SoundCloud API initialized')
+except Exception as e:
+    log(None, f'Failed to initialize SoundCloud API : {e}')
+    soundcloud_api = None
 
 # ----------------------------------------------------------------------------------------------------------------------
 
