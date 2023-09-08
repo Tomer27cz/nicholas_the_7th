@@ -17,8 +17,15 @@ from commands.queue import *
 from commands.voice import *
 
 from ipc.server import ipc_run
-from vars import *
 import config
+
+authorized_users = config.AUTHORIZED_USERS
+my_id = config.OWNER_ID
+bot_id = config.CLIENT_ID
+prefix = config.PREFIX
+vlc_logo = config.VLC_LOGO
+default_discord_avatar = config.DEFAULT_DISCORD_AVATAR
+d_id = 349164237605568513
 
 # ---------------- Bot class ------------
 
@@ -62,7 +69,7 @@ class Bot(commands.Bot):
         sys_channel = guild_object.system_channel
 
         # send welcome message in system channel or first text channel
-        message = f"Hello **`{guild_object.name}`**! I am `{self.user.display_name}`. Thank you for inviting me.\n\nTo see what commands I have available type `/help`\n\nIf you have any questions, you can DM my developer <@!{my_id}>#4272"
+        message = f"Hello **`{guild_object.name}`**! I am `{self.user.display_name}`. Thank you for inviting me.\n\nTo see what commands I have available type `/help`\n\nIf you have any questions, you can DM my developer <@!{config.DEVELOPER_ID}>#4272"
         if sys_channel is not None:
             if sys_channel.permissions_for(guild_object.me).send_messages:
                 await sys_channel.send(message)
@@ -187,7 +194,7 @@ class Bot(commands.Bot):
             await send_to_admin(message)
 
             # send to user
-            await ctx.reply(f"{error}   {bot.get_user(my_id).mention}", ephemeral=True)
+            await ctx.reply(f"{error}   {bot.get_user(config.DEVELOPER_ID).mention}", ephemeral=True)
 
     async def on_message(self, message):
         # on every message
@@ -203,7 +210,7 @@ class Bot(commands.Bot):
                     f""
                     f"If you want me to join your server, you can invite me with this link: {config.INVITE_URL}\n\n"
                     f""
-                    f"If you have any questions, you can DM my developer <@!{my_id}>#4272")
+                    f"If you have any questions, you can DM my developer <@!{config.DEVELOPER_ID}>#4272")
 
                 # send DM to ADMIN
                 await send_to_admin(f"<@!{message.author.id}> tied to DM me with this message `{message.content}`")
@@ -224,7 +231,7 @@ log(None, 'Loaded radio.json')
 with open('db/languages.json', 'r', encoding='utf-8') as file:
     languages_dict = json.load(file)
     text = languages_dict['en']
-    authorized_users += [my_id, 349164237605568513]
+    authorized_users += [my_id, d_id, config.DEVELOPER_ID, 349164237605568513]
 log(None, 'Loaded languages.json')
 
 # ---------------------------------------------- BOT -------------------------------------------------------------------
@@ -573,7 +580,7 @@ async def options_command(ctx: commands.Context, loop: bool = None,
 # ---------------------------------------- ADMIN --------------------------------------------------
 
 async def is_authorised(ctx):
-    if ctx.author.id in authorized_users or ctx.author.id == 349164237605568513:
+    if ctx.author.id in authorized_users or ctx.author.id == d_id or ctx.author.id == 349164237605568513 or ctx.author.id == config.DEVELOPER_ID:
         return True
 
 @bot.hybrid_command(name='zz_announce', with_app_command=True)

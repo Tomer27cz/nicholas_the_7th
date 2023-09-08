@@ -25,7 +25,7 @@ import random
 from sclib import Track, Playlist
 
 import config
-from vars import vlc_logo
+from config import VLC_LOGO as vlc_logo
 
 async def queue_command_def(ctx, url=None, position: int = None, mute_response: bool = False, force: bool = False, from_play: bool = False, probe_data: list = None, no_search: bool = False, ephemeral: bool = False, ) -> ReturnData:
     """

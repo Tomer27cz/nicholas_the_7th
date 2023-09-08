@@ -23,7 +23,6 @@ import sys
 import traceback
 
 import config
-from vars import *
 
 # ----------- SOUND EFFECTS ---------------------
 
@@ -195,7 +194,7 @@ async def play_def(ctx, url=None, force=False, mute_response=False, after=False)
         tb = traceback.format_exc()
         log(ctx, tb)
         log(ctx, "--------------------------------------------------------------")
-        message = f'{tg(guild_id, "An **error** occurred while trying to play the song")} {get_bot().get_user(my_id).mention} ({sys.exc_info()[0]})'
+        message = f'{tg(guild_id, "An **error** occurred while trying to play the song")} {get_bot().get_user(config.DEVELOPER_ID).mention} ({sys.exc_info()[0]})'
         await ctx.reply(message)
         return ReturnData(False, message)
 

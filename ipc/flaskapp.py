@@ -3,8 +3,12 @@ from utils.unpickle import unpickle
 import socket
 import struct
 import pickle
+import os
 
-HOST = '127.0.0.1'  # The server's hostname or IP address
+inside_docker = os.environ.get("INSIDE_DOCKER", False)
+send_host = os.environ.get("SEND_HOST", '172.0.0.1')
+
+HOST = '127.0.0.1' if not inside_docker or not inside_docker == 'true' else send_host  # The server's hostname or IP address
 PORT = 5421  # The port used by the server
 
 def send_arg(arg_dict: dict, get_response: bool = True):

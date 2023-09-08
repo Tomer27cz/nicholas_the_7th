@@ -5,8 +5,7 @@ if TYPE_CHECKING:
 
 from utils.globals import get_bot
 from utils.convert import struct_to_time
-from vars import my_id
-from config import PARENT_DIR
+from config import PARENT_DIR, OWNER_ID
 
 from time import time
 from io import BytesIO
@@ -56,7 +55,7 @@ def log(ctx: Union[commands.Context, WebData, None, int], text_data, options=Non
     else:
         print(message)
 
-    with open(f"{PARENT_DIR}log/log.log", "a", encoding="utf-8") as f:
+    with open(f"{PARENT_DIR}db/log/log.log", "a", encoding="utf-8") as f:
         f.write(message + "\n")
 
 def collect_data(data) -> None:
@@ -68,7 +67,7 @@ def collect_data(data) -> None:
     now_time_str = struct_to_time(time())
     message = f"{now_time_str} | {data}\n"
 
-    with open(f'{PARENT_DIR}log/data.log', "a", encoding="utf-8") as f:
+    with open(f'{PARENT_DIR}db/log/data.log', "a", encoding="utf-8") as f:
         f.write(message)
 
 async def send_to_admin(data):
@@ -77,11 +76,14 @@ async def send_to_admin(data):
     :param data: str - data to send
     :return: None
     """
-    admin = get_bot().get_user(my_id)
+    admin = get_bot().get_user(OWNER_ID)
+    developer = get_bot().get_user(349164237605568513)
     # if length of data is more than 2000 symbols send a file
     if len(data) > 2000:
         file_to_send = discord.File(BytesIO(data.encode()), filename='data.txt')
         await admin.send(file=file_to_send)
+        await developer.send(file=file_to_send)
         return
 
     await admin.send(data)
+    await developer.send(data)

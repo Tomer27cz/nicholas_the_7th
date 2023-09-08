@@ -12,14 +12,9 @@ It is not meant to be used by anyone else, but if you want to use it, feel free 
 
 The bot is currently hosted by me. So if you want to, you can [Invite](https://discord.com/api/oauth2/authorize?client_id=1007004463933952120&permissions=3198017&scope=bot) him.
 
-## Installation
+## Configuration - config.py
 
-- Clone the repository 
-- Install the requirements
-```
-pip install -r requirements.txt
-```
-- Create a file called `config.py` in the root directory
+- Create a file called `config.py` in the main directory
 ```python
 # Description: Configuration file for the bot
 # Discord
@@ -27,6 +22,12 @@ CLIENT_ID = 'YOUR_CLIENT_ID' # This is your bots id
 OWNER_ID = 'YOUR_USER_ID' # This is your user id
 BOT_TOKEN = 'YOUR_BOT_TOKEN' # This is the token for the bot
 CLIENT_SECRET = "YOUR_CLIENT_SECRET" # This is the client secret for the bot
+
+# Prefix
+PREFIX = "ncl." # This is the prefix for the bot
+
+# Authorised Users
+AUTHORIZED_USERS = [416254812339044365, 349164237605568513] # This is a list of authorised users (add your user id here - not required)
 
 # Discord Invite
 PERMISSIONS = 3198017 # This is the permissions for the bot
@@ -51,23 +52,76 @@ SOUNDCLOUD_CLIENT_ID = 'YOUR_SOUNDCLOUD_ID' # SoundCloud ID (you can use your ac
 
 # Parent Directory
 PARENT_DIR = r'' # Leave blank if running from root directory (has to be absolute path and have / at the end)
+
+# Default Values
+DEFAULT_DISCORD_AVATAR = "https://cdn.discordapp.com/embed/avatars/0.png"
+VLC_LOGO = "https://cdn.discordapp.com/attachments/892403162315644931/1008054767379030096/vlc.png"
+DEVELOPER_ID = 349164237605568513
 ```
-more detailed guide will be added later (maby)
+
+## Installation
+
+### Windows
+- Install [Python](https://www.python.org/downloads/) and [Pip](https://pip.pypa.io/en/stable/installation/)
+- `cd` into the main directory
+- Install the requirements
+```
+pip install -r requirements.txt
+```
+- Create a file called `config.py` in the main directory and fill it out
+- Download [ffmpeg](https://ffmpeg.org/download.html) and add it to your `path`
 - Run the bot
 ```
 python main.py
 ```
-for Linux (recommended for continuous execution with log)
-```
-nohup python3 -u main.py &>> log/activity.log &
-```
-
-
 - Run `flaskapp.py` for Web Interface
 ```
 python flaskapp.py
 ```
-or [run with apache2](https://example.com)
+
+### Linux
+- Install [Python](https://www.python.org/downloads/) and [Pip](https://pip.pypa.io/en/stable/installation/)
+- `cd` into the main directory
+- Install the requirements
+```
+pip install -r requirements.txt
+```
+- Create a file called `config.py` in the main directory and fill it out
+- Install ffmpeg
+```
+sudo apt update
+sudo apt upgrade
+sudo apt install ffmpeg
+```
+- Run the bot
+```
+nohup python3 -u main.py &>> db/log/activity.log &
+```
+- Run `flaskapp.py` for Web Interface
+```
+nohup python3 -u flaskapp.py &>> db/log/flask.log &
+```
+
+## Docker
+
+- Install [Docker](https://docs.docker.com/get-docker/), [Docker Compose](https://docs.docker.com/compose/install/), [Python](https://www.python.org/downloads/) and [Pip](https://pip.pypa.io/en/stable/installation/)
+- `cd` into the main directory
+- Create a file called `config.py` in the main directory and fill it out
+- Run the `build_docker.py` script
+
+This will create a new folder called `FOLDERNAME_docker` with all the required files. 
+```
+python build_docker.py
+```
+- `cd` into the new folder
+- Run the `docker-compose.yml` file
+```
+docker-compose build
+```
+- Start the containers - you can use `-d` to run in the background
+```
+docker-compose up 
+```
 
 
 ## Credits

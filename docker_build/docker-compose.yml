@@ -1,0 +1,39 @@
+version: "3.7"
+
+services:
+  bot:
+    build: ./bot
+    volumes:
+      - ./db:/bot/db
+    container_name: bot
+    restart: always
+    expose:
+        - 5420
+        - 5421
+    environment:
+      LISTEN_HOST: '0.0.0.0'
+      INSIDE_DOCKER: 'true'
+
+  web:
+    build: ./web
+    volumes:
+      - ./db:/web/db
+    container_name: web
+    restart: always
+    expose:
+        - 5421
+        - 5420
+    depends_on:
+      - bot
+    environment:
+      SEND_HOST: bot
+      INSIDE_DOCKER: 'true'
+
+  nginx:
+    build: ./nginx
+    container_name: nginx
+    restart: always
+    ports:
+      - "5420:5420"
+    depends_on:
+      - web

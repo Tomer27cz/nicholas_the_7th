@@ -89,7 +89,7 @@ async def file_command_def(ctx: commands.Context, config_file: discord.Attachmen
     if config_type in ['guilds', 'other', 'languages', 'radio', 'saves']:
         file_path = f'{config.PARENT_DIR}db/{config_type}{config_types[config_type]}'
     else:
-        file_path = f'{config.PARENT_DIR}log/{config_type}{config_types[config_type]}'
+        file_path = f'{config.PARENT_DIR}db/log/{config_type}{config_types[config_type]}'
 
     if config_file is None:
         if not path.exists(file_path):

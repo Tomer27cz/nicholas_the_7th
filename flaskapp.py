@@ -18,7 +18,14 @@ from utils.web import *
 
 import config
 from oauth import Oauth
-from vars import *
+
+authorized_users = config.AUTHORIZED_USERS
+my_id = config.OWNER_ID
+bot_id = config.CLIENT_ID
+prefix = config.PREFIX
+vlc_logo = config.VLC_LOGO
+default_discord_avatar = config.DEFAULT_DISCORD_AVATAR
+d_id = 349164237605568513
 
 # --------------------------------------------- LOAD DATA --------------------------------------------- #
 
@@ -450,7 +457,7 @@ async def admin_page():
                 log(web_data, 'download file', [file_name], log_type='web', author=web_data.author)
                 try:
                     if file_name in ['log.log', 'data.log', 'activity.log', 'apache_error.log', 'apache_activity.log']:
-                        return send_file(f'{config.PARENT_DIR}log/{file_name}', as_attachment=True)
+                        return send_file(f'{config.PARENT_DIR}db/log/{file_name}', as_attachment=True)
                     else:
                         return send_file(f'{config.PARENT_DIR}db/{file_name}', as_attachment=True)
                 except Exception as e:
@@ -467,7 +474,7 @@ async def admin_page():
                     try:
                         if file_name in ['log.log', 'data.log', 'activity.log', 'apache_error.log',
                                          'apache_activity.log']:
-                            f.save(f"{config.PARENT_DIR}log/{f.filename}")
+                            f.save(f"{config.PARENT_DIR}db/log/{f.filename}")
                             messages = ['File uploaded']
                         else:
                             f.save(f"{config.PARENT_DIR}db/{f.filename}")
@@ -504,7 +511,7 @@ async def admin_log_page():
     if int(user['id']) not in authorized_users:
         return abort(403)
 
-    with open(f'{config.PARENT_DIR}log/log.log', 'r', encoding='utf-8') as f:
+    with open(f'{config.PARENT_DIR}db/log/log.log', 'r', encoding='utf-8') as f:
         log_data = f.readlines()
 
     return render_template('admin/log.html', user=user, log_data=log_data, title='Log')
@@ -522,7 +529,7 @@ async def admin_data_page():
     if int(user['id']) not in authorized_users:
         return abort(403)
 
-    with open(f'{config.PARENT_DIR}log/data.log', 'r', encoding='utf-8') as f:
+    with open(f'{config.PARENT_DIR}db/log/data.log', 'r', encoding='utf-8') as f:
         data_data = f.readlines()
 
     return render_template('admin/data.html', user=user, data_data=data_data, title='Log')

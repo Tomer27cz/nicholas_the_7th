@@ -1,5 +1,5 @@
 from utils.globals import get_bot
-from vars import default_discord_avatar
+from config import DEFAULT_DISCORD_AVATAR as default_discord_avatar
 
 import discord
 import asyncio

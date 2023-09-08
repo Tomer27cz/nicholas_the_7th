@@ -1,0 +1,9 @@
+.cache
+.gitattributes
+.gitignore
+.idea/
+config_real.py
+.github/
+.__pycache__/
+dev_func/
+db/guilds/

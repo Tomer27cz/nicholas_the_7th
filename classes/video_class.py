@@ -14,7 +14,7 @@ from bs4 import BeautifulSoup
 import requests
 import youtubesearchpython
 
-from vars import vlc_logo
+from config import VLC_LOGO as vlc_logo
 from config import WEB_URL
 
 class VideoClass:
