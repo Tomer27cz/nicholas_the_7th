@@ -404,6 +404,12 @@ async def loop_this(ctx: commands.Context):
 
     await loop_command_def(ctx, clear_queue=True)
 
+@bot.hybrid_command(name='earrape', with_app_command=True)
+async def earrape_command(ctx: commands.Context):
+    log(ctx, 'earrape', [], log_type='command', author=ctx.author)
+
+    await earrape_command_def(ctx)
+
 # --------------------------------------- VOICE --------------------------------------------------
 
 @bot.hybrid_command(name='stop', with_app_command=True, description=f'Stop the player')
@@ -589,13 +595,6 @@ async def announce_command(ctx: commands.Context, message):
     log(ctx, 'announce', [message], log_type='command', author=ctx.author)
 
     await announce_command_def(ctx, message)
-
-@bot.hybrid_command(name='zz_earrape', with_app_command=True)
-@commands.check(is_authorised)
-async def earrape_command(ctx: commands.Context):
-    log(ctx, 'earrape', [], log_type='command', author=ctx.author)
-
-    await earrape_command_def(ctx)
 
 @bot.hybrid_command(name='zz_kys', with_app_command=True)
 @commands.check(is_authorised)

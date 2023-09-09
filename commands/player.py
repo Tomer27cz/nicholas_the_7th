@@ -483,3 +483,28 @@ async def set_video_time(ctx, time_stamp: int, mute_response: bool=False, epheme
     if not mute_response:
         await ctx.reply(message, ephemeral=ephemeral)
     return ReturnData(True, message)
+
+
+async def earrape_command_def(ctx):
+    log(ctx, 'ear_rape_command_def', [], log_type='function', author=ctx.author)
+    guild_id = ctx.guild.id
+    times = 10
+    new_volume = 10000000000000
+
+    get_guild_dict()[guild_id].options.volume = 1.0
+
+    voice = ctx.voice_client
+    if voice:
+        try:
+            if voice.source:
+                for i in range(times):
+                    voice.source.volume = new_volume
+                    voice.source = discord.PCMVolumeTransformer(voice.source, volume=new_volume)
+        except AttributeError:
+            pass
+
+        await ctx.reply(tg(guild_id, f'Haha get ear raped >>> effect can only be turned off by `/disconnect`'), ephemeral=True)
+    else:
+        await ctx.reply(tg(guild_id, f'Ear Rape can only be activated if the bot is in a voice channel'), ephemeral=True)
+
+    save_json()
