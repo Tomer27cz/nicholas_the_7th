@@ -3,9 +3,9 @@ from utils.globals import get_bot
 from utils.save import save_json
 
 import discord
-from discord.ext import commands
+from discord.ext import commands as dc_commands
 
-def ctx_check(ctx: commands.Context or classes.data_classes.WebData) -> (bool, int, int, discord.Guild):
+def ctx_check(ctx: dc_commands.Context or classes.data_classes.WebData) -> (bool, int, int, discord.Guild):
     """
     This function checks if the context is a discord context or a web context and returns the relevant information.
 
@@ -14,8 +14,8 @@ def ctx_check(ctx: commands.Context or classes.data_classes.WebData) -> (bool, i
     author_id - The author id of the context
     guild_object - The guild object of the context
 
-    :type ctx: commands.Context | WebData
-    :param ctx: commands.Context | WebData
+    :type ctx: dc_commands.Context | WebData
+    :param ctx: dc_commands.Context | WebData
     :return: (is_ctx, guild_id, author_id, guild) - (bool, int, int, discord.Guild)
     """
     save_json()
@@ -26,7 +26,7 @@ def ctx_check(ctx: commands.Context or classes.data_classes.WebData) -> (bool, i
         author_id = ctx.author_id
         guild_object = bot.get_guild(guild_id)
 
-    elif type(ctx) == commands.Context:
+    elif type(ctx) == dc_commands.Context:
         is_ctx = True
         guild_id = ctx.guild.id
         author_id = ctx.author.id

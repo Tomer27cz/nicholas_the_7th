@@ -1,8 +1,8 @@
 import json
-from time import time
+from time import time, sleep
 from pathlib import Path
 
-from flask import Flask, render_template, request, url_for, redirect, session, send_file, abort
+from flask import Flask, render_template, request, url_for, redirect, session, send_file, abort, Response
 from werkzeug.utils import safe_join
 
 from classes.data_classes import WebData
@@ -15,6 +15,7 @@ from utils.translate import ftg
 from utils.video_time import video_time_from_start
 from utils.checks import check_isdigit
 from utils.web import *
+from utils.json import guild_to_json
 
 import config
 from oauth import Oauth
@@ -347,11 +348,17 @@ async def update_page(guild_id):
     except (ValueError, TypeError):
         await abort(404)
 
-    response = get_update(guild_id)
+    def respond_to_client():
+        last_updated = int(time())
+        while True:
+            last_updated_db = int(get_update(guild_id))
+            if last_updated_db > last_updated:
+                last_updated = last_updated_db
+                response = {'update': True}
+                yield f'data: {response}\n\n'
+            sleep(0.5)
 
-    if response:
-        return response
-    return None
+    return Response(respond_to_client(), mimetype='text/event-stream')
 
 # User Login
 @app.route('/login')

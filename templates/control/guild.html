@@ -92,7 +92,7 @@
 
   <!-- Now and History -->
   <div class="accordion" id="accordionPanelsStayOpenExample">
-    <div class="accordion-item">
+    <div class="accordion-item" id="history">
       <div class="accordion-header">
         <div class="d-grid gap-2">
           <a class="btn btn-dark accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -932,6 +932,12 @@
   </div>
 
   <script type="text/javascript" charset="utf-8">
+  let eventSource = new EventSource("/guild/{{ guild.id }}/update");
+
+  eventSource.addEventListener('message', function (e) {
+      location.reload();
+  }, false);
+
   function convertSeconds(secs) {
       let hours = Math.floor(secs / 3600)
       let minutes = Math.floor((secs % 3600) / 60)
@@ -1069,12 +1075,10 @@
   }
 
   function scrollNow(scroll_pos) {
-      window.scrollTo({top: scroll_pos, left: 0, behavior: "instant"});
+      window.scroll({top: scroll_pos, left: 0, behavior: "auto"});
   }
 
   scrollNow({{scroll_position}})
-  let last_update = Math.round(Date.now() / 1000);
-  setInterval(getUpdate, 15000)
   </script>
 
 {% endblock %}

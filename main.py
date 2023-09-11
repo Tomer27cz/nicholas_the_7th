@@ -29,7 +29,7 @@ d_id = 349164237605568513
 
 # ---------------- Bot class ------------
 
-class Bot(commands.Bot):
+class Bot(dc_commands.Bot):
     """
     Bot class
 
@@ -173,7 +173,7 @@ class Bot(commands.Bot):
             log(ctx, 'error.Forbidden', [error], log_type='error', author=ctx.author)
             await ctx.send(tg(ctx.guild.id, "The command failed because I don't have the required permissions.\n Please give me the required permissions and try again."))
 
-        elif isinstance(error, commands.CheckFailure):
+        elif isinstance(error, dc_commands.CheckFailure):
             err_msg = f'Error for ({ctx.author}) -> ({ctx.command}) with error ({error})'
             log(ctx, err_msg, log_type='error', author=ctx.author)
             await send_to_admin(err_msg)
@@ -285,62 +285,62 @@ log(None, 'Loaded guilds.json')
 
 @bot.hybrid_command(name='queue', with_app_command=True, description=text['queue_add'], help=text['queue_add'])
 @app_commands.describe(url=text['url'], position=text['pos'])
-async def queue_command(ctx: commands.Context, url, position: int = None):
+async def queue_command(ctx: dc_commands.Context, url, position: int = None):
     log(ctx, 'queue', [url, position], log_type='command', author=ctx.author)
 
     await queue_command_def(ctx, url, position=position)
 
 @bot.hybrid_command(name='queue_export', with_app_command=True, description=text['queue_export'], help=text['queue_export'])
 @app_commands.describe(guild_id=text['guild_id'], ephemeral=text['ephemeral'])
-async def export_queue_command(ctx: commands.Context, guild_id=None, ephemeral: bool=True):
+async def export_queue_command(ctx: dc_commands.Context, guild_id=None, ephemeral: bool=True):
     log(ctx, 'export_queue', [guild_id, ephemeral], log_type='command', author=ctx.author)
 
     await export_queue(ctx, guild_id, ephemeral=ephemeral)
 
 @bot.hybrid_command(name='queue_import', with_app_command=True, description=text['queue_import'], help=text['queue_import'])
 @app_commands.describe(queue_string=text['queue_string'], guild_id=text['guild_id'], ephemeral=text['ephemeral'])
-async def import_queue_command(ctx: commands.Context, queue_string: str, guild_id=None, ephemeral: bool=True):
+async def import_queue_command(ctx: dc_commands.Context, queue_string: str, guild_id=None, ephemeral: bool=True):
     log(ctx, 'import_queue', [queue_string, guild_id, ephemeral], log_type='command', author=ctx.author)
 
     await import_queue(ctx, queue_string, guild_id, ephemeral=ephemeral)
 
 @bot.hybrid_command(name='next_up', with_app_command=True, description=text['next_up'], help=text['next_up'])
 @app_commands.describe(url=text['url'], user_only=text['ephemeral'])
-async def next_up(ctx: commands.Context, url, user_only: bool = False):
+async def next_up(ctx: dc_commands.Context, url, user_only: bool = False):
     log(ctx, 'next_up', [url, user_only], log_type='command', author=ctx.author)
 
     await next_up_def(ctx, url, user_only)
 
 @bot.hybrid_command(name='skip', with_app_command=True, description=text['skip'], help=text['skip'])
-async def skip(ctx: commands.Context):
+async def skip(ctx: dc_commands.Context):
     log(ctx, 'skip', [], log_type='command', author=ctx.author)
 
     await skip_def(ctx)
 
 @bot.hybrid_command(name='remove', with_app_command=True, description=text['queue_remove'], help=text['queue_remove'])
 @app_commands.describe(number=text['number'], user_only=text['ephemeral'])
-async def remove(ctx: commands.Context, number: int, user_only: bool = False):
+async def remove(ctx: dc_commands.Context, number: int, user_only: bool = False):
     log(ctx, 'remove', [number, user_only], log_type='command', author=ctx.author)
 
     await remove_def(ctx, number, ephemeral=user_only)
 
 @bot.hybrid_command(name='clear', with_app_command=True, description=text['clear'], help=text['clear'])
 @app_commands.describe(user_only=text['ephemeral'])
-async def clear(ctx: commands.Context, user_only: bool = False):
+async def clear(ctx: dc_commands.Context, user_only: bool = False):
     log(ctx, 'clear', [user_only], log_type='command', author=ctx.author)
 
     await clear_def(ctx, user_only)
 
 @bot.hybrid_command(name='shuffle', with_app_command=True, description=text['shuffle'], help=text['shuffle'])
 @app_commands.describe(user_only=text['ephemeral'])
-async def shuffle(ctx: commands.Context, user_only: bool = False):
+async def shuffle(ctx: dc_commands.Context, user_only: bool = False):
     log(ctx, 'shuffle', [user_only], log_type='command', author=ctx.author)
 
     await shuffle_def(ctx, user_only)
 
 @bot.hybrid_command(name='show', with_app_command=True, description=text['queue_show'], help=text['queue_show'])
 @app_commands.describe(display_type=text['display_type'], user_only=text['ephemeral'])
-async def show(ctx: commands.Context, display_type: Literal['short', 'medium', 'long'] = None,
+async def show(ctx: dc_commands.Context, display_type: Literal['short', 'medium', 'long'] = None,
                list_type: Literal['queue', 'history'] = 'queue', user_only: bool = False):
     log(ctx, 'show', [display_type, user_only], log_type='command', author=ctx.author)
 
@@ -348,7 +348,7 @@ async def show(ctx: commands.Context, display_type: Literal['short', 'medium', '
 
 @bot.hybrid_command(name='search', with_app_command=True, description=text['search'], help=text['search'])
 @app_commands.describe(search_query=text['search_query'])
-async def search_command(ctx: commands.Context, search_query):
+async def search_command(ctx: dc_commands.Context, search_query):
     log(ctx, 'search', [search_query], log_type='command', author=ctx.author)
 
     await search_command_def(ctx, search_query)
@@ -357,14 +357,14 @@ async def search_command(ctx: commands.Context, search_query):
 
 @bot.hybrid_command(name='play', with_app_command=True, description=text['play'], help=text['play'])
 @app_commands.describe(url=text['play'], force=text['force'])
-async def play(ctx: commands.Context, url=None, force=False):
+async def play(ctx: dc_commands.Context, url=None, force=False):
     log(ctx, 'play', [url, force], log_type='command', author=ctx.author)
 
     await play_def(ctx, url, force)
 
 @bot.hybrid_command(name='radio', with_app_command=True, description=text['radio'], help=text['radio'])
 @app_commands.describe(favourite_radio=text['favourite_radio'], radio_code=text['radio_code'])
-async def radio(ctx: commands.Context, favourite_radio: Literal[
+async def radio(ctx: dc_commands.Context, favourite_radio: Literal[
     'Rádio BLANÍK', 'Rádio BLANÍK CZ', 'Evropa 2', 'Fajn Radio', 'Hitrádio PopRock', 'Český rozhlas Pardubice', 'Radio Beat', 'Country Radio', 'Radio Kiss', 'Český rozhlas Vltava', 'Hitrádio Černá Hora'] = None,
                 radio_code: int = None):
     log(ctx, 'radio', [favourite_radio, radio_code], log_type='command', author=ctx.author)
@@ -373,39 +373,39 @@ async def radio(ctx: commands.Context, favourite_radio: Literal[
 
 @bot.hybrid_command(name='ps', with_app_command=True, description=text['ps'], help=text['ps'])
 @app_commands.describe(effect_number=text['effects_number'])
-async def ps(ctx: commands.Context, effect_number: app_commands.Range[int, 1, len(all_sound_effects)]):
+async def ps(ctx: dc_commands.Context, effect_number: app_commands.Range[int, 1, len(all_sound_effects)]):
     log(ctx, 'ps', [effect_number], log_type='command', author=ctx.author)
 
     await ps_def(ctx, effect_number)
 
 @bot.hybrid_command(name='nowplaying', with_app_command=True, description=text['nowplaying'], help=text['nowplaying'])
 @app_commands.describe(user_only=text['ephemeral'])
-async def nowplaying(ctx: commands.Context, user_only: bool = False):
+async def nowplaying(ctx: dc_commands.Context, user_only: bool = False):
     log(ctx, 'nowplaying', [user_only], log_type='command', author=ctx.author)
 
     await now_def(ctx, user_only)
 
 @bot.hybrid_command(name='last', with_app_command=True, description=text['last'], help=text['last'])
 @app_commands.describe(user_only=text['ephemeral'])
-async def last(ctx: commands.Context, user_only: bool = False):
+async def last(ctx: dc_commands.Context, user_only: bool = False):
     log(ctx, 'last', [user_only], log_type='command', author=ctx.author)
 
     await last_def(ctx, user_only)
 
 @bot.hybrid_command(name='loop', with_app_command=True, description=text['loop'], help=text['loop'])
-async def loop_command(ctx: commands.Context):
+async def loop_command(ctx: dc_commands.Context):
     log(ctx, 'loop', [], log_type='command', author=ctx.author)
 
     await loop_command_def(ctx)
 
 @bot.hybrid_command(name='loop_this', with_app_command=True, description=text['loop_this'], help=text['loop_this'])
-async def loop_this(ctx: commands.Context):
+async def loop_this(ctx: dc_commands.Context):
     log(ctx, 'loop_this', [], log_type='command', author=ctx.author)
 
     await loop_command_def(ctx, clear_queue=True)
 
 @bot.hybrid_command(name='earrape', with_app_command=True)
-async def earrape_command(ctx: commands.Context):
+async def earrape_command(ctx: dc_commands.Context):
     log(ctx, 'earrape', [], log_type='command', author=ctx.author)
 
     await earrape_command_def(ctx)
@@ -413,39 +413,39 @@ async def earrape_command(ctx: commands.Context):
 # --------------------------------------- VOICE --------------------------------------------------
 
 @bot.hybrid_command(name='stop', with_app_command=True, description=f'Stop the player')
-async def stop(ctx: commands.Context):
+async def stop(ctx: dc_commands.Context):
     log(ctx, 'stop', [], log_type='command', author=ctx.author)
 
     await stop_def(ctx)
 
 @bot.hybrid_command(name='pause', with_app_command=True, description=f'Pause the player')
-async def pause(ctx: commands.Context):
+async def pause(ctx: dc_commands.Context):
     log(ctx, 'pause', [], log_type='command', author=ctx.author)
 
     await pause_def(ctx)
 
 @bot.hybrid_command(name='resume', with_app_command=True, description=f'Resume the player')
-async def resume(ctx: commands.Context):
+async def resume(ctx: dc_commands.Context):
     log(ctx, 'resume', [], log_type='command', author=ctx.author)
 
     await resume_def(ctx)
 
 @bot.hybrid_command(name='join', with_app_command=True, description=text['join'], help=text['join'])
 @app_commands.describe(channel_id=text['channel_id'])
-async def join(ctx: commands.Context, channel_id=None):
+async def join(ctx: dc_commands.Context, channel_id=None):
     log(ctx, 'join', [channel_id], log_type='command', author=ctx.author)
 
     await join_def(ctx, channel_id)
 
 @bot.hybrid_command(name='disconnect', with_app_command=True, description=text['die'], help=text['die'])
-async def disconnect(ctx: commands.Context):
+async def disconnect(ctx: dc_commands.Context):
     log(ctx, 'disconnect', [], log_type='command', author=ctx.author)
 
     await disconnect_def(ctx)
 
 @bot.hybrid_command(name='volume', with_app_command=True, description=text['volume'], help=text['volume'])
 @app_commands.describe(volume=text['volume'], user_only=text['ephemeral'])
-async def volume_command(ctx: commands.Context, volume=None, user_only: bool = False):
+async def volume_command(ctx: dc_commands.Context, volume=None, user_only: bool = False):
     log(ctx, 'volume', [volume, user_only], log_type='command', author=ctx.author)
 
     await volume_command_def(ctx, volume, user_only)
@@ -533,7 +533,7 @@ async def show_profile(inter, member: discord.Member):
 # --------------------------------------- GENERAL --------------------------------------------------
 
 @bot.hybrid_command(name='ping', with_app_command=True, description=text['ping'], help=text['ping'])
-async def ping_command(ctx: commands.Context):
+async def ping_command(ctx: dc_commands.Context):
     log(ctx, 'ping', [], log_type='command', author=ctx.author)
 
     await ping_def(ctx)
@@ -541,27 +541,27 @@ async def ping_command(ctx: commands.Context):
 # noinspection PyTypeHints
 @bot.hybrid_command(name='language', with_app_command=True, description=text['language'], help=text['language'])
 @app_commands.describe(country_code=text['country_code'])
-async def language_command(ctx: commands.Context, country_code: Literal[tuple(languages_dict.keys())]):
+async def language_command(ctx: dc_commands.Context, country_code: Literal[tuple(languages_dict.keys())]):
     log(ctx, 'language', [country_code], log_type='command', author=ctx.author)
 
     await language_command_def(ctx, country_code)
 
 @bot.hybrid_command(name='sound_effects', with_app_command=True, description=text['sound'], help=text['sound'])
 @app_commands.describe(user_only=text['ephemeral'])
-async def sound_effects(ctx: commands.Context, user_only: bool = True):
+async def sound_effects(ctx: dc_commands.Context, user_only: bool = True):
     log(ctx, 'sound_effects', [user_only], log_type='command', author=ctx.author)
 
     await sound_effects_def(ctx, user_only)
 
 @bot.hybrid_command(name='list_radios', with_app_command=True, description=text['list_radios'], help=text['list_radios'])
 @app_commands.describe(user_only=text['ephemeral'])
-async def list_radios(ctx: commands.Context, user_only: bool = True):
+async def list_radios(ctx: dc_commands.Context, user_only: bool = True):
     log(ctx, 'list_radios', [user_only], log_type='command', author=ctx.author)
 
     await list_radios_def(ctx, user_only)
 
 @bot.hybrid_command(name='key', with_app_command=True, description=text['key'], help=text['key'])
-async def key_command(ctx: commands.Context):
+async def key_command(ctx: dc_commands.Context):
     log(ctx, 'key', [], log_type='command', author=ctx.author)
 
     await key_def(ctx)
@@ -573,7 +573,7 @@ async def key_command(ctx: commands.Context):
                        language='Language code', response_type='short/long -> embeds/plain text',
                        buttons='Whether to show player control buttons on messages', loop='True, False',
                        history_length='Number of items in history (100 max)')
-async def options_command(ctx: commands.Context, loop: bool = None,
+async def options_command(ctx: dc_commands.Context, loop: bool = None,
                           language: Literal[tuple(languages_dict.keys())] = None,
                           response_type: Literal['short', 'long'] = None, buttons: bool = None, volume=None,
                           buffer: int = None, history_length: int = None):
@@ -590,22 +590,22 @@ async def is_authorised(ctx):
         return True
 
 @bot.hybrid_command(name='zz_announce', with_app_command=True)
-@commands.check(is_authorised)
-async def announce_command(ctx: commands.Context, message):
+@dc_commands.check(is_authorised)
+async def announce_command(ctx: dc_commands.Context, message):
     log(ctx, 'announce', [message], log_type='command', author=ctx.author)
 
     await announce_command_def(ctx, message)
 
 @bot.hybrid_command(name='zz_kys', with_app_command=True)
-@commands.check(is_authorised)
-async def kys(ctx: commands.Context):
+@dc_commands.check(is_authorised)
+async def kys(ctx: dc_commands.Context):
     log(ctx, 'kys', [], log_type='command', author=ctx.author)
 
     await kys_def(ctx)
 
 @bot.hybrid_command(name='zz_file', with_app_command=True)
-@commands.check(is_authorised)
-async def file_command(ctx: commands.Context, config_file: discord.Attachment = None, config_type: Literal[
+@dc_commands.check(is_authorised)
+async def file_command(ctx: dc_commands.Context, config_file: discord.Attachment = None, config_type: Literal[
     'guilds', 'other', 'radio', 'languages', 'log', 'data', 'activity', 'apache_activity', 'apache_error'] = 'guilds'):
     log(ctx, 'zz_file', [config_file, config_type], log_type='command', author=ctx.author)
 
@@ -617,8 +617,8 @@ async def file_command(ctx: commands.Context, config_file: discord.Attachment = 
                        language='Language code', response_type='short, long', buttons='True, False',
                        is_radio='True, False', loop='True, False', stopped='True, False',
                        history_length='Number of items in history (100 is probably a lot)')
-@commands.check(is_authorised)
-async def change_options(ctx: commands.Context, server=None, stopped: bool = None, loop: bool = None,
+@dc_commands.check(is_authorised)
+async def change_options(ctx: dc_commands.Context, server=None, stopped: bool = None, loop: bool = None,
                          is_radio: bool = None, buttons: bool = None,
                          language: Literal[tuple(languages_dict.keys())] = None,
                          response_type: Literal['short', 'long'] = None, buffer: int = None, history_length: int = None,
@@ -633,36 +633,36 @@ async def change_options(ctx: commands.Context, server=None, stopped: bool = Non
                       search_query=str(search_query), last_updated=str(last_updated))
 
 @bot.hybrid_command(name='zz_download_guild', with_app_command=True)
-@commands.check(is_authorised)
-async def download_guild_command(ctx: commands.Context, guild_id, ephemeral: bool=True):
+@dc_commands.check(is_authorised)
+async def download_guild_command(ctx: dc_commands.Context, guild_id, ephemeral: bool=True):
     log(ctx, 'download_guild', [guild_id, ephemeral], log_type='command', author=ctx.author)
 
     await download_guild(ctx, guild_id, ephemeral=ephemeral)
 
 @bot.hybrid_command(name='zz_download_guild_channel', with_app_command=True)
-@commands.check(is_authorised)
-async def download_guild_channel_command(ctx: commands.Context, channel_id, ephemeral: bool=True):
+@dc_commands.check(is_authorised)
+async def download_guild_channel_command(ctx: dc_commands.Context, channel_id, ephemeral: bool=True):
     log(ctx, 'download_guild_channel', [channel_id, ephemeral], log_type='command', author=ctx.author)
 
     await download_guild_channel(ctx, channel_id, ephemeral=ephemeral)
 
 @bot.hybrid_command(name='zz_get_guild', with_app_command=True)
-@commands.check(is_authorised)
-async def get_guild_command(ctx: commands.Context, guild_id, ephemeral: bool=True):
+@dc_commands.check(is_authorised)
+async def get_guild_command(ctx: dc_commands.Context, guild_id, ephemeral: bool=True):
     log(ctx, 'get_guild', [guild_id, ephemeral], log_type='command', author=ctx.author)
 
     await get_guild(ctx, guild_id, ephemeral=ephemeral)
 
 @bot.hybrid_command(name='zz_get_guild_channel', with_app_command=True)
-@commands.check(is_authorised)
-async def get_guild_channel_command(ctx: commands.Context, channel_id, ephemeral: bool=True):
+@dc_commands.check(is_authorised)
+async def get_guild_channel_command(ctx: dc_commands.Context, channel_id, ephemeral: bool=True):
     log(ctx, 'get_guild_channel', [channel_id, ephemeral], log_type='command', author=ctx.author)
 
     await get_guild_channel(ctx, channel_id, ephemeral=ephemeral)
 
 @bot.hybrid_command(name='zz_set_time', with_app_command=True)
-@commands.check(is_authorised)
-async def set_time_command(ctx: commands.Context, time_stamp: int, ephemeral: bool=True, mute_response: bool=False):
+@dc_commands.check(is_authorised)
+async def set_time_command(ctx: dc_commands.Context, time_stamp: int, ephemeral: bool=True, mute_response: bool=False):
     log(ctx, 'set_time', [time_stamp, ephemeral, mute_response], log_type='command', author=ctx.author)
 
     await set_video_time(ctx, time_stamp, ephemeral=ephemeral, mute_response=mute_response)
@@ -676,7 +676,7 @@ bot.remove_command('help')
                     help='Shows all available commands')
 @app_commands.describe(general='General commands', player='Player commands', queue='Queue commands',
                        voice='Voice commands')
-async def help_command(ctx: commands.Context,
+async def help_command(ctx: dc_commands.Context,
                        general: Literal['help', 'ping', 'language', 'sound_effects', 'list_radios'] = None,
                        player: Literal['play', 'radio', 'ps', 'skip', 'nowplaying', 'last', 'loop', 'loop_this'] = None,
                        queue: Literal['queue', 'queue_import', 'queue_export', 'remove', 'clear', 'shuffle', 'show', 'search'] = None,

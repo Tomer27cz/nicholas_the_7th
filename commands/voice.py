@@ -10,7 +10,7 @@ from utils.video_time import set_stopped, set_resumed
 from commands.utils import ctx_check
 
 import discord
-from discord.ext import commands
+from discord.ext import commands as dc_commands
 import traceback
 from typing import Union
 

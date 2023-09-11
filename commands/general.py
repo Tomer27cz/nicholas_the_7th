@@ -10,7 +10,7 @@ from commands.utils import ctx_check
 
 import discord
 import json
-from discord.ext import commands
+from discord.ext import commands as dc_commands
 from typing import Literal
 
 import config
@@ -110,7 +110,7 @@ async def list_radios_def(ctx, ephemeral: bool = True) -> ReturnData:
     await ctx.send(embed=embed, ephemeral=ephemeral)
     return ReturnData(True, tg(guild_id, 'Radio list'))
 
-async def key_def(ctx: commands.Context) -> ReturnData:
+async def key_def(ctx: dc_commands.Context) -> ReturnData:
     """
     Get key of guild
     :param ctx: Context

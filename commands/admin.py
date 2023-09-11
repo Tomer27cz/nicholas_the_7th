@@ -14,7 +14,7 @@ import discord
 import sys
 import json
 from os import path
-from discord.ext import commands
+from discord.ext import commands as dc_commands
 from typing import Literal, Union
 
 import config
@@ -39,13 +39,13 @@ async def announce_command_def(ctx, message: str, ephemeral: bool = False) -> Re
     await ctx.reply(message, ephemeral=ephemeral)
     return ReturnData(True, message)
 
-async def kys_def(ctx: commands.Context):
+async def kys_def(ctx: dc_commands.Context):
     log(ctx, 'kys_def', [], log_type='function', author=ctx.author)
     guild_id = ctx.guild.id
     await ctx.reply(tg(guild_id, "Committing seppuku..."))
     sys.exit(3)
 
-async def file_command_def(ctx: commands.Context, config_file: discord.Attachment = None, config_type: Literal[
+async def file_command_def(ctx: dc_commands.Context, config_file: discord.Attachment = None, config_type: Literal[
     'guilds', 'other', 'radio', 'languages', 'log', 'data', 'activity', 'apache_activity', 'apache_error'] = 'log'):
     log(ctx, 'config_command_def', [config_file, config_type], log_type='function', author=ctx.author)
 
@@ -144,7 +144,7 @@ async def file_command_def(ctx: commands.Context, config_file: discord.Attachmen
     else:
         await ctx.reply(f"Saved new `{config_type}{config_types[config_type]}`", ephemeral=True)
 
-async def options_def(ctx: commands.Context, server: Union[str, int, None]=None, stopped: str = None, loop: str = None, is_radio: str = None,
+async def options_def(ctx: dc_commands.Context, server: Union[str, int, None]=None, stopped: str = None, loop: str = None, is_radio: str = None,
                       buttons: str = None, language: str = None, response_type: str = None, buffer: str = None,
                       history_length: str = None, volume: str = None, search_query: str = None, last_updated: str = None,
                       ephemeral=True):

@@ -14,7 +14,7 @@ from utils.url import get_playlist_from_url
 
 import discord
 from discord.ui import View
-from discord.ext import commands
+from discord.ext import commands as dc_commands
 
 react_dict = {
       "ABCD":"\ud83d\udd20",
@@ -45,7 +45,7 @@ react_dict = {
 class PlayerControlView(View):
     def __init__(self, ctx):
         super().__init__(timeout=7200)
-        if type(ctx) == commands.Context:
+        if type(ctx) == dc_commands.Context:
             self.guild = ctx.guild
             self.guild_id = ctx.guild.id
 
@@ -106,7 +106,7 @@ class SearchOptionView(View):
     def __init__(self, ctx, force=False, from_play=False):
         super().__init__(timeout=180)
 
-        if type(ctx) == commands.Context:
+        if type(ctx) == dc_commands.Context:
             self.ctx = ctx
             self.guild = ctx.guild
             self.guild_id = ctx.guild.id
@@ -187,7 +187,7 @@ class PlaylistOptionView(View):
     def __init__(self, ctx, url, force=False, from_play=False):
         super().__init__(timeout=180)
 
-        if type(ctx) == commands.Context:
+        if type(ctx) == dc_commands.Context:
             self.ctx = ctx
             self.url = url
             self.guild = ctx.guild
