@@ -6,11 +6,11 @@ def get_bot():
         raise Exception("Bot instance not found")
     return bot
 
-def get_guild_dict():
-    guild = __main__.guild
-    if not guild:
-        raise Exception("Guild dict instance not found")
-    return guild
+# def get_guild_dict():
+#     guild = __main__.guild
+#     if not guild:
+#         raise Exception("Guild dict instance not found")
+#     return guild
 
 def get_languages_dict():
     languages = __main__.languages_dict
@@ -41,3 +41,9 @@ def get_all_sound_effects():
     if not sound_effects:
         raise Exception("Sound effects dict not found")
     return sound_effects
+
+def get_session():
+    session_return = __main__.session
+    if not session_return:
+        raise Exception("Session not found")
+    return session_return

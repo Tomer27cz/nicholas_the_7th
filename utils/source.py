@@ -4,8 +4,9 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from classes.video_class import VideoClass
 
-from utils.globals import get_guild_dict, get_sc
+from utils.globals import get_sc
 from utils.log import log
+from database.guild import guild
 
 import discord
 import asyncio
@@ -46,7 +47,7 @@ class GetSource(discord.PCMVolumeTransformer):
     ytdl = yt_dlp.YoutubeDL(YTDL_OPTIONS)
 
     def __init__(self, guild_id: int, source: discord.FFmpegPCMAudio):
-        super().__init__(source, get_guild_dict()[guild_id].options.volume)
+        super().__init__(source, guild(guild_id).options.volume)
 
     @classmethod
     async def create_source(cls, guild_id: int, url: str, source_type: str = 'Video', time_stamp: int=None, video_class: VideoClass=None, attempt: int=0):

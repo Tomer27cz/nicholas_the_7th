@@ -1,8 +1,8 @@
 from classes.data_classes import ReturnData
-from classes.video_class import VideoClass
+from classes.video_class import VideoClass, to_search_list_class, to_queue_class
 import classes.view
 
-from utils.globals import get_sc, get_guild_dict
+from utils.globals import get_sc, get_session
 from utils.log import log
 from utils.translate import tg
 from utils.url import get_url_type, extract_yt_id
@@ -11,6 +11,8 @@ from utils.discord import to_queue, create_embed
 from utils.spotify import spotify_album_to_yt_video_list, spotify_playlist_to_yt_video_list, spotify_to_yt_video, check_spotify_initialized
 from utils.save import save_json, push_update
 from utils.convert import convert_duration
+
+from database.guild import guild
 
 import commands.player
 import commands.voice
@@ -44,7 +46,7 @@ async def queue_command_def(ctx, url=None, position: int = None, mute_response: 
     """
     log(ctx, 'queue_command_def', [url, position, mute_response, force, from_play, probe_data, no_search, ephemeral], log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
-    guild = get_guild_dict()
+    db_guild = guild(guild_id)
 
     if not url:
         message = tg(guild_id, "`url` is **required**")
@@ -79,10 +81,10 @@ async def queue_command_def(ctx, url=None, position: int = None, mute_response: 
 
         for index, val in enumerate(playlist_videos):
             url = f"https://www.youtube.com/watch?v={playlist_videos[index]['id']}"
-            video = VideoClass('Video', author_id, url)
+            video = VideoClass('Video', author_id, guild_id, url=url)
             to_queue(guild_id, video, position=position, copy_video=False)
 
-        message = f"`{len(playlist_videos)}` {tg(guild_id, 'songs from playlist added to queue!')} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={guild[guild_id].data.key})"
+        message = f"`{len(playlist_videos)}` {tg(guild_id, 'songs from playlist added to queue!')} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={db_guild.data.key})"
         if not mute_response:
             await ctx.reply(message, ephemeral=ephemeral)
         return ReturnData(True, message)
@@ -104,9 +106,9 @@ async def queue_command_def(ctx, url=None, position: int = None, mute_response: 
             adding_message = await ctx.reply(tg(guild_id, 'Adding songs to queue... (might take a while)'), ephemeral=ephemeral)
 
         if url_type == 'Spotify Playlist':
-            video_list = spotify_playlist_to_yt_video_list(url, author_id)
+            video_list = spotify_playlist_to_yt_video_list(url, author_id, guild_id)
         else:
-            video_list = spotify_album_to_yt_video_list(url, author_id)
+            video_list = spotify_album_to_yt_video_list(url, author_id, guild_id)
 
         if position is not None:
             video_list = list(reversed(video_list))
@@ -114,7 +116,7 @@ async def queue_command_def(ctx, url=None, position: int = None, mute_response: 
         for video in video_list:
             to_queue(guild_id, video, position=position, copy_video=False)
 
-        message = f'`{len(video_list)}` {tg(guild_id, "songs from playlist added to queue!")} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={guild[guild_id].data.key})'
+        message = f'`{len(video_list)}` {tg(guild_id, "songs from playlist added to queue!")} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={db_guild.data.key})'
         if is_ctx:
             await adding_message.edit(content=message)
         return ReturnData(True, message)
@@ -125,7 +127,7 @@ async def queue_command_def(ctx, url=None, position: int = None, mute_response: 
             if not mute_response:
                 await ctx.reply(message, ephemeral=ephemeral)
             return ReturnData(False, message)
-        video = spotify_to_yt_video(url, author_id)
+        video = spotify_to_yt_video(url, author_id, guild_id)
         if video is not None:
             message = to_queue(guild_id, video, position=position, copy_video=False)
             if not mute_response:
@@ -138,7 +140,7 @@ async def queue_command_def(ctx, url=None, position: int = None, mute_response: 
             if not mute_response:
                 await ctx.reply(message, ephemeral=ephemeral)
             return ReturnData(False, message)
-        video = spotify_to_yt_video(url, author_id)
+        video = spotify_to_yt_video(url, author_id, guild_id)
         if video is None:
             message = f'{tg(guild_id, "Invalid spotify url")}: `{url}`'
             if not mute_response:
@@ -167,7 +169,7 @@ async def queue_command_def(ctx, url=None, position: int = None, mute_response: 
 
         if type(track) == Track:
             try:
-                video = VideoClass('SoundCloud', author=author_id, url=url)
+                video = VideoClass('SoundCloud', author_id, guild_id, url=url)
             except ValueError as e:
                 if not mute_response:
                     await ctx.reply(e, ephemeral=ephemeral)
@@ -187,19 +189,19 @@ async def queue_command_def(ctx, url=None, position: int = None, mute_response: 
                 duration = int(val.duration * 0.001)
                 artist_url = 'https://soundcloud.com/' + track.permalink_url.split('/')[-2]
 
-                video = VideoClass('SoundCloud', author=author_id, url=val.permalink_url, title=val.title,
+                video = VideoClass('SoundCloud', author=author_id, guild_id=guild_id, url=val.permalink_url, title=val.title,
                                    picture=val.artwork_url, duration=duration, channel_name=val.artist,
                                    channel_link=artist_url)
                 to_queue(guild_id, video, position=position, copy_video=False)
 
-            message = f"`{len(tracks)}` {tg(guild_id, 'songs from playlist added to queue!')} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={guild[guild_id].data.key})"
+            message = f"`{len(tracks)}` {tg(guild_id, 'songs from playlist added to queue!')} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={db_guild.data.key})"
             if not mute_response:
                 await ctx.reply(message, ephemeral=ephemeral)
             return ReturnData(True, message)
 
     if url_type == 'YouTube Video' or yt_id is not None:
         url = f"https://www.youtube.com/watch?v={yt_id}"
-        video = VideoClass('Video', author_id, url=url)
+        video = VideoClass('Video', author_id, guild_id, url=url)
         message = to_queue(guild_id, video, position=position, copy_video=False)
         if not mute_response:
             await ctx.reply(message, ephemeral=ephemeral)
@@ -211,7 +213,7 @@ async def queue_command_def(ctx, url=None, position: int = None, mute_response: 
             if not probe_data:
                 probe_data = [extracted_url, extracted_url, extracted_url]
 
-            video = VideoClass('Probe', author_id, url=extracted_url, title=probe_data[0], picture=vlc_logo, duration='Unknown', channel_name=probe_data[1], channel_link=probe_data[2])
+            video = VideoClass('Probe', author_id, guild_id, url=extracted_url, title=probe_data[0], picture=vlc_logo, duration='Unknown', channel_name=probe_data[1], channel_link=probe_data[2])
             message = to_queue(guild_id, video, position=position, copy_video=False)
             if not mute_response:
                 await ctx.reply(message, ephemeral=ephemeral)
@@ -220,7 +222,7 @@ async def queue_command_def(ctx, url=None, position: int = None, mute_response: 
     if is_ctx and not no_search:
         return await search_command_def(ctx, url, display_type='short', force=force, from_play=from_play, ephemeral=ephemeral)
 
-    message = f'`{url}` {tg(guild_id, "is not supported!")} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={get_guild_dict()[guild_id].data.key})'
+    message = f'`{url}` {tg(guild_id, "is not supported!")} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={db_guild.data.key})'
     if not mute_response:
         await ctx.reply(message, ephemeral=ephemeral)
     return ReturnData(False, message)
@@ -292,15 +294,15 @@ async def remove_def(ctx, number: int, display_type: Literal['short', 'long'] = 
     """
     log(ctx, 'remove_def', [number, display_type, ephemeral], log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
-    guild = get_guild_dict()
+    db_guild = guild(guild_id)
 
     if not display_type:
-        display_type = guild[guild_id].options.response_type
+        display_type = db_guild.options.response_type
 
     if list_type == 'queue':
         if number or number == 0 or number == '0':
-            if number > len(guild[guild_id].queue):
-                if not guild[guild_id].queue:
+            if number > len(db_guild.queue):
+                if not db_guild.queue:
                     message = tg(guild_id, "Nothing to **remove**, queue is **empty!**")
                     await ctx.reply(message, ephemeral=True)
                     return ReturnData(False, message)
@@ -308,7 +310,7 @@ async def remove_def(ctx, number: int, display_type: Literal['short', 'long'] = 
                 await ctx.reply(message, ephemeral=True)
                 return ReturnData(False, message)
 
-            video = guild[guild_id].queue[number]
+            video = db_guild.queue[number]
 
             message = f'REMOVED #{number} : [`{video.title}`](<{video.url}>)'
 
@@ -318,7 +320,7 @@ async def remove_def(ctx, number: int, display_type: Literal['short', 'long'] = 
             if display_type == 'short':
                 await ctx.reply(message, ephemeral=ephemeral)
 
-            guild[guild_id].queue.pop(number)
+            db_guild.queue.pop(number)
 
             save_json()
 
@@ -326,8 +328,8 @@ async def remove_def(ctx, number: int, display_type: Literal['short', 'long'] = 
 
     elif list_type == 'history':
         if number or number == 0 or number == '0':
-            if number > len(guild[guild_id].history):
-                if not guild[guild_id].history:
+            if number > len(db_guild.history):
+                if not db_guild.history:
                     message = tg(guild_id, "Nothing to **remove**, history is **empty!**")
                     await ctx.reply(message, ephemeral=True)
                     return ReturnData(False, message)
@@ -335,7 +337,7 @@ async def remove_def(ctx, number: int, display_type: Literal['short', 'long'] = 
                 await ctx.reply(message, ephemeral=True)
                 return ReturnData(False, message)
 
-            video = guild[guild_id].history[number]
+            video = db_guild.history[number]
 
             message = f'REMOVED #{number} : [`{video.title}`](<{video.url}>)'
 
@@ -345,7 +347,7 @@ async def remove_def(ctx, number: int, display_type: Literal['short', 'long'] = 
             if display_type == 'short':
                 await ctx.reply(message, ephemeral=ephemeral)
 
-            guild[guild_id].history.pop(number)
+            db_guild.history.pop(number)
 
             save_json()
 
@@ -370,8 +372,9 @@ async def clear_def(ctx, ephemeral: bool = False) -> ReturnData:
     """
     log(ctx, 'clear_def', [ephemeral], log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
+    db_guild = guild(guild_id)
 
-    get_guild_dict()[guild_id].queue.clear()
+    db_guild.queue.clear()
     save_json()
 
     message = tg(guild_id, 'Removed **all** songs from queue')
@@ -388,7 +391,16 @@ async def shuffle_def(ctx, ephemeral: bool = False) -> ReturnData:
     log(ctx, 'shuffle_def', [ephemeral], log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
 
-    random.shuffle(get_guild_dict()[guild_id].queue)
+    queue = guild(guild_id).queue
+    rand_list = list(range(len(queue)))
+    random.shuffle(rand_list)
+
+    new_queue = []
+    for i in rand_list:
+        new_queue.append(queue[i])
+    guild(guild_id).queue = new_queue
+    get_session().commit()
+    get_session().commit()
     save_json()
 
     message = tg(guild_id, 'Songs in queue shuffled')
@@ -406,15 +418,15 @@ async def show_def(ctx, display_type: Literal['short', 'medium', 'long'] = None,
     """
     log(ctx, 'show_def', [display_type, list_type, ephemeral], log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
-    guild = get_guild_dict()
+    db_guild = guild(guild_id)
 
     if not is_ctx:
         return ReturnData(False, tg(guild_id, 'Cannot use this command in WEB'))
 
     if list_type == 'queue':
-        show_list = guild[guild_id].queue
+        show_list = db_guild.queue
     elif list_type == 'history':
-        show_list = list(reversed(guild[guild_id].history))
+        show_list = list(reversed(db_guild.history))
     else:
         return ReturnData(False, tg(guild_id, 'Bad list_type'))
 
@@ -431,7 +443,7 @@ async def show_def(ctx, display_type: Literal['short', 'medium', 'long'] = None,
             display_type = 'medium'
 
     if display_type == 'long':
-        message = f"**THE {list_type.capitalize()}**\n **Loop** mode  `{guild[guild_id].options.loop}`,  **Display** type `{display_type}`, [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={guild[guild_id].data.key})"
+        message = f"**THE {list_type.capitalize()}**\n **Loop** mode  `{db_guild.options.loop}`,  **Display** type `{display_type}`, [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={db_guild.data.key})"
         await ctx.send(message, ephemeral=ephemeral, mention_author=False)
 
         for index, val in enumerate(show_list):
@@ -441,7 +453,7 @@ async def show_def(ctx, display_type: Literal['short', 'medium', 'long'] = None,
 
     if display_type == 'medium':
         embed = discord.Embed(title=f"Song {list_type}",
-                              description=f'Loop: {guild[guild_id].options.loop} | Display type: {display_type} | [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={guild[guild_id].data.key})',
+                              description=f'Loop: {db_guild.options.loop} | Display type: {display_type} | [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={db_guild.data.key})',
                               color=0x00ff00)
 
         message = ''
@@ -464,7 +476,7 @@ async def show_def(ctx, display_type: Literal['short', 'medium', 'long'] = None,
             display_type = 'short'
 
     if display_type == 'short':
-        send = f"**THE {list_type.upper()}**\n **Loop** mode  `{guild[guild_id].options.loop}`,  **Display** type `{display_type}`, [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={guild[guild_id].data.key})"
+        send = f"**THE {list_type.upper()}**\n **Loop** mode  `{db_guild.options.loop}`,  **Display** type `{display_type}`, [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={db_guild.data.key})"
         # noinspection PyUnresolvedReferences
         if ctx.interaction.response.is_done():
             await ctx.send(send, ephemeral=ephemeral, mention_author=False)
@@ -504,7 +516,7 @@ async def search_command_def(ctx, search_query, display_type: Literal['short', '
     log(ctx, 'search_command_def', [search_query, display_type, force, from_play, ephemeral], log_type='function',
         author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
-    guild = get_guild_dict()
+    db_guild = guild(guild_id)
 
     if not is_ctx:
         return ReturnData(False, tg(guild_id, 'Search command cannot be used in WEB'))
@@ -513,10 +525,10 @@ async def search_command_def(ctx, search_query, display_type: Literal['short', '
     if not ctx.interaction.response.is_done():
         await ctx.defer(ephemeral=ephemeral)
 
-    guild[guild_id].options.search_query = search_query
+    db_guild.options.search_query = search_query
 
     if display_type is None:
-        display_type = guild[guild_id].options.response_type
+        display_type = db_guild.options.response_type
 
     message = f'**Search query:** `{search_query}`\n'
 
@@ -524,7 +536,8 @@ async def search_command_def(ctx, search_query, display_type: Literal['short', '
         await ctx.reply(tg(guild_id, 'Searching...'), ephemeral=ephemeral)
 
     custom_search = youtubesearchpython.VideosSearch(search_query, limit=5)
-    guild[guild_id].search_list.clear()
+    db_guild.search_list.clear()
+    get_session().commit()
 
     view = classes.view.SearchOptionView(ctx, force, from_play)
 
@@ -536,8 +549,9 @@ async def search_command_def(ctx, search_query, display_type: Literal['short', '
     for i in range(5):
         # noinspection PyTypeChecker
         url = custom_search.result()['result'][i]['link']
-        video = VideoClass('Video', ctx.author.id, url)
-        guild[guild_id].search_list.append(video)
+        video = VideoClass('Video', ctx.author.id, guild_id, url=url)
+        db_guild.search_list.append(to_search_list_class(video))
+        get_session().commit()
 
         if display_type == 'long':
             embed = create_embed(video, f'{tg(guild_id, "Result #")}{i + 1}', guild_id)
@@ -569,7 +583,7 @@ async def export_queue(ctx, guild_id: int=None, ephemeral: bool=False):
         return ReturnData(False, message)
 
     try:
-        queue_dict = get_guild_dict()[guild_id].queue
+        queue_dict = guild(guild_id).queue
     except Exception as e:
         message = f"Error: {e}"
         await ctx.reply(message, ephemeral=ephemeral)
@@ -634,24 +648,25 @@ async def import_queue(ctx, queue_data, guild_id: int=None, ephemeral: bool=Fals
     for item in queue_data.split(','):
         item = item.split(':')
         if item[0] == 'Video':
-            video = VideoClass('Video', author_id, item[1])
+            video = VideoClass('Video', author_id, guild_id, item[1])
         elif item[0] == 'Radio':
-            video = VideoClass('Radio', author_id, radio_info=dict(name=item[1]))
+            video = VideoClass('Radio', author_id, guild_id, radio_info=dict(name=item[1]))
         elif item[0] == 'Local':
-            video = VideoClass('Local', author_id, local_number=item[1])
+            video = VideoClass('Local', author_id, guild_id, local_number=item[1])
         elif item[0] == 'Probe':
-            video = VideoClass('Probe', author_id, url=item[1])
+            video = VideoClass('Probe', author_id, guild_id, url=item[1])
         elif item[0] == 'SoundCloud':
-            video = VideoClass('SoundCloud', author_id, url=item[1])
+            video = VideoClass('SoundCloud', author_id, guild_id, url=item[1])
         else:
             message = f"Error: {item[0]} is not a valid class type"
             await ctx.reply(message, ephemeral=ephemeral)
             return ReturnData(False, message)
 
         video.renew()
-        queue_list.append(video)
+        queue_list.append(to_queue_class(video))
 
-    get_guild_dict()[guild_id].queue += queue_list
+    guild(guild_id).queue += queue_list
+    get_session().commit()
     push_update(guild_id)
 
     message = f"Added to queue: `{len(queue_list)}` items"

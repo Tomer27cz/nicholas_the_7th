@@ -9,8 +9,10 @@ import commands.queue
 from utils.save import save_json
 from utils.translate import tg
 from utils.discord import get_voice_client, to_queue
-from utils.globals import get_bot, get_guild_dict
+from utils.globals import get_bot, get_session
 from utils.url import get_playlist_from_url
+
+from database.guild import guild
 
 import discord
 from discord.ui import View
@@ -94,7 +96,8 @@ class PlayerControlView(View):
         if voice:
             if voice.is_playing() or voice.is_paused():
                 voice.stop()
-                get_guild_dict()[interaction.guild_id].options.stopped = True
+                guild(interaction.guild_id).options.stopped = True
+                get_session().commit()
                 await interaction.response.edit_message(view=None)
             else:
                 await interaction.response.send_message(tg(self.guild_id, "No audio playing"), ephemeral=True)
@@ -116,7 +119,7 @@ class SearchOptionView(View):
     # noinspection PyUnusedLocal
     @discord.ui.button(emoji=react_dict['1'], style=discord.ButtonStyle.blurple, custom_id='1')
     async def callback_1(self, interaction, button):
-        video = get_guild_dict()[self.guild_id].search_list[0]
+        video = guild(self.guild_id).search_list[0]
         if self.force:
             to_queue(self.guild_id, video, position=0)
         else:
@@ -130,7 +133,7 @@ class SearchOptionView(View):
     # noinspection PyUnusedLocal
     @discord.ui.button(emoji=react_dict['2'], style=discord.ButtonStyle.blurple, custom_id='2')
     async def callback_2(self, interaction, button):
-        video = get_guild_dict()[self.guild_id].search_list[1]
+        video = guild(self.guild_id).search_list[1]
         if self.force:
             to_queue(self.guild_id, video, position=0)
         else:
@@ -144,7 +147,7 @@ class SearchOptionView(View):
     # noinspection PyUnusedLocal
     @discord.ui.button(emoji=react_dict['3'], style=discord.ButtonStyle.blurple, custom_id='3')
     async def callback_3(self, interaction, button):
-        video = get_guild_dict()[self.guild_id].search_list[2]
+        video = guild(self.guild_id).search_list[2]
         if self.force:
             to_queue(self.guild_id, video, position=0)
         else:
@@ -158,7 +161,7 @@ class SearchOptionView(View):
     # noinspection PyUnusedLocal
     @discord.ui.button(emoji=react_dict['4'], style=discord.ButtonStyle.blurple, custom_id='4')
     async def callback_4(self, interaction, button):
-        video = get_guild_dict()[self.guild_id].search_list[3]
+        video = guild(self.guild_id).search_list[3]
         if self.force:
             to_queue(self.guild_id, video, position=0)
         else:
@@ -172,7 +175,7 @@ class SearchOptionView(View):
     # noinspection PyUnusedLocal
     @discord.ui.button(emoji=react_dict['5'], style=discord.ButtonStyle.blurple, custom_id='5')
     async def callback_5(self, interaction, button):
-        video = get_guild_dict()[self.guild_id].search_list[4]
+        video = guild(self.guild_id).search_list[4]
         if self.force:
             to_queue(self.guild_id, video, position=0)
         else:

@@ -3,10 +3,11 @@ from classes.data_classes import ReturnData
 from utils.log import log
 from utils.translate import tg
 from utils.save import save_json
-from utils.globals import get_bot, get_languages_dict, get_guild_dict
-from utils.json import json_to_guilds
+from utils.globals import get_bot, get_languages_dict
 from utils.checks import is_float
 from utils.convert import to_bool
+
+from database.guild import guild
 
 from commands.utils import ctx_check
 
@@ -46,15 +47,13 @@ async def kys_def(ctx: dc_commands.Context):
     sys.exit(3)
 
 async def file_command_def(ctx: dc_commands.Context, config_file: discord.Attachment = None, config_type: Literal[
-    'guilds', 'other', 'radio', 'languages', 'log', 'data', 'activity', 'apache_activity', 'apache_error'] = 'log'):
+    'other', 'radio', 'languages', 'log', 'data', 'activity', 'apache_activity', 'apache_error'] = 'log'):
     log(ctx, 'config_command_def', [config_file, config_type], log_type='function', author=ctx.author)
 
     config_types = {
-        'guilds': '.json',
         'other': '.json',
         'radio': '.json',
         'languages': '.json',
-        'saves': '.json',
         'log': '.log',
         'data': '.log',
         'activity': '.log',
@@ -62,7 +61,7 @@ async def file_command_def(ctx: dc_commands.Context, config_file: discord.Attach
         'apache_error': '.log'
     }
 
-    if config_type in ['guilds', 'other', 'languages', 'radio', 'saves']:
+    if config_type in ['other', 'languages', 'radio']:
         file_path = f'{config.PARENT_DIR}db/{config_type}{config_types[config_type]}'
     else:
         file_path = f'{config.PARENT_DIR}db/log/{config_type}{config_types[config_type]}'
@@ -89,7 +88,7 @@ async def file_command_def(ctx: dc_commands.Context, config_file: discord.Attach
         return ReturnData(False, message)
 
     if not filename_name in config_types.keys():
-        message = 'You need to upload a file with a valid name (guilds, other, radio, languages, saves, log, data, activity, apache_activity, apache_error)'
+        message = 'You need to upload a file with a valid name (other, radio, languages, log, data, activity, apache_activity, apache_error)'
         await ctx.reply(message, ephemeral=True)
         return ReturnData(False, message)
 
@@ -107,15 +106,6 @@ async def file_command_def(ctx: dc_commands.Context, config_file: discord.Attach
     with open(file_path, 'rb', encoding='utf-8') as f:
         org_content = f.read()
 
-    if config_type == 'guilds':
-        try:
-            json_to_guilds(json.loads(content))
-        except Exception as e:
-            message = f'This file might be outdated or corrupted: `{config_type}{config_types[config_type]}` -> {e}'
-            log(ctx, message, [config_type, config_types[config_type]], log_type='error', author=ctx.author)
-            await ctx.reply(message, ephemeral=True)
-            return ReturnData(False, message)
-
     with open(file_path, 'wb', encoding='utf-8') as f:
         try:
             # write new content
@@ -129,20 +119,7 @@ async def file_command_def(ctx: dc_commands.Context, config_file: discord.Attach
             await ctx.reply(message, ephemeral=True)
             return ReturnData(False, message)
 
-    if config_type == 'guilds':
-        with open('db/guilds.json', 'r', encoding='utf-8') as f:
-            try:
-                globals()['guild'] = json_to_guilds(json.load(f))
-            except Exception as e:
-                message = f'This file might be outdated or corrupted: `{config_type}{config_types[config_type]}` -> {e}'
-                log(ctx, message, [config_type, config_types[config_type]], log_type='error', author=ctx.author)
-                await ctx.reply(message, ephemeral=True)
-                return ReturnData(False, message)
-
-        log(None, 'Loaded guilds.json')
-        await ctx.reply("Loaded new `guilds.json`", ephemeral=True)
-    else:
-        await ctx.reply(f"Saved new `{config_type}{config_types[config_type]}`", ephemeral=True)
+    await ctx.reply(f"Saved new `{config_type}{config_types[config_type]}`", ephemeral=True)
 
 async def options_def(ctx: dc_commands.Context, server: Union[str, int, None]=None, stopped: str = None, loop: str = None, is_radio: str = None,
                       buttons: str = None, language: str = None, response_type: str = None, buffer: str = None,
@@ -152,10 +129,11 @@ async def options_def(ctx: dc_commands.Context, server: Union[str, int, None]=No
         [server, stopped, loop, is_radio, buttons, language, response_type, buffer, history_length, volume, search_query, last_updated, ephemeral],
         log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
-    guild = get_guild_dict()
+
+    db_guild = guild(guild_id)
 
     if not server:
-        options = guild[guild_id].options
+        options = guild(guild_id).options
 
         message = f"""
         **Options:**
@@ -181,7 +159,7 @@ async def options_def(ctx: dc_commands.Context, server: Union[str, int, None]=No
         guilds.append(guild_id)
 
     elif server == 'all':
-        for guild_id in guild.keys():
+        for guild_id in db_guild.keys():
             guilds.append(guild_id)
 
     else:
@@ -192,7 +170,7 @@ async def options_def(ctx: dc_commands.Context, server: Union[str, int, None]=No
             await ctx.reply(message, ephemeral=ephemeral)
             return ReturnData(False, message)
 
-        if not server in guild.keys():
+        if not server in db_guild.keys():
             message = tg(guild_id, "That guild doesn't exist or the bot is not in it")
             await ctx.reply(message, ephemeral=ephemeral)
             return ReturnData(False, message)
@@ -200,7 +178,7 @@ async def options_def(ctx: dc_commands.Context, server: Union[str, int, None]=No
         guilds.append(server)
 
     for for_guild_id in guilds:
-        options = guild[for_guild_id].options
+        options = guild(for_guild_id).options
 
         bool_list_t = ['True', 'true', '1']
         bool_list_f = ['False', 'false', '0']

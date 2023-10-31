@@ -3,7 +3,8 @@ from classes.data_classes import ReturnData
 from utils.log import log
 from utils.translate import tg
 from utils.save import save_json
-from utils.globals import get_bot, get_languages_dict, get_guild_dict, get_all_sound_effects, get_radio_dict
+from utils.globals import get_bot, get_all_sound_effects, get_radio_dict
+from database.guild import guild
 
 import commands.admin
 from commands.utils import ctx_check
@@ -41,12 +42,12 @@ async def language_command_def(ctx, country_code: Literal[tuple(languages_dict)]
     """
     log(ctx, 'language_command_def', [country_code], log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
-    guild = get_guild_dict()
+    db_guild = guild(guild_id)
 
-    guild[guild_id].options.language = country_code
+    db_guild.options.language = country_code
     save_json()
 
-    message = f'{tg(guild_id, "Changed the language for this server to: ")} `{guild[guild_id].options.language}`'
+    message = f'{tg(guild_id, "Changed the language for this server to: ")} `{db_guild.options.language}`'
     await ctx.reply(message)
     return ReturnData(True, message)
 
@@ -117,10 +118,10 @@ async def key_def(ctx: dc_commands.Context) -> ReturnData:
     :return: ReturnData
     """
     log(ctx, 'key_def', [], log_type='function', author=ctx.author)
-    guild = get_guild_dict()
+    db_guild = guild(ctx.guild.id)
     save_json()
 
-    message = f'Key: `{guild[ctx.guild.id].data.key}` -> [Control Panel]({config.WEB_URL}/guild/{ctx.guild.id}&key={guild[ctx.guild.id].data.key})'
+    message = f'Key: `{db_guild.data.key}` -> [Control Panel]({config.WEB_URL}/guild/{ctx.guild.id}&key={db_guild.data.key})'
     await ctx.reply(message)
     return ReturnData(True, message)
 

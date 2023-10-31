@@ -4,8 +4,10 @@ if TYPE_CHECKING:
     from classes.video_class import VideoClass
     from classes.typed_dictionaries import TimeSegment, TimeSegmentInner, VideoChapter
 
+import classes.video_class as video_class
+import database.guild as db
 from utils.save import save_json
-from utils.globals import get_guild_dict
+from utils.globals import get_session
 
 from time import time
 
@@ -17,6 +19,13 @@ def set_stopped(video: VideoClass):
     end['epoch'] = int(time())
 
     video.played_duration[-1]['end']['time_stamp'] = (end['epoch'] - start['epoch']) + start['time_stamp']
+    pd = video.played_duration
+
+    # for some reason this needs to be done like this
+    get_session().commit()
+    if db.guild(guild_id=video.guild_id).now_playing is not None:
+        db.guild(guild_id=video.guild_id).now_playing.played_duration = pd
+    get_session().commit()
 
     save_json()
 
@@ -38,9 +47,9 @@ def set_started(video: VideoClass, guild_object, chapters: Union[list[VideoChapt
     except AttributeError:
         pass
 
-    guild = get_guild_dict()
     guild_id = guild_object.id
-    guild[guild_id].now_playing = video
+    db.guild(guild_id).now_playing = video_class.to_now_playing_class(video)
+    get_session().commit()
 
     save_json()
 
@@ -49,6 +58,12 @@ def set_resumed(video: VideoClass):
     end_dict = {'epoch': None, 'time_stamp': None}
 
     video.played_duration += [{'start': start_dict, 'end': end_dict}]
+    pd = video.played_duration
+
+    # for some reason this needs to be done like this
+    get_session().commit()
+    db.guild(guild_id=video.guild_id).now_playing.played_duration = pd
+    get_session().commit()
 
     save_json()
 
@@ -60,6 +75,12 @@ def set_new_time(video: VideoClass, time_stamp: int):
     end_dict = {'epoch': None, 'time_stamp': None}
 
     video.played_duration += [{'start': start_dict, 'end': end_dict}]
+    pd = video.played_duration
+
+    # for some reason this needs to be done like this
+    get_session().commit()
+    db.guild(guild_id=video.guild_id).now_playing.played_duration = pd
+    get_session().commit()
 
     save_json()
 

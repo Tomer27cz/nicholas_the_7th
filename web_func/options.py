@@ -3,14 +3,15 @@ from classes.data_classes import ReturnData
 from utils.log import log
 from utils.translate import tg
 from utils.convert import to_bool
-from utils.globals import get_guild_dict, get_languages_dict
+from utils.globals import get_languages_dict
+from database.guild import guild
 
 from commands.utils import ctx_check
 
 async def web_user_options_edit(web_data, form) -> ReturnData:
     log(web_data, 'web_user_options_edit', [form], log_type='function', author=web_data.author)
     is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data)
-    options = get_guild_dict()[web_data.guild_id].options
+    options = guild(web_data.guild_id).options
 
     loop = form['loop']
     language = form['language']

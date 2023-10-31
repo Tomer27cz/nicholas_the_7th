@@ -19,6 +19,18 @@ class CustomUnpickler(pickle.Unpickler):
             return classes.data_classes.Guild
         if name == 'VideoClass':
             return classes.video_class.VideoClass
+        if name == 'SearchList':
+            return classes.video_class.SearchList
+        if name == 'Queue':
+            return classes.video_class.Queue
+        if name == 'NowPlaying':
+            return classes.video_class.NowPlaying
+        if name == 'History':
+            return classes.video_class.History
+        if name == 'Save':
+            return classes.data_classes.Save
+        if name == 'SaveVideo':
+            return classes.video_class.SaveVideo
         if name == 'DiscordUser':
             return classes.discord_classes.DiscordUser
         if name == 'DiscordMember':

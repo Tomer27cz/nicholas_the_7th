@@ -1,5 +1,6 @@
 from utils.log import log
-from utils.globals import get_guild_dict, get_languages_dict
+from utils.globals import get_languages_dict
+from database.guild import guild
 
 def tg(guild_id: int, content: str) -> str:
     """
@@ -10,12 +11,14 @@ def tg(guild_id: int, content: str) -> str:
     :param content: str - translation key
     :return: str - translated text
     """
-    guild = get_guild_dict()
     languages_dict = get_languages_dict()
     try:
-        lang = guild[guild_id].options.language
+        lang = guild(guild_id).options.language
     except KeyError:
         log(guild_id, f'KeyError: {guild_id} in guild')
+        lang = 'en'
+    except AttributeError:
+        log(guild_id, f'AttributeError: {guild_id} in guild')
         lang = 'en'
 
     try:

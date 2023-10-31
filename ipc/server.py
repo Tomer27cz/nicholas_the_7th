@@ -2,10 +2,12 @@ from classes.data_classes import ReturnData, GuildData
 from classes.discord_classes import DiscordChannel, DiscordRole, DiscordUser, DiscordInvite, DiscordMember
 
 from utils.log import log
-from utils.globals import get_guild_dict, get_bot
+from utils.globals import get_bot
 from utils.discord import get_username
 from utils.save import update_guilds
 from utils.saves import new_queue_save, delete_queue_save, rename_queue_save, load_queue_save
+
+from database.guild import guild, guild_ids
 
 import commands.player
 import commands.voice
@@ -50,115 +52,117 @@ async def execute_function(request_dict) -> ReturnData:
     else:
         args = request_dict['args']
 
-    try:
+    if func_name == 'remove_def':
+        return await commands.queue.remove_def(web_data, number=args['number'], list_type=args['list_type'])
+    if func_name == 'web_up':
+        return await web_func.move.web_up(web_data, number=args['number'])
+    if func_name == 'web_down':
+        return await web_func.move.web_down(web_data, number=args['number'])
+    if func_name == 'web_top':
+        return await web_func.move.web_top(web_data, number=args['number'])
+    if func_name == 'web_bottom':
+        return await web_func.move.web_bottom(web_data, number=args['number'])
+    if func_name == 'web_duplicate':
+        return await web_func.move.web_duplicate(web_data, number=args['number'])
 
-        if func_name == 'remove_def':
-            return await commands.queue.remove_def(web_data, number=args['number'], list_type=args['list_type'])
-        if func_name == 'web_up':
-            return await web_func.move.web_up(web_data, number=args['number'])
-        if func_name == 'web_down':
-            return await web_func.move.web_down(web_data, number=args['number'])
-        if func_name == 'web_top':
-            return await web_func.move.web_top(web_data, number=args['number'])
-        if func_name == 'web_bottom':
-            return await web_func.move.web_bottom(web_data, number=args['number'])
-        if func_name == 'web_duplicate':
-            return await web_func.move.web_duplicate(web_data, number=args['number'])
+    if func_name == 'play_def':
+        return await commands.player.play_def(web_data)
+    if func_name == 'stop_def':
+        return await commands.voice.stop_def(web_data)
+    if func_name == 'pause_def':
+        return await commands.voice.pause_def(web_data)
+    if func_name == 'skip_def':
+        return await commands.queue.skip_def(web_data)
 
-        if func_name == 'play_def':
-            return await commands.player.play_def(web_data)
-        if func_name == 'stop_def':
-            return await commands.voice.stop_def(web_data)
-        if func_name == 'pause_def':
-            return await commands.voice.pause_def(web_data)
-        if func_name == 'skip_def':
-            return await commands.queue.skip_def(web_data)
+    if func_name == 'loop_command_def':
+        return await commands.player.loop_command_def(web_data)
+    if func_name == 'shuffle_def':
+        return await commands.queue.shuffle_def(web_data)
+    if func_name == 'clear_def':
+        return await commands.queue.clear_def(web_data)
 
-        if func_name == 'loop_command_def':
-            return await commands.player.loop_command_def(web_data)
-        if func_name == 'shuffle_def':
-            return await commands.queue.shuffle_def(web_data)
-        if func_name == 'clear_def':
-            return await commands.queue.clear_def(web_data)
+    if func_name == 'web_disconnect':
+        return await web_func.voice.web_disconnect(web_data)
+    if func_name == 'web_join':
+        return await web_func.voice.web_join(web_data, form=args['form'])
 
-        if func_name == 'web_disconnect':
-            return await web_func.voice.web_disconnect(web_data)
-        if func_name == 'web_join':
-            return await web_func.voice.web_join(web_data, form=args['form'])
+    if func_name == 'web_queue':
+        return await web_func.queue.web_queue(web_data, video_type=args['video_type'], position=args['position'])
+    if func_name == 'queue_command_def':
+        return await commands.queue.queue_command_def(web_data, url=args['url'])
+    if func_name == 'web_queue_from_radio':
+        return await web_func.queue.web_queue_from_radio(web_data, radio_name=args['radio_name'])
 
-        if func_name == 'web_queue':
-            return await web_func.queue.web_queue(web_data, video_type=args['video_type'], position=args['position'])
-        if func_name == 'queue_command_def':
-            return await commands.queue.queue_command_def(web_data, url=args['url'])
-        if func_name == 'web_queue_from_radio':
-            return await web_func.queue.web_queue_from_radio(web_data, radio_name=args['radio_name'])
+    if func_name == 'new_queue_save':
+        return new_queue_save(web_data.guild_id, save_name=args['save_name'])
+    if func_name == 'load_queue_save':
+        return load_queue_save(web_data.guild_id, save_name=args['save_name'])
+    if func_name == 'delete_queue_save':
+        return delete_queue_save(web_data.guild_id, save_name=args['save_name'])
+    if func_name == 'rename_queue_save':
+        return rename_queue_save(web_data.guild_id, old_name=args['old_name'], new_name=args['new_name'])
 
-        if func_name == 'new_queue_save':
-            return new_queue_save(web_data.guild_id, save_name=args['save_name'])
-        if func_name == 'load_queue_save':
-            return load_queue_save(web_data.guild_id, save_name=args['save_name'])
-        if func_name == 'delete_queue_save':
-            return delete_queue_save(web_data.guild_id, save_name=args['save_name'])
-        if func_name == 'rename_queue_save':
-            return rename_queue_save(web_data.guild_id, old_name=args['old_name'], new_name=args['new_name'])
+    if func_name == 'volume_command_def':
+        return await commands.voice.volume_command_def(web_data, volume=args['volume'])
+    if func_name == 'set_video_time':
+        return await commands.player.set_video_time(web_data, time_stamp=args['time_stamp'])
 
-        if func_name == 'volume_command_def':
-            return await commands.voice.volume_command_def(web_data, volume=args['volume'])
-        if func_name == 'set_video_time':
-            return await commands.player.set_video_time(web_data, time_stamp=args['time_stamp'])
+    # user edit
+    if func_name == 'web_user_options_edit':
+        return await web_func.options.web_user_options_edit(web_data, form=args['form'])
 
-        # user edit
-        if func_name == 'web_user_options_edit':
-            return await web_func.options.web_user_options_edit(web_data, form=args['form'])
+    # admin
+    if func_name == 'web_video_edit':
+        return await web_func.admin.web_video_edit(web_data, form=args['form'])
+    if func_name == 'web_options_edit':
+        return await web_func.admin.web_options_edit(web_data, form=args['form'])
 
-        # admin
-        if func_name == 'web_video_edit':
-            return await web_func.admin.web_video_edit(web_data, form=args['form'])
-        if func_name == 'web_options_edit':
-            return await web_func.admin.web_options_edit(web_data, form=args['form'])
+    if func_name == 'web_delete_guild':
+        return await web_func.admin.web_delete_guild(web_data, guild_id=args['guild_id'])
+    if func_name == 'web_disconnect_guild':
+        return asyncio.run_coroutine_threadsafe(web_func.admin.web_disconnect_guild(web_data, args['guild_id']), get_bot().loop).result()
+        # return await web_disconnect_guild(web_data, guild_id=args['guild_id'])
+    if func_name == 'web_create_invite':
+        return asyncio.run_coroutine_threadsafe(web_func.admin.web_create_invite(web_data, args['guild_id']), get_bot().loop).result()
+        # return await web_create_invite(web_data, guild_id=args['guild_id'])
 
-        if func_name == 'web_delete_guild':
-            return await web_func.admin.web_delete_guild(web_data, guild_id=args['guild_id'])
-        if func_name == 'web_disconnect_guild':
-            return asyncio.run_coroutine_threadsafe(web_func.admin.web_disconnect_guild(web_data, args['guild_id']), get_bot().loop).result()
-            # return await web_disconnect_guild(web_data, guild_id=args['guild_id'])
-        if func_name == 'web_create_invite':
-            return asyncio.run_coroutine_threadsafe(web_func.admin.web_create_invite(web_data, args['guild_id']), get_bot().loop).result()
-            # return await web_create_invite(web_data, guild_id=args['guild_id'])
+    if func_name == 'download_guild':
+        guild_id = args['guild_id']
+        return await commands.chat_export.download_guild(web_data, guild_id)
+    if func_name == 'download_guild_channel':
+        channel_id = args['channel_id']
+        return await commands.chat_export.download_guild_channel(web_data, channel_id)
 
-        if func_name == 'download_guild':
-            guild_id = args['guild_id']
-            return await commands.chat_export.download_guild(web_data, guild_id)
-        if func_name == 'download_guild_channel':
-            channel_id = args['channel_id']
-            return await commands.chat_export.download_guild_channel(web_data, channel_id)
-
-        if func_name == 'export_queue':
-            guild_id = args['guild_id']
-            return await commands.queue.export_queue(web_data, guild_id)
-        if func_name == 'import_queue':
-            guild_id = args['guild_id']
-            queue_data = args['queue_data']
-            return await commands.queue.import_queue(web_data, queue_data, guild_id)
-
-    except KeyError as e:
-        return ReturnData(False, f'Wrong args for ({func_name}): {e} --> Internal error (contact developer)')
+    if func_name == 'export_queue':
+        guild_id = args['guild_id']
+        return await commands.queue.export_queue(web_data, guild_id)
+    if func_name == 'import_queue':
+        guild_id = args['guild_id']
+        queue_data = args['queue_data']
+        return await commands.queue.import_queue(web_data, queue_data, guild_id)
 
     return ReturnData(False, f'Unknown function: {func_name}')
 
 async def execute_get_data(request_dict):
     data_type = request_dict['data_type']
-    guild = get_guild_dict()
+    # guild = get_guild_dict() # TODO: get some data directly from db --- done
 
-    if data_type == 'guilds':
-        return guild
-    elif data_type == 'guild':
-        guild_id = request_dict['guild_id']
-        try:
-            return guild[guild_id]
-        except KeyError:
-            return None
-    elif data_type == 'guild_channels':
+    def get_guild_bot_status(g_id):
+        g_object = get_bot().get_guild(g_id)
+        if not g_object:
+            return 'Unknown'
+        voice = g_object.voice_client
+        if voice is None:
+            return 'Not connected'
+        if voice.is_playing():
+            return 'Playing'
+        if voice.is_paused():
+            return 'Paused'
+        elif voice.is_connected():
+            return 'Connected'
+        return 'Unknown'
+
+    if data_type == 'guild_channels':
         guild_id = request_dict['guild_id']
         guild_channels = []
         guild_object = get_bot().get_guild(guild_id)
@@ -222,28 +226,17 @@ async def execute_get_data(request_dict):
         user_id = request_dict['user_id']
         return DiscordUser(user_id)
 
-    elif data_type == 'language':
-        guild_id = request_dict['guild_id']
-        try:
-            return guild[guild_id].options.language
-        except KeyError:
-            return None
-    elif data_type == 'update':
-        guild_id = request_dict['guild_id']
-        try:
-            return str(guild[guild_id].options.last_updated)
-        except KeyError:
-            return None
+
     if data_type == 'renew':
         queue_type = request_dict['queue_type']
         index = request_dict['index']
         guild_id = request_dict['guild_id']
 
         if queue_type == 'now_playing':
-            guild[guild_id].now_playing.renew()
+            guild(guild_id).now_playing.renew()
         elif queue_type == 'queue':
             try:
-                guild[guild_id].queue[index].renew()
+                guild(guild_id).queue[index].renew()
             except IndexError:
                 pass
     elif data_type == 'bot_guilds':
@@ -253,6 +246,13 @@ async def execute_get_data(request_dict):
             to_append = GuildData(bot_guild.id)
             bot_guilds.append(to_append)
         return bot_guilds
+    elif data_type == 'guilds_bot_status':
+        guilds_status = {}
+        for guild_id in guild_ids():
+            guilds_status[guild_id] = get_guild_bot_status(guild_id)
+        return guilds_status
+    elif data_type == 'guild_bot_status':
+        return get_guild_bot_status(request_dict['guild_id'])
     else:
         print(f'Unknown data type: {data_type}', file=sys.stderr)
 

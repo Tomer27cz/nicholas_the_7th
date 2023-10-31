@@ -3,6 +3,7 @@ from config import PARENT_DIR
 import utils.files
 import classes.data_classes
 import os
+from database.guild import guild, guild_dict
 
 def execute_function(function_name: str, web_data: classes.data_classes.WebData, **kwargs) -> classes.data_classes.ReturnData:
     # create argument dictionary
@@ -25,29 +26,31 @@ def get_guild(guild_id: int):
     :param guild_id: guild id
     :return: guild object
     """
-    # create argument dictionary
-    arg_dict = {
-        'type': 'get_data',
-        'data_type': 'guild',
-        'guild_id': guild_id
-    }
-    # send argument dictionary
-    return send_arg(arg_dict)
+    # # create argument dictionary
+    # arg_dict = {
+    #     'type': 'get_data',
+    #     'data_type': 'guild',
+    #     'guild_id': guild_id
+    # }
+    # # send argument dictionary
+    # return send_arg(arg_dict)
+    return guild(guild_id)
 
 def get_guilds():
     """
     Get the guilds list from database
     :return: list - list of guild objects
     """
-    arg_dict = {
-        'type': 'get_data',
-        'data_type': 'guilds'
-    }
-    # send argument dictionary
-    import __main__
-    guild = send_arg(arg_dict)
-    __main__.guild = guild
-    return guild
+    # arg_dict = {
+    #     'type': 'get_data',
+    #     'data_type': 'guilds'
+    # }
+    # # send argument dictionary
+    # import __main__
+    # guild = send_arg(arg_dict)
+    # __main__.guild = guild
+    # return guild
+    return guild_dict()
 
 def get_bot_guilds():
     """
@@ -61,6 +64,33 @@ def get_bot_guilds():
     # send argument dictionary
     bot_guilds = send_arg(arg_dict)
     return bot_guilds
+
+def get_guilds_bot_status():
+    """
+    Get the status of the bot in each guild
+    :return: dict - {guild_id: status, ...}
+    """
+    arg_dict = {
+        'type': 'get_data',
+        'data_type': 'guilds_bot_status'
+    }
+    # send argument dictionary
+    return send_arg(arg_dict)
+
+def get_guild_bot_status(guild_id: int):
+    """
+    Get the status of the bot in a guild
+    :param guild_id: guild id
+    :return: bool - True if connected, False if not
+    """
+    arg_dict = {
+        'type': 'get_data',
+        'data_type': 'guild_bot_status',
+        'guild_id': guild_id
+    }
+    # send argument dictionary
+    return send_arg(arg_dict)
+
 
 # guild specific data
 def get_guild_channels(guild_id: int):
@@ -147,14 +177,16 @@ def get_update(guild_id: int):
     :param guild_id: guild id
     :return: bool - update variable state
     """
-    # create argument dictionary
-    arg_dict = {
-        'type': 'get_data',
-        'data_type': 'update',
-        'guild_id': guild_id
-    }
-    # send argument dictionary
-    return send_arg(arg_dict)
+    return guild(guild_id).options.last_updated
+
+    # # create argument dictionary
+    # arg_dict = {
+    #     'type': 'get_data',
+    #     'data_type': 'update',
+    #     'guild_id': guild_id
+    # }
+    # # send argument dictionary
+    # return send_arg(arg_dict)
 
 def get_language(guild_id: int):
     """
@@ -162,14 +194,16 @@ def get_language(guild_id: int):
     :param guild_id: guild id
     :return: language
     """
-    # create argument dictionary
-    arg_dict = {
-        'type': 'get_data',
-        'data_type': 'language',
-        'guild_id': guild_id
-    }
-    # send argument dictionary
-    return send_arg(arg_dict)
+    return guild(guild_id).options.language
+
+    # # create argument dictionary
+    # arg_dict = {
+    #     'type': 'get_data',
+    #     'data_type': 'language',
+    #     'guild_id': guild_id
+    # }
+    # # send argument dictionary
+    # return send_arg(arg_dict)
 
 def get_channel_content(guild_id: int, channel_id: int):
     try:

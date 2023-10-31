@@ -1,10 +1,11 @@
-from classes.data_classes import ReturnData
-from classes.video_class import VideoClass
+from classes.data_classes import ReturnData, Guild
+from classes.video_class import VideoClass, to_queue_class, to_now_playing_class, to_history_class
 
 from utils.log import log, send_to_admin
 from utils.translate import tg
 from utils.save import save_json
-from utils.globals import get_guild_dict, get_bot
+from utils.globals import get_bot, get_session
+from database.guild import guild, delete_guild
 
 import commands.admin
 from commands.utils import ctx_check
@@ -16,8 +17,8 @@ import json
 async def web_video_edit(web_data, form) -> ReturnData:
     log(web_data, 'web_video_edit', [form], log_type='function', author=web_data.author)
     is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data)
-    guild = get_guild_dict()
     guild_id = web_data.guild_id
+    db_guild = guild(guild_id)
     index = form['edit_btn']
     is_queue = True
     is_np = False
@@ -29,7 +30,7 @@ async def web_video_edit(web_data, form) -> ReturnData:
         is_queue = False
         try:
             index = int(index[1:])
-            if index < 0 or index >= len(guild[guild_id].history):
+            if index < 0 or index >= len(db_guild.history):
                 return ReturnData(False, tg(ctx_guild_id, 'Invalid index (out of range)'))
         except (TypeError, ValueError, IndexError):
             return ReturnData(False, tg(ctx_guild_id, 'Invalid index (not a number)'))
@@ -37,7 +38,7 @@ async def web_video_edit(web_data, form) -> ReturnData:
     elif index.isdigit():
         is_queue = True
         index = int(index)
-        if index < 0 or index >= len(guild[guild_id].queue):
+        if index < 0 or index >= len(db_guild.queue):
             return ReturnData(False, tg(ctx_guild_id, 'Invalid index (out of range)'))
 
     else:
@@ -123,15 +124,15 @@ async def web_video_edit(web_data, form) -> ReturnData:
         except (TypeError, ValueError, json.decoder.JSONDecodeError, AssertionError, SyntaxError):
             return ReturnData(False, f'Invalid discord channel: {discord_channel}')
 
-    video = VideoClass(class_type, author, url=url, title=title, picture=picture, duration=duration, channel_name=channel_name, channel_link=channel_link, radio_info=radio_info, local_number=local_number, created_at=created_at, played_duration=played_duration, chapters=chapters, discord_channel=discord_channel, stream_url=stream_url)
+    video = VideoClass(class_type, author, guild_id, url=url, title=title, picture=picture, duration=duration, channel_name=channel_name, channel_link=channel_link, radio_info=radio_info, local_number=local_number, created_at=created_at, played_duration=played_duration, chapters=chapters, discord_channel=discord_channel, stream_url=stream_url)
 
     if is_np:
-        guild[guild_id].now_playing = video
+        db_guild.now_playing = to_now_playing_class(video)
     else:
         if is_queue:
-            guild[guild_id].queue[index] = video
+            db_guild.queue[index] = to_queue_class(video)
         else:
-            guild[guild_id].history[index] = video
+            db_guild.history[index] = to_history_class(video)
 
     save_json()
 
@@ -160,19 +161,22 @@ async def web_options_edit(web_data, form) -> ReturnData:
                              response_type=response_type, search_query=search_query, buttons=buttons, volume=volume,
                              buffer=buffer, history_length=history_length, last_updated=last_updated)
 
+# TODO: Figure out how to do this
 async def web_delete_guild(web_data, guild_id) -> ReturnData:
     log(web_data, 'web_delete_guild', [guild_id], log_type='function', author=web_data.author)
     is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data)
-    guild = get_guild_dict()
+
+    db_guilds = [db_guild_object.id for db_guild_object in get_session().query(Guild).all()]
+
     try:
         guild_id = int(guild_id)
     except (TypeError, ValueError):
         return ReturnData(False, tg(ctx_guild_id, 'Invalid guild id') + f': {guild_id}')
 
-    if guild_id not in guild.keys():
+    if guild_id not in db_guilds:
         return ReturnData(False, tg(ctx_guild_id, 'Guild not found') + f': {guild_id}')
 
-    del guild[guild_id]
+    delete_guild(int(guild_id))
 
     save_json()
 

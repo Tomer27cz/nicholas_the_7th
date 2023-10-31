@@ -4,9 +4,10 @@ from utils.log import log
 from utils.translate import tg
 from utils.save import save_json
 from utils.discord import now_to_history, get_voice_client
-from utils.globals import get_bot, get_guild_dict
+from utils.globals import get_bot, get_session
 from utils.video_time import set_stopped, set_resumed
 
+from database.guild import guild
 from commands.utils import ctx_check
 
 import discord
@@ -24,7 +25,7 @@ async def stop_def(ctx, mute_response: bool = False, keep_loop: bool = False) ->
     """
     log(ctx, 'stop_def', [mute_response, keep_loop], log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
-    guild = get_guild_dict()
+    db_guild = guild(guild_id)
 
     voice: discord.voice_client.VoiceClient = get_voice_client(get_bot().voice_clients, guild=guild_object)
 
@@ -36,9 +37,10 @@ async def stop_def(ctx, mute_response: bool = False, keep_loop: bool = False) ->
 
     voice.stop()
 
-    guild[guild_id].options.stopped = True
+    db_guild.options.stopped = True
     if not keep_loop:
-        guild[guild_id].options.loop = False
+        db_guild.options.loop = False
+    get_session().commit()
 
     now_to_history(guild_id)
 
@@ -56,15 +58,15 @@ async def pause_def(ctx, mute_response: bool = False) -> ReturnData:
     """
     log(ctx, 'pause_def', [mute_response], log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
-    guild = get_guild_dict()
+    db_guild = guild(guild_id)
 
     voice: discord.voice_client.VoiceClient = get_voice_client(get_bot().voice_clients, guild=guild_object)
 
     if voice:
         if voice.is_playing():
             voice.pause()
-            if guild[guild_id].now_playing:
-                set_stopped(guild[guild_id].now_playing)
+            if db_guild.now_playing:
+                set_stopped(db_guild.now_playing)
             message = tg(guild_id, "Player **paused!**")
             resp = True
         elif voice.is_paused():
@@ -92,15 +94,15 @@ async def resume_def(ctx, mute_response: bool = False) -> ReturnData:
     """
     log(ctx, 'resume_def', [mute_response], log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
-    guild = get_guild_dict()
+    db_guild = guild(guild_id)
 
     voice: discord.voice_client.VoiceClient = get_voice_client(get_bot().voice_clients, guild=guild_object)
 
     if voice:
         if voice.is_paused():
             voice.resume()
-            if guild[guild_id].now_playing:
-                set_resumed(guild[guild_id].now_playing)
+            if db_guild.now_playing:
+                set_resumed(db_guild.now_playing)
             message = tg(guild_id, "Player **resumed!**")
             resp = True
         elif voice.is_playing():
@@ -216,11 +218,12 @@ async def disconnect_def(ctx, mute_response: bool = False) -> ReturnData:
     """
     log(ctx, 'disconnect_def', [mute_response], log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
-    guild = get_guild_dict()
+    db_guild = guild(guild_id)
 
     if guild_object.voice_client:
         await stop_def(ctx, mute_response=True)
-        guild[guild_id].queue.clear()
+        db_guild.queue.clear()
+        get_session().commit()
 
         channel = guild_object.voice_client.channel
         await guild_object.voice_client.disconnect(force=True)
@@ -248,7 +251,7 @@ async def volume_command_def(ctx, volume: Union[float, int] = None, ephemeral: b
     """
     log(ctx, 'volume_command_def', [volume, ephemeral, mute_response], log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
-    guild = get_guild_dict()
+    db_guild = guild(guild_id)
 
     if volume:
         try:
@@ -261,7 +264,8 @@ async def volume_command_def(ctx, volume: Union[float, int] = None, ephemeral: b
 
         new_volume = volume / 100
 
-        guild[guild_id].options.volume = new_volume
+        db_guild.options.volume = new_volume
+        get_session().commit()
         voice = guild_object.voice_client
         if voice:
             try:
@@ -271,9 +275,9 @@ async def volume_command_def(ctx, volume: Union[float, int] = None, ephemeral: b
             except AttributeError:
                 pass
 
-        message = f'{tg(guild_id, "Changed the volume for this server to:")} `{int(guild[guild_id].options.volume * 100)}%`'
+        message = f'{tg(guild_id, "Changed the volume for this server to:")} `{int(db_guild.options.volume * 100)}%`'
     else:
-        message = f'{tg(guild_id, "The volume for this server is:")} `{int(guild[guild_id].options.volume * 100)}%`'
+        message = f'{tg(guild_id, "The volume for this server is:")} `{int(db_guild.options.volume * 100)}%`'
 
     save_json()
 

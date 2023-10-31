@@ -4,11 +4,15 @@ if TYPE_CHECKING:
     from classes.video_class import VideoClass
     from classes.data_classes import ReturnData
 
+from classes.video_class import *
+from classes.data_classes import *
+
 from utils.convert import struct_to_time
 from utils.translate import tg
-from utils.globals import get_bot, get_guild_dict
+from utils.globals import get_bot, get_session
 from utils.video_time import set_stopped
 from utils.save import save_json, push_update
+from database.guild import guild
 
 import discord
 import copy
@@ -126,29 +130,31 @@ def now_to_history(guild_id: int):
     :param guild_id: int - id of guild
     :return: None
     """
-    guild = get_guild_dict()
 
-    if guild[guild_id].now_playing is not None:
+    guild_object = guild(guild_id)
+
+    if guild_object.now_playing is not None:
         # trim history
-        if len(guild[guild_id].history) >= guild[guild_id].options.history_length:
-            while len(guild[guild_id].history) >= guild[guild_id].options.history_length:
-                guild[guild_id].history.pop(0)
+        if len(guild_object.history) >= guild_object.options.history_length:
+            while len(guild_object.history) >= guild_object.options.history_length:
+                guild_object.history.pop(0)
 
-        video = guild[guild_id].now_playing
+        video = guild_object.now_playing
 
         # if loop is enabled and video is Radio class, add video to queue
-        if guild[guild_id].options.loop:
+        if guild_object.options.loop:
             to_queue(guild_id, video, position=None, copy_video=True)
 
         # set now_playing to None
-        guild[guild_id].now_playing = None
+        get_session().query(NowPlaying).filter(NowPlaying.guild_id == guild_id).delete()
+        get_session().commit()
 
         # strip not needed data
         set_stopped(video)
         video.chapters = None
 
         # add video to history
-        guild[guild_id].history.append(video)
+        guild_object.history.append(to_history_class(video))
 
         # save json and push update
         save_json()
@@ -166,7 +172,7 @@ def to_queue(guild_id: int, video: VideoClass, position: int = None, copy_video:
     :param copy_video: bool - if True copies video
     :return: ReturnData or None
     """
-    guild = get_guild_dict()
+    guild_object = guild(guild_id)
 
     if copy_video:
         video = copy.deepcopy(video)
@@ -181,14 +187,14 @@ def to_queue(guild_id: int, video: VideoClass, position: int = None, copy_video:
     video.created_at = int(time())
 
     if position is None:
-        guild[guild_id].queue.append(video)
+        guild_object.queue.append(to_queue_class(video))
     else:
-        guild[guild_id].queue.insert(position, video)
+        guild_object.queue.insert(position, to_queue_class(video))
 
     push_update(guild_id)
     save_json()
 
-    return f'[`{video.title}`](<{video.url}>) {tg(guild_id, "added to queue!")} -> [Control Panel]({WEB_URL}/guild/{guild_id}&key={guild[guild_id].data.key})'
+    return f'[`{video.title}`](<{video.url}>) {tg(guild_id, "added to queue!")} -> [Control Panel]({WEB_URL}/guild/{guild_id}&key={guild_object.data.key})'
 
 def get_content_of_message(message: discord.Message) -> (str, list or None):
     """

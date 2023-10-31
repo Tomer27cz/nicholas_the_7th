@@ -4,15 +4,15 @@ from utils.log import log
 from utils.translate import tg
 from utils.save import save_json
 from utils.discord import to_queue
-from utils.globals import get_guild_dict
+from database.guild import guild
 
 from commands.utils import ctx_check
 
 async def move_def(ctx, org_number, destination_number, ephemeral=True) -> ReturnData:
     log(ctx, 'web_move', [org_number, destination_number], log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
-    guild = get_guild_dict()
-    queue_length = len(guild[guild_id].queue)
+    db_guild = guild(guild_id)
+    queue_length = len(db_guild.queue)
 
     if queue_length == 0:
         log(ctx, "move_def -> No songs in queue")
@@ -25,8 +25,8 @@ async def move_def(ctx, org_number, destination_number, ephemeral=True) -> Retur
 
     if queue_length - 1 >= org_number >= 0:
         if queue_length - 1 >= destination_number >= 0:
-            video = guild[guild_id].queue.pop(org_number)
-            guild[guild_id].queue.insert(destination_number, video)
+            video = db_guild.queue.pop(org_number)
+            db_guild.queue.insert(destination_number, video)
 
             save_json()
 
@@ -48,7 +48,7 @@ async def web_up(web_data, number) -> ReturnData:
     log(web_data, 'web_up', [number], log_type='function', author=web_data.author)
     is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data)
     guild_id = web_data.guild_id
-    queue_length = len(get_guild_dict()[guild_id].queue)
+    queue_length = len(guild(guild_id).queue)
     number = int(number)
 
     if queue_length == 0:
@@ -64,7 +64,7 @@ async def web_down(web_data, number) -> ReturnData:
     log(web_data, 'web_down', [number], log_type='function', author=web_data.author)
     is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data)
     guild_id = web_data.guild_id
-    queue_length = len(get_guild_dict()[guild_id].queue)
+    queue_length = len(guild(guild_id).queue)
     number = int(number)
 
     if queue_length == 0:
@@ -80,7 +80,7 @@ async def web_top(web_data, number) -> ReturnData:
     log(web_data, 'web_top', [number], log_type='function', author=web_data.author)
     is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data)
     guild_id = web_data.guild_id
-    queue_length = len(get_guild_dict()[guild_id].queue)
+    queue_length = len(guild(guild_id).queue)
     number = int(number)
 
     if queue_length == 0:
@@ -97,7 +97,7 @@ async def web_bottom(web_data, number) -> ReturnData:
     log(web_data, 'web_bottom', [number], log_type='function', author=web_data.author)
     is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data)
     guild_id = web_data.guild_id
-    queue_length = len(get_guild_dict()[guild_id].queue)
+    queue_length = len(guild(guild_id).queue)
     number = int(number)
 
     if queue_length == 0:
@@ -113,16 +113,16 @@ async def web_bottom(web_data, number) -> ReturnData:
 async def web_duplicate(web_data, number) -> ReturnData:
     log(web_data, 'web_duplicate', [number], log_type='function', author=web_data.author)
     is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data)
-    guild = get_guild_dict()
     guild_id = web_data.guild_id
-    queue_length = len(guild[guild_id].queue)
+    db_guild = guild(guild_id)
+    queue_length = len(db_guild.queue)
     number = int(number)
 
     if queue_length == 0:
         log(guild_id, "web_duplicate -> No songs in queue")
         return ReturnData(False, tg(ctx_guild_id, 'No songs in queue'))
 
-    video = guild[guild_id].queue[number]
+    video = db_guild.queue[number]
 
     to_queue(guild_id, video, position=number+1)
 

@@ -6,8 +6,8 @@ from spotipy.oauth2 import SpotifyClientCredentials
 from classes.data_classes import WebData, Guild
 
 from utils.discord import get_content_of_message
-from utils.json import guilds_to_json
 from utils.log import send_to_admin
+from utils.save import update_guilds
 
 from commands.admin import *
 from commands.chat_export import *
@@ -26,6 +26,12 @@ prefix = config.PREFIX
 vlc_logo = config.VLC_LOGO
 default_discord_avatar = config.DEFAULT_DISCORD_AVATAR
 d_id = 349164237605568513
+
+# ---------------- Connect to database ------------
+
+from database.main import *
+from database.guild import *
+session = connect_to_db()
 
 # ---------------- Bot class ------------
 
@@ -50,6 +56,8 @@ class Bot(dc_commands.Bot):
         await bot.change_presence(activity=discord.Game(name=f"/help"))
         log(None, f'Logged in as:\n{bot.user.name}\n{bot.user.id}')
 
+        update_guilds()
+
         save_json()
 
     async def on_guild_join(self, guild_object):
@@ -61,7 +69,7 @@ class Bot(dc_commands.Bot):
         await send_to_admin(log_msg)
 
         # create guild object
-        guild[guild_object.id] = Guild(guild_object.id)
+        create_guild(guild_object.id)
         save_json()
 
         # get text channels
@@ -105,7 +113,8 @@ class Bot(dc_commands.Bot):
             await voice_state.disconnect()
 
             # set stopped to true
-            guild[guild_id].options.stopped = True
+            guild(guild_id).options.stopped = True
+            session.commit()
 
             # log
             log(guild_id, "-->> Disconnecting when last person left -> Queue Cleared <<--")
@@ -114,7 +123,8 @@ class Bot(dc_commands.Bot):
             now_to_history(guild_id)
 
             # clear queue when last person leaves
-            guild[guild_id].queue.clear()
+            guild(guild_id).queue.clear()
+            session.commit()
 
         if not member.id == self.user.id:
             return
@@ -139,16 +149,17 @@ class Bot(dc_commands.Bot):
                     time_var = 0 # reset time_var
 
                 # check if time_var is greater than buffer
-                if time_var >= guild[guild_id].options.buffer:
+                if time_var >= guild(guild_id).options.buffer:
                     # stop playing and disconnect
                     voice.stop()
                     await voice.disconnect()
 
                     # set stopped to true
-                    guild[guild_id].options.stopped = True
+                    guild(guild_id).options.stopped = True
+                    session.commit()
 
                     # log
-                    log(guild_id, f"-->> Disconnecting after {guild[guild_id].options.buffer} seconds of no play <<--")
+                    log(guild_id, f"-->> Disconnecting after {guild(guild_id).options.buffer} seconds of no play <<--")
 
                     # save history
                     now_to_history(guild_id)
@@ -160,7 +171,8 @@ class Bot(dc_commands.Bot):
         # if bot leaves a voice channel
         elif after.channel is None:
             # clear queue when bot leaves
-            guild[guild_id].queue.clear()
+            guild(guild_id).queue.clear()
+            session.commit()
             # log
             log(guild_id, f"-->> Cleared Queue after bot Disconnected <<--")
 
@@ -261,25 +273,44 @@ except Exception as e:
 
 # ----------------------------------------------------------------------------------------------------------------------
 
-if build_new_guilds:
-    log(None, 'Building new guilds.json ...')
-    with open('db/guilds.json', 'r', encoding='utf-8') as file:
-        jf = json.load(file)
-    guild = dict(zip(jf.keys(), [Guild(int(guild)) for guild in jf.keys()]))
+# if build_new_guilds:
+#     log(None, 'Building new guilds.json ...')
+#     with open('db/guilds.json', 'r', encoding='utf-8') as file:
+#         jf = json.load(file)
+#     guild = dict(zip(jf.keys(), [Guild(int(guild)) for guild in jf.keys()]))
+#
+#     try:
+#         json = json.dumps(guilds_to_json(guild), indent=4)
+#     except Exception as ex:
+#         print("something failed, figure it out", file=sys.stderr)
+#         print(ex, file=sys.stderr)
+#         exit(0)
+#     with open('db/guilds.json', 'w', encoding='utf-8') as file:
+#         file.write(json)
+#     exit(0)
+#
+# with open('db/guilds.json', 'r', encoding='utf-8') as file:
+#     guild_dict_old = json_to_guilds(json.load(file))
+# log(None, 'Loaded guilds.json')
 
-    try:
-        json = json.dumps(guilds_to_json(guild), indent=4)
-    except Exception as ex:
-        print("something failed, figure it out", file=sys.stderr)
-        print(ex, file=sys.stderr)
-        exit(0)
-    with open('db/guilds.json', 'w', encoding='utf-8') as file:
-        file.write(json)
-    exit(0)
 
-with open('db/guilds.json', 'r', encoding='utf-8') as file:
-    guild = json_to_guilds(json.load(file))
-log(None, 'Loaded guilds.json')
+def db_fill():
+    print('Filling database ...')
+    n_guild_ids = [892403162315644928, 892404682285256735, 1008145667622969397, 1092205538202353764, 1092207263843880983, 1092212185553449023]
+
+    for n_guild_id in n_guild_ids:
+        print(f'Filling {n_guild_id} ...')
+        if guild(n_guild_id):
+            continue
+        n_guild_object = Guild(n_guild_id)
+        session.add(n_guild_object, )
+        session.commit()
+
+    print('Done')
+    guild(892403162315644928).options.language = 'fr'
+    session.commit()
+
+
 
 # --------------------------------------- QUEUE --------------------------------------------------
 

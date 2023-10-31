@@ -2,10 +2,11 @@ import json
 from time import time, sleep
 from pathlib import Path
 
-from flask import Flask, render_template, request, url_for, redirect, session, send_file, abort, Response
+from flask import Flask, render_template, request, url_for, redirect, send_file, abort, Response
+from flask import session as flask_session
 from werkzeug.utils import safe_join
 
-from classes.data_classes import WebData
+from classes.data_classes import WebData, Guild
 from classes.discord_classes import DiscordUser
 
 from utils.convert import struct_to_time, convert_duration
@@ -15,7 +16,6 @@ from utils.translate import ftg
 from utils.video_time import video_time_from_start
 from utils.checks import check_isdigit
 from utils.web import *
-from utils.json import guild_to_json
 
 import config
 from oauth import Oauth
@@ -28,6 +28,13 @@ vlc_logo = config.VLC_LOGO
 default_discord_avatar = config.DEFAULT_DISCORD_AVATAR
 d_id = 349164237605568513
 
+# -------------------------------------------- Database -------------------------------------------- #
+
+from database.main import *
+from database.guild import *
+session = connect_to_db()
+
+
 # --------------------------------------------- LOAD DATA --------------------------------------------- #
 
 with open(f'{config.PARENT_DIR}db/radio.json', 'r', encoding='utf-8') as file:
@@ -38,19 +45,14 @@ with open(f'{config.PARENT_DIR}db/languages.json', 'r', encoding='utf-8') as fil
     text = languages_dict['en']
     authorized_users += [my_id, 349164237605568513]
 
-guild = {}
-
 # --------------------------------------------- FUNCTIONS --------------------------------------------- #
 def check_admin(session_data):
-    global guild
     if session_data is None:
         raise ValueError('Session data is None')
 
     user_id = int(session_data['discord_user']['id'])
     if user_id in authorized_users:
-        if guild is None:
-            guild = get_guilds()
-        return list(guild.keys())
+        return guild_ids()
 
     return session_data['mutual_guild_ids']
 
@@ -62,8 +64,8 @@ app.config['SECRET_KEY'] = config.WEB_SECRET_KEY
 @app.route('/')
 async def index_page():
     log(request.remote_addr, '/index', log_type='ip')
-    if 'discord_user' in session.keys():
-        user = session['discord_user']
+    if 'discord_user' in flask_session.keys():
+        user = flask_session['discord_user']
     else:
         user = None
 
@@ -72,8 +74,8 @@ async def index_page():
 @app.route('/about')
 async def about_page():
     log(request.remote_addr, '/about', log_type='ip')
-    if 'discord_user' in session.keys():
-        user = session['discord_user']
+    if 'discord_user' in flask_session.keys():
+        user = flask_session['discord_user']
     else:
         user = None
 
@@ -82,17 +84,16 @@ async def about_page():
 # Guild pages
 @app.route('/guild')
 async def guilds_page():
-    global guild
     log(request.remote_addr, '/guild', log_type='ip')
-    if 'discord_user' in session.keys():
-        user = session['discord_user']
-        mutual_guild_ids = check_admin(session)
-    elif 'mutual_guild_ids' in session.keys():
-        mutual_guild_ids = session['mutual_guild_ids']
+    if 'discord_user' in flask_session.keys():
+        user = flask_session['discord_user']
+        mutual_guild_ids = check_admin(flask_session)
+    elif 'mutual_guild_ids' in flask_session.keys():
+        mutual_guild_ids = flask_session['mutual_guild_ids']
         user = None
         if mutual_guild_ids is None:
             mutual_guild_ids = []
-            session['mutual_guild_ids'] = []
+            flask_session['mutual_guild_ids'] = []
     else:
         user = None
         mutual_guild_ids = []
@@ -102,29 +103,26 @@ async def guilds_page():
             return dict(val_lst)
         return dict(sorted(val_lst, key=lambda x: key_lst.index(x[0]) if x[0] in key_lst else len(key_lst)))
 
-    guild = get_guilds()
-
-    return render_template('nav/guild_list.html', guild=sort_list(guild.items(), mutual_guild_ids).values(), len=len,
+    return render_template('nav/guild_list.html', guild=sort_list(guild_dict().items(), mutual_guild_ids).values(), len=len,
                            user=user, errors=None, mutual_guild_ids=mutual_guild_ids)
 
 @app.route('/guild/<int:guild_id>', methods=['GET', 'POST'])
 async def guild_get_key_page(guild_id):
-    global guild
     log(request.remote_addr, f'/guild/{guild_id}', log_type='ip')
-    if 'discord_user' in session.keys():
-        user = session['discord_user']
-        mutual_guild_ids = check_admin(session)
-    elif 'mutual_guild_ids' in session.keys():
-        mutual_guild_ids = session['mutual_guild_ids']
+    if 'discord_user' in flask_session.keys():
+        user = flask_session['discord_user']
+        mutual_guild_ids = check_admin(flask_session)
+    elif 'mutual_guild_ids' in flask_session.keys():
+        mutual_guild_ids = flask_session['mutual_guild_ids']
         user = None
         if mutual_guild_ids is None:
             mutual_guild_ids = []
-            session['mutual_guild_ids'] = []
+            flask_session['mutual_guild_ids'] = []
     else:
         user = None
         mutual_guild_ids = []
 
-    guild_object = get_guild(int(guild_id))
+    guild_object = guild(int(guild_id))
 
     if guild_object is None:
         return render_template('base/message.html', guild_id=guild_id, user=user,
@@ -140,11 +138,11 @@ async def guild_get_key_page(guild_id):
     if request.method == 'POST':
         if 'key' in request.form.keys():
             if request.form['key'] == guild_object.data.key:
-                if 'mutual_guild_ids' not in session.keys():
-                    session['mutual_guild_ids'] = []
+                if 'mutual_guild_ids' not in flask_session.keys():
+                    flask_session['mutual_guild_ids'] = []
 
-                session['mutual_guild_ids'] = session['mutual_guild_ids'] + [guild_object.id]
-                # mutual_guild_ids = session['mutual_guild_ids']
+                flask_session['mutual_guild_ids'] = flask_session['mutual_guild_ids'] + [guild_object.id]
+                # mutual_guild_ids = flask_session['mutual_guild_ids']
 
                 return redirect(f'/guild/{guild_id}&key={request.form["key"]}')
 
@@ -156,21 +154,20 @@ async def guild_get_key_page(guild_id):
 
 @app.route('/guild/<int:guild_id>&key=<key>', methods=['GET', 'POST'])
 async def guild_page(guild_id, key):
-    global guild
     log(request.remote_addr, f'/guild/{guild_id}&key={key}', log_type='ip')
     errors = []
     messages = []
     scroll_position = 0
     admin = False
 
-    if 'discord_user' in session.keys():
-        user = session['discord_user']
+    if 'discord_user' in flask_session.keys():
+        user = flask_session['discord_user']
         user_name, user_id = user['username'], int(user['id'])
-        mutual_guild_ids = check_admin(session)
+        mutual_guild_ids = check_admin(flask_session)
         if user_id in authorized_users:
             admin = True
-    elif 'mutual_guild_ids' in session.keys():
-        mutual_guild_ids = session['mutual_guild_ids']
+    elif 'mutual_guild_ids' in flask_session.keys():
+        mutual_guild_ids = flask_session['mutual_guild_ids']
         user = None
         user_name, user_id = request.remote_addr, 'WEB Guest'
         admin = False
@@ -297,7 +294,7 @@ async def guild_page(guild_id, key):
             else:
                 messages = [response.message]
 
-    guild_object = get_guild(int(guild_id))
+    guild_object = guild(int(guild_id))
 
     if guild_object is None:
         return render_template('base/message.html', guild_id=guild_id, user=user,
@@ -309,7 +306,7 @@ async def guild_page(guild_id, key):
         return redirect(url_for('guild_get_key_page', guild_id=guild_id))
 
     mutual_guild_ids.append(guild_object.id)
-    session['mutual_guild_ids'] = mutual_guild_ids
+    flask_session['mutual_guild_ids'] = mutual_guild_ids
 
     if guild_object.now_playing:
         await get_renew(guild_object.id, 'now_playing', 0)
@@ -326,12 +323,7 @@ async def guild_page(guild_id, key):
         return render_template('base/message.html', guild_id=guild_id, user=user,
                                message="That Server doesn't exist or the bot is not in it", errors=None, title='Error')
 
-    with open(f'{config.PARENT_DIR}db/saves.json', 'r', encoding='utf-8') as f:
-        saves = json.load(f)
-        if str(guild_object.id) in saves.keys():
-            saves = saves[str(guild_object.id)]
-        else:
-            saves = None
+    saves = save_names(guild_object.id)
 
     return render_template('control/guild.html', guild=guild_object, struct_to_time=struct_to_time,
                            convert_duration=convert_duration, get_username=get_username, errors=errors,
@@ -339,7 +331,7 @@ async def guild_page(guild_id, key):
                            radios=list(radio_dict.values()), scroll_position=scroll_position,
                            languages_dict=languages_dict, tg=ftg, gi=int(guild_id), time=time, int=int,
                            video_time_played=video_time_from_start, pd=json.dumps(pd), check_isdigit=check_isdigit,
-                           saves=saves)
+                           saves=saves, bot_status=get_guild_bot_status(int(guild_id)))
 
 @app.route('/guild/<int:guild_id>/update')
 async def update_page(guild_id):
@@ -366,8 +358,8 @@ async def login_page():
     log(request.remote_addr, '/login', log_type='web')
     admin = False
     update = False
-    if 'discord_user' in session.keys():
-        access_token = session['access_token']
+    if 'discord_user' in flask_session.keys():
+        access_token = flask_session['access_token']
         update = True
     else:
         code = request.args.get('code')
@@ -376,7 +368,7 @@ async def login_page():
 
         response = Oauth.get_access_token(code)
         access_token = response['access_token']
-        session['access_token'] = access_token
+        flask_session['access_token'] = access_token
 
         log(request.remote_addr, 'Got access token', log_type='text')
 
@@ -384,9 +376,9 @@ async def login_page():
     user = Oauth.get_user(access_token)
 
     collect_data(user)
-    session['discord_user'] = user
+    flask_session['discord_user'] = user
 
-    guilds = Oauth.get_user_guilds(session['access_token'])
+    guilds = Oauth.get_user_guilds(flask_session['access_token'])
     collect_data(f'{user["username"]} -> {guilds}')
 
     bot_guilds = Oauth.get_bot_guilds()
@@ -396,7 +388,7 @@ async def login_page():
     if int(user['id']) in authorized_users:
         mutual_guild_ids = [int(guild_object['id']) for guild_object in bot_guilds]
         admin = True
-    session['mutual_guild_ids'] = mutual_guild_ids
+    flask_session['mutual_guild_ids'] = mutual_guild_ids
 
     if update:
         return render_template('base/message.html',
@@ -410,11 +402,11 @@ async def login_page():
 @app.route('/logout')
 async def logout_page():
     log(request.remote_addr, '/logout', log_type='ip')
-    if 'discord_user' in session.keys():
-        user = session['discord_user']
+    if 'discord_user' in flask_session.keys():
+        user = flask_session['discord_user']
         username = user['username']
         discriminator = user['discriminator']
-        session.clear()
+        flask_session.clear()
         return render_template('base/message.html', message=f"Logged out as {username}#{discriminator}", errors=None,
                                user=None, title='Logout Success')
     return redirect(url_for('index_page'))
@@ -423,7 +415,7 @@ async def logout_page():
 @app.route('/reset')
 async def reset_page():
     log(request.remote_addr, '/reset', log_type='ip')
-    session.clear()
+    flask_session.clear()
     return redirect(url_for('index_page'))
 
 # Invite
@@ -435,10 +427,9 @@ async def invite_page():
 # Admin
 @app.route('/admin', methods=['GET', 'POST'])
 async def admin_page():
-    global guild
     log(request.remote_addr, '/admin', log_type='ip')
-    if 'discord_user' in session.keys():
-        user = session['discord_user']
+    if 'discord_user' in flask_session.keys():
+        user = flask_session['discord_user']
         user_name = user['username']
         user_id = user['id']
     else:
@@ -501,16 +492,15 @@ async def admin_page():
             else:
                 errors = [response.message]
 
-    guild = get_guilds()
-    return render_template('nav/admin.html', user=user, guild=guild.values(), languages_dict=languages_dict,
-                           errors=errors, messages=messages)
+    return render_template('nav/admin.html', user=user, guild=guild_dict().values(), languages_dict=languages_dict,
+                           errors=errors, messages=messages, bot_status=get_guilds_bot_status())
 
 # Admin Log
 @app.route('/admin/log', methods=['GET', 'POST'])
 async def admin_log_page():
     log(request.remote_addr, '/admin/log', log_type='ip')
-    if 'discord_user' in session.keys():
-        user = session['discord_user']
+    if 'discord_user' in flask_session.keys():
+        user = flask_session['discord_user']
     else:
         return render_template('base/message.html', message="403 Forbidden", message4='You have to be logged in.',
                                errors=None, user=None, title='403 Forbidden'), 403
@@ -527,8 +517,8 @@ async def admin_log_page():
 @app.route('/admin/data', methods=['GET', 'POST'])
 async def admin_data_page():
     log(request.remote_addr, '/admin/data', log_type='ip')
-    if 'discord_user' in session.keys():
-        user = session['discord_user']
+    if 'discord_user' in flask_session.keys():
+        user = flask_session['discord_user']
     else:
         return render_template('base/message.html', message="403 Forbidden", message4='You have to be logged in.',
                                errors=None, user=None, title='403 Forbidden'), 403
@@ -545,8 +535,8 @@ async def admin_data_page():
 @app.route('/admin/user/<int:user_id>', methods=['GET', 'POST'])
 async def admin_user_page(user_id):
     log(request.remote_addr, f'/admin/user/{user_id}', log_type='ip')
-    if 'discord_user' in session.keys():
-        user = session['discord_user']
+    if 'discord_user' in flask_session.keys():
+        user = flask_session['discord_user']
     else:
         return render_template('base/message.html', message="403 Forbidden", message4='You have to be logged in.',
                                errors=None, user=None, title='403 Forbidden'), 403
@@ -563,8 +553,8 @@ async def admin_user_page(user_id):
 @app.route('/admin/file/<path:reqPath>')
 def getFiles(reqPath):
     log(request.remote_addr, f'/admin/file/{reqPath}', log_type='ip')
-    if 'discord_user' in session.keys():
-        user = session['discord_user']
+    if 'discord_user' in flask_session.keys():
+        user = flask_session['discord_user']
     else:
         return render_template('base/message.html', message="403 Forbidden", message4='You have to be logged in.',
                                errors=None, user=None, title='403 Forbidden'), 403
@@ -604,8 +594,8 @@ def getFiles(reqPath):
 
 # def getFiles(reqPath):
 #     log(request.remote_addr, f'/admin/file/{reqPath}', log_type='ip')
-#     if 'discord_user' in session.keys():
-#         user = session['discord_user']
+#     if 'discord_user' in flask_session.keys():
+#         user = flask_session['discord_user']
 #     else:
 #         return render_template('base/message.html', message="403 Forbidden", message4='You have to be logged in.',
 #                                errors=None, user=None, title='403 Forbidden'), 403
@@ -651,10 +641,9 @@ async def admin_guild_redirect():
 
 @app.route('/admin/guild/<int:guild_id>', methods=['GET', 'POST'])
 async def admin_guild(guild_id):
-    global guild
     log(request.remote_addr, f'/admin/guild/{guild_id}', log_type='ip')
-    if 'discord_user' in session.keys():
-        user = session['discord_user']
+    if 'discord_user' in flask_session.keys():
+        user = flask_session['discord_user']
         user_name = user['username']
         user_id = user['id']
     else:
@@ -670,6 +659,8 @@ async def admin_guild(guild_id):
 
     if request.method == 'POST':
         web_data = WebData(guild_id, user_name, user_id)
+
+        print(request.form)
 
         keys = request.form.keys()
         form = request.form
@@ -696,7 +687,7 @@ async def admin_guild(guild_id):
             else:
                 errors = [response.message]
 
-    guild_object = get_guild(int(guild_id))
+    guild_object = guild(int(guild_id))
     if guild_object is None:
         return abort(404)
     return render_template('admin/guild.html', user=user, guild_object=guild_object, languages_dict=languages_dict,
@@ -706,8 +697,8 @@ async def admin_guild(guild_id):
 @app.route('/admin/guild/<int:guild_id>/users', methods=['GET', 'POST'])
 async def admin_guild_users(guild_id):
     log(request.remote_addr, f'/admin/guild/{guild_id}/users', log_type='ip')
-    if 'discord_user' in session.keys():
-        user = session['discord_user']
+    if 'discord_user' in flask_session.keys():
+        user = flask_session['discord_user']
     else:
         return render_template('base/message.html', message="403 Forbidden", message4='You have to be logged in.',
                                errors=None, user=None, title='403 Forbidden'), 403
@@ -724,8 +715,8 @@ async def admin_guild_users(guild_id):
 @app.route('/admin/guild/<int:guild_id>/channels', methods=['GET', 'POST'])
 async def admin_guild_channels(guild_id):
     log(request.remote_addr, f'/admin/guild/{guild_id}/channels', log_type='ip')
-    if 'discord_user' in session.keys():
-        user = session['discord_user']
+    if 'discord_user' in flask_session.keys():
+        user = flask_session['discord_user']
     else:
         return render_template('base/message.html', message="403 Forbidden", message4='You have to be logged in.',
                                errors=None, user=None, title='403 Forbidden'), 403
@@ -741,8 +732,8 @@ async def admin_guild_channels(guild_id):
 @app.route('/admin/guild/<int:guild_id>/textChannels', methods=['GET', 'POST'])
 async def admin_guild_text_channels(guild_id):
     log(request.remote_addr, f'/admin/guild/{guild_id}/textChannels', log_type='ip')
-    if 'discord_user' in session.keys():
-        user = session['discord_user']
+    if 'discord_user' in flask_session.keys():
+        user = flask_session['discord_user']
     else:
         return render_template('base/message.html', message="403 Forbidden", message4='You have to be logged in.',
                                errors=None, user=None, title='403 Forbidden'), 403
@@ -758,8 +749,8 @@ async def admin_guild_text_channels(guild_id):
 @app.route('/admin/guild/<int:guild_id>/roles', methods=['GET', 'POST'])
 async def admin_guild_roles(guild_id):
     log(request.remote_addr, f'/admin/guild/{guild_id}/roles', log_type='ip')
-    if 'discord_user' in session.keys():
-        user = session['discord_user']
+    if 'discord_user' in flask_session.keys():
+        user = flask_session['discord_user']
     else:
         return render_template('base/message.html', message="403 Forbidden", message4='You have to be logged in.',
                                errors=None, user=None, title='403 Forbidden'), 403
@@ -775,8 +766,8 @@ async def admin_guild_roles(guild_id):
 @app.route('/admin/guild/<int:guild_id>/invites', methods=['GET', 'POST'])
 async def admin_guild_invites(guild_id):
     log(request.remote_addr, f'/admin/guild/{guild_id}/invites', log_type='ip')
-    if 'discord_user' in session.keys():
-        user = session['discord_user']
+    if 'discord_user' in flask_session.keys():
+        user = flask_session['discord_user']
     else:
         return render_template('base/message.html', message="403 Forbidden", message4='You have to be logged in.',
                                errors=None, user=None, title='403 Forbidden'), 403
@@ -792,8 +783,8 @@ async def admin_guild_invites(guild_id):
 @app.route('/admin/guild/<int:guild_id>/saves', methods=['GET', 'POST'])
 async def admin_guild_saves(guild_id):
     log(request.remote_addr, f'/admin/guild/{guild_id}/saves', log_type='ip')
-    if 'discord_user' in session.keys():
-        user = session['discord_user']
+    if 'discord_user' in flask_session.keys():
+        user = flask_session['discord_user']
         user_name, user_id = user['username'], int(user['id'])
 
     else:
@@ -831,16 +822,7 @@ async def admin_guild_saves(guild_id):
 
     guild_object = get_guild(int(guild_id))
 
-    with open(f"{config.PARENT_DIR}db/saves.json", "r", encoding='utf-8') as f:
-        saves = json.load(f)
-
-    guild_saves = None
-    if str(guild_id) in saves.keys():
-        guild_saves = saves[str(guild_id)]
-
-    del saves
-
-    return render_template('admin/saves.html', user=user, saves=guild_saves, len=len,
+    return render_template('admin/saves.html', user=user, saves=save_dict(guild_id), len=len,
                            guild_object=guild_object, title='Saves', get_username=get_username,
                            struct_to_time=struct_to_time, convert_duration=convert_duration, tg=ftg, gi=int(guild_id),
                            errors=errors, messages=messages)
@@ -850,8 +832,8 @@ async def admin_guild_saves(guild_id):
 @app.route('/admin/guild/<int:guild_id>/chat/<int:channel_id>', methods=['GET', 'POST'])
 def admin_chat(guild_id, channel_id):
     log(request.remote_addr, f'/admin/guild/{guild_id}/chat/{channel_id}', log_type='ip')
-    if 'discord_user' in session.keys():
-        user = session['discord_user']
+    if 'discord_user' in flask_session.keys():
+        user = flask_session['discord_user']
         user_name = user['username']
         user_id = user['id']
     else:
@@ -903,8 +885,8 @@ def admin_chat(guild_id, channel_id):
 @app.route('/admin/guild/<int:guild_id>/fastchat/<int:channel_id>', methods=['GET', 'POST'])
 def admin_fastchat(guild_id, channel_id):
     log(request.remote_addr, f'/admin/guild/{guild_id}/fastchat/{channel_id}', log_type='ip')
-    if 'discord_user' in session.keys():
-        user = session['discord_user']
+    if 'discord_user' in flask_session.keys():
+        user = flask_session['discord_user']
     else:
         return render_template('base/message.html', message="403 Forbidden", message4='You have to be logged in.',
                                errors=None, user=None, title='403 Forbidden'), 403
@@ -927,8 +909,8 @@ def admin_fastchat(guild_id, channel_id):
 @app.errorhandler(404)
 async def page_not_found(_):
     log(request.remote_addr, f'{request.path} -> 404', log_type='ip')
-    if 'discord_user' in session.keys():
-        user = session['discord_user']
+    if 'discord_user' in flask_session.keys():
+        user = flask_session['discord_user']
     else:
         user = None
     return render_template('base/message.html', message="404 Not Found",
@@ -938,8 +920,8 @@ async def page_not_found(_):
 @app.errorhandler(403)
 async def page_forbidden(_):
     log(request.remote_addr, f'{request.path} -> 403', log_type='ip')
-    if 'discord_user' in session.keys():
-        user = session['discord_user']
+    if 'discord_user' in flask_session.keys():
+        user = flask_session['discord_user']
     else:
         user = None
     return render_template('base/message.html', message="403 Forbidden", message4='You do not have permission.',

@@ -324,7 +324,7 @@
           </button>
         </div>
       </div>
-      <div class="q-item1"></div>
+      <div class="q-item1 d-control"><p class="{{ 'd-g' if bot_status in ['Connected', 'Playing'] }}{{ 'd-r' if bot_status in ['Not connected'] }}{{ 'd-y' if bot_status in ['Unknown', 'Paused'] }} d-status">{{ bot_status }}</p></div>
       <div class="q-item1">
         <div class="e-div">
           <button class="btn btn-dark e-item1" type="button" data-bs-toggle="modal" data-bs-target="#joinModal"

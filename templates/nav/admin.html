@@ -33,11 +33,9 @@
         <div class="col-12 btn-m">
           <select class="form-select btn-m" aria-label="Default select example" name="download_file" id="download_file">
             <option selected value="log.log">log.log</option>
-            <option value="guilds.json">guilds.json</option>
             <option value="other.json">other.json</option>
             <option value="radio.json">radio.json</option>
             <option value="languages.json">languages.json</option>
-            <option value="saves.json">saves.json</option>
             <option value="data.log">data.log</option>
             <option value="activity.log">activity.log</option>
             <option value="apache_activity.log">apache_activity.log</option>
@@ -92,8 +90,8 @@
                 {% endif %}
               {% endif %}
             </a>
-            <br/>
-            {{ guild_object.data.name }}
+            <p class="d-name">{{ guild_object.data.name }}</p>
+            <p class="{{ 'd-g' if bot_status[guild_object.id] in ['Connected', 'Playing'] }}  d-status">{{ bot_status[guild_object.id] }}</p>
           </div>
         {% endfor %}
       </section>

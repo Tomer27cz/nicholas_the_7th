@@ -1,10 +1,24 @@
-from classes.data_classes import ReturnData
-from utils.json import json_to_video
+from classes.data_classes import ReturnData, Save
+from classes.video_class import to_save_video_class, to_queue_class, SaveVideo
+
 from utils.convert import ascii_nospace
 from utils.translate import tg
-from utils.globals import get_guild_dict
+from utils.globals import get_session
 
-import json
+from database.guild import guild, guild_ids, save_names
+
+def find_save(guild_id: int, save_name: str) -> Save | None:
+    """
+    Finds a save object
+    :param guild_id: int - id of guild
+    :param save_name: str - name of save
+    :return: Save - save object
+    """
+    guild_object = guild(guild_id)
+    for save in guild_object.saves:
+        if save.name == save_name:
+            return save
+    return None
 
 def new_queue_save(guild_id: int, save_name: str) -> ReturnData:
     """
@@ -13,39 +27,23 @@ def new_queue_save(guild_id: int, save_name: str) -> ReturnData:
     :param save_name: str - name of save
     :return: ReturnData - return data
     """
-    guild = get_guild_dict()
+    guild_object = guild(guild_id)
 
     save_name = ascii_nospace(save_name)
     if save_name is False:
         return ReturnData(False, tg(guild_id, 'Save name must be alphanumeric'))
 
-    if save_name in guild[guild_id].saves:
+    if save_name in save_names(guild_id):
         return ReturnData(False, tg(guild_id, 'save already exists'))
 
-    if not guild[guild_id].queue:
+    if not guild_object.queue:
         return ReturnData(False, tg(guild_id, 'Queue is empty'))
 
-    with open(f'db/saves.json', 'r', encoding='utf-8') as f:
-        saves = json.load(f)
-
-    guild[guild_id].saves.append(save_name)
-
-    if str(guild_id) not in saves.keys():
-        guild[guild_id].saves = [save_name]
-        saves[str(guild_id)] = {}
-
-    if not list(saves[str(guild_id)].keys()) == guild[guild_id].saves:
-        guild[guild_id].saves = list(saves[str(guild_id)].keys())
-
-    queue_dict = {}
-    for index, video in enumerate(guild[guild_id].queue):
-        queue_dict[index] = video.__dict__
-    saves[str(guild_id)][save_name] = queue_dict
-
-    with open(f'db/saves.json', 'w', encoding='utf-8') as f:
-        f.write(json.dumps(saves, indent=4))
-
-    del saves
+    guild_object.saves.append(Save(guild_id, save_name))
+    new_save = find_save(guild_id, save_name)
+    for index, video in enumerate(guild_object.queue):
+        new_save.queue.append(to_save_video_class(video))
+    get_session().commit()
 
     return ReturnData(True, tg(guild_id, 'queue saved'))
 
@@ -56,24 +54,19 @@ def load_queue_save(guild_id: int, save_name: str) -> ReturnData:
     :param save_name: str - name of save
     :return: ReturnData - return data
     """
-    guild = get_guild_dict()
 
-    with open(f'db/saves.json', 'r', encoding='utf-8') as f:
-        saves = json.loads(f.read())
-
-    if guild_id not in guild.keys():
+    if guild_id not in guild_ids():
         return ReturnData(False, tg(guild_id, 'no guild found for specified guild id'))
 
-    if str(guild_id) not in saves.keys():
-        guild[guild_id].saves = []
+    if not save_names(guild_id):
         return ReturnData(False, tg(guild_id, 'no saves found for specified guild'))
 
-    if save_name not in saves[str(guild_id)].keys():
+    if save_name not in save_names(guild_id):
         return ReturnData(False, tg(guild_id, 'save not found'))
 
-    guild[guild_id].queue = [json_to_video(video_dict) for video_dict in saves[str(guild_id)][save_name].values()]
-
-    del saves
+    load_save = find_save(guild_id, save_name)
+    guild(guild_id).queue = [to_queue_class(video) for video in load_save.queue]
+    get_session().commit()
 
     return ReturnData(True, tg(guild_id, 'queue loaded'))
 
@@ -84,29 +77,19 @@ def delete_queue_save(guild_id: int, save_name: str) -> ReturnData:
     :param save_name: str - name of save
     :return: ReturnData - return data
     """
-    guild = get_guild_dict()
-
-    with open(f'db/saves.json', 'r', encoding='utf-8') as f:
-        saves = json.loads(f.read())
-
-    if guild_id not in guild.keys():
+    if guild_id not in guild_ids():
         return ReturnData(False, tg(guild_id, 'no guild found for specified guild id'))
 
-    if str(guild_id) not in saves.keys():
-        guild[guild_id].saves = []
+    if not save_names(guild_id):
         return ReturnData(False, tg(guild_id, 'no saves found for specified guild'))
 
-    if save_name not in saves[str(guild_id)].keys():
+    if save_name not in save_names(guild_id):
         return ReturnData(False, tg(guild_id, 'save not found'))
 
-    del saves[str(guild_id)][save_name]
-
-    with open(f'db/saves.json', 'w', encoding='utf-8') as f:
-        f.write(json.dumps(saves, indent=4))
-
-    guild[guild_id].saves = list(saves[str(guild_id)].keys())
-
-    del saves
+    save_delete = find_save(guild_id, save_name)
+    get_session().query(SaveVideo).filter('save_id' == save_delete.id).all().delete()
+    get_session().delete(save_delete)
+    get_session().commit()
 
     return ReturnData(True, tg(guild_id, 'queue save deleted'))
 
@@ -118,36 +101,24 @@ def rename_queue_save(guild_id: int, old_name: str, new_name: str) -> ReturnData
     :param new_name: str - new name of save
     :return: ReturnData - return data
     """
-    guild = get_guild_dict()
 
     new_name = ascii_nospace(new_name)
     if new_name is False:
         return ReturnData(False, tg(guild_id, 'Save name must be alphanumeric'))
 
-    if guild_id not in guild.keys():
+    if guild_id not in guild_ids():
         return ReturnData(False, tg(guild_id, 'no guild found for specified guild id'))
 
-    with open(f'db/saves.json', 'r', encoding='utf-8') as f:
-        saves = json.loads(f.read())
-
-    if str(guild_id) not in saves.keys():
-        guild[guild_id].saves = []
+    if not save_names(guild_id):
         return ReturnData(False, tg(guild_id, 'no saves found for specified guild'))
 
-    if old_name not in saves[str(guild_id)].keys():
+    if old_name not in save_names(guild_id):
         return ReturnData(False, tg(guild_id, 'save not found'))
 
-    if new_name in saves[str(guild_id)].keys():
+    if new_name not in save_names(guild_id):
         return ReturnData(False, tg(guild_id, 'save already exists'))
 
-    saves[str(guild_id)][new_name] = saves[str(guild_id)][old_name]
-    del saves[str(guild_id)][old_name]
-
-    with open(f'db/saves.json', 'w', encoding='utf-8') as f:
-        f.write(json.dumps(saves, indent=4))
-
-    guild[guild_id].saves = list(saves[str(guild_id)].keys())
-
-    del saves
+    find_save(guild_id, old_name).name = new_name
+    get_session().commit()
 
     return ReturnData(True, tg(guild_id, 'queue save renamed'))

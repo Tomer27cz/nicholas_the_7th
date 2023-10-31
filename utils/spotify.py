@@ -3,11 +3,12 @@ from utils.globals import get_sp
 
 import youtubesearchpython
 
-def spotify_to_yt_video(spotify_url: str, author) -> VideoClass or None:
+def spotify_to_yt_video(spotify_url: str, author, guild_id: int) -> VideoClass or None:
     """
     Converts spotify url to youtube video
     :param spotify_url: str - spotify url
     :param author: author of command
+    :param guild_id: guild id
     :return: VideoClass object
     """
     # noinspection PyBroadException
@@ -38,16 +39,17 @@ def spotify_to_yt_video(spotify_url: str, author) -> VideoClass or None:
     yt_channel_name = video['channel']['name']
     yt_channel_link = video['channel']['link']
 
-    video_class = VideoClass('Video', author, url=yt_url, title=yt_title, picture=yt_picture, duration=yt_duration,
+    video_class = VideoClass('Video', author, guild_id, url=yt_url, title=yt_title, picture=yt_picture, duration=yt_duration,
                              channel_name=yt_channel_name, channel_link=yt_channel_link)
 
     return video_class
 
-def spotify_playlist_to_yt_video_list(spotify_playlist_url: str, author) -> list or None:
+def spotify_playlist_to_yt_video_list(spotify_playlist_url: str, author, guild_id: int) -> list or None:
     """
     Converts spotify playlist url to list of youtube videos
     :param spotify_playlist_url: str - spotify playlist url
     :param author: author of command
+    :param guild_id: guild id
     :return: [VideoClass, VideoClass, ...] or None
     """
     # noinspection PyBroadException
@@ -83,18 +85,19 @@ def spotify_playlist_to_yt_video_list(spotify_playlist_url: str, author) -> list
         yt_channel_name = video['channel']['name']
         yt_channel_link = video['channel']['link']
 
-        video_class = VideoClass('Video', author, url=yt_url, title=yt_title, picture=yt_picture, duration=yt_duration,
+        video_class = VideoClass('Video', author, guild_id, url=yt_url, title=yt_title, picture=yt_picture, duration=yt_duration,
                                  channel_name=yt_channel_name, channel_link=yt_channel_link)
 
         video_list.append(video_class)
 
     return video_list
 
-def spotify_album_to_yt_video_list(spotify_album_url: str, author) -> list or None:
+def spotify_album_to_yt_video_list(spotify_album_url: str, author, guild_id: int) -> list or None:
     """
     Converts spotify album url to list of youtube videos
     :param spotify_album_url: str - spotify album url
     :param author: author of command
+    :param guild_id: guild id
     :return: [VideoClass, VideoClass, ...] or None
     """
     # noinspection PyBroadException
@@ -128,7 +131,7 @@ def spotify_album_to_yt_video_list(spotify_album_url: str, author) -> list or No
         yt_channel_name = video['channel']['name']
         yt_channel_link = video['channel']['link']
 
-        video_class = VideoClass('Video', author, url=yt_url, title=yt_title, picture=yt_picture, duration=yt_duration,
+        video_class = VideoClass('Video', author, guild_id, url=yt_url, title=yt_title, picture=yt_picture, duration=yt_duration,
                                  channel_name=yt_channel_name, channel_link=yt_channel_link)
 
         video_list.append(video_class)
