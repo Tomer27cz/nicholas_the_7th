@@ -18,3 +18,4 @@ aiohttp~=3.8.5
 grapheme~=0.6.0
 pytz~=2023.3
 uWSGI~=2.0.18
+SQLAlchemy~=2.0.22
