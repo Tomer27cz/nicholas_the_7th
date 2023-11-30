@@ -27,7 +27,7 @@ def get_sc():
 def get_radio_dict():
     radio_dict = __main__.radio_dict
     if not radio_dict:
-        raise Exception("Radio dict not found")
+        raise Exception("Radio dict instance not found")
     return radio_dict
 
 def get_sp():
@@ -39,11 +39,11 @@ def get_sp():
 def get_all_sound_effects():
     sound_effects = __main__.sound_effects
     if not sound_effects:
-        raise Exception("Sound effects dict not found")
+        raise Exception("Sound effects dict instance not found")
     return sound_effects
 
 def get_session():
     session_return = __main__.session
     if not session_return:
-        raise Exception("Session not found")
+        raise Exception("Session instance not found")
     return session_return

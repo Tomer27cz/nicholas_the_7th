@@ -2,6 +2,10 @@
 
 {% set title = title %}
 
+{% block head %}{{super()}}
+<script defer src="https://unpkg.com/htmx.org@1.9.6"></script>
+{% endblock %}
+
 {% block content %}
   {% if errors %}
     {% for error in errors %}
@@ -15,108 +19,17 @@
   <div class="container">
     <div class="l-div q-self-center q-items-center">
       <div class="q-item1">
-        <h1>{{ guild_object.data.name }}</h1>
+        <h1>{{ data.name }}</h1>
       </div>
-      <a href="/admin/guild/{{ guild_object.id }}" class="btn btn-primary q-item1">Return to Guild Dashboard</a>
+      <a href="/admin/guild/{{ data.id }}" class="btn btn-primary q-item1">Return to Guild Dashboard</a>
     </div>
-    {% if roles %}
-      {% for role in roles %}
-      <div class="div-login">
-        <div class="q-div">
-          <div class="q-item1">
-            <p class="q-text q-1">Name</p>
-            <p class="q-text q-2" style="color: rgb({{ role.color.r }},{{ role.color.g }},{{ role.color.b }})">{{ role.name }}</p>
-          </div>
-          <div class="q-item1">
-            <p class="q-text q-1">ID</p>
-            <p class="q-text q-2">{{ role.id }}</p>
-          </div>
-          <div class="q-item1">
-            <p class="q-text q-1">Created at</p>
-            <p class="q-text q-2">{{ role.created_at }}</p>
-          </div>
-          <div class="q-item1">
-            <p class="q-text q-1">Color</p>
-            <p class="q-text q-2">rgb({{ role.color.r }},{{ role.color.g }},{{ role.color.b }})</p>
-          </div>
-          <div class="q-item1">
-            <p class="q-text q-1">Members</p>
-            <p class="q-text q-2">{{ len(role.members) }}</p>
-          </div>
+    {% if data.role_count %}
+      {% for i in range(ceil(data.role_count/5)) %}
+      <div class="div-login g-roles-placeholder" hx-trigger="intersect once" hx-target="this" hx-swap="outerHTML"
+           hx-get="/admin/guild/{{ data.id }}/roles/htmx?index={{ i }}&type=role">
+        <div class="text-center">
+          <div class="spinner-border text-primary htmx-indicator" role="status" style="width: 2rem; height: 2rem;"></div>
         </div>
-        {% if len(role.members) > 0 %}
-          <div class="accordion accordion-g2" id="accordion{{ role.id }}">
-            <div class="accordion-item">
-              <div class="accordion-header">
-                <div class="d-grid gap-2">
-                  <a class="btn btn-dark accordion-button collapsed no-padding" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse{{ role.id }}" aria-expanded="false" aria-controls="flush-collapse{{ role.id }}">
-                    <h4>Users with Role</h4>
-                  </a>
-                </div>
-              </div>
-              <div id="flush-collapse{{ role.id }}" class="accordion-collapse collapse" data-bs-parent="#accordion{{ role.id }}">
-                {% for member in role.members %}
-                  <div class="q-container">
-                    <div class="q-div">
-                      <img loading="lazy" class="q-img" src="{{ member.avatar }}" alt="User Avatar">
-                      <div class="q-item1">
-                        <p class="q-text q-1">Name</p>
-                        <p class="q-text q-2">{{ member.name }} #{{ member.discriminator }}</p>
-                      </div>
-                      <div class="q-item1">
-                        <p class="q-text q-1">ID</p>
-                        <p class="q-text q-2">{{ member.id }}</p>
-                      </div>
-                      <div class="q-item1">
-                        <p class="q-text q-1">Joined at</p>
-                        <p class="q-text q-2">{{ member.joined_at }}</p>
-                      </div>
-                      <div class="q-item1">
-                        <p class="q-text q-1">Status</p>
-                        {% if member.status == 'online' %}
-                          <p class="q-text c-green">{{ member.status }}</p>
-                        {% elif member.status == 'offline' %}
-                          <p class="q-text c-red">{{ member.status }}</p>
-                        {% else %}
-                          <p class="q-text q-2">{{ member.status }}</p>
-                        {% endif %}
-                      </div>
-                      <div class="q-item0">
-                        <p class="q-text q-1">Get Full Info</p>
-                        <p class="q-text"><a class="btn btn-primary" href="/admin/user/{{ member.id }}">Full Info</a></p>
-                      </div>
-                    </div>
-                  </div>
-                {% endfor %}
-              </div>
-            </div>
-          </div>
-        {% endif %}
-        <div class="accordion accordion-g2" id="accordionP{{ role.id }}">
-            <div class="accordion-item">
-              <div class="accordion-header">
-                <div class="d-grid gap-2">
-                  <a class="btn btn-dark accordion-button collapsed no-padding" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseP{{ role.id }}" aria-expanded="false" aria-controls="flush-collapseP{{ role.id }}">
-                    <h4>Permissions</h4>
-                  </a>
-                </div>
-              </div>
-              <div id="flush-collapseP{{ role.id }}" class="accordion-collapse collapse info-modal" data-bs-parent="#accordionP{{ role.id }}">
-                {% for key, value in dict(role.permissions).items() %}
-                  <div class="e-div">
-                    <label for="{{role.id}}_{{key}}" class="e-label">{{key}}</label>
-                    {% if value == 'True' or value == True %}
-                      <input type="text" id="{{role.id}}_{{key}}" name="{{key}}" value="{{value}}" class="e-input c-green" readonly>
-                    {% elif value == 'False' or value == False %}
-                      <input type="text" id="{{role.id}}_{{key}}" name="{{key}}" value="{{value}}" class="e-input c-red" readonly>
-                    {% else %}
-                      <input type="text" id="{{role.id}}_{{key}}" name="{{key}}" value="{{value}}" class="e-input e-input-color" readonly>
-                    {% endif %}
-                </div>
-                {% endfor %}
-              </div>
-            </div>
-          </div>
       </div>
       {% endfor %}
     {% else %}

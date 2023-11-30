@@ -1,8 +1,11 @@
 from classes.data_classes import ReturnData
+from classes.video_class import Queue
+
+from time import time
 
 from utils.log import log
 from utils.translate import tg
-from utils.save import save_json
+from utils.save import save_json, push_update
 from utils.discord import to_queue
 from database.guild import guild
 
@@ -29,6 +32,7 @@ async def move_def(ctx, org_number, destination_number, ephemeral=True) -> Retur
             db_guild.queue.insert(destination_number, video)
 
             save_json()
+            push_update(guild_id)
 
             message = f"{tg(guild_id, 'Moved')} #{org_number} to #{destination_number} : {video.title}"
             await ctx.reply(message, ephemeral=ephemeral)
@@ -124,7 +128,19 @@ async def web_duplicate(web_data, number) -> ReturnData:
 
     video = db_guild.queue[number]
 
-    to_queue(guild_id, video, position=number+1)
+    new_video = Queue(class_type=video.class_type,
+                    author=video.author,
+                    guild_id=video.guild_id,
+                    url=video.url,
+                    title=video.title,
+                    picture=video.picture,
+                    duration=video.duration,
+                    channel_name=video.channel_name,
+                    channel_link=video.channel_link,
+                    radio_info=video.radio_info,
+                    local_number=video.local_number)
+
+    to_queue(guild_id, new_video, position=number+1, copy_video=True)
 
     message = f'{tg(ctx_guild_id, "Duplicated")} #{number} : {video.title}'
     log(guild_id, f"web_duplicate -> {message}")

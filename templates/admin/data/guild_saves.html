@@ -1,0 +1,43 @@
+{% extends "base/base.html" %}
+
+{% block head %}{{super()}}
+<script defer src="https://unpkg.com/htmx.org@1.9.6"></script>
+{% endblock %}
+
+{% block content %}
+  {% if errors %}
+    {% for error in errors %}
+      <div class="alert alert-danger div-align alert-dismissible fade show sticky-top" role="alert">
+        {{ error }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-success div-align alert-dismissible fade show sticky-top" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  <a href="/admin/guild/{{ data.id }}" class="btn btn-primary">Return to Guild Dashboard</a>
+
+  {% if saves_count > 0 %}
+    {% for i in range(ceil(saves_count/5)) %}
+      <div class="div-login g-saves-placeholder" hx-target="this" hx-swap="outerHTML" hx-trigger="intersect once"
+      hx-get="/admin/guild/{{ data.id }}/saves/htmx?type=saves&index={{ i }}">
+        <div class="text-center">
+          <div class="spinner-border text-primary htmx-indicator" role="status" style="width: 2rem; height: 2rem;"></div>
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+  <div class="q-container display-block">
+    <div class="align-center">
+      <h3>No Saves Found</h3>
+    </div>
+  </div>
+  {% endif %}
+{% endblock %}

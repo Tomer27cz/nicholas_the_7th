@@ -6,6 +6,9 @@ body {
     display: flex;
     flex-direction: column;
 }
+html {
+    scroll-behavior: auto !important;
+}
 
 :root {
     --d-g0: #80848d;
@@ -225,6 +228,11 @@ h1, h2, h3, h4, h5, h6 {
     background: var(--d-g2);
     border-radius: 1rem;
     padding: 1rem;
+}
+.div-log {
+    height: 100%;
+    display: flex;
+    flex-direction: column-reverse;
 }
 .div-log p {
     margin-bottom: 0.2rem;
@@ -501,6 +509,9 @@ input.radio-checkbox[type=radio] + label {
     margin: 0.75rem;
     border-radius: 1rem;
     background-color: var(--d-g3);
+}
+.q-load {
+    padding-bottom: 5rem;
 }
 
 .q-div {
@@ -872,6 +883,56 @@ input.radio-checkbox[type=radio] + label {
 }
 .padding-5 {
     padding: 5rem;
+}
+
+
+
+
+/* Guild Users */
+.g-users-placeholder {
+    padding-bottom: calc(130rem - 80vw);
+    padding-right: 40vw;
+    padding-left: 40vw;
+}
+.g-users-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    gap: 0.5rem;
+    padding: 1rem;
+}
+
+/* Guild Channels */
+.g-channels-placeholder {
+    padding-bottom: 75rem;
+}
+.g-channels-height {
+    height: 13rem;
+}
+.g-channels-height:has(div):has(div):has(div):has(.show) {
+    height: auto;
+}
+
+/* Guild Roles */
+.g-roles-placeholder {
+    padding-bottom: 92rem;
+}
+.g-roles-height {
+    height: 16.4rem;
+}
+.g-roles-height:has(div):has(div):has(div):has(.show) {
+    height: auto;
+}
+
+/* Guild Saves */
+.g-saves-placeholder {
+    padding-bottom: 76rem;
+}
+.g-saves-height {
+    height: 15.2rem;
+}
+.g-saves-height:has(div):has(div):has(div):has(.show) {
+    height: auto;
 }
 
 

@@ -17,8 +17,6 @@ class CustomUnpickler(pickle.Unpickler):
             return classes.data_classes.GuildData
         if name == 'Guild':
             return classes.data_classes.Guild
-        if name == 'VideoClass':
-            return classes.video_class.VideoClass
         if name == 'SearchList':
             return classes.video_class.SearchList
         if name == 'Queue':
@@ -31,6 +29,8 @@ class CustomUnpickler(pickle.Unpickler):
             return classes.data_classes.Save
         if name == 'SaveVideo':
             return classes.video_class.SaveVideo
+        if name == 'DiscordGuild':
+            return classes.discord_classes.DiscordGuild
         if name == 'DiscordUser':
             return classes.discord_classes.DiscordUser
         if name == 'DiscordMember':
@@ -44,5 +44,6 @@ class CustomUnpickler(pickle.Unpickler):
         return super().find_class(module, name)
 
 def unpickle(data):
+    # note for future me:
     # if having a problem with unpickling, make sure that you have all the classes in CustomUnpickler
     return CustomUnpickler(BytesIO(data)).load()

@@ -1,0 +1,39 @@
+<div id="#accordion{{ channel_id }}_content">
+{% if channel_members %}
+  {% for member in channel_members %}
+    <div class="q-container" {% if int(member.id) in auth %}style="background: deeppink"{% endif %}>
+      <div class="q-div">
+        <img loading="lazy" class="q-img" src="{{ member.avatar }}" alt="User Avatar">
+        <div class="q-item1">
+          <p class="q-text q-1">Name</p>
+          <p class="q-text q-2">{{ member.name }} #{{ member.discriminator }}</p>
+        </div>
+        <div class="q-item1">
+          <p class="q-text q-1">ID</p>
+          <p class="q-text q-2">{{ member.id }}</p>
+        </div>
+        <div class="q-item1">
+          <p class="q-text q-1">Joined at</p>
+          <p class="q-text q-2">{{ member.joined_at }}</p>
+        </div>
+        <div class="q-item1">
+          <p class="q-text q-1">Status</p>
+          {% if member.status == 'online' %}
+            <p class="q-text c-green">{{ member.status }}</p>
+          {% elif member.status == 'offline' %}
+            <p class="q-text c-red">{{ member.status }}</p>
+          {% else %}
+            <p class="q-text q-2">{{ member.status }}</p>
+          {% endif %}
+        </div>
+        <div class="q-item0">
+          <p class="q-text q-1">Get Full Info</p>
+          <p class="q-text"><a class="btn btn-primary" href="/admin/user/{{ member.id }}">Full Info</a></p>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+{% else %}
+<h1 class="q-text">No members found</h1>
+{% endif %}
+</div>

@@ -1,0 +1,29 @@
+<div class="modal-content" id="joinModal_content">
+  <div class="modal-header">
+    <h1 class="modal-title fs-5" id="joinLabel">Join</h1>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  </div>
+  <form method="POST" action="" onsubmit="onSubmitDisable();">
+    <input type="hidden" name="scroll" value="0" id="scrollPos6">
+    <div class="j-div">
+      <label class="btn-m j-label">Channel ID</label>
+      <div class="e-item2">
+        <input type="number" class="form-control" name="channel_id">
+      </div>
+      <button type="submit" class="btn btn-primary" name="join_btn" value="id">{{ tg(gi, 'Join') }}</button>
+    </div>
+    {% if guild.data.voice_channels %}
+      <div class="j-div">
+        <label class="btn-m j-label">{{ tg(gi, 'Channel') }}</label>
+        <div class="e-item2">
+          <select class="form-select" aria-label="channel_name" name="channel_name">
+            {% for channel in guild.data.voice_channels %}
+              <option value="{{ channel['id'] }}">{{ channel['name'] }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary" name="join_btn" value="name">{{ tg(gi, 'Join') }}</button>
+      </div>
+    {% endif %}
+  </form>
+</div>

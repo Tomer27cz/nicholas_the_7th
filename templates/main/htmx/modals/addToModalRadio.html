@@ -1,0 +1,27 @@
+<div class="modal-content" id="addToModalRadio_content">
+  <div class="modal-header">
+    <h1 class="modal-title fs-5" id="staticBackdropLabelRadio">{{ tg(gi, 'Add to queue') }}</h1>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  </div>
+  <div class="e-div e-wrap">
+    <button type="button" class="btn btn-dark e-item1" data-bs-dismiss="modal">{{ tg(gi, 'Close') }}</button>
+    <button type="button" class="btn btn-secondary e-item1" data-bs-toggle="modal" data-bs-target="#addToModal">{{ tg(gi, 'Video') }}</button>
+  </div>
+  <div class="modal-body">
+    <div class="mb-3">
+      <div class="r-cards">
+        {% for radio in radios %}
+          <div class="r-card">
+            <input type="radio" id="radio-checkbox{{ radio['id'] }}" class="radio-checkbox"/>
+            <label for="radio-checkbox{{ radio['id'] }}" data-bs-dismiss="modal"
+                   hx-target="#q-main" hx-swap="outerHTML" hx-trigger="click throttle:500ms"
+                   hx-get="/guild/{{gi}}/queue?act=radio-checkbox&var={{ radio['id'] }}&key={{key}}">
+              <img loading="lazy" src="/static/radio_svg/svg_radio_{{ radio['id'] }}.svg" class="r-img" alt="radio_img_{{ radio['id'] }}">
+            </label>
+            <a class="radio-label">{{ radio['name'] }}</a>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>

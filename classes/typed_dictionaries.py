@@ -8,7 +8,7 @@ class TimeSegment(TypedDict):
     start: TimeSegmentInner
     end: TimeSegmentInner
 
-class RadioInfo(TypedDict):
+class RadioInfoDict(TypedDict):
     name: str
     website: Optional[str]
     picture: Optional[str]

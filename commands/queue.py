@@ -1,5 +1,5 @@
 from classes.data_classes import ReturnData
-from classes.video_class import VideoClass, to_search_list_class, to_queue_class
+from classes.video_class import to_search_list_class, to_queue_class, Queue
 import classes.view
 
 from utils.globals import get_sc, get_session
@@ -42,7 +42,7 @@ async def queue_command_def(ctx, url=None, position: int = None, mute_response: 
     :param probe_data: Data from the probe command
     :param no_search: Whether to search for the song or not when the URL is not a URL
     :param ephemeral: Should the response be ephemeral
-    :return: ReturnData(bool, str, VideoClass or None)
+    :return: ReturnData(bool, str, VideoClass child or None)
     """
     log(ctx, 'queue_command_def', [url, position, mute_response, force, from_play, probe_data, no_search, ephemeral], log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
@@ -81,8 +81,9 @@ async def queue_command_def(ctx, url=None, position: int = None, mute_response: 
 
         for index, val in enumerate(playlist_videos):
             url = f"https://www.youtube.com/watch?v={playlist_videos[index]['id']}"
-            video = VideoClass('Video', author_id, guild_id, url=url)
-            to_queue(guild_id, video, position=position, copy_video=False)
+            video = Queue('Video', author_id, guild_id, url=url)
+            to_queue(guild_id, video, position=position, copy_video=False, no_push=True)
+        push_update(guild_id)
 
         message = f"`{len(playlist_videos)}` {tg(guild_id, 'songs from playlist added to queue!')} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={db_guild.data.key})"
         if not mute_response:
@@ -114,7 +115,8 @@ async def queue_command_def(ctx, url=None, position: int = None, mute_response: 
             video_list = list(reversed(video_list))
 
         for video in video_list:
-            to_queue(guild_id, video, position=position, copy_video=False)
+            to_queue(guild_id, video, position=position, copy_video=False, no_push=True)
+        push_update(guild_id)
 
         message = f'`{len(video_list)}` {tg(guild_id, "songs from playlist added to queue!")} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={db_guild.data.key})'
         if is_ctx:
@@ -169,7 +171,7 @@ async def queue_command_def(ctx, url=None, position: int = None, mute_response: 
 
         if type(track) == Track:
             try:
-                video = VideoClass('SoundCloud', author_id, guild_id, url=url)
+                video = Queue('SoundCloud', author_id, guild_id, url=url)
             except ValueError as e:
                 if not mute_response:
                     await ctx.reply(e, ephemeral=ephemeral)
@@ -189,10 +191,11 @@ async def queue_command_def(ctx, url=None, position: int = None, mute_response: 
                 duration = int(val.duration * 0.001)
                 artist_url = 'https://soundcloud.com/' + track.permalink_url.split('/')[-2]
 
-                video = VideoClass('SoundCloud', author=author_id, guild_id=guild_id, url=val.permalink_url, title=val.title,
+                video = Queue('SoundCloud', author=author_id, guild_id=guild_id, url=val.permalink_url, title=val.title,
                                    picture=val.artwork_url, duration=duration, channel_name=val.artist,
                                    channel_link=artist_url)
-                to_queue(guild_id, video, position=position, copy_video=False)
+                to_queue(guild_id, video, position=position, copy_video=False, no_push=True)
+            push_update(guild_id)
 
             message = f"`{len(tracks)}` {tg(guild_id, 'songs from playlist added to queue!')} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={db_guild.data.key})"
             if not mute_response:
@@ -201,7 +204,7 @@ async def queue_command_def(ctx, url=None, position: int = None, mute_response: 
 
     if url_type == 'YouTube Video' or yt_id is not None:
         url = f"https://www.youtube.com/watch?v={yt_id}"
-        video = VideoClass('Video', author_id, guild_id, url=url)
+        video = Queue('Video', author_id, guild_id, url=url)
         message = to_queue(guild_id, video, position=position, copy_video=False)
         if not mute_response:
             await ctx.reply(message, ephemeral=ephemeral)
@@ -213,7 +216,7 @@ async def queue_command_def(ctx, url=None, position: int = None, mute_response: 
             if not probe_data:
                 probe_data = [extracted_url, extracted_url, extracted_url]
 
-            video = VideoClass('Probe', author_id, guild_id, url=extracted_url, title=probe_data[0], picture=vlc_logo, duration='Unknown', channel_name=probe_data[1], channel_link=probe_data[2])
+            video = Queue('Probe', author_id, guild_id, url=extracted_url, title=probe_data[0], picture=vlc_logo, duration='Unknown', channel_name=probe_data[1], channel_link=probe_data[2])
             message = to_queue(guild_id, video, position=position, copy_video=False)
             if not mute_response:
                 await ctx.reply(message, ephemeral=ephemeral)
@@ -322,6 +325,7 @@ async def remove_def(ctx, number: int, display_type: Literal['short', 'long'] = 
 
             db_guild.queue.pop(number)
 
+            push_update(guild_id)
             save_json()
 
             return ReturnData(True, message)
@@ -349,6 +353,7 @@ async def remove_def(ctx, number: int, display_type: Literal['short', 'long'] = 
 
             db_guild.history.pop(number)
 
+            push_update(guild_id)
             save_json()
 
             return ReturnData(True, message)
@@ -375,6 +380,7 @@ async def clear_def(ctx, ephemeral: bool = False) -> ReturnData:
     db_guild = guild(guild_id)
 
     db_guild.queue.clear()
+    push_update(guild_id)
     save_json()
 
     message = tg(guild_id, 'Removed **all** songs from queue')
@@ -401,6 +407,7 @@ async def shuffle_def(ctx, ephemeral: bool = False) -> ReturnData:
     guild(guild_id).queue = new_queue
     get_session().commit()
     get_session().commit()
+    push_update(guild_id)
     save_json()
 
     message = tg(guild_id, 'Songs in queue shuffled')
@@ -504,7 +511,7 @@ async def show_def(ctx, display_type: Literal['short', 'medium', 'long'] = None,
 
 async def search_command_def(ctx, search_query, display_type: Literal['short', 'long'] = None, force: bool = False, from_play: bool = False, ephemeral: bool = False) -> ReturnData:
     """
-    Search for a song and add it to the queue with buttons (only in discord)
+    Search for a song and add it to the queue with single (only in discord)
     :param ctx: Context
     :param search_query: String to be searched for in YouTube
     :param display_type: ('short' or 'long') How the response should be displayed
@@ -549,7 +556,7 @@ async def search_command_def(ctx, search_query, display_type: Literal['short', '
     for i in range(5):
         # noinspection PyTypeChecker
         url = custom_search.result()['result'][i]['link']
-        video = VideoClass('Video', ctx.author.id, guild_id, url=url)
+        video = Queue('Video', ctx.author.id, guild_id, url=url)
         db_guild.search_list.append(to_search_list_class(video))
         get_session().commit()
 
@@ -563,113 +570,113 @@ async def search_command_def(ctx, search_query, display_type: Literal['short', '
 
     save_json()
 
-# -------------------------------- IMPORT / EXPORT --------------------------------
-
-async def export_queue(ctx, guild_id: int=None, ephemeral: bool=False):
-    log(ctx, 'export_queue', [guild_id, ephemeral], log_type='function')
-    is_ctx, ctx_guild_id, author_id, ctx_guild_object = ctx_check(ctx)
-
-    if not guild_id:
-        if is_ctx:
-            guild_id = ctx.guild.id
-        else:
-            guild_id = ctx.guild_id
-
-    try:
-        guild_id = int(guild_id)
-    except (ValueError, TypeError):
-        message = f'({guild_id}) ' + tg(ctx_guild_id, 'is not an id')
-        await ctx.reply(message, ephemeral=ephemeral)
-        return ReturnData(False, message)
-
-    try:
-        queue_dict = guild(guild_id).queue
-    except Exception as e:
-        message = f"Error: {e}"
-        await ctx.reply(message, ephemeral=ephemeral)
-        return ReturnData(False, message)
-
-    if not queue_dict:
-        message = tg(ctx_guild_id, f"Queue is empty")
-        await ctx.reply(message, ephemeral=ephemeral)
-        return ReturnData(False, message)
-
-    queue_list = []
-    for item in queue_dict:
-        if item.class_type == 'Video':
-            data = extract_yt_id(item.url)
-        elif item.class_type == 'Radio':
-            data = item.radio_info['name']
-        elif item.class_type == 'Local':
-            data = item.local_number
-        elif item.class_type == 'Probe':
-            data = item.url
-        elif item.class_type == 'SoundCloud':
-            data = item.url
-        else:
-            data = item.url
-
-        queue_list.append(f'{item.class_type}:{data}')
-
-    queue_string = ','.join(queue_list)
-
-    try:
-        # data = queue_to_json(queue_dict)
-        # await ctx.reply(file=discord.File(str(data), filename=f'queue_{guild_id}.json'), ephemeral=ephemeral)
-        await ctx.reply(f"Queue String: `{queue_string}`", ephemeral=ephemeral)
-
-        return ReturnData(True, queue_string)
-    except Exception as e:
-        message = f"Error: {e}"
-        await ctx.reply(message, ephemeral=ephemeral)
-        return ReturnData(False, message)
-
-async def import_queue(ctx, queue_data, guild_id: int=None, ephemeral: bool=False):
-    log(ctx, 'import_queue', [queue_data, guild_id, ephemeral], log_type='function')
-    is_ctx, ctx_guild_id, author_id, ctx_guild_object = ctx_check(ctx)
-
-    if type(queue_data) == discord.Attachment:
-        queue_data = queue_data.read()
-
-    if not guild_id:
-        if is_ctx:
-            guild_id = ctx.guild.id
-        else:
-            guild_id = ctx.guild_id
-
-    try:
-        guild_id = int(guild_id)
-    except (ValueError, TypeError):
-        message = f'({guild_id}) ' + tg(ctx_guild_id, 'is not an id')
-        await ctx.reply(message, ephemeral=ephemeral)
-        return ReturnData(False, message)
-
-    queue_list = []
-    for item in queue_data.split(','):
-        item = item.split(':')
-        if item[0] == 'Video':
-            video = VideoClass('Video', author_id, guild_id, item[1])
-        elif item[0] == 'Radio':
-            video = VideoClass('Radio', author_id, guild_id, radio_info=dict(name=item[1]))
-        elif item[0] == 'Local':
-            video = VideoClass('Local', author_id, guild_id, local_number=item[1])
-        elif item[0] == 'Probe':
-            video = VideoClass('Probe', author_id, guild_id, url=item[1])
-        elif item[0] == 'SoundCloud':
-            video = VideoClass('SoundCloud', author_id, guild_id, url=item[1])
-        else:
-            message = f"Error: {item[0]} is not a valid class type"
-            await ctx.reply(message, ephemeral=ephemeral)
-            return ReturnData(False, message)
-
-        video.renew()
-        queue_list.append(to_queue_class(video))
-
-    guild(guild_id).queue += queue_list
-    get_session().commit()
-    push_update(guild_id)
-
-    message = f"Added to queue: `{len(queue_list)}` items"
-    await ctx.reply(message, ephemeral=ephemeral)
-
-    return ReturnData(True, message)
+# # -------------------------------- IMPORT / EXPORT --------------------------------
+#
+# async def export_queue(ctx, guild_id: int=None, ephemeral: bool=False):
+#     log(ctx, 'export_queue', [guild_id, ephemeral], log_type='function')
+#     is_ctx, ctx_guild_id, author_id, ctx_guild_object = ctx_check(ctx)
+#
+#     if not guild_id:
+#         if is_ctx:
+#             guild_id = ctx.guild.id
+#         else:
+#             guild_id = ctx.guild_id
+#
+#     try:
+#         guild_id = int(guild_id)
+#     except (ValueError, TypeError):
+#         message = f'({guild_id}) ' + tg(ctx_guild_id, 'is not an id')
+#         await ctx.reply(message, ephemeral=ephemeral)
+#         return ReturnData(False, message)
+#
+#     try:
+#         queue_dict = guild(guild_id).queue
+#     except Exception as e:
+#         message = f"Error: {e}"
+#         await ctx.reply(message, ephemeral=ephemeral)
+#         return ReturnData(False, message)
+#
+#     if not queue_dict:
+#         message = tg(ctx_guild_id, f"Queue is empty")
+#         await ctx.reply(message, ephemeral=ephemeral)
+#         return ReturnData(False, message)
+#
+#     queue_list = []
+#     for item in queue_dict:
+#         if item.class_type == 'Video':
+#             data = extract_yt_id(item.url)
+#         elif item.class_type == 'Radio':
+#             data = item.radio_info['name']
+#         elif item.class_type == 'Local':
+#             data = item.local_number
+#         elif item.class_type == 'Probe':
+#             data = item.url
+#         elif item.class_type == 'SoundCloud':
+#             data = item.url
+#         else:
+#             data = item.url
+#
+#         queue_list.append(f'{item.class_type}:{data}')
+#
+#     queue_string = ','.join(queue_list)
+#
+#     try:
+#         # data = queue_to_json(queue_dict)
+#         # await ctx.reply(file=discord.File(str(data), filename=f'queue_{guild_id}.json'), ephemeral=ephemeral)
+#         await ctx.reply(f"Queue String: `{queue_string}`", ephemeral=ephemeral)
+#
+#         return ReturnData(True, queue_string)
+#     except Exception as e:
+#         message = f"Error: {e}"
+#         await ctx.reply(message, ephemeral=ephemeral)
+#         return ReturnData(False, message)
+#
+# async def import_queue(ctx, queue_data, guild_id: int=None, ephemeral: bool=False):
+#     log(ctx, 'import_queue', [queue_data, guild_id, ephemeral], log_type='function')
+#     is_ctx, ctx_guild_id, author_id, ctx_guild_object = ctx_check(ctx)
+#
+#     if type(queue_data) == discord.Attachment:
+#         queue_data = queue_data.read()
+#
+#     if not guild_id:
+#         if is_ctx:
+#             guild_id = ctx.guild.id
+#         else:
+#             guild_id = ctx.guild_id
+#
+#     try:
+#         guild_id = int(guild_id)
+#     except (ValueError, TypeError):
+#         message = f'({guild_id}) ' + tg(ctx_guild_id, 'is not an id')
+#         await ctx.reply(message, ephemeral=ephemeral)
+#         return ReturnData(False, message)
+#
+#     queue_list = []
+#     for item in queue_data.split(','):
+#         item = item.split(':')
+#         if item[0] == 'Video':
+#             video = Queue('Video', author_id, guild_id, item[1])
+#         elif item[0] == 'Radio':
+#             video = Queue('Radio', author_id, guild_id, radio_info=dict(name=item[1]))
+#         elif item[0] == 'Local':
+#             video = Queue('Local', author_id, guild_id, local_number=item[1])
+#         elif item[0] == 'Probe':
+#             video = Queue('Probe', author_id, guild_id, url=item[1])
+#         elif item[0] == 'SoundCloud':
+#             video = Queue('SoundCloud', author_id, guild_id, url=item[1])
+#         else:
+#             message = f"Error: {item[0]} is not a valid class type"
+#             await ctx.reply(message, ephemeral=ephemeral)
+#             return ReturnData(False, message)
+#
+#         video.renew()
+#         queue_list.append(to_queue_class(video))
+#
+#     guild(guild_id).queue += queue_list
+#     get_session().commit()
+#     push_update(guild_id)
+#
+#     message = f"Added to queue: `{len(queue_list)}` items"
+#     await ctx.reply(message, ephemeral=ephemeral)
+#
+#     return ReturnData(True, message)

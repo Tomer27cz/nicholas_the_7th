@@ -1,0 +1,344 @@
+
+.dp-tooltip {
+  display: block;
+  position: absolute;
+  color: #b6b7b7;
+  background: #18191c;
+  padding: 0.4rem;
+  border-radius: 3px;
+  max-width: 150px;
+  width: max-content;
+  font-size: 0.8rem;
+  transform: scale(0);
+  transition: 0.055s ease-in-out transform;
+  z-index: 10;
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.35);
+  -webkit-box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.35);
+}
+
+.dp-tooltip-up {
+  bottom: 30px;
+}
+
+.dp-tooltip-up::before {
+  content: "";
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid #18191c;
+}
+
+
+/* Card */
+.dp-card-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 90rem;
+  z-index: 0;
+}
+
+.dp-card {
+  background: #292b2f;
+  width: 21.5rem;
+  max-height: 95%;
+  height: max-content;
+  border-radius: 9px;
+  box-shadow: 0px 0px 16px 3px rgba(0, 0, 0, 0.2);
+  -webkit-box-shadow: 0px 0px 16px 3px rgba(0, 0, 0, 0.2);
+  scrollbar-width: none;
+}
+
+.dp-card::-webkit-scrollbar {
+  display: none;
+}
+
+.dp-card-header .dp-banner {
+  width: 100%;
+  height: 3.75rem;
+  background: #ef5b0d;
+  border-radius: 0.4rem 0.4rem 0 0;
+  overflow: hidden;
+}
+
+.dp-card-header .dp-banner-img {
+  width: 100%;
+  height: 7.5rem;
+  background-position: center !important;
+  background-size: 100% auto !important;
+  border-radius: 0.4rem 0.4rem 0 0;
+  overflow: hidden;
+}
+
+.dp-card-body {
+  padding: 1rem;
+  position: relative;
+}
+
+.dp-card-body .dp-profile-header {
+  position: absolute;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: space-between;
+  width: calc(100% - 2rem);
+  top: -3rem;
+}
+
+.dp-card-body .dp-profile-header .dp-profil-logo {
+  position: relative;
+  border: 0.4rem solid #292b2f;
+  border-radius: 50%;
+}
+
+.dp-card-body .dp-profile-header .dp-profil-logo img {
+  display: block;
+  width: 5rem;
+  height: 5rem;
+  border-radius: 50%;
+}
+
+.dp-card-body .dp-profile-header .dp-profil-logo::before {
+  content: "VIEW PRPFILE";
+  position: absolute;
+  right: 0;
+  top: 0;
+  cursor: pointer;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  color: #eeeeee;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 0.6rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  transition-duration: 0.15s;
+}
+
+.dp-card-body .dp-profile-header .dp-profil-logo:hover::before {
+  opacity: 1;
+}
+
+.dp-card-body .dp-profile-header .dp-badges-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  max-width: 13.75rem;
+  background: #18191c;
+  border-radius: 0.5rem;
+  padding: 0.2rem;
+}
+
+.dp-card-body .dp-profile-header .dp-badges-container .dp-badge-item {
+  position: relative;
+  margin: 0.4rem;
+  width: 1.2rem;
+  height: 1.2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.dp-card-body .dp-profile-header .dp-badges-container .dp-badge-item img {
+  height: 110%;
+}
+
+.dp-card-body .dp-profile-header .dp-badges-container .dp-badge-item:hover > .dp-tooltip {
+  transform: scale(1);
+}
+
+.dp-card-body .dp-profile-body {
+  background: #18191c;
+  border-radius: 7px;
+  padding: 13px;
+  margin-top: 40px;
+}
+
+.dp-card-body .dp-profile-body .dp-username {
+  color: #eeeeee;
+  font-weight: 600;
+  font-size: 1.3rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.dp-card-body .dp-profile-body .dp-username span {
+  color: #b9bbbe;
+}
+
+.dp-card-body .dp-profile-body .dp-username .dp-badge {
+  font-size: 0.65rem;
+  background-color: #5865f2;
+  text-transform: uppercase;
+  font-weight: 300;
+  width: max-content;
+  padding: 2px 5px;
+  margin-left: 5px;
+  border-radius: 3px;
+}
+
+.dp-card-body .dp-profile-body hr {
+  border: none;
+  border-top: 0.5px solid #33353b;
+}
+
+.dp-card-body .dp-profile-body .dp-category-title {
+  color: #d6d6d6;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  margin-bottom: 8px;
+}
+
+.dp-card-body .dp-profile-body .dp-basic-infos {
+  margin-bottom: 14px;
+  margin-top: 12px;
+}
+
+.dp-card-body .dp-profile-body .dp-basic-infos p {
+  color: #bdbebf;
+  font-size: 0.9rem;
+}
+
+.dp-card-body .dp-profile-body .dp-basic-infos p a {
+  color: #02a5e6;
+  text-decoration: none;
+}
+
+.dp-card-body .dp-profile-body .dp-basic-infos p a:hover {
+  text-decoration: underline;
+}
+
+.dp-card-body .dp-profile-body .dp-basic-infos p b {
+  color: #ddd;
+}
+
+.dp-card-body .dp-profile-body .dp-roles {
+  margin-bottom: 14px;
+}
+
+.dp-card-body .dp-profile-body .dp-roles .dp-roles-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.dp-card-body .dp-profile-body .dp-roles .dp-roles-list .dp-role {
+  background: #292b2f;
+  color: #c4c4c4;
+  border-radius: 3px;
+  font-size: 0.75rem;
+  font-weight: 300;
+  padding: 3px 6px;
+  margin-right: 4px;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+}
+.dp-card-body .dp-profile-body .dp-roles .dp-roles-list .dp-role p{
+  margin: 0;
+  padding: 0;
+}
+
+.dp-card-body .dp-profile-body .dp-roles .dp-roles-list .dp-role .dp-role-color {
+  position: relative;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 5px;
+}
+
+.dp-card-body .dp-profile-body .dp-note textarea::-webkit-scrollbar {
+  display: none;
+}
+
+.dp-card-body .dp-profile-body .dp-note textarea::placeholder {
+  font-size: 0.8rem;
+}
+
+.dp-card-body .dp-profile-body .dp-note textarea:focus::placeholder {
+  opacity: 0;
+}
+
+.dp-card-body .dp-profile-body .dp-message input {
+  background: transparent;
+  outline: none;
+  border: 1.2px solid #272727;
+  padding: 13px;
+  width: 100%;
+  border-radius: 4px;
+  color: #eeeeee;
+  margin-top: 14px;
+}
+.dp-nitro-card {
+  position: relative;
+  background-image: linear-gradient(0, #000000, #a77311);
+  background-blend-mode: multiply;
+  background-color: #0000006c;
+}
+
+.dp-nitro-card:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+  margin: -5px;
+  border-radius: 12px;
+  background: linear-gradient(0, #000000, #e09200);
+}
+
+.dp-nitro-card .dp-card-body .dp-profile-body {
+background: linear-gradient(0, #000000, #18191c91);
+}
+
+.dp-nitro-card .dp-card-body .dp-profile-header .dp-profil-logo {
+  position: relative;
+  border-color: transparent;
+  z-index: 0;
+}
+
+.dp-nitro-card .dp-card-body .dp-profile-header .dp-profil-logo:after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+  margin: -6px;
+  border-radius: 50%;
+  background-color: rgb(74, 50, 7);
+}
+
+.dp-nitro-card .dp-card-body .dp-profile-header .dp-badges-container {
+  background: #18191c77;
+}
+
+.dp-nitro-card .dp-card-body .dp-profile-body .dp-roles .dp-roles-list .dp-role {
+  background: #18191c4d;
+  border: 1px solid #3f4149;
+}
+
+.dp-guild-icon {
+  position: relative;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #2f3136;
+  border: 1px solid #3f4149;
+}

@@ -1,9 +1,11 @@
-from classes.data_classes import ReturnData
+import discord
+
+from classes.data_classes import ReturnData, SlowedUser
 
 from utils.log import log
 from utils.translate import tg
 from utils.save import save_json
-from utils.globals import get_bot, get_languages_dict
+from utils.globals import get_bot, get_languages_dict, get_session
 from utils.checks import is_float
 from utils.convert import to_bool
 
@@ -11,14 +13,9 @@ from database.guild import guild
 
 from commands.utils import ctx_check
 
-import discord
 import sys
-import json
-from os import path
 from discord.ext import commands as dc_commands
-from typing import Literal, Union
-
-import config
+from typing import Union
 
 async def announce_command_def(ctx, message: str, ephemeral: bool = False) -> ReturnData:
     """
@@ -45,81 +42,6 @@ async def kys_def(ctx: dc_commands.Context):
     guild_id = ctx.guild.id
     await ctx.reply(tg(guild_id, "Committing seppuku..."))
     sys.exit(3)
-
-async def file_command_def(ctx: dc_commands.Context, config_file: discord.Attachment = None, config_type: Literal[
-    'other', 'radio', 'languages', 'log', 'data', 'activity', 'apache_activity', 'apache_error'] = 'log'):
-    log(ctx, 'config_command_def', [config_file, config_type], log_type='function', author=ctx.author)
-
-    config_types = {
-        'other': '.json',
-        'radio': '.json',
-        'languages': '.json',
-        'log': '.log',
-        'data': '.log',
-        'activity': '.log',
-        'apache_activity': '.log',
-        'apache_error': '.log'
-    }
-
-    if config_type in ['other', 'languages', 'radio']:
-        file_path = f'{config.PARENT_DIR}db/{config_type}{config_types[config_type]}'
-    else:
-        file_path = f'{config.PARENT_DIR}db/log/{config_type}{config_types[config_type]}'
-
-    if config_file is None:
-        if not path.exists(file_path):
-            message = f'File `{config_type}{config_types[config_type]}` does not exist'
-            await ctx.reply(message, ephemeral=True)
-            return ReturnData(False, message)
-
-        file_to_send = discord.File(file_path, filename=f"{config_type}{config_types[config_type]}")
-        await ctx.reply(file=file_to_send)
-        return ReturnData(True, f"Sent file: `{config_type}{config_types[config_type]}`")
-
-    filename = config_file.filename
-    file_name_list = filename.split('.')
-    filename_type = '.' + file_name_list[-1]
-    file_name_list.pop(-1)
-    filename_name = '.'.join(file_name_list)
-
-    if not filename_type in config_types.values():
-        message = 'You need to upload a `.json` or `.log` file'
-        await ctx.reply(message, ephemeral=True)
-        return ReturnData(False, message)
-
-    if not filename_name in config_types.keys():
-        message = 'You need to upload a file with a valid name (other, radio, languages, log, data, activity, apache_activity, apache_error)'
-        await ctx.reply(message, ephemeral=True)
-        return ReturnData(False, message)
-
-    if filename_name in config_types.keys() and filename_name != config_type:
-        config_type = filename_name
-
-    # read file
-    content = await config_file.read()
-    if not content:
-        message = f"no content in file: `{file_path}`"
-        await ctx.reply(message, ephemeral=True)
-        return ReturnData(False, message)
-
-    # get original content
-    with open(file_path, 'rb', encoding='utf-8') as f:
-        org_content = f.read()
-
-    with open(file_path, 'wb', encoding='utf-8') as f:
-        try:
-            # write new content
-            f.write(content)
-        except Exception as e:
-            # write original content back if error
-            f.write(org_content)
-            # send error message
-            message = f"Error while saving file: {e}"
-            log(ctx, message, [config_type, config_types[config_type]], log_type='error', author=ctx.author)
-            await ctx.reply(message, ephemeral=True)
-            return ReturnData(False, message)
-
-    await ctx.reply(f"Saved new `{config_type}{config_types[config_type]}`", ephemeral=True)
 
 async def options_def(ctx: dc_commands.Context, server: Union[str, int, None]=None, stopped: str = None, loop: str = None, is_radio: str = None,
                       buttons: str = None, language: str = None, response_type: str = None, buffer: str = None,
@@ -258,5 +180,47 @@ async def options_def(ctx: dc_commands.Context, server: Union[str, int, None]=No
         save_json()
 
     message = tg(guild_id, f'Edited options successfully!')
+    await ctx.reply(message, ephemeral=ephemeral)
+    return ReturnData(True, message)
+
+
+# Slow mode
+async def slowed_users_command_def(ctx: dc_commands.Context):
+    """
+    Lists all slowed users
+    :param ctx: Context
+    """
+    log(ctx, 'slowed_users', [], log_type='function', author=ctx.author)
+    guild_id = ctx.guild.id
+    slowed_users = guild(guild_id).slowed_users
+
+    message = f"**Slowed users:**\n"
+    for slowed_user in slowed_users:
+        message += f"<@{slowed_user.user_id}> -> {slowed_user.slowed_for}\n"
+
+    await ctx.reply(message)
+    return ReturnData(True, message)
+
+async def slowed_users_add_command_def(ctx: dc_commands.Context, member: discord.Member, slowed_for: int, ephemeral: bool=True):
+    """
+    Adds a slowed user
+    :param ctx: Context
+    :param member: Member object
+    :param slowed_for: Time to slow the user for
+    :param ephemeral: Should bot response be ephemeral
+    """
+    log(ctx, 'slowed_users_add', [member.id, slowed_for], log_type='function', author=ctx.author)
+    guild_id = ctx.guild.id
+
+    if slowed_for < 0:
+        message = tg(guild_id, "Slowed time cannot be negative!")
+        await ctx.reply(message, ephemeral=ephemeral)
+        return ReturnData(False, message)
+
+    slowed_user = SlowedUser(guild_id=guild_id, user_id=member.id, user_name=member.name, slowed_for=slowed_for)
+    get_session().add(slowed_user)
+    get_session().commit()
+
+    message = f"Added slowed user: <@{member.id}> -> {slowed_for}"
     await ctx.reply(message, ephemeral=ephemeral)
     return ReturnData(True, message)

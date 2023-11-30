@@ -29,7 +29,7 @@ async def web_user_options_edit(web_data, form) -> ReturnData:
     if loop not in bool_list:
         return ReturnData(False, f'loop has to be: {bool_list} --> {loop}')
     if buttons not in bool_list:
-        return ReturnData(False, f'buttons has to be: {bool_list} --> {buttons}')
+        return ReturnData(False, f'single has to be: {bool_list} --> {buttons}')
 
     if response_type not in response_types:
         return ReturnData(False, f'response_type has to be: {response_types} --> {response_type}')

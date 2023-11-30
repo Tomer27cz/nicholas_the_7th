@@ -54,9 +54,9 @@ def guilds_to_json(guild_dict):
 
 def json_to_video(video_dict):
     """
-    Converts video dict to VideoClass object
+    Converts video dict to VideoClass child object
     :param video_dict: dict - video dict
-    :return: VideoClass object
+    :return: VideoClass child object
     """
     if not video_dict:
         return None
@@ -66,7 +66,7 @@ def json_to_video(video_dict):
     if class_type not in ['Video', 'Radio', 'Local', 'Probe', 'SoundCloud']:
         raise ValueError('Wrong class_type')
 
-    video = classes.video_class.VideoClass(class_type,
+    video = classes.video_class.Queue(class_type,
                        created_at=video_dict['created_at'],
                        played_duration=video_dict['played_duration'],
                        url=video_dict['url'],

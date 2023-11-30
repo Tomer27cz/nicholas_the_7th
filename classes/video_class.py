@@ -4,8 +4,9 @@ if TYPE_CHECKING:
     from classes.typed_dictionaries import *
 
 from database.main import *
+from database.guild import *
 
-from utils.globals import get_radio_dict, get_sc
+from utils.globals import get_radio_dict, get_sc, get_session
 from utils.convert import convert_duration
 import utils.video_time
 import utils.save
@@ -46,7 +47,7 @@ def video_class_init(self,
                      duration: Union[str, int]=None,
                      channel_name: str=None,
                      channel_link: str=None,
-                     radio_info: RadioInfo=None,
+                     radio_info: RadioInfoDict=None,
                      local_number: int=None,
                      created_at: int=None,
                      played_duration: [TimeSegment]=None,
@@ -113,6 +114,8 @@ def video_class_init(self,
             self.channel_link = self.url
             self.radio_info['website'] = radio_dict[radio_name]['type']
 
+        video_class_renew(self, from_init=True)
+
     elif self.class_type == 'Local':
         if local_number is None:
             raise ValueError("Local number required")
@@ -151,28 +154,16 @@ def video_class_init(self,
     # set stream_url at the end for json readability
     self.stream_url = stream_url
 
-def video_class_renew(self):
+def video_class_renew(self, from_init: bool=False):
     if self.class_type == 'Radio':
-        if self.radio_info['website'] == 'radia_cz':
-            html = requests.get(self.url).text
-            soup = BeautifulSoup(html, features="lxml")
-            data1 = soup.find('div', attrs={'class': 'interpret-image'})
-            data2 = soup.find('div', attrs={'class': 'interpret-info'})
+        radio_info_class = get_session().query(RadioInfo).filter(RadioInfo.name == self.radio_info['name']).first()
+        if radio_info_class is None:
+            radio_info_class = RadioInfo(radio_id=get_radio_dict()[self.radio_info['name']]['id'])
+            get_session().add(radio_info_class)
+            get_session().commit()
 
-            self.radio_info['picture'] = data1.find('img')['src']
-            self.radio_info['channel_name'] = data2.find('div', attrs={'class': 'nazev'}).text.lstrip().rstrip()
-            self.radio_info['title'] = data2.find('div', attrs={'class': 'song'}).text.lstrip().rstrip()
-
-        elif self.radio_info['website'] == 'actve':
-            r = requests.get(self.url).json()
-            self.radio_info['picture'] = r['coverBase']
-            self.radio_info['channel_name'] = r['artist']
-            self.radio_info['title'] = r['title']
-
-        else:
-            raise ValueError("Invalid radio website")
-
-    utils.save.save_json()
+        if int(time()) - radio_info_class.last_update > 10 or from_init:
+            radio_info_class.update()
 
 def video_class_current_chapter(self):
     if self.played_duration is None:
@@ -217,80 +208,128 @@ def video_class_time(self):
 
     return f'{convert_duration(time_from_play)} / {convert_duration(duration)}'
 
-# Video Classes
 
-class VideoClass(Base):
+class RadioInfo(Base):
     """
-    Stores all the data for each video
-    Can do, YouTube, SoundCloud, Czech Radios, Url Probes, Local Files and Fake Spotify
-
-    Raises ValueError: If URL is not provided or is incorrect for class_type
+    Data class for storing radio information
     """
-    __tablename__ = 'videos'
+    __tablename__ = 'radio_info'
 
     id = Column(Integer, primary_key=True)
-    position = Column(Integer)
-    class_type = Column(String)
-    author = Column(String)
-    guild_id = Column(Integer, ForeignKey('guilds.id'))
+    name = Column(String)
     url = Column(String)
-    title = Column(String)
+    website = Column(String)
     picture = Column(String)
-    duration = Column(String)
     channel_name = Column(String)
-    channel_link = Column(String)
-    radio_info = Column(JSON)
-    local_number = Column(Integer)
-    created_at = Column(Integer)
-    played_duration = Column(JSON)
-    chapters = Column(JSON)
-    stream_url = Column(String)
-    discord_channel = Column(JSON)
+    title = Column(String)
+    last_update = Column(Integer)
 
-    def __init__(self,
-                 class_type: str,
-                 author: Union[str, int],
-                 guild_id: int,
-                 url: str=None,
-                 title: str=None,
-                 picture: str=None,
-                 duration: Union[str, int]=None,
-                 channel_name: str=None,
-                 channel_link: str=None,
-                 radio_info: RadioInfo=None,
-                 local_number: int=None,
-                 created_at: int=None,
-                 played_duration: [TimeSegment]=None,
-                 chapters: [VideoChapter]=None,
-                 stream_url: str=None,
-                 discord_channel: DiscordChannelInfo=None
-                 ):
-        video_class_init(self,
-                         class_type=class_type,
-                         author=author,
-                         guild_id=guild_id,
-                         url=url,
-                         title=title,
-                         picture=picture,
-                         duration=duration,
-                         channel_name=channel_name,
-                         channel_link=channel_link,
-                         radio_info=radio_info,
-                         local_number=local_number,
-                         created_at=created_at,
-                         played_duration=played_duration,
-                         chapters=chapters,
-                         stream_url=stream_url,
-                         discord_channel=discord_channel)
+    def __init__(self, radio_id: int):
+        self.id: int = radio_id
+        self.url: str = [radio['url'] for radio in get_radio_dict().values() if radio['id'] == radio_id][0]
+        self.website: str = [radio['type'] for radio in get_radio_dict().values() if radio['id'] == radio_id][0]
+        self.name: str = [radio['name'] for radio in get_radio_dict().values() if radio['id'] == radio_id][0]
+        self.last_update: int = int(time())
 
-    def renew(self):
-        video_class_renew(self)
+    def update(self):
+        if self.website == 'radia_cz':
+            html = requests.get(self.url).text
+            soup = BeautifulSoup(html, features="lxml")
+            data1 = soup.find('div', attrs={'class': 'interpret-image'})
+            data2 = soup.find('div', attrs={'class': 'interpret-info'})
+            # if data1 is None or data2 is None:
+            #     return None
 
-    def current_chapter(self):
-        return video_class_current_chapter(self)
+            self.picture = data1.find('img')['src']
+            self.channel_name = data2.find('div', attrs={'class': 'nazev'}).text.lstrip().rstrip()
+            self.title = data2.find('div', attrs={'class': 'song'}).text.lstrip().rstrip()
 
-    def time(self):
-        return video_class_time(self)
+        elif self.website == 'actve':
+            r = requests.get(self.url).json()
+            self.picture = r['coverBase']
+            self.channel_name = r['artist']
+            self.title = r['title']
+
+        else:
+            raise ValueError("Invalid radio website")
+
+        self.last_update = int(time())
+
+
+# Video Classes
+
+# class VideoClass(Base):
+#     """
+#     Stores all the data for each video
+#     Can do, YouTube, SoundCloud, Czech Radios, Url Probes, Local Files and Fake Spotify
+#
+#     Raises ValueError: If URL is not provided or is incorrect for class_type
+#     """
+#     __tablename__ = 'videos'
+#
+#     id = Column(Integer, primary_key=True)
+#     position = Column(Integer)
+#     class_type = Column(String)
+#     author = Column(String)
+#     guild_id = Column(Integer, ForeignKey('guilds.id'))
+#     url = Column(String)
+#     title = Column(String)
+#     picture = Column(String)
+#     duration = Column(String)
+#     channel_name = Column(String)
+#     channel_link = Column(String)
+#     radio_info = Column(JSON)
+#     local_number = Column(Integer)
+#     created_at = Column(Integer)
+#     played_duration = Column(JSON)
+#     chapters = Column(JSON)
+#     stream_url = Column(String)
+#     discord_channel = Column(JSON)
+#
+#     def __init__(self,
+#                  class_type: str,
+#                  author: Union[str, int],
+#                  guild_id: int,
+#                  url: str=None,
+#                  title: str=None,
+#                  picture: str=None,
+#                  duration: Union[str, int]=None,
+#                  channel_name: str=None,
+#                  channel_link: str=None,
+#                  radio_info: RadioInfoDict=None,
+#                  local_number: int=None,
+#                  created_at: int=None,
+#                  played_duration: [TimeSegment]=None,
+#                  chapters: [VideoChapter]=None,
+#                  stream_url: str=None,
+#                  discord_channel: DiscordChannelInfo=None
+#                  ):
+#         video_class_init(self,
+#                          class_type=class_type,
+#                          author=author,
+#                          guild_id=guild_id,
+#                          url=url,
+#                          title=title,
+#                          picture=picture,
+#                          duration=duration,
+#                          channel_name=channel_name,
+#                          channel_link=channel_link,
+#                          radio_info=radio_info,
+#                          local_number=local_number,
+#                          created_at=created_at,
+#                          played_duration=played_duration,
+#                          chapters=chapters,
+#                          stream_url=stream_url,
+#                          discord_channel=discord_channel)
+#
+#     def renew(self):
+#         video_class_renew(self)
+#
+#     def current_chapter(self):
+#         return video_class_current_chapter(self)
+#
+#     def time(self):
+#         return video_class_time(self)
 
 class Queue(Base):
     """
@@ -330,7 +369,7 @@ class Queue(Base):
                  duration: Union[str, int] = None,
                  channel_name: str = None,
                  channel_link: str = None,
-                 radio_info: RadioInfo = None,
+                 radio_info: RadioInfoDict = None,
                  local_number: int = None,
                  created_at: int = None,
                  played_duration: [TimeSegment] = None,
@@ -403,7 +442,7 @@ class NowPlaying(Base):
                  duration: Union[str, int] = None,
                  channel_name: str = None,
                  channel_link: str = None,
-                 radio_info: RadioInfo = None,
+                 radio_info: RadioInfoDict = None,
                  local_number: int = None,
                  created_at: int = None,
                  played_duration: [TimeSegment] = None,
@@ -476,7 +515,7 @@ class History(Base):
                  duration: Union[str, int] = None,
                  channel_name: str = None,
                  channel_link: str = None,
-                 radio_info: RadioInfo = None,
+                 radio_info: RadioInfoDict = None,
                  local_number: int = None,
                  created_at: int = None,
                  played_duration: [TimeSegment] = None,
@@ -549,7 +588,7 @@ class SearchList(Base):
                  duration: Union[str, int] = None,
                  channel_name: str = None,
                  channel_link: str = None,
-                 radio_info: RadioInfo = None,
+                 radio_info: RadioInfoDict = None,
                  local_number: int = None,
                  created_at: int = None,
                  played_duration: [TimeSegment] = None,
@@ -593,7 +632,7 @@ class SaveVideo(Base):
     """
     __tablename__ = 'save_videos'
 
-    save_id = Column(Integer, ForeignKey('saves.id'), primary_key=True)
+    save_id = Column(Integer, ForeignKey('saves.id'))
 
     id = Column(Integer, primary_key=True)
     position = Column(Integer)
@@ -618,13 +657,14 @@ class SaveVideo(Base):
                  class_type: str,
                  author: Union[str, int],
                  guild_id: int,
+                 save_id: int,
                  url: str = None,
                  title: str = None,
                  picture: str = None,
                  duration: Union[str, int] = None,
                  channel_name: str = None,
                  channel_link: str = None,
-                 radio_info: RadioInfo = None,
+                 radio_info: RadioInfoDict = None,
                  local_number: int = None,
                  created_at: int = None,
                  played_duration: [TimeSegment] = None,
@@ -632,6 +672,7 @@ class SaveVideo(Base):
                  stream_url: str = None,
                  discord_channel: DiscordChannelInfo = None
                  ):
+        self.save_id = save_id
         video_class_init(self,
                          class_type=class_type,
                          author=author,
@@ -661,102 +702,118 @@ class SaveVideo(Base):
 
 # Transforms
 
-def to_queue_class(video_class):
+def to_queue_class(_video_class):
+    if _video_class.__class__.__name__ == 'Queue':
+        return _video_class
+
     return Queue(
-        class_type=video_class.class_type,
-        author=video_class.author,
-        guild_id=video_class.guild_id,
-        url=video_class.url,
-        title=video_class.title,
-        picture=video_class.picture,
-        duration=video_class.duration,
-        channel_name=video_class.channel_name,
-        channel_link=video_class.channel_link,
-        radio_info=video_class.radio_info,
-        local_number=video_class.local_number,
-        created_at=video_class.created_at,
-        played_duration=video_class.played_duration,
-        chapters=video_class.chapters,
-        stream_url=video_class.stream_url,
-        discord_channel=video_class.discord_channel
+        class_type=_video_class.class_type,
+        author=_video_class.author,
+        guild_id=_video_class.guild_id,
+        url=_video_class.url,
+        title=_video_class.title,
+        picture=_video_class.picture,
+        duration=_video_class.duration,
+        channel_name=_video_class.channel_name,
+        channel_link=_video_class.channel_link,
+        radio_info=_video_class.radio_info,
+        local_number=_video_class.local_number,
+        created_at=_video_class.created_at,
+        played_duration=_video_class.played_duration,
+        chapters=_video_class.chapters,
+        stream_url=_video_class.stream_url,
+        discord_channel=_video_class.discord_channel
     )
 
-def to_search_list_class(video_class):
+def to_search_list_class(_video_class):
+    if _video_class.__class__.__name__ == 'SearchList':
+        return _video_class
+
     return SearchList(
-        class_type=video_class.class_type,
-        author=video_class.author,
-        guild_id=video_class.guild_id,
-        url=video_class.url,
-        title=video_class.title,
-        picture=video_class.picture,
-        duration=video_class.duration,
-        channel_name=video_class.channel_name,
-        channel_link=video_class.channel_link,
-        radio_info=video_class.radio_info,
-        local_number=video_class.local_number,
-        created_at=video_class.created_at,
-        played_duration=video_class.played_duration,
-        chapters=video_class.chapters,
-        stream_url=video_class.stream_url,
-        discord_channel=video_class.discord_channel
+        class_type=_video_class.class_type,
+        author=_video_class.author,
+        guild_id=_video_class.guild_id,
+        url=_video_class.url,
+        title=_video_class.title,
+        picture=_video_class.picture,
+        duration=_video_class.duration,
+        channel_name=_video_class.channel_name,
+        channel_link=_video_class.channel_link,
+        radio_info=_video_class.radio_info,
+        local_number=_video_class.local_number,
+        created_at=_video_class.created_at,
+        played_duration=_video_class.played_duration,
+        chapters=_video_class.chapters,
+        stream_url=_video_class.stream_url,
+        discord_channel=_video_class.discord_channel
     )
 
-def to_now_playing_class(video_class):
+def to_now_playing_class(_video_class):
+    if _video_class.__class__.__name__ == 'NowPlaying':
+        return _video_class
+
     return NowPlaying(
-        class_type=video_class.class_type,
-        author=video_class.author,
-        guild_id=video_class.guild_id,
-        url=video_class.url,
-        title=video_class.title,
-        picture=video_class.picture,
-        duration=video_class.duration,
-        channel_name=video_class.channel_name,
-        channel_link=video_class.channel_link,
-        radio_info=video_class.radio_info,
-        local_number=video_class.local_number,
-        created_at=video_class.created_at,
-        played_duration=video_class.played_duration,
-        chapters=video_class.chapters,
-        stream_url=video_class.stream_url,
-        discord_channel=video_class.discord_channel
+        class_type=_video_class.class_type,
+        author=_video_class.author,
+        guild_id=_video_class.guild_id,
+        url=_video_class.url,
+        title=_video_class.title,
+        picture=_video_class.picture,
+        duration=_video_class.duration,
+        channel_name=_video_class.channel_name,
+        channel_link=_video_class.channel_link,
+        radio_info=_video_class.radio_info,
+        local_number=_video_class.local_number,
+        created_at=_video_class.created_at,
+        played_duration=_video_class.played_duration,
+        chapters=_video_class.chapters,
+        stream_url=_video_class.stream_url,
+        discord_channel=_video_class.discord_channel
     )
 
-def to_history_class(video_class):
+def to_history_class(_video_class):
+    if _video_class.__class__.__name__ == 'History':
+        return _video_class
+
     return History(
-        class_type=video_class.class_type,
-        author=video_class.author,
-        guild_id=video_class.guild_id,
-        url=video_class.url,
-        title=video_class.title,
-        picture=video_class.picture,
-        duration=video_class.duration,
-        channel_name=video_class.channel_name,
-        channel_link=video_class.channel_link,
-        radio_info=video_class.radio_info,
-        local_number=video_class.local_number,
-        created_at=video_class.created_at,
-        played_duration=video_class.played_duration,
-        chapters=video_class.chapters,
-        stream_url=video_class.stream_url,
-        discord_channel=video_class.discord_channel
+        class_type=_video_class.class_type,
+        author=_video_class.author,
+        guild_id=_video_class.guild_id,
+        url=_video_class.url,
+        title=_video_class.title,
+        picture=_video_class.picture,
+        duration=_video_class.duration,
+        channel_name=_video_class.channel_name,
+        channel_link=_video_class.channel_link,
+        radio_info=_video_class.radio_info,
+        local_number=_video_class.local_number,
+        created_at=_video_class.created_at,
+        played_duration=_video_class.played_duration,
+        chapters=_video_class.chapters,
+        stream_url=_video_class.stream_url,
+        discord_channel=_video_class.discord_channel
     )
 
-def to_save_video_class(video_class):
+def to_save_video_class(_video_class, save_id):
+    if _video_class.__class__.__name__ == 'SaveVideo':
+        return _video_class
+
     return SaveVideo(
-        class_type=video_class.class_type,
-        author=video_class.author,
-        guild_id=video_class.guild_id,
-        url=video_class.url,
-        title=video_class.title,
-        picture=video_class.picture,
-        duration=video_class.duration,
-        channel_name=video_class.channel_name,
-        channel_link=video_class.channel_link,
-        radio_info=video_class.radio_info,
-        local_number=video_class.local_number,
-        created_at=video_class.created_at,
-        played_duration=video_class.played_duration,
-        chapters=video_class.chapters,
-        stream_url=video_class.stream_url,
-        discord_channel=video_class.discord_channel
+        class_type=_video_class.class_type,
+        author=_video_class.author,
+        guild_id=_video_class.guild_id,
+        save_id=save_id,
+        url=_video_class.url,
+        title=_video_class.title,
+        picture=_video_class.picture,
+        duration=_video_class.duration,
+        channel_name=_video_class.channel_name,
+        channel_link=_video_class.channel_link,
+        radio_info=_video_class.radio_info,
+        local_number=_video_class.local_number,
+        created_at=_video_class.created_at,
+        played_duration=_video_class.played_duration,
+        chapters=_video_class.chapters,
+        stream_url=_video_class.stream_url,
+        discord_channel=_video_class.discord_channel
     )

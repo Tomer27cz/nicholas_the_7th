@@ -1,7 +1,6 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from classes.video_class import VideoClass
     from classes.data_classes import ReturnData
 
 from classes.video_class import *
@@ -76,10 +75,10 @@ def get_voice_client(iterable, **attrs) -> discord.VoiceClient:
         else _get(iterable, **attrs)  # type: ignore
     )
 
-def create_embed(video: VideoClass, name: str, guild_id: int, embed_colour: (int, int, int) = (88, 101, 242)) -> discord.Embed:
+def create_embed(video, name: str, guild_id: int, embed_colour: (int, int, int) = (88, 101, 242)) -> discord.Embed:
     """
     Creates embed with video info
-    :param video: VideoClass
+    :param video: VideoClass child
     :param name: str - title of embed
     :param guild_id: id of guild the embed is created for
     :param embed_colour: (int, int, int) - rgb colour of embed default: (88, 101, 242) -> #5865F2 == discord.Color.blurple()
@@ -97,10 +96,11 @@ def create_embed(video: VideoClass, name: str, guild_id: int, embed_colour: (int
     url = video.url
     thumbnail = video.picture
 
-    if video.radio_info is not None and 'picture' in video.radio_info.keys():
-        title = video.radio_info["title"]
-        author = f'[{video.radio_info["channel_name"]}]({video.channel_link})'
-        thumbnail = video.radio_info["picture"]
+    if video.radio_info is not None:
+        radio_info_class = get_radio_info(video.radio_info['name'])
+        title = radio_info_class.title
+        author = f'[{radio_info_class.channel_name}]({video.channel_link})'
+        thumbnail = radio_info_class.picture
 
     started_at = struct_to_time(video.played_duration[0]["start"]["epoch"], "time")
     requested_at = struct_to_time(video.created_at, "time")
@@ -160,22 +160,23 @@ def now_to_history(guild_id: int):
         save_json()
         push_update(guild_id)
 
-def to_queue(guild_id: int, video: VideoClass, position: int = None, copy_video: bool=True) -> ReturnData or None:
+def to_queue(guild_id: int, video, position: int = None, copy_video: bool=True, no_push: bool=False) -> ReturnData or None:
     """
     Adds video to queue
 
-    if return_message is True returns: [bool, str, VideoClass]
+    if return_message is True returns: [bool, str, VideoClass child]
 
     :param guild_id: id of guild: int
-    :param video: VideoClass
+    :param video: VideoClass child
     :param position: int - position in queue to add video
     :param copy_video: bool - if True copies video
+    :param no_push: bool - if True doesn't push update
     :return: ReturnData or None
     """
     guild_object = guild(guild_id)
 
     if copy_video:
-        video = copy.deepcopy(video)
+        video = to_queue_class(video)
 
     # strip video of time data
     video.played_duration = [{'start': {'epoch': None, 'time_stamp': None}, 'end': {'epoch': None, 'time_stamp': None}}]
@@ -191,7 +192,8 @@ def to_queue(guild_id: int, video: VideoClass, position: int = None, copy_video:
     else:
         guild_object.queue.insert(position, to_queue_class(video))
 
-    push_update(guild_id)
+    if not no_push:
+        push_update(guild_id)
     save_json()
 
     return f'[`{video.title}`](<{video.url}>) {tg(guild_id, "added to queue!")} -> [Control Panel]({WEB_URL}/guild/{guild_id}&key={guild_object.data.key})'

@@ -1,0 +1,24 @@
+<div class="modal-content" id="videoEditModal_np_content">
+  <div class="modal-header">
+    <h1 class="modal-title fs-5" id="videoEditLabel_np">{{ tg(gi, 'Now playing Video Edit') }}</h1>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  </div>
+  <div class="info-modal">
+  <form method="POST" onsubmit="onSubmitDisable();">
+    <br>
+    {% for key, value in guild.now_playing.__dict__.items() %}
+      <div class="e-div">
+        <label for="np_{{ key }}" class="e-label">{{ key }}</label>
+        <input type="text" id="np_{{ key }}" name="{{ key }}" value="{{ value }}"
+               class="e-input e-input-color">
+      </div>
+    {% endfor %}
+    <div class="e-div">
+      <button class="btn e-item1 btn-secondary btn-lg btn-m" type="button" data-bs-dismiss="modal"
+              aria-label="Close">{{ tg(gi, 'Cancel') }}</button>
+      <button class="btn e-item1 btn-primary btn-lg btn-m" type="submit" name="edit_btn"
+              value="np">{{ tg(gi, 'Submit') }}</button>
+    </div>
+  </form>
+  </div>
+</div>

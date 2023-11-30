@@ -1,4 +1,4 @@
-from classes.video_class import VideoClass
+from classes.video_class import Queue
 from classes.data_classes import ReturnData
 
 from utils.log import log
@@ -40,13 +40,12 @@ async def web_queue(web_data, video_type, position=None) -> ReturnData:
         log(guild_id, f"web_queue -> Error while queuing: {e}")
         return ReturnData(False, tg(ctx_guild_id, 'Error while queuing (Internal web error -> contact developer)'))
 
-async def web_queue_from_radio(web_data, radio_name, position=None) -> ReturnData:
+async def web_queue_from_radio(web_data, radio_name=None, position=None) -> ReturnData:
     log(web_data, 'web_queue_from_radio', [radio_name, position], log_type='function', author=web_data.author)
     is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data)
 
     if radio_name in get_radio_dict().keys():
-        video = VideoClass('Radio', web_data.author_id, ctx_guild_id, radio_info=dict(name=radio_name))
-        video.renew()
+        video = Queue('Radio', web_data.author_id, ctx_guild_id, radio_info=dict(name=radio_name))
 
         if position == 'start':
             to_queue(web_data.guild_id, video, position=0, copy_video=False)

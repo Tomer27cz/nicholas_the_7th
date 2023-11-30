@@ -38,21 +38,15 @@ def ftg(guild_id: int, content: str) -> str:
     :param content: str - translation key
     :return: str - translated text
     """
-    return content
-    # for now until i figure out how to get this working in apache2
+    # return content
+    # # for now until i figure out how to get this working in apache2
 
 
     try:
-        guild = get_guild_dict()
         languages_dict = get_languages_dict()
+        lang = guild(guild_id).options.language
     except Exception as e:
         return content
-
-    try:
-        lang = guild[guild_id].options.language
-    except KeyError:
-        log(guild_id, f'KeyError: {guild_id} in guild')
-        lang = 'en'
 
     try:
         to_return = languages_dict[lang][content]

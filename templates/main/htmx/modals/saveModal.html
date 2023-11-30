@@ -1,0 +1,19 @@
+<div class="modal-content" id="saveModal_content">
+  <div class="modal-header">
+    <h1 class="modal-title fs-5" id="saveLabel">{{ tg(gi, 'Save Queue') }}</h1>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  </div>
+  <form method="POST" id="saveForm" action="" onsubmit="onSubmitDisable();">
+    <input type="hidden" name="scroll" value="0" id="scrollPos14">
+    <div class="modal-body">
+      <div class="mb-3">
+        <label for="saveName" class="btn-m">{{ tg(gi, 'Name') }}</label>
+        <input type="text" class="form-control" name="saveName" id="saveName" required>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-dark" data-bs-dismiss="modal">{{ tg(gi, 'Close') }}</button>
+      <button type="submit" class="btn btn-primary">{{ tg(gi, 'Save') }}</button>
+    </div>
+  </form>
+</div>

@@ -1,9 +1,9 @@
 from classes.data_classes import ReturnData, Guild
-from classes.video_class import VideoClass, to_queue_class, to_now_playing_class, to_history_class
+from classes.video_class import to_queue_class, to_now_playing_class, to_history_class, Queue
 
 from utils.log import log, send_to_admin
 from utils.translate import tg
-from utils.save import save_json
+from utils.save import save_json, push_update
 from utils.globals import get_bot, get_session
 from database.guild import guild, delete_guild
 
@@ -124,7 +124,7 @@ async def web_video_edit(web_data, form) -> ReturnData:
         except (TypeError, ValueError, json.decoder.JSONDecodeError, AssertionError, SyntaxError):
             return ReturnData(False, f'Invalid discord channel: {discord_channel}')
 
-    video = VideoClass(class_type, author, guild_id, url=url, title=title, picture=picture, duration=duration, channel_name=channel_name, channel_link=channel_link, radio_info=radio_info, local_number=local_number, created_at=created_at, played_duration=played_duration, chapters=chapters, discord_channel=discord_channel, stream_url=stream_url)
+    video = Queue(class_type, author, guild_id, url=url, title=title, picture=picture, duration=duration, channel_name=channel_name, channel_link=channel_link, radio_info=radio_info, local_number=local_number, created_at=created_at, played_duration=played_duration, chapters=chapters, discord_channel=discord_channel, stream_url=stream_url)
 
     if is_np:
         db_guild.now_playing = to_now_playing_class(video)
@@ -134,6 +134,7 @@ async def web_video_edit(web_data, form) -> ReturnData:
         else:
             db_guild.history[index] = to_history_class(video)
 
+    push_update(guild_id)
     save_json()
 
     return ReturnData(True, tg(ctx_guild_id, 'Edited item') + f' {"h" if not is_queue else ""}{index} ' + tg(ctx_guild_id, 'successfully!'))
@@ -149,7 +150,7 @@ async def web_options_edit(web_data, form) -> ReturnData:
         language = form['language']
         response_type = form['response_type']
         search_query = form['search_query']
-        buttons = form['buttons']
+        buttons = form['single']
         volume = form['volume']
         buffer = form['buffer']
         history_length = form['history_length']

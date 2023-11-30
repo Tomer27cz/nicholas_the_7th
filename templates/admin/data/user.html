@@ -2,6 +2,10 @@
 
 {% set title = title %}
 
+{% block head %}{{ super() }}
+  <link rel="stylesheet" href="/static/discord/style.css">
+{% endblock %}
+
 {% block content %}
   {% if errors %}
     {% for error in errors %}
@@ -17,32 +21,88 @@
       <h1 class="q-item1">User Info</h1>
       <a href="/admin" class="btn btn-primary q-item1">Return to Admin Panel</a>
     </div>
-    <div class="div-login div-align-center">
-      <div class="l-div">
-        <div class="q-item1">
-          <img src="{{ data.avatar }}" alt="Avatar" class="q-img">
+
+
+
+      <div class="dp-card">
+        <div class="dp-card-header">
+          <div class="dp-banner" style="background: {{ data.color }}"></div>
         </div>
-        <div class="q-item1">
-          <h3>{{ data.name }} #{{ data.discriminator }}</h3>
+        <div class="dp-card-body">
+          <div class="dp-profile-header">
+            <div class="dp-profil-logo">
+              <img src="{{ data.avatar if data.avatar else '/static/img/discord_icon.png' }}" {% if not data.avatar %}style="background: var(--d-g1)" {% endif %} />
+            </div>
+            <div class="dp-badges-container">
+              {% if data.bot %}
+                <div class="dp-badge-item">
+                  <img src="/static/discord/PNG/slash_commands.png" alt=""/>
+                  <div class="dp-tooltip dp-tooltip-up">Supports Commands</div>
+                </div>
+              {% else %}
+                {% for badge_type, has_it in data.badges.items() %}
+                  {% if has_it %}
+                    <div class="dp-badge-item">
+                      <img src="{{ badge_dict[badge_type] }}" alt="" />
+                      <div class="dp-tooltip dp-tooltip-up">{{ badge_type }}</div>
+                    </div>
+                  {% endif %}
+                {% endfor %}
+              {% endif %}
+            </div>
+          </div>
+          <div class="dp-profile-body">
+            <div class="dp-username">
+              <a> {{ data.display_name }} <span style="color: rgb(128,128,128);">#{{ data.discriminator }}</span>  <span style="color: rgb(128,128,128);">{{ data.global_name }}</span> </a>
+              {% if data.bot %}
+                <div class="dp-badge">&#x2713; Bot</div>
+              {% endif %}
+            </div>
+            <p style="color: white;">{{ data.name }}</p>
+            <hr/>
+            <div class="dp-basic-infos">
+              <div class="dp-category-title">About Me</div>
+              <p>Discord API does not allow to fetch this data.</p>
+            </div>
+            <div class="dp-basic-infos">
+              <div class="dp-category-title">Member Since</div>
+              <div style="display: flex; align-items: center;">
+                <img src="https://i.ibb.co/HpbSK8B/icons8-discord-16.png" style="margin-right: 0.5rem;">
+                    <p style="margin: 0;">{{ struct_to_time(data.created_at, first='discord') }}</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="l-div">
-        <div class="q-item1">
-          <h4>ID: {{ data.id }}</h4>
-        </div>
-        <div class="q-item1">
-          <h4>Display Name: {{ data.display_name }}</h4>
-        </div>
-      </div>
-      <div class="l-div">
-        <div class="q-item1">
-          <h4>BOT: {{ data.bot }}</h4>
-        </div>
-        <div class="q-item1">
-          <h4>Created At: {{ data.created_at }}</h4>
-        </div>
-      </div>
-    </div>
+
+
+
+{#    <div class="div-login div-align-center">#}
+{#      <div class="l-div">#}
+{#        <div class="q-item1">#}
+{#          <img src="{{ data.avatar }}" alt="Avatar" class="q-img">#}
+{#        </div>#}
+{#        <div class="q-item1">#}
+{#          <h3>{{ data.name }} #{{ data.discriminator }}</h3>#}
+{#        </div>#}
+{#      </div>#}
+{#      <div class="l-div">#}
+{#        <div class="q-item1">#}
+{#          <h4>ID: {{ data.id }}</h4>#}
+{#        </div>#}
+{#        <div class="q-item1">#}
+{#          <h4>Display Name: {{ data.display_name }}</h4>#}
+{#        </div>#}
+{#      </div>#}
+{#      <div class="l-div">#}
+{#        <div class="q-item1">#}
+{#          <h4>BOT: {{ data.bot }}</h4>#}
+{#        </div>#}
+{#        <div class="q-item1">#}
+{#          <h4>Created At: {{ data.created_at }}</h4>#}
+{#        </div>#}
+{#      </div>#}
+{#    </div>#}
   </div>
 
 {% endblock %}

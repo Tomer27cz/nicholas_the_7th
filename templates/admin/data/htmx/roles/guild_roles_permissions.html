@@ -1,0 +1,14 @@
+<div id="accordionP{{ role_id }}_content">
+{% for key, value in dict(permissions).items() %}
+  <div class="e-div">
+    <label for="{{role_id}}_{{key}}" class="e-label">{{key}}</label>
+    {% if value == 'True' or value == True %}
+      <input type="text" id="{{role_id}}_{{key}}" name="{{key}}" value="{{value}}" class="e-input c-green" readonly>
+    {% elif value == 'False' or value == False %}
+      <input type="text" id="{{role_id}}_{{key}}" name="{{key}}" value="{{value}}" class="e-input c-red" readonly>
+    {% else %}
+      <input type="text" id="{{role_id}}_{{key}}" name="{{key}}" value="{{value}}" class="e-input e-input-color" readonly>
+    {% endif %}
+  </div>
+{% endfor %}
+</div>

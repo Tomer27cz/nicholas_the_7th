@@ -1,0 +1,68 @@
+{% for user in users %}
+  <div class="dp-card">
+    <div class="dp-card-header">
+      <div class="dp-banner" style="background: {{ user.accent_color }}"></div>
+    </div>
+    <div class="dp-card-body">
+      <div class="dp-profile-header">
+        <a href="/admin/user/{{ user.id }}">
+          <div class="dp-profil-logo">
+            <img src="{{ user.avatar if user.avatar else '/static/img/discord_icon.png' }}" {% if not user.avatar %}style="background: var(--d-g1)" {% endif %} />
+          </div>
+        </a>
+        <div class="dp-badges-container">
+          {% if user.bot %}
+            <div class="dp-badge-item">
+              <img src="/static/discord/PNG/slash_commands.png" alt=""/>
+              <div class="dp-tooltip dp-tooltip-up">Supports Commands</div>
+            </div>
+          {% else %}
+            {% for badge_type, has_it in user.badges.items() %}
+              {% if has_it %}
+                <div class="dp-badge-item">
+                  <img src="{{ badge_dict[badge_type] }}" alt="" />
+                  <div class="dp-tooltip dp-tooltip-up">{{ badge_type }}</div>
+                </div>
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+        </div>
+      </div>
+      <div class="dp-profile-body">
+        <div class="dp-username">
+          <a> {{ user.display_name }} </a>
+          {% if user.bot %}
+            <div class="dp-badge">&#x2713; Bot</div>
+          {% endif %}
+        </div>
+        <p style="color: white;">{{ user.name }}</p>
+        <hr/>
+        <div class="dp-basic-infos">
+          <div class="dp-category-title">About Me</div>
+          <p>Discord API does not allow to fetch this data.</p>
+        </div>
+        <div class="dp-basic-infos">
+          <div class="dp-category-title">Member Since</div>
+          <div style="display: flex; align-items: center;">
+            <img src="https://i.ibb.co/HpbSK8B/icons8-discord-16.png" style="margin-right: 0.5rem;">
+                <p style="margin: 0;">{{ struct_to_time(user.created_at, first='discord') }}</p>
+            <span style="margin: 0 10px;">•</span>
+            <img src="{{ user.guild_icon if user.guild_icon else '/static/img/discord_icon.png' }}" style="margin-right: 0.5rem;" class="dp-guild-icon">
+                <p style="margin: 0;">{{ struct_to_time(user.joined_at, first='discord') }}</p>
+          </div>
+        </div>
+         <div class="dp-roles">
+          <div class="dp-category-title">Roles</div>
+          <div class="dp-roles-list">
+            {% for role in user.roles %}
+              <div class="dp-role">
+                <div class="dp-role-color" style="background: {{ role.color }}"></div>
+                <p>{{ role.name }}</p>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endfor %}

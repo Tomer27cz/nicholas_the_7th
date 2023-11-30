@@ -1,15 +1,15 @@
-from classes.video_class import VideoClass
+from classes.video_class import Queue
 from utils.globals import get_sp
 
 import youtubesearchpython
 
-def spotify_to_yt_video(spotify_url: str, author, guild_id: int) -> VideoClass or None:
+def spotify_to_yt_video(spotify_url: str, author, guild_id: int):
     """
     Converts spotify url to youtube video
     :param spotify_url: str - spotify url
     :param author: author of command
     :param guild_id: guild id
-    :return: VideoClass object
+    :return: VideoClass child object
     """
     # noinspection PyBroadException
     try:
@@ -39,7 +39,7 @@ def spotify_to_yt_video(spotify_url: str, author, guild_id: int) -> VideoClass o
     yt_channel_name = video['channel']['name']
     yt_channel_link = video['channel']['link']
 
-    video_class = VideoClass('Video', author, guild_id, url=yt_url, title=yt_title, picture=yt_picture, duration=yt_duration,
+    video_class = Queue('Video', author, guild_id, url=yt_url, title=yt_title, picture=yt_picture, duration=yt_duration,
                              channel_name=yt_channel_name, channel_link=yt_channel_link)
 
     return video_class
@@ -50,7 +50,7 @@ def spotify_playlist_to_yt_video_list(spotify_playlist_url: str, author, guild_i
     :param spotify_playlist_url: str - spotify playlist url
     :param author: author of command
     :param guild_id: guild id
-    :return: [VideoClass, VideoClass, ...] or None
+    :return: [VideoClass child, VideoClass child, ...] or None
     """
     # noinspection PyBroadException
     try:
@@ -85,7 +85,7 @@ def spotify_playlist_to_yt_video_list(spotify_playlist_url: str, author, guild_i
         yt_channel_name = video['channel']['name']
         yt_channel_link = video['channel']['link']
 
-        video_class = VideoClass('Video', author, guild_id, url=yt_url, title=yt_title, picture=yt_picture, duration=yt_duration,
+        video_class = Queue('Video', author, guild_id, url=yt_url, title=yt_title, picture=yt_picture, duration=yt_duration,
                                  channel_name=yt_channel_name, channel_link=yt_channel_link)
 
         video_list.append(video_class)
@@ -98,7 +98,7 @@ def spotify_album_to_yt_video_list(spotify_album_url: str, author, guild_id: int
     :param spotify_album_url: str - spotify album url
     :param author: author of command
     :param guild_id: guild id
-    :return: [VideoClass, VideoClass, ...] or None
+    :return: [VideoClass child, VideoClass child, ...] or None
     """
     # noinspection PyBroadException
     try:
@@ -131,7 +131,7 @@ def spotify_album_to_yt_video_list(spotify_album_url: str, author, guild_id: int
         yt_channel_name = video['channel']['name']
         yt_channel_link = video['channel']['link']
 
-        video_class = VideoClass('Video', author, guild_id, url=yt_url, title=yt_title, picture=yt_picture, duration=yt_duration,
+        video_class = Queue('Video', author, guild_id, url=yt_url, title=yt_title, picture=yt_picture, duration=yt_duration,
                                  channel_name=yt_channel_name, channel_link=yt_channel_link)
 
         video_list.append(video_class)

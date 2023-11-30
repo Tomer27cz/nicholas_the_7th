@@ -1,4 +1,4 @@
-from utils.globals import get_bot, get_session
+from utils.globals import get_bot, get_session, get_radio_dict
 from database.main import *
 
 import random
@@ -21,6 +21,7 @@ class Guild(Base):
     history = relationship('History', backref='guilds', order_by='History.position', collection_class=ordering_list('position'))
     data = relationship('GuildData', uselist=False, backref='guilds')
     connected = Column(Boolean, default=True)
+    slowed_users = relationship('SlowedUser', backref='guilds')
 
     def __init__(self, guild_id):
         self.id = guild_id
@@ -35,11 +36,11 @@ class ReturnData:
 
     :type response: bool
     :type message: str
-    :type video: VideoClass
+    :type video: VideoClass child
 
     :param response: True if successful, False if not
     :param message: Message to be returned
-    :param video: VideoClass object to be returned if needed
+    :param video: VideoClass child object to be returned if needed
     """
     def __init__(self, response: bool, message: str, video = None):
         self.response = response
@@ -99,7 +100,7 @@ class Options(Base):
         self.language: str = 'en' # language of the bot
         self.response_type: str = 'short'  # long or short
         self.search_query: str = 'Never gonna give you up' # last search query
-        self.buttons: bool = False # if buttons are enabled
+        self.buttons: bool = False # if single are enabled
         self.volume: float = 1.0 # volume of the player
         self.buffer: int = 600  # how many seconds of nothing playing before bot disconnects | 600 = 10min
         self.history_length: int = 20 # how many songs are stored in the history
@@ -118,6 +119,9 @@ class GuildData(Base):
     name = Column(String)
     key = Column(CHAR(6))
     member_count = Column(Integer)
+    text_channel_count = Column(Integer)
+    voice_channel_count = Column(Integer)
+    role_count = Column(Integer)
     owner_id = Column(Integer)
     owner_name = Column(String)
     created_at = Column(String)
@@ -144,6 +148,10 @@ class GuildData(Base):
             self.key = ''.join(random.choice('abcdefghijklmnopqrstuvwxyz0123456789') for _ in range(6))
 
             self.member_count = guild_object.member_count
+            self.text_channel_count = len(guild_object.text_channels)
+            self.voice_channel_count = len(guild_object.voice_channels)
+            self.role_count = len(guild_object.roles)
+
             self.owner_id = guild_object.owner_id
 
             # check if owner exists
@@ -170,6 +178,9 @@ class GuildData(Base):
             self.key = ''.join(random.choice('abcdefghijklmnopqrstuvwxyz0123456789') for _ in range(6))
 
             self.member_count = None
+            self.text_channel_count = None
+            self.voice_channel_count = None
+            self.role_count = None
             self.owner_id = None
             self.owner_name = None
             self.created_at = None
@@ -192,8 +203,36 @@ class Save(Base):
     position = Column(Integer)
     guild_id = Column(Integer, ForeignKey('guilds.id'))
     name = Column(String)
+    author_name = Column(String)
+    author_id = Column(Integer)
+    created_at = Column(Integer)
+
     queue = relationship('SaveVideo', backref='saves', order_by='SaveVideo.position', collection_class=ordering_list('position'))
 
-    def __init__(self, guild_id: int, name: str):
-        self.id: int = guild_id
+    def __init__(self, guild_id: int, name: str, author_name: str, author_id: int):
+        self.guild_id: int = guild_id
         self.name: str = name
+        self.created_at: int = int(time())
+        self.author_name: str = author_name
+        self.author_id: int = author_id
+
+class SlowedUser(Base):
+    """
+    Data class for storing slowed users
+    :type guild_id: int
+    :type user_id: int
+    :type user_name: str
+    :type slowed_for: int
+    """
+    __tablename__ = 'slowed_users'
+
+    user_id = Column(Integer, primary_key=True)
+    user_name = Column(String)
+    guild_id = Column(Integer, ForeignKey('guilds.id'))
+    slowed_for = Column(Integer)
+
+    def __init__(self, guild_id: int, user_id: int, user_name: str, slowed_for: int):
+        self.guild_id: int = guild_id
+        self.user_id: int = user_id
+        self.user_name: str = user_name
+        self.slowed_for: int = slowed_for

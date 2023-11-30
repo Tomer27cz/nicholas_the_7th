@@ -2,7 +2,7 @@ from classes.data_classes import ReturnData
 
 from utils.log import log
 from utils.translate import tg
-from utils.save import save_json
+from utils.save import save_json, push_update
 from utils.discord import now_to_history, get_voice_client
 from utils.globals import get_bot, get_session
 from utils.video_time import set_stopped, set_resumed
@@ -80,6 +80,7 @@ async def pause_def(ctx, mute_response: bool = False) -> ReturnData:
         resp = False
 
     save_json()
+    push_update(guild_id)
 
     if not mute_response:
         await ctx.reply(message, ephemeral=True)
@@ -116,6 +117,7 @@ async def resume_def(ctx, mute_response: bool = False) -> ReturnData:
         resp = False
 
     save_json()
+    push_update(guild_id)
 
     if not mute_response:
         await ctx.reply(message, ephemeral=True)
@@ -193,6 +195,8 @@ async def join_def(ctx, channel_id=None, mute_response: bool = False) -> ReturnD
         # deafen bot
         await guild_object.change_voice_state(channel=voice_channel, self_deaf=True)
 
+        push_update(guild_id)
+
         message = f"{tg(guild_id, 'Joined voice channel:')}  `{voice_channel.name}`"
         if not mute_response:
             await ctx.reply(message, ephemeral=True)
@@ -228,6 +232,7 @@ async def disconnect_def(ctx, mute_response: bool = False) -> ReturnData:
         channel = guild_object.voice_client.channel
         await guild_object.voice_client.disconnect(force=True)
 
+        push_update(guild_id)
         now_to_history(guild_id)
         message = f"{tg(guild_id, 'Left voice channel:')} `{channel}`"
         if not mute_response:

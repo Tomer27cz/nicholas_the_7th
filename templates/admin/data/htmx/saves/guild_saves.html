@@ -1,0 +1,79 @@
+{% for save in saves %}
+  <div class="div-login g-saves-height">
+    <div class="q-div">
+      <div class="q-item1">
+        <p class="q-text q-1">Name</p>
+        <p class="q-text q-2">{{ save.name }}</p>
+      </div>
+      <div class="q-item0">
+        <a class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#renameModal_{{ save.id }}" title="{{ tg(gi, 'Rename') }}">{{ tg(gi, 'Rename') }}</a>
+        <form method="POST" id="deleteForm_{{ save.id }}" action="">
+          <button class="btn btn-danger" title="{{ tg(gi, 'Delete') }}" type="submit" name="deleteSave">{{ tg(gi, 'Delete') }}</button>
+          <input type="hidden" name="save_name" value="{{ save.name }}">
+        </form>
+      </div>
+    </div>
+    <div class="q-div">
+      <div class="q-item1">
+        <p class="q-text q-1">Author</p>
+        <p class="q-text q-2">{{ save.author_name }}</p>
+        <p class="q-text q-3">{{ save.author_id }}</p>
+      </div>
+      <div class="q-item1">
+        <p class="q-text q-1">Created at</p>
+        <p class="q-text q-2">{{ struct_to_time(save.created_at) }}</p>
+      </div>
+      <div class="q-item1">
+        <p class="q-text q-1">Songs</p>
+        <p class="q-text q-2">{{ guild_save_queue_count(gi, save.id) }}</p>
+      </div>
+    </div>
+    <div class="accordion accordion-g2" id="accordion_{{ save.id }}">
+        <div class="accordion-item">
+          <div class="accordion-header">
+            <div class="d-grid gap-2">
+              <a class="btn btn-dark accordion-button collapsed no-padding" type="button" data-bs-toggle="collapse"
+                 data-bs-target="#flush-collapse_{{ save.id }}" hx-target="#accordion_{{ save.id }}_content"
+                 aria-controls="flush-collapse_{{ save.id }}" hx-trigger="click once" hx-swap="outerHTML" aria-expanded="false"
+                 hx-get="/admin/guild/{{ gi }}/saves/htmx?type=save_queue&save_id={{ save.id }}">
+                <h4>Playlist</h4>
+                <div class="text-center">
+                  <div class="spinner-border text-primary htmx-indicator" role="status" style="width: 2rem; height: 2rem;"></div>
+                </div>
+              </a>
+            </div>
+          </div>
+          <div id="flush-collapse_{{ save.id }}" class="accordion-collapse collapse" data-bs-parent="#accordion_{{ save.id }}">
+            <div id="accordion_{{ save.id }}_content"></div>
+          </div>
+        </div>
+      </div>
+  </div>
+  <div class="modal fade" id="renameModal_{{ save.id }}" data-bs-keyboard="false" tabindex="-1"
+       aria-labelledby="renameLabel_{{ save.id }}" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="renameLabel_{{ save.id }}">{{ tg(gi, 'Rename Save') }} - {{ save.name }}</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <form method="POST" id="renameForm_{{ save.id }}" action="">
+            <input type="hidden" name="scroll" value="0" id="scrollPos14">
+            <div class="modal-body">
+              <div class="div-none">
+                <input type="hidden" name="old_name" value="{{ save.name }}">
+              </div>
+              <div class="mb-3">
+                <label for="new_name" class="btn-m">{{ tg(gi, 'Name') }}</label>
+                <input type="text" class="form-control" name="new_name" id="new_name" required>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-dark" data-bs-dismiss="modal">{{ tg(gi, 'Close') }}</button>
+              <button type="submit" class="btn btn-primary" name="renameSave">{{ tg(gi, 'Rename') }}</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+{% endfor %}

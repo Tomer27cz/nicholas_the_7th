@@ -1,0 +1,111 @@
+<div class="q-container" id="queue_{{ guild.queue.index(track) }}">
+  <div class="q-div">
+    {% if track.radio_info is not none %}
+      {% set radio_info = get_radio_info(track.radio_info['name']) %}
+      {% set renew = track.renew() %}
+    <div class="q-item0 q-div div-radio2 r-w1">
+      <img loading="lazy" class="q-img" src="{{ radio_info.picture }}" alt="thumbnail">
+      <div class="q-item1 q-wd">
+        <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="{{ track.url }}">{{ radio_info.title }}</a></p>
+        <p class="q-text"><a class="q-2" target="_blank" rel="noopener noreferrer" href="{{ track.channel_link }}">{{ radio_info.channel_name }}</a></p>
+      </div>
+    </div>
+    {% endif %}
+    <img loading="lazy" class="q-img" src="{{ track.picture }}" alt="thumbnail">
+    <div class="q-item1 {% if radio_info is not none %}r-w2{% else %}q-wd{% endif %}">
+      <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="{{ track.url }}">{{ track.title }}</a></p>
+      <p class="q-text"><a class="q-2" target="_blank" rel="noopener noreferrer" href="{{ track.channel_link }}">{{ track.channel_name }}</a></p>
+      <p class="q-text q-3">{{ convert_duration(track.duration) }}</p>
+    </div>
+    <div class="q-item2 q-items-center">
+      <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://discordapp.com/users/{{ track.author }}">{{ get_username(track.author) }}</a></p>
+      <p class="q-text q-2">{{ track.author }}</p>
+      <p class="q-text q-3">{{ struct_to_time(track.created_at, first='time') }}</p>
+    </div>
+    <div class="q-item0 q-wa q-self-center q-items-center">
+      {% if admin == True %}
+        <button class="btn btn-outline btn-primary btn-sm btn-m" type="button" data-bs-toggle="modal"
+                data-bs-target=#videoEditModal_{{ guild.queue.index(track) }}
+                hx-target="#videoEditModal_{{ guild.queue.index(track) }}_content"
+                hx-get="/guild/{{gi}}/modals?type=queue_edit&var={{ guild.queue.index(track) }}&key={{key}}">{{ tg(gi, 'Edit') }}</button>
+      {% endif %}
+      <button type="button" class="btn btn-secondary btn-sm dropdown-toggle btn-m" data-bs-toggle="dropdown" aria-expanded="false">{{ tg(gi, 'More') }}</button>
+      <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+        <li>
+          <button class="dropdown-item"
+                  hx-get="/guild/{{gi}}/queue?act=top_btn&var={{ guild.queue.index(track) }}&key={{key}}"
+                  hx-swap="outerHTML" hx-target="#q-main" hx-trigger="click throttle:500ms"
+          >{{ tg(gi, 'Move to Top') }}</button>
+        </li>
+        <li>
+          <button class="dropdown-item"
+                  hx-get="/guild/{{gi}}/queue?act=bottom_btn&var={{ guild.queue.index(track) }}&key={{key}}"
+                  hx-swap="outerHTML" hx-target="#q-main" hx-trigger="click throttle:500ms"
+          >{{ tg(gi, 'Move to Bottom') }}</button>
+        </li>
+        <li>
+          <hr class="dropdown-divider">
+        </li>
+        <li>
+          <button class="dropdown-item"
+                  hx-get="/guild/{{gi}}/queue?act=duplicate_btn&var={{ guild.queue.index(track) }}&key={{key}}"
+                  hx-swap="outerHTML" hx-target="#q-main" hx-trigger="click throttle:500ms"
+          >{{ tg(gi, 'Duplicate') }}</button>
+        </li>
+        <li>
+          <hr class="dropdown-divider">
+        </li>
+        <li>
+          <button class="dropdown-item" type="button" data-bs-toggle="modal"
+                  data-bs-target=#videoModal_{{ guild.queue.index(track) }}
+                  hx-target="#videoModal_{{ guild.queue.index(track) }}_content"
+                  hx-get="/guild/{{gi}}/modals?type=queue&var={{ guild.queue.index(track) }}&key={{key}}"
+                  hx-trigger="click throttle:500ms" hx-swap="outerHTML"
+          >{{ tg(gi, 'Info') }}</button>
+        </li>
+      </ul>
+      <button class="btn btn-outline btn-danger btn-sm btn-m"
+              hx-get="/guild/{{gi}}/queue?act=del_btn&var={{ guild.queue.index(track) }}&key={{key}}"
+              hx-swap="outerHTML" hx-target="#q-main" hx-trigger="click throttle:500ms"
+          >{{ tg(gi, 'Remove') }}</button>
+    </div>
+  </div>
+  <div class="q-item0 q-wa q-self-center q-items-center">
+    <div class="btn-group-vertical">
+      <button class="btn btn-dark" hx-get="/guild/{{gi}}/queue?act=up_btn&var={{ guild.queue.index(track) }}&key={{key}}"
+              hx-swap="outerHTML" hx-target="#q-main" hx-trigger="click throttle:500ms">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+             class="bi bi-arrow-up" viewBox="0 0 16 16">
+          <path fill-rule="evenodd"
+                d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"></path>
+        </svg>
+      </button>
+      <button class="btn btn-dark" hx-get="/guild/{{gi}}/queue?act=down_btn&var={{ guild.queue.index(track) }}&key={{key}}"
+              hx-swap="outerHTML" hx-target="#q-main" hx-trigger="click throttle:500ms">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+             class="bi bi-arrow-down" viewBox="0 0 16 16">
+          <path fill-rule="evenodd"
+                d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="videoModal_{{ guild.queue.index(track) }}" data-bs-keyboard="false" tabindex="-1"
+         aria-labelledby="videoLabel_{{ guild.queue.index(track) }}" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg r-modal">
+    <div class="modal-content" id="videoModal_{{ guild.queue.index(track) }}_content">
+    </div>
+  </div>
+</div>
+
+{% if admin == True %}
+<div class="modal fade" id="videoEditModal_{{ guild.queue.index(track) }}" data-bs-keyboard="false" tabindex="-1"
+           aria-labelledby="videoEditLabel_{{ guild.queue.index(track) }}" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg r-modal">
+    <div class="modal-content" id="videoEditModal_{{ guild.queue.index(track) }}_content">
+    </div>
+  </div>
+</div>
+{% endif %}

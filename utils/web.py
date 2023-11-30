@@ -20,6 +20,7 @@ def execute_function(function_name: str, web_data: classes.data_classes.WebData,
 
     return response
 
+# Guild
 def get_guild(guild_id: int):
     """
     Get a guild from the database
@@ -35,7 +36,6 @@ def get_guild(guild_id: int):
     # # send argument dictionary
     # return send_arg(arg_dict)
     return guild(guild_id)
-
 def get_guilds():
     """
     Get the guilds list from database
@@ -52,6 +52,7 @@ def get_guilds():
     # return guild
     return guild_dict()
 
+# Bot
 def get_bot_guilds():
     """
     Get the guilds list from bot instance
@@ -64,7 +65,6 @@ def get_bot_guilds():
     # send argument dictionary
     bot_guilds = send_arg(arg_dict)
     return bot_guilds
-
 def get_guilds_bot_status():
     """
     Get the status of the bot in each guild
@@ -76,7 +76,6 @@ def get_guilds_bot_status():
     }
     # send argument dictionary
     return send_arg(arg_dict)
-
 def get_guild_bot_status(guild_id: int):
     """
     Get the status of the bot in a guild
@@ -91,9 +90,8 @@ def get_guild_bot_status(guild_id: int):
     # send argument dictionary
     return send_arg(arg_dict)
 
-
-# guild specific data
-def get_guild_channels(guild_id: int):
+# Guild Voice Channel
+def get_guild_voice_channels(guild_id: int):
     """
     Get the guild channels list from database
     :param guild_id: guild id
@@ -102,12 +100,31 @@ def get_guild_channels(guild_id: int):
     # create argument dictionary
     arg_dict = {
         'type': 'get_data',
-        'data_type': 'guild_channels',
+        'data_type': 'guild_voice_channels',
         'guild_id': guild_id
     }
     # send argument dictionary
     return send_arg(arg_dict)
+def get_guild_voice_channels_index(guild_id: int, start_index:int, end_index:int):
+    """
+    Get the guild channels list from database
+    :param guild_id: guild id
+    :param start_index: start index
+    :param end_index: end index
+    :return: list - list of channel objects
+    """
+    # create argument dictionary
+    arg_dict = {
+        'type': 'get_data',
+        'data_type': 'guild_voice_channels_index',
+        'guild_id': guild_id,
+        'start_index': start_index,
+        'end_index': end_index
+    }
+    # send argument dictionary
+    return send_arg(arg_dict)
 
+# Guild Text Channels
 def get_guild_text_channels(guild_id: int):
     """
     Get the guild text channels list from database
@@ -125,7 +142,44 @@ def get_guild_text_channels(guild_id: int):
     if response is None:
         return utils.files.get_guild_text_channels_file(guild_id)
     return response
+def get_guild_text_channels_index(guild_id: int, start_index:int, end_index:int):
+    """
+    Get the guild text channels list from database
+    :param guild_id: guild id
+    :param start_index: start index
+    :param end_index: end index
+    :return: list - list of channel objects
+    """
+    # create argument dictionary
+    arg_dict = {
+        'type': 'get_data',
+        'data_type': 'guild_text_channels_index',
+        'guild_id': guild_id,
+        'start_index': start_index,
+        'end_index': end_index
+    }
+    # send argument dictionary
+    return send_arg(arg_dict)
 
+# Channel members
+def get_guild_channel_members(guild_id: int, channel_id: int):
+    """
+    Get the members of a guild
+    :param guild_id: guild id
+    :param channel_id: channel id
+    :return: list - list of members
+    """
+    # create argument dictionary
+    arg_dict = {
+        'type': 'get_data',
+        'data_type': 'guild_channel_members',
+        'guild_id': guild_id,
+        'channel_id': channel_id
+    }
+    # send argument dictionary
+    return send_arg(arg_dict)
+
+# Guild members
 def get_guild_members(guild_id: int):
     """
     Get the members of a guild
@@ -140,7 +194,26 @@ def get_guild_members(guild_id: int):
     }
     # send argument dictionary
     return send_arg(arg_dict)
+def get_guild_members_index(guild_id: int, start_index: int, end_index: int):
+    """
+    Get the members of a guild
+    :param guild_id: guild id
+    :param start_index: start index
+    :param end_index: end index
+    :return: list - list of members
+    """
+    # create argument dictionary
+    arg_dict = {
+        'type': 'get_data',
+        'data_type': 'guild_members_index',
+        'guild_id': guild_id,
+        'start_index': start_index,
+        'end_index': end_index
+    }
+    # send argument dictionary
+    return send_arg(arg_dict)
 
+# Guild roles
 def get_guild_roles(guild_id: int):
     """
     Get the roles of a guild
@@ -155,7 +228,58 @@ def get_guild_roles(guild_id: int):
     }
     # send argument dictionary
     return send_arg(arg_dict)
+def get_guild_roles_index(guild_id: int, start_index: int, end_index: int):
+    """
+    Get the roles of a guild
+    :param guild_id: guild id
+    :param start_index: start index
+    :param end_index: end index
+    :return: list - list of roles
+    """
+    # create argument dictionary
+    arg_dict = {
+        'type': 'get_data',
+        'data_type': 'guild_roles_index',
+        'guild_id': guild_id,
+        'start_index': start_index,
+        'end_index': end_index
+    }
+    # send argument dictionary
+    return send_arg(arg_dict)
+def get_guild_role_members(guild_id: int, role_id: int):
+    """
+    Get the members of a guild
+    :param guild_id: guild id
+    :param role_id: role id
+    :return: list - list of members
+    """
+    # create argument dictionary
+    arg_dict = {
+        'type': 'get_data',
+        'data_type': 'guild_role_members',
+        'guild_id': guild_id,
+        'role_id': role_id
+    }
+    # send argument dictionary
+    return send_arg(arg_dict)
+def get_guild_role_permissions(guild_id: int, role_id: int):
+    """
+    Get the permissions of a role
+    :param guild_id: guild id
+    :param role_id: role id
+    :return: list - list of permissions
+    """
+    # create argument dictionary
+    arg_dict = {
+        'type': 'get_data',
+        'data_type': 'guild_role_permissions',
+        'guild_id': guild_id,
+        'role_id': role_id
+    }
+    # send argument dictionary
+    return send_arg(arg_dict)
 
+# Guild invites
 def get_guild_invites(guild_id: int):
     """
     Get the invites of a guild
@@ -171,6 +295,7 @@ def get_guild_invites(guild_id: int):
     # send argument dictionary
     return send_arg(arg_dict)
 
+# Guild specific data
 def get_update(guild_id: int):
     """
     Get update variable state from the database
@@ -187,7 +312,6 @@ def get_update(guild_id: int):
     # }
     # # send argument dictionary
     # return send_arg(arg_dict)
-
 def get_language(guild_id: int):
     """
     Get language from the database
@@ -205,6 +329,7 @@ def get_language(guild_id: int):
     # # send argument dictionary
     # return send_arg(arg_dict)
 
+# Channel transcript
 def get_channel_content(guild_id: int, channel_id: int):
     try:
         path = f'{PARENT_DIR}db/guilds/{guild_id}/{channel_id}'
@@ -220,7 +345,6 @@ def get_channel_content(guild_id: int, channel_id: int):
             return f.read()
     except (FileNotFoundError, IndexError, PermissionError):
         return None
-
 def get_fast_channel_content(channel_id: int):
     """
     Get the content of a channel (fast nad up-to-date)
@@ -236,6 +360,7 @@ def get_fast_channel_content(channel_id: int):
     # send argument dictionary
     return send_arg(arg_dict)
 
+# Video
 async def get_renew(guild_id: int, queue_type: str, index: int):
     """
     Get a renew from the database
@@ -255,7 +380,7 @@ async def get_renew(guild_id: int, queue_type: str, index: int):
     # send argument dictionary
     return send_arg(arg_dict)
 
-# user specific data
+# User
 def get_username(user_id: int):
     """
     Get a user from the database
@@ -270,7 +395,6 @@ def get_username(user_id: int):
     }
     # send argument dictionary
     return send_arg(arg_dict)
-
 def get_user_data(user_id: int):
     """
     Get a user from the database

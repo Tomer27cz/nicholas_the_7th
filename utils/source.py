@@ -1,8 +1,4 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from classes.video_class import VideoClass
 
 from utils.globals import get_sc
 from utils.log import log
@@ -50,7 +46,7 @@ class GetSource(discord.PCMVolumeTransformer):
         super().__init__(source, guild(guild_id).options.volume)
 
     @classmethod
-    async def create_source(cls, guild_id: int, url: str, source_type: str = 'Video', time_stamp: int=None, video_class: VideoClass=None, attempt: int=0):
+    async def create_source(cls, guild_id: int, url: str, source_type: str = 'Video', time_stamp: int=None, video_class=None, attempt: int=0):
         """
         Get source from url
 
@@ -60,7 +56,7 @@ class GetSource(discord.PCMVolumeTransformer):
 
         :param guild_id: int
         :param url: str
-        :param video_class: VideoClass
+        :param video_class: VideoClass child
         :param source_type: str ('Video', 'SoundCloud') - default: 'Video' > anything else for direct url
         :param time_stamp: int - time stamp in seconds
         :param attempt: int - how many times has this function been called

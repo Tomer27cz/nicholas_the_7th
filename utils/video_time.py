@@ -1,17 +1,16 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, Union
 if TYPE_CHECKING:
-    from classes.video_class import VideoClass
     from classes.typed_dictionaries import TimeSegment, TimeSegmentInner, VideoChapter
 
 import classes.video_class as video_class
 import database.guild as db
-from utils.save import save_json
+from utils.save import save_json, push_update
 from utils.globals import get_session
 
 from time import time
 
-def set_stopped(video: VideoClass):
+def set_stopped(video):
     last_segment: TimeSegment = video.played_duration[-1]
     start = last_segment['start']
     end = last_segment['end']
@@ -29,7 +28,7 @@ def set_stopped(video: VideoClass):
 
     save_json()
 
-def set_started(video: VideoClass, guild_object, chapters: Union[list[VideoChapter], None]= None):
+def set_started(video, guild_object, chapters: Union[list[VideoChapter], None]= None):
     if len(video.played_duration) == 0:
         assert video.played_duration == []
         video.played_duration += [
@@ -50,10 +49,11 @@ def set_started(video: VideoClass, guild_object, chapters: Union[list[VideoChapt
     guild_id = guild_object.id
     db.guild(guild_id).now_playing = video_class.to_now_playing_class(video)
     get_session().commit()
+    push_update(guild_id)
 
     save_json()
 
-def set_resumed(video: VideoClass):
+def set_resumed(video):
     start_dict = {'epoch': int(time()), 'time_stamp': video.played_duration[-1]['end']['time_stamp']}
     end_dict = {'epoch': None, 'time_stamp': None}
 
@@ -67,7 +67,7 @@ def set_resumed(video: VideoClass):
 
     save_json()
 
-def set_new_time(video: VideoClass, time_stamp: int):
+def set_new_time(video, time_stamp: int):
     if video.played_duration[-1]['end']['epoch'] is None:
         set_stopped(video)
 
@@ -89,18 +89,19 @@ def video_time_from_start(video) -> float:
     if len_played_duration == 0:
         return 0.0
 
-    if len_played_duration == 1:
-        segment: TimeSegment = video.played_duration[0]
-        start: Union[None, int] = segment['start']['epoch']
-        end: Union[None, int] = segment['end']['epoch']
-
-        if start is None:
-            return 0.0
-
-        if end is None:
-            return int(time()) - start
-
-        return segment['end']['time_stamp']
+    # unnecessary code
+    # if len_played_duration == 1:
+    #     segment: TimeSegment = video.played_duration[0]
+    #     start: Union[None, int] = segment['start']['epoch']
+    #     end: Union[None, int] = segment['end']['epoch']
+    #
+    #     if start is None:
+    #         return 0.0
+    #
+    #     if end is None:
+    #         return int(time()) - start
+    #
+    #     return segment['end']['time_stamp']
 
     segment: TimeSegment = video.played_duration[-1]
     start: TimeSegmentInner = segment['start']

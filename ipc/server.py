@@ -94,7 +94,7 @@ async def execute_function(request_dict) -> ReturnData:
         return await web_func.queue.web_queue_from_radio(web_data, radio_name=args['radio_name'])
 
     if func_name == 'new_queue_save':
-        return new_queue_save(web_data.guild_id, save_name=args['save_name'])
+        return new_queue_save(web_data.guild_id, save_name=args['save_name'], author_name=args['author_name'], author_id=args['author_id'])
     if func_name == 'load_queue_save':
         return load_queue_save(web_data.guild_id, save_name=args['save_name'])
     if func_name == 'delete_queue_save':
@@ -133,13 +133,13 @@ async def execute_function(request_dict) -> ReturnData:
         channel_id = args['channel_id']
         return await commands.chat_export.download_guild_channel(web_data, channel_id)
 
-    if func_name == 'export_queue':
-        guild_id = args['guild_id']
-        return await commands.queue.export_queue(web_data, guild_id)
-    if func_name == 'import_queue':
-        guild_id = args['guild_id']
-        queue_data = args['queue_data']
-        return await commands.queue.import_queue(web_data, queue_data, guild_id)
+    # if func_name == 'export_queue':
+    #     guild_id = args['guild_id']
+    #     return await commands.queue.export_queue(web_data, guild_id)
+    # if func_name == 'import_queue':
+    #     guild_id = args['guild_id']
+    #     queue_data = args['queue_data']
+    #     return await commands.queue.import_queue(web_data, queue_data, guild_id)
 
     return ReturnData(False, f'Unknown function: {func_name}')
 
@@ -162,15 +162,29 @@ async def execute_get_data(request_dict):
             return 'Connected'
         return 'Unknown'
 
-    if data_type == 'guild_channels':
+    # Voice Channels
+    if data_type == 'guild_voice_channels':
         guild_id = request_dict['guild_id']
         guild_channels = []
         guild_object = get_bot().get_guild(guild_id)
         if not guild_object:
             return None
         for channel in guild_object.voice_channels:
-            guild_channels.append(DiscordChannel(channel.id))
+            guild_channels.append(DiscordChannel(channel.id, no_members=True))
         return guild_channels
+    elif data_type == 'guild_voice_channels_index':
+        guild_id = request_dict['guild_id']
+        start_index = request_dict['start_index']
+        end_index = request_dict['end_index']
+        guild_channels = []
+        guild_object = get_bot().get_guild(guild_id)
+        if not guild_object:
+            return None
+        for index, channel in enumerate(guild_object.voice_channels[start_index:end_index]):
+            guild_channels.append(DiscordChannel(channel.id, no_members=True))
+        return guild_channels
+
+    # Text channels
     elif data_type == 'guild_text_channels':
         guild_id = request_dict['guild_id']
         guild_channels = []
@@ -178,8 +192,42 @@ async def execute_get_data(request_dict):
         if not guild_object:
             return None
         for channel in guild_object.text_channels:
-            guild_channels.append(DiscordChannel(channel.id))
+            guild_channels.append(DiscordChannel(channel.id, no_members=True))
         return guild_channels
+    elif data_type == 'guild_text_channels_index':
+        guild_id = request_dict['guild_id']
+        start_index = request_dict['start_index']
+        end_index = request_dict['end_index']
+        guild_channels = []
+        guild_object = get_bot().get_guild(guild_id)
+        if not guild_object:
+            return None
+        for index, channel in enumerate(guild_object.text_channels[start_index:end_index]):
+            guild_channels.append(DiscordChannel(channel.id, no_members=True))
+        return guild_channels
+
+    # Channel members
+    elif data_type == 'guild_channel_members':
+        guild_id = request_dict['guild_id']
+        channel_id = request_dict['channel_id']
+        guild_users = []
+        guild_object = get_bot().get_guild(guild_id)
+        if not guild_object:
+            return None
+        channel_object = guild_object.get_channel(channel_id)
+        if not channel_object:
+            return None
+        for member in channel_object.members:
+            guild_users.append(DiscordMember(member))
+        return guild_users
+
+    # Channel transcript
+    elif data_type == 'channel_transcript':
+        channel_id = request_dict['channel_id']
+        channel_object = DiscordChannel(channel_id)
+        return await channel_object.get_first_messages(100)
+
+    # Guild members
     elif data_type == 'guild_members':
         guild_id = request_dict['guild_id']
         guild_users = []
@@ -189,6 +237,19 @@ async def execute_get_data(request_dict):
         for member in guild_object.members:
             guild_users.append(DiscordMember(member))
         return guild_users
+    elif data_type == 'guild_members_index':
+        guild_id = request_dict['guild_id']
+        start_index = request_dict['start_index']
+        end_index = request_dict['end_index']
+        guild_users = []
+        guild_object = get_bot().get_guild(guild_id)
+        if not guild_object:
+            return None
+        for index, member in enumerate(guild_object.members[start_index:end_index]):
+            guild_users.append(DiscordMember(member))
+        return guild_users
+
+    # Guild roles
     elif data_type == 'guild_roles':
         guild_id = request_dict['guild_id']
         guild_roles = []
@@ -196,14 +257,52 @@ async def execute_get_data(request_dict):
         if not guild_object:
             return None
         for role in guild_object.roles:
-            guild_roles.append(DiscordRole(role_id=role.id, guild_id=guild_id))
+            guild_roles.append(DiscordRole(role_id=role.id, guild_id=guild_id, no_members=True))
         return guild_roles
+    elif data_type == 'guild_roles_index':
+        guild_id = request_dict['guild_id']
+        start_index = request_dict['start_index']
+        end_index = request_dict['end_index']
+        guild_roles = []
+        guild_object = get_bot().get_guild(guild_id)
+        if not guild_object:
+            return None
+        for index, role in enumerate(guild_object.roles[start_index:end_index]):
+            guild_roles.append(DiscordRole(role_id=role.id, guild_id=guild_id, no_members=True))
+        return guild_roles
+    elif data_type == 'guild_role_members':
+        guild_id = request_dict['guild_id']
+        role_id = request_dict['role_id']
+        guild_users = []
+        guild_object = get_bot().get_guild(guild_id)
+        if not guild_object:
+            return None
+        role_object = guild_object.get_role(role_id)
+        if not role_object:
+            return None
+        for member in role_object.members:
+            guild_users.append(DiscordMember(member))
+        return guild_users
+    elif data_type == 'guild_role_permissions':
+        guild_id = request_dict['guild_id']
+        role_id = request_dict['role_id']
+        guild_object = get_bot().get_guild(guild_id)
+        if not guild_object:
+            return None
+        role_object = guild_object.get_role(role_id)
+        if not role_object:
+            return None
+        return role_object.permissions
+
+    # Guild invites
     elif data_type == 'guild_invites':
         guild_id = request_dict['guild_id']
         guild_invites = []
         guild_object = get_bot().get_guild(guild_id)
         if not guild_object:
             return None
+
+        # if not guild_object.permissions_for(guild_object.me).speak: #TODO: check for permission to view invites
 
         invites = asyncio.run_coroutine_threadsafe(guild_object.invites(), get_bot().loop).result()
         if not invites:
@@ -214,11 +313,7 @@ async def execute_get_data(request_dict):
 
         return guild_invites
 
-    elif data_type == 'channel_transcript':
-        channel_id = request_dict['channel_id']
-        channel_object = DiscordChannel(channel_id)
-        return await channel_object.get_first_messages(100)
-
+    # User
     elif data_type == 'user_name':
         user_id = request_dict['user_id']
         return get_username(user_id)
@@ -226,7 +321,7 @@ async def execute_get_data(request_dict):
         user_id = request_dict['user_id']
         return DiscordUser(user_id)
 
-
+    # Video
     if data_type == 'renew':
         queue_type = request_dict['queue_type']
         index = request_dict['index']
@@ -239,6 +334,8 @@ async def execute_get_data(request_dict):
                 guild(guild_id).queue[index].renew()
             except IndexError:
                 pass
+
+    # BOT
     elif data_type == 'bot_guilds':
         update_guilds()
         bot_guilds = []
@@ -268,7 +365,7 @@ async def handle_client(client):
     elif request_type == 'function':
         response = await execute_function(request_dict)
     else:
-        response = ReturnData(False, 'idk')
+        raise ValueError(f'Unknown request type: {request_type}')
 
     if response:
         # serialize response

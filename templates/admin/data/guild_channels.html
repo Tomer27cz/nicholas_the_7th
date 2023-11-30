@@ -2,6 +2,10 @@
 
 {% set title = title %}
 
+{% block head %}{{super()}}
+<script defer src="https://unpkg.com/htmx.org@1.9.6"></script>
+{% endblock %}
+
 {% block content %}
   {% if errors %}
     {% for error in errors %}
@@ -15,86 +19,42 @@
   <div class="container">
     <div class="l-div q-self-center q-items-center">
       <div class="q-item1">
-        <h1>{{ guild_object.data.name }}</h1>
+        <h1>{{ data.name }}</h1>
       </div>
-      <a href="/admin/guild/{{ guild_object.id }}" class="btn btn-primary q-item1">Return to Guild Dashboard</a>
+      <a href="/admin/guild/{{ data.id }}" class="btn btn-primary q-item1">Return to Guild Dashboard</a>
     </div>
-    {% if channels %}
-      {% for channel in channels %}
-      <div class="div-login">
-        <div class="q-div">
-          <div class="q-item1">
-            <p class="q-text q-1">Name</p>
-            <p class="q-text q-2">{{ channel.name }}</p>
+  {% if channel_type == 'voice' %}
+    {% if data.voice_channel_count %}
+      {% for i in range(ceil(data.voice_channel_count/5)) %}
+      <div class="div-login g-channels-placeholder" hx-swap="outerHTML" hx-target="this" hx-trigger="intersect once"
+           hx-get="/admin/guild/{{ data.id }}/channels/htmx?type=voice_channels&index={{ i }}">
+      <div class="text-center">
+            <div class="spinner-border text-primary htmx-indicator" role="status" id="spinner{{i}}" style="width: 3rem; height: 3rem;"></div>
           </div>
-          <div class="q-item1">
-            <p class="q-text q-1">ID</p>
-            <p class="q-text q-2">{{ channel.id }}</p>
-          </div>
-          <div class="q-item1">
-            <p class="q-text q-1">Created at</p>
-            <p class="q-text q-2">{{ channel.created_at }}</p>
-          </div>
-          <div class="q-item1">
-            <p class="q-text q-1">Members</p>
-            <p class="q-text q-2">{{ len(channel.members) }}</p>
-          </div>
-        </div>
-        {% if len(channel.members) > 0 %}
-          <div class="accordion accordion-g2" id="accordion{{ channel.id }}">
-            <div class="accordion-item">
-              <div class="accordion-header">
-                <div class="d-grid gap-2">
-                  <a class="btn btn-dark accordion-button collapsed no-padding" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse{{ channel.id }}" aria-expanded="false" aria-controls="flush-collapse{{ channel.id }}">
-                    <h4>Users in Channel</h4>
-                  </a>
-                </div>
-              </div>
-              <div id="flush-collapse{{ channel.id }}" class="accordion-collapse collapse" data-bs-parent="#accordion{{ channel.id }}">
-                {% for member in channel.members %}
-                  <div class="q-container">
-                    <div class="q-div">
-                      <img loading="lazy" class="q-img" src="{{ member.avatar }}" alt="User Avatar">
-                      <div class="q-item1">
-                        <p class="q-text q-1">Name</p>
-                        <p class="q-text q-2">{{ member.name }} #{{ member.discriminator }}</p>
-                      </div>
-                      <div class="q-item1">
-                        <p class="q-text q-1">ID</p>
-                        <p class="q-text q-2">{{ member.id }}</p>
-                      </div>
-                      <div class="q-item1">
-                        <p class="q-text q-1">Joined at</p>
-                        <p class="q-text q-2">{{ member.joined_at }}</p>
-                      </div>
-                      <div class="q-item1">
-                        <p class="q-text q-1">Status</p>
-                        {% if member.status == 'online' %}
-                          <p class="q-text c-green">{{ member.status }}</p>
-                        {% elif member.status == 'offline' %}
-                          <p class="q-text c-red">{{ member.status }}</p>
-                        {% else %}
-                          <p class="q-text q-2">{{ member.status }}</p>
-                        {% endif %}
-                      </div>
-                      <div class="q-item0">
-                        <p class="q-text q-1">Get Full Info</p>
-                        <p class="q-text"><a class="btn btn-primary" href="/admin/user/{{ member.id }}">Full Info</a></p>
-                      </div>
-                    </div>
-                  </div>
-                {% endfor %}
-              </div>
-            </div>
-          </div>
-        {% endif %}
       </div>
       {% endfor %}
     {% else %}
       <div class="div-login">
-        <h3 class="text-center">No channels found</h3>
+        <h3 class="text-center">No voice channels found</h3>
       </div>
     {% endif %}
+  {% elif channel_type == 'text' %}
+    {% if data.text_channel_count %}
+      {% for i in range(ceil(data.text_channel_count/5)) %}
+      <div class="div-login g-channels-placeholder" hx-swap="outerHTML" hx-target="this" hx-trigger="intersect once"
+           hx-get="/admin/guild/{{ data.id }}/channels/htmx?type=text_channels&index={{ i }}">
+      <div class="text-center">
+            <div class="spinner-border text-primary htmx-indicator" role="status" id="spinner{{i}}" style="width: 3rem; height: 3rem;"></div>
+          </div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <div class="div-login">
+        <h3 class="text-center">No text channels found</h3>
+      </div>
+    {% endif %}
+  {% else %}
+    <h1>Invalid channel type</h1>
+  {% endif %}
   </div>
-
 {% endblock %}

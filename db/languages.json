@@ -281,7 +281,13 @@
         "queue save renamed": "queue save renamed",
         "Save name must be alphanumeric": "Save name must be alphanumeric",
         "Cancel": "Cancel",
-        "Channel": "Channel"
+        "Channel": "Channel",
+        "Are you sure?": "Are you sure?",
+        "Not connected": "Not connected",
+        "Connected": "Connected",
+        "Unknown": "Unknown",
+        "Playing": "Playing",
+        "Paused": "Paused"
     },
     "cs": {
         "search": "Vyhledejte na youtube zadan\u00fd dotaz",
@@ -566,7 +572,13 @@
         "queue save renamed": "ukl\u00e1d\u00e1n\u00ed do fronty p\u0159ejmenov\u00e1no",
         "Save name must be alphanumeric": "N\u00e1zev ulo\u017een\u00ed mus\u00ed b\u00fdt alfanumerick\u00fd",
         "Cancel": "zru\u0161en\u00ed",
-        "Channel": "Kan\u00e1l"
+        "Channel": "Kan\u00e1l",
+        "Are you sure?": "Jste si jist\u00fd?",
+        "Not connected": "Nep\u0159ipojen\u00fd",
+        "Connected": "P\u0159ipojeno",
+        "Unknown": "Nezn\u00e1m\u00fd",
+        "Playing": "Hran\u00ed",
+        "Paused": "Pozastaveno"
     },
     "de": {
         "search": "Suchen Sie YouTube nach der bereitgestellten Abfrage",
@@ -851,7 +863,13 @@
         "queue save renamed": "Warteschlange speichern umbenannt",
         "Save name must be alphanumeric": "Der Speichername muss alphanumerisch sein",
         "Cancel": "Stornieren",
-        "Channel": "Kanal"
+        "Channel": "Kanal",
+        "Are you sure?": "Bist du sicher?",
+        "Not connected": "Nicht verbunden",
+        "Connected": "In Verbindung gebracht",
+        "Unknown": "Unbekannt",
+        "Playing": "Spielen",
+        "Paused": "Angehalten"
     },
     "eo": {
         "search": "Ser\u0109u YouTube",
@@ -1136,7 +1154,13 @@
         "queue save renamed": "vostokonservado renomita",
         "Save name must be alphanumeric": "Konservnomo devas esti alfanombra",
         "Cancel": "Nuligi",
-        "Channel": "Kanalo"
+        "Channel": "Kanalo",
+        "Are you sure?": "\u0108u vi certas?",
+        "Not connected": "Ne konektita",
+        "Connected": "Konektis",
+        "Unknown": "Nekonata",
+        "Playing": "Ludanta",
+        "Paused": "Pa\u016dzita"
     },
     "es": {
         "search": "Busque en YouTube la consulta proporcionada",
@@ -1421,7 +1445,13 @@
         "queue save renamed": "guardado en cola renombrado",
         "Save name must be alphanumeric": "El nombre guardado debe ser alfanum\u00e9rico",
         "Cancel": "Cancelar",
-        "Channel": "Canal"
+        "Channel": "Canal",
+        "Are you sure?": "\u00bfEst\u00e1 seguro?",
+        "Not connected": "No conectado",
+        "Connected": "Conectado",
+        "Unknown": "Desconocido",
+        "Playing": "Jugando",
+        "Paused": "En pausa"
     },
     "fr": {
         "search": "Recherchez YouTube pour la requ\u00eate fournie",
@@ -1706,7 +1736,13 @@
         "queue save renamed": "sauvegarde de la file d&#39;attente renomm\u00e9e",
         "Save name must be alphanumeric": "Le nom de sauvegarde doit \u00eatre alphanum\u00e9rique",
         "Cancel": "Annuler",
-        "Channel": "Canaliser"
+        "Channel": "Canaliser",
+        "Are you sure?": "Es-tu s\u00fbr?",
+        "Not connected": "Pas connect\u00e9",
+        "Connected": "Connect\u00e9",
+        "Unknown": "Inconnu",
+        "Playing": "Jouant",
+        "Paused": "En pause"
     },
     "it": {
         "search": "Cerca YouTube per la query fornita",
@@ -1991,7 +2027,13 @@
         "queue save renamed": "salvataggio della coda rinominato",
         "Save name must be alphanumeric": "Il nome di salvataggio deve essere alfanumerico",
         "Cancel": "Annulla",
-        "Channel": "Canale"
+        "Channel": "Canale",
+        "Are you sure?": "Sei sicuro?",
+        "Not connected": "Non collegata",
+        "Connected": "Collegato",
+        "Unknown": "Sconosciuto",
+        "Playing": "Giocando",
+        "Paused": "In pausa"
     },
     "ja": {
         "search": "YouTube\u3092\u691c\u7d22\u3057\u3066\u304f\u3060\u3055\u3044",
@@ -2276,7 +2318,13 @@
         "queue save renamed": "\u30ad\u30e5\u30fc\u4fdd\u5b58\u306e\u540d\u524d\u304c\u5909\u66f4\u3055\u308c\u307e\u3057\u305f",
         "Save name must be alphanumeric": "\u4fdd\u5b58\u540d\u306f\u82f1\u6570\u5b57\u3067\u3042\u308b\u5fc5\u8981\u304c\u3042\u308a\u307e\u3059",
         "Cancel": "\u30ad\u30e3\u30f3\u30bb\u30eb",
-        "Channel": "\u30c1\u30e3\u30cd\u30eb"
+        "Channel": "\u30c1\u30e3\u30cd\u30eb",
+        "Are you sure?": "\u672c\u6c17\u3067\u3059\u304b\uff1f",
+        "Not connected": "\u63a5\u7d9a\u3055\u308c\u3066\u3044\u307e\u305b\u3093",
+        "Connected": "\u63a5\u7d9a\u6e08\u307f",
+        "Unknown": "\u672a\u77e5",
+        "Playing": "\u904a\u3076",
+        "Paused": "\u4e00\u6642\u505c\u6b62\u4e2d"
     },
     "ko": {
         "search": "\uc81c\uacf5\ub41c \ucffc\ub9ac\ub97c \uac80\uc0c9\ud558\uc2ed\uc2dc\uc624",
@@ -2561,7 +2609,13 @@
         "queue save renamed": "\ub300\uae30\uc5f4 \uc800\uc7a5 \uc774\ub984 \ubcc0\uacbd",
         "Save name must be alphanumeric": "\uc800\uc7a5 \uc774\ub984\uc740 \uc601\uc22b\uc790\uc5ec\uc57c \ud569\ub2c8\ub2e4.",
         "Cancel": "\ucde8\uc18c",
-        "Channel": "\ucc44\ub110"
+        "Channel": "\ucc44\ub110",
+        "Are you sure?": "\ud655\uc2e4\ud569\ub2c8\uae4c?",
+        "Not connected": "\uc5f0\uacb0\ub418\uc9c0 \uc54a\uc740",
+        "Connected": "\uc5f0\uacb0\ub428",
+        "Unknown": "\uc54c\ub824\uc9c0\uc9c0 \uc54a\uc740",
+        "Playing": "\ub180\uc774",
+        "Paused": "\uc77c\uc2dc\uc911\uc9c0\ub428"
     },
     "la": {
         "search": "Search YouTube pro provisum query",
@@ -2846,7 +2900,13 @@
         "queue save renamed": "queue nisi renamed",
         "Save name must be alphanumeric": "Nomen salvum esse debet alphanumeric",
         "Cancel": "Cancel",
-        "Channel": "Channel"
+        "Channel": "Channel",
+        "Are you sure?": "Es certus?",
+        "Not connected": "Seiuncta",
+        "Connected": "Coniuncta",
+        "Unknown": "Ignota",
+        "Playing": "Ludens",
+        "Paused": "Paused"
     },
     "zh": {
         "search": "\u641c\u7d22YouTube\u63d0\u4f9b\u7684\u67e5\u8be2",
@@ -3131,7 +3191,13 @@
         "queue save renamed": "\u961f\u5217\u4fdd\u5b58\u91cd\u547d\u540d",
         "Save name must be alphanumeric": "\u4fdd\u5b58\u540d\u79f0\u5fc5\u987b\u662f\u5b57\u6bcd\u6570\u5b57",
         "Cancel": "\u53d6\u6d88",
-        "Channel": "\u6e20\u9053"
+        "Channel": "\u6e20\u9053",
+        "Are you sure?": "\u4f60\u786e\u5b9a\u5417\uff1f",
+        "Not connected": "\u672a\u8fde\u63a5",
+        "Connected": "\u8fde\u63a5\u7684",
+        "Unknown": "\u672a\u77e5",
+        "Playing": "\u6f14\u594f",
+        "Paused": "\u5df2\u6682\u505c"
     },
     "nl": {
         "search": "Zoek YouTube naar de verstrekte query",
@@ -3416,7 +3482,13 @@
         "queue save renamed": "wachtrij opslaan hernoemd",
         "Save name must be alphanumeric": "De opslagnaam moet alfanumeriek zijn",
         "Cancel": "Annuleren",
-        "Channel": "Kanaal"
+        "Channel": "Kanaal",
+        "Are you sure?": "Weet je het zeker?",
+        "Not connected": "Niet verbonden",
+        "Connected": "Verbonden",
+        "Unknown": "Onbekend",
+        "Playing": "Spelen",
+        "Paused": "Gepauzeerd"
     },
     "pl": {
         "search": "Wyszukaj YouTube, aby uzyska\u0107 dostarczone zapytanie",
@@ -3701,7 +3773,13 @@
         "queue save renamed": "zmieniono nazw\u0119 zapisu kolejki",
         "Save name must be alphanumeric": "Nazwa zapisu musi by\u0107 alfanumeryczna",
         "Cancel": "Anulowa\u0107",
-        "Channel": "Kana\u0142"
+        "Channel": "Kana\u0142",
+        "Are you sure?": "Jeste\u015b pewny?",
+        "Not connected": "Nie po\u0142\u0105czony",
+        "Connected": "Po\u0142\u0105czony",
+        "Unknown": "Nieznany",
+        "Playing": "Gra",
+        "Paused": "Wstrzymano"
     },
     "pt": {
         "search": "Pesquise o YouTube pela consulta fornecida",
@@ -3986,7 +4064,13 @@
         "queue save renamed": "salvamento de fila renomeado",
         "Save name must be alphanumeric": "O nome de salvamento deve ser alfanum\u00e9rico",
         "Cancel": "Cancelar",
-        "Channel": "Canal"
+        "Channel": "Canal",
+        "Are you sure?": "Tem certeza?",
+        "Not connected": "N\u00e3o conectado",
+        "Connected": "Conectado",
+        "Unknown": "Desconhecido",
+        "Playing": "Jogando",
+        "Paused": "Pausado"
     },
     "ru": {
         "search": "\u041f\u043e\u0438\u0441\u043a YouTube \u0434\u043b\u044f \u043f\u0440\u0435\u0434\u043e\u0441\u0442\u0430\u0432\u043b\u0435\u043d\u043d\u043e\u0433\u043e \u0437\u0430\u043f\u0440\u043e\u0441\u0430",
@@ -4271,7 +4355,13 @@
         "queue save renamed": "\u0441\u043e\u0445\u0440\u0430\u043d\u0435\u043d\u0438\u0435 \u0432 \u043e\u0447\u0435\u0440\u0435\u0434\u0438 \u043f\u0435\u0440\u0435\u0438\u043c\u0435\u043d\u043e\u0432\u0430\u043d\u043e",
         "Save name must be alphanumeric": "\u0418\u043c\u044f \u0441\u043e\u0445\u0440\u0430\u043d\u0435\u043d\u0438\u044f \u0434\u043e\u043b\u0436\u043d\u043e \u0431\u044b\u0442\u044c \u0431\u0443\u043a\u0432\u0435\u043d\u043d\u043e-\u0446\u0438\u0444\u0440\u043e\u0432\u044b\u043c",
         "Cancel": "\u041e\u0442\u043c\u0435\u043d\u0430",
-        "Channel": "\u041a\u0430\u043d\u0430\u043b"
+        "Channel": "\u041a\u0430\u043d\u0430\u043b",
+        "Are you sure?": "\u0412\u044b \u0443\u0432\u0435\u0440\u0435\u043d\u044b?",
+        "Not connected": "\u041d\u0435 \u043f\u043e\u0434\u043a\u043b\u044e\u0447\u0435\u043d",
+        "Connected": "\u0421\u0432\u044f\u0437\u0430\u043d\u043d\u044b\u0439",
+        "Unknown": "\u041d\u0435\u0438\u0437\u0432\u0435\u0441\u0442\u043d\u044b\u0439",
+        "Playing": "\u0418\u0433\u0440\u0430\u044f",
+        "Paused": "\u041f\u0440\u0438\u043e\u0441\u0442\u0430\u043d\u043e\u0432\u043b\u0435\u043d\u043e"
     },
     "sv": {
         "search": "S\u00f6k YouTube efter den medf\u00f6ljande fr\u00e5gan",
@@ -4556,7 +4646,13 @@
         "queue save renamed": "k\u00f6 spara bytt namn",
         "Save name must be alphanumeric": "Spara namn m\u00e5ste vara alfanumeriskt",
         "Cancel": "Annullera",
-        "Channel": "Kanal"
+        "Channel": "Kanal",
+        "Are you sure?": "\u00c4r du s\u00e4ker?",
+        "Not connected": "Ej ansluten",
+        "Connected": "Ansluten",
+        "Unknown": "Ok\u00e4nd",
+        "Playing": "Spelar",
+        "Paused": "Pausad"
     },
     "tr": {
         "search": "Verilen sorgu i\u00e7in youtube aray\u0131n",
@@ -4841,6 +4937,12 @@
         "queue save renamed": "s\u0131ra kayd\u0131 yeniden adland\u0131r\u0131ld\u0131",
         "Save name must be alphanumeric": "Kay\u0131t ad\u0131 alfasay\u0131sal olmal\u0131d\u0131r",
         "Cancel": "\u0130ptal etmek",
-        "Channel": "Kanal"
+        "Channel": "Kanal",
+        "Are you sure?": "Emin misin?",
+        "Not connected": "Ba\u011fl\u0131 de\u011fil",
+        "Connected": "Ba\u011fl\u0131",
+        "Unknown": "Bilinmeyen",
+        "Playing": "Oynan\u0131yor",
+        "Paused": "Duraklat\u0131ld\u0131"
     }
 }

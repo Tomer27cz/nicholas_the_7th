@@ -19,6 +19,9 @@ def struct_to_time(struct_time, first='date') -> str:
     if first == 'time':
         return strftime("%H:%M:%S %d/%m/%Y", gmtime(struct_time))
 
+    if first == 'discord':
+        return strftime("%d %b %Y", gmtime(struct_time))
+
     return strftime("%H:%M:%S %d/%m/%Y", gmtime(struct_time))
 
 def convert_duration(duration) -> str or None:

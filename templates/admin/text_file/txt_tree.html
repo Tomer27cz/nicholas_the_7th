@@ -1,0 +1,42 @@
+{% extends "base/base.html" %}
+
+{% block content %}
+  {% if errors %}
+    {% for error in errors %}
+      <div class="alert alert-danger div-align alert-dismissible fade show sticky-top" role="alert">
+        {{ error }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-success div-align alert-dismissible fade show sticky-top" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  <a class="btn btn-primary div-login" href="/admin/log/log"><h1 style="margin: 0">log.log</h1></a>
+  <div class="q-container display-block">
+    <div class="align-center">
+      <h3>LOG</h3>
+    </div>
+    <div class="l-div e-wrap">
+      <a class="btn btn-dark q-item1 div-login" href="/admin/log/data"><h4>data.log</h4></a>
+      <a class="btn btn-dark q-item1 div-login" href="/admin/log/activity"><h4>activity.log</h4></a>
+      <a class="btn btn-dark q-item1 div-login" href="/admin/log/apache_activity"><h4>apache_activity.log</h4></a>
+      <a class="btn btn-dark q-item1 div-login" href="/admin/log/apache_error"><h4>apache_error.log</h4></a>
+    </div>
+  </div>
+  <div class="q-container display-block">
+    <div class="align-center">
+      <h3>JSON</h3>
+    </div>
+    <div class="l-div e-wrap">
+      <a class="btn btn-dark q-item1 div-login" href="/admin/json/radio"><h4>radio.json</h4></a>
+      <a class="btn btn-dark q-item1 div-login" href="/admin/json/languages"><h4>languages.json</h4></a>
+    </div>
+  </div>
+{% endblock %}

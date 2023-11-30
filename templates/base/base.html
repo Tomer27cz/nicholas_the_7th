@@ -1,31 +1,24 @@
 <!doctype html>
 <html lang="en" data-bs-theme="dark">
 <head>
+  {% block head %}
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-  <link rel="icon" href="{{ url_for('static', filename='favicon/favicon.png') }}" sizes="any">
+  <link rel="icon" href="{{ url_for('static', filename='favicon/favicon.ico') }}" sizes="any">
   <title>Nicholas the 7th | {{ title }}</title>
   <script>
       if (window.history.replaceState) {
-          window.history.replaceState(null, null, window.location.href);
+          window.history.replaceState(null, null, null);
       }
-      document.addEventListener("DOMContentLoaded", function (event) {
-          let scroll_pos = localStorage.getItem('scrollpos');
-          if (scroll_pos) window.scrollTo({top: Number(scroll_pos), behavior: 'smooth'});
-      });
-      window.onbeforeunload = function (e) {
-          localStorage.setItem('scrollpos', window.scrollY);
-      };
-
       function onSubmitDisable() {
       setTimeout(disableButtons, 10);
 
       function disableButtons() {
-          console.log("disable buttons")
+          console.log("disable single")
           let buttons = document.querySelectorAll(".btn");
           for (let i = 0; i < buttons.length; i++) {
               buttons[i].setAttribute('disabled', '');
@@ -33,9 +26,18 @@
       }
   }
   </script>
-  {% block head %}{% endblock %}
+  {% endblock %}
 </head>
 <body>
+<div style="display: none">
+    document.addEventListener("DOMContentLoaded", function (event) {
+          let scroll_pos = localStorage.getItem('scrollpos');
+          if (scroll_pos) window.scrollTo({top: Number(scroll_pos), behavior: 'smooth'});
+      });
+      window.onbeforeunload = function (e) {
+          localStorage.setItem('scrollpos', window.scrollY);
+      };
+  </div>
 <div class="sticky-top">
   <nav class="navbar sticky-top navbar-expand-lg navbar-dark nav-discord" data-bs-theme="dark">
     <div class="container-fluid">
@@ -74,7 +76,7 @@
               <img src="https://cdn.discordapp.com/avatars/{{ user['id'] }}/{{ user['avatar'] }}.png?size=32"
                    class="rounded-circle" alt="avatar">
             {% endif %}
-            {% if user['id'] == '349164237605568513' %}
+            {% if int(user['id']) in auth %}
               <a class="btn btn-outline-primary btn-sm btn-m" href="/admin">Admin Panel</a>
             {% endif %}
             <a class="btn btn-danger" href="/logout">Logout</a>
