@@ -149,3 +149,17 @@ def get_radio_info(radio_name: str):
             get_session().add(radio_info_class)
             get_session().commit()
         return radio_info_class
+
+# Slowed Users
+def is_user_slowed(user_id: int, guild_id: int) -> (bool, int):
+    """
+    Returns whether or not a user is slowed
+    :param user_id: ID of the user
+    :param guild_id: ID of the guild
+    :return: (bool, slowed_for)
+    """
+    with get_session().no_autoflush:
+        slowed_user = get_session().query(data_classes.SlowedUser).filter_by(user_id=user_id, guild_id=guild_id).first()
+        if slowed_user is None:
+            return False, None
+        return True, slowed_user.slowed_for

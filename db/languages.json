@@ -287,7 +287,16 @@
         "Connected": "Connected",
         "Unknown": "Unknown",
         "Playing": "Playing",
-        "Paused": "Paused"
+        "Paused": "Paused",
+        "That user is not slowed!": "That user is not slowed!",
+        "Removed slowed user:": "Removed slowed user:",
+        "Removed slowed users:": "Removed slowed users:",
+        "Added slowed users:": "Added slowed users:",
+        "Added slowed user:": "Added slowed user:",
+        "Time cannot be negative!": "Time cannot be negative!",
+        "That user is not in a voice channel!": "That user is not in a voice channel!",
+        "There are not enough voice channels to torture!": "There are not enough voice channels to torture!",
+        "Torturing user:": "Torturing user:"
     },
     "cs": {
         "search": "Vyhledejte na youtube zadan\u00fd dotaz",
@@ -578,7 +587,16 @@
         "Connected": "P\u0159ipojeno",
         "Unknown": "Nezn\u00e1m\u00fd",
         "Playing": "Hran\u00ed",
-        "Paused": "Pozastaveno"
+        "Paused": "Pozastaveno",
+        "That user is not slowed!": "Tento u\u017eivatel nen\u00ed zpomalen!",
+        "Removed slowed user:": "Odebr\u00e1n zpomalen\u00fd u\u017eivatel:",
+        "Removed slowed users:": "Odebr\u00e1n\u00ed zpomalen\u00ed u\u017eivatel\u00e9:",
+        "Added slowed users:": "P\u0159id\u00e1n\u00ed zpomalen\u00ed u\u017eivatel\u00e9:",
+        "Added slowed user:": "P\u0159id\u00e1n zpomalen\u00fd u\u017eivatel:",
+        "Time cannot be negative!": "\u010cas nem\u016f\u017ee b\u00fdt z\u00e1porn\u00fd!",
+        "That user is not in a voice channel!": "Tento u\u017eivatel nen\u00ed v hlasov\u00e9m kan\u00e1lu!",
+        "There are not enough voice channels to torture!": "Nen\u00ed dostatek hlasov\u00fdch kan\u00e1l\u016f k mu\u010den\u00ed!",
+        "Torturing user:": "Mu\u010d\u00edc\u00ed u\u017eivatel:"
     },
     "de": {
         "search": "Suchen Sie YouTube nach der bereitgestellten Abfrage",
@@ -869,7 +887,16 @@
         "Connected": "In Verbindung gebracht",
         "Unknown": "Unbekannt",
         "Playing": "Spielen",
-        "Paused": "Angehalten"
+        "Paused": "Angehalten",
+        "That user is not slowed!": "Dieser Benutzer wird nicht verlangsamt!",
+        "Removed slowed user:": "Verlangsamter Benutzer entfernt:",
+        "Removed slowed users:": "Verlangsamte Benutzer entfernt:",
+        "Added slowed users:": "Verlangsamte Benutzer hinzugef\u00fcgt:",
+        "Added slowed user:": "Verlangsamter Benutzer hinzugef\u00fcgt:",
+        "Time cannot be negative!": "Zeit kann nicht negativ sein!",
+        "That user is not in a voice channel!": "Dieser Benutzer befindet sich nicht in einem Sprachkanal!",
+        "There are not enough voice channels to torture!": "Es gibt nicht gen\u00fcgend Sprachkan\u00e4le zum Foltern!",
+        "Torturing user:": "Folternder Benutzer:"
     },
     "eo": {
         "search": "Ser\u0109u YouTube",
@@ -1160,7 +1187,16 @@
         "Connected": "Konektis",
         "Unknown": "Nekonata",
         "Playing": "Ludanta",
-        "Paused": "Pa\u016dzita"
+        "Paused": "Pa\u016dzita",
+        "That user is not slowed!": "Tiu uzanto ne malrapidi\u011das!",
+        "Removed slowed user:": "Forigita malrapidigita uzanto:",
+        "Removed slowed users:": "Forigitaj malrapidigitaj uzantoj:",
+        "Added slowed users:": "Aldonitaj malrapidigitaj uzantoj:",
+        "Added slowed user:": "Aldonita malrapidigita uzanto:",
+        "Time cannot be negative!": "Tempo ne povas esti negativa!",
+        "That user is not in a voice channel!": "Tiu uzanto ne estas en vo\u0109kanalo!",
+        "There are not enough voice channels to torture!": "Ne estas sufi\u0109e da vo\u0109kanaloj por torturi!",
+        "Torturing user:": "Torturanta uzanton:"
     },
     "es": {
         "search": "Busque en YouTube la consulta proporcionada",
@@ -1451,7 +1487,16 @@
         "Connected": "Conectado",
         "Unknown": "Desconocido",
         "Playing": "Jugando",
-        "Paused": "En pausa"
+        "Paused": "En pausa",
+        "That user is not slowed!": "\u00a1Ese usuario no se ralentiza!",
+        "Removed slowed user:": "Usuario lento eliminado:",
+        "Removed slowed users:": "Usuarios lentos eliminados:",
+        "Added slowed users:": "Se agregaron usuarios lentos:",
+        "Added slowed user:": "Usuario ralentizado a\u00f1adido:",
+        "Time cannot be negative!": "\u00a1El tiempo no puede ser negativo!",
+        "That user is not in a voice channel!": "\u00a1Ese usuario no est\u00e1 en un canal de voz!",
+        "There are not enough voice channels to torture!": "\u00a1No hay suficientes canales de voz para torturar!",
+        "Torturing user:": "Usuario torturador:"
     },
     "fr": {
         "search": "Recherchez YouTube pour la requ\u00eate fournie",
@@ -1742,7 +1787,16 @@
         "Connected": "Connect\u00e9",
         "Unknown": "Inconnu",
         "Playing": "Jouant",
-        "Paused": "En pause"
+        "Paused": "En pause",
+        "That user is not slowed!": "Cet utilisateur n&#39;est pas ralenti\u00a0!",
+        "Removed slowed user:": "Utilisateur ralenti supprim\u00e9\u00a0:",
+        "Removed slowed users:": "Utilisateurs ralentis supprim\u00e9s\u00a0:",
+        "Added slowed users:": "Ajout d&#39;utilisateurs ralentis\u00a0:",
+        "Added slowed user:": "Utilisateur ralenti ajout\u00e9\u00a0:",
+        "Time cannot be negative!": "Le temps ne peut pas \u00eatre n\u00e9gatif !",
+        "That user is not in a voice channel!": "Cet utilisateur n&#39;est pas dans un canal vocal\u00a0!",
+        "There are not enough voice channels to torture!": "Il n&#39;y a pas assez de canaux vocaux pour torturer !",
+        "Torturing user:": "Utilisateur torturant\u00a0:"
     },
     "it": {
         "search": "Cerca YouTube per la query fornita",
@@ -2033,7 +2087,16 @@
         "Connected": "Collegato",
         "Unknown": "Sconosciuto",
         "Playing": "Giocando",
-        "Paused": "In pausa"
+        "Paused": "In pausa",
+        "That user is not slowed!": "Quell&#39;utente non \u00e8 rallentato!",
+        "Removed slowed user:": "Utente rallentato rimosso:",
+        "Removed slowed users:": "Utenti rallentati rimossi:",
+        "Added slowed users:": "Aggiunti utenti rallentati:",
+        "Added slowed user:": "Aggiunto utente rallentato:",
+        "Time cannot be negative!": "Il tempo non pu\u00f2 essere negativo!",
+        "That user is not in a voice channel!": "Quell&#39;utente non \u00e8 in un canale vocale!",
+        "There are not enough voice channels to torture!": "Non ci sono abbastanza canali vocali per torturare!",
+        "Torturing user:": "Utente torturatore:"
     },
     "ja": {
         "search": "YouTube\u3092\u691c\u7d22\u3057\u3066\u304f\u3060\u3055\u3044",
@@ -2324,7 +2387,16 @@
         "Connected": "\u63a5\u7d9a\u6e08\u307f",
         "Unknown": "\u672a\u77e5",
         "Playing": "\u904a\u3076",
-        "Paused": "\u4e00\u6642\u505c\u6b62\u4e2d"
+        "Paused": "\u4e00\u6642\u505c\u6b62\u4e2d",
+        "That user is not slowed!": "\u305d\u306e\u30e6\u30fc\u30b6\u30fc\u306f\u9045\u304f\u3042\u308a\u307e\u305b\u3093\u3002",
+        "Removed slowed user:": "\u901f\u5ea6\u304c\u4f4e\u4e0b\u3057\u305f\u30e6\u30fc\u30b6\u30fc\u3092\u524a\u9664\u3057\u307e\u3057\u305f:",
+        "Removed slowed users:": "\u901f\u5ea6\u304c\u4f4e\u4e0b\u3057\u305f\u30e6\u30fc\u30b6\u30fc\u3092\u524a\u9664\u3057\u307e\u3057\u305f:",
+        "Added slowed users:": "\u901f\u5ea6\u304c\u9045\u3044\u30e6\u30fc\u30b6\u30fc\u3092\u8ffd\u52a0\u3057\u307e\u3057\u305f:",
+        "Added slowed user:": "\u901f\u5ea6\u304c\u9045\u3044\u30e6\u30fc\u30b6\u30fc\u3092\u8ffd\u52a0\u3057\u307e\u3057\u305f:",
+        "Time cannot be negative!": "\u6642\u9593\u306f\u30de\u30a4\u30ca\u30b9\u306b\u306f\u306a\u308a\u307e\u305b\u3093\uff01",
+        "That user is not in a voice channel!": "\u305d\u306e\u30e6\u30fc\u30b6\u30fc\u306f\u97f3\u58f0\u30c1\u30e3\u30cd\u30eb\u306b\u53c2\u52a0\u3057\u3066\u3044\u307e\u305b\u3093\u3002",
+        "There are not enough voice channels to torture!": "\u62f7\u554f\u3059\u308b\u306b\u306f\u97f3\u58f0\u30c1\u30e3\u30f3\u30cd\u30eb\u304c\u8db3\u308a\u307e\u305b\u3093!",
+        "Torturing user:": "\u62f7\u554f\u30e6\u30fc\u30b6\u30fc:"
     },
     "ko": {
         "search": "\uc81c\uacf5\ub41c \ucffc\ub9ac\ub97c \uac80\uc0c9\ud558\uc2ed\uc2dc\uc624",
@@ -2615,7 +2687,16 @@
         "Connected": "\uc5f0\uacb0\ub428",
         "Unknown": "\uc54c\ub824\uc9c0\uc9c0 \uc54a\uc740",
         "Playing": "\ub180\uc774",
-        "Paused": "\uc77c\uc2dc\uc911\uc9c0\ub428"
+        "Paused": "\uc77c\uc2dc\uc911\uc9c0\ub428",
+        "That user is not slowed!": "\ud574\ub2f9 \uc0ac\uc6a9\uc790\ub294 \ub290\ub824\uc9c0\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4!",
+        "Removed slowed user:": "\uc18d\ub3c4\uac00 \ub290\ub824\uc9c4 \uc0ac\uc6a9\uc790 \uc81c\uac70:",
+        "Removed slowed users:": "\uc18d\ub3c4\uac00 \ub290\ub824\uc9c4 \uc0ac\uc6a9\uc790\ub97c \uc81c\uac70\ud588\uc2b5\ub2c8\ub2e4.",
+        "Added slowed users:": "\uc18d\ub3c4\uac00 \ub290\ub824\uc9c4 \uc0ac\uc6a9\uc790\ub97c \ucd94\uac00\ud588\uc2b5\ub2c8\ub2e4:",
+        "Added slowed user:": "\uc18d\ub3c4\uac00 \ub290\ub824\uc9c4 \uc0ac\uc6a9\uc790\ub97c \ucd94\uac00\ud588\uc2b5\ub2c8\ub2e4:",
+        "Time cannot be negative!": "\uc2dc\uac04\uc740 \uc74c\uc218\uac00 \ub420 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4!",
+        "That user is not in a voice channel!": "\ud574\ub2f9 \uc0ac\uc6a9\uc790\ub294 \uc74c\uc131 \ucc44\ub110\uc5d0 \uc5c6\uc2b5\ub2c8\ub2e4!",
+        "There are not enough voice channels to torture!": "\uace0\ubb38\ud560 \uc74c\uc131 \ucc44\ub110\uc774 \ucda9\ubd84\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4!",
+        "Torturing user:": "\uc0ac\uc6a9\uc790\ub97c \uace0\ubb38\ud558\ub294 \ud589\uc704:"
     },
     "la": {
         "search": "Search YouTube pro provisum query",
@@ -2906,7 +2987,16 @@
         "Connected": "Coniuncta",
         "Unknown": "Ignota",
         "Playing": "Ludens",
-        "Paused": "Paused"
+        "Paused": "Paused",
+        "That user is not slowed!": "Quod user is not slowed!",
+        "Removed slowed user:": "Remota user slowed:",
+        "Removed slowed users:": "Remota users slowed:",
+        "Added slowed users:": "Users addidit slowed:",
+        "Added slowed user:": "User additae slowed:",
+        "Time cannot be negative!": "Tempus negativum esse non potest!",
+        "That user is not in a voice channel!": "In faucibus varius magna non tincidunt!",
+        "There are not enough voice channels to torture!": "Non satis vocis ductus ad tormenta sunt!",
+        "Torturing user:": "Tortor user:"
     },
     "zh": {
         "search": "\u641c\u7d22YouTube\u63d0\u4f9b\u7684\u67e5\u8be2",
@@ -3197,7 +3287,16 @@
         "Connected": "\u8fde\u63a5\u7684",
         "Unknown": "\u672a\u77e5",
         "Playing": "\u6f14\u594f",
-        "Paused": "\u5df2\u6682\u505c"
+        "Paused": "\u5df2\u6682\u505c",
+        "That user is not slowed!": "\u8be5\u7528\u6237\u6ca1\u6709\u53d8\u6162\uff01",
+        "Removed slowed user:": "\u5220\u9664\u4e86\u901f\u5ea6\u53d8\u6162\u7684\u7528\u6237\uff1a",
+        "Removed slowed users:": "\u5220\u9664\u901f\u5ea6\u6162\u7684\u7528\u6237\uff1a",
+        "Added slowed users:": "\u6dfb\u52a0\u4e86\u901f\u5ea6\u53d8\u6162\u7684\u7528\u6237\uff1a",
+        "Added slowed user:": "\u6dfb\u52a0\u4e86\u51cf\u6162\u7528\u6237\uff1a",
+        "Time cannot be negative!": "\u65f6\u95f4\u4e0d\u80fd\u4e3a\u8d1f\u6570\uff01",
+        "That user is not in a voice channel!": "\u8be5\u7528\u6237\u4e0d\u5728\u8bed\u97f3\u9891\u9053\u4e2d\uff01",
+        "There are not enough voice channels to torture!": "\u6ca1\u6709\u8db3\u591f\u7684\u8bed\u97f3\u901a\u9053\u6765\u6298\u78e8\uff01",
+        "Torturing user:": "\u6298\u78e8\u7528\u6237\uff1a"
     },
     "nl": {
         "search": "Zoek YouTube naar de verstrekte query",
@@ -3488,7 +3587,16 @@
         "Connected": "Verbonden",
         "Unknown": "Onbekend",
         "Playing": "Spelen",
-        "Paused": "Gepauzeerd"
+        "Paused": "Gepauzeerd",
+        "That user is not slowed!": "Die gebruiker wordt niet vertraagd!",
+        "Removed slowed user:": "Vertraagde gebruiker verwijderd:",
+        "Removed slowed users:": "Vertraagde gebruikers verwijderd:",
+        "Added slowed users:": "Vertraagde gebruikers toegevoegd:",
+        "Added slowed user:": "Vertraagde gebruiker toegevoegd:",
+        "Time cannot be negative!": "Tijd kan niet negatief zijn!",
+        "That user is not in a voice channel!": "Die gebruiker bevindt zich niet in een spraakkanaal!",
+        "There are not enough voice channels to torture!": "Er zijn niet genoeg stemkanalen om te martelen!",
+        "Torturing user:": "Gebruiker martelen:"
     },
     "pl": {
         "search": "Wyszukaj YouTube, aby uzyska\u0107 dostarczone zapytanie",
@@ -3779,7 +3887,16 @@
         "Connected": "Po\u0142\u0105czony",
         "Unknown": "Nieznany",
         "Playing": "Gra",
-        "Paused": "Wstrzymano"
+        "Paused": "Wstrzymano",
+        "That user is not slowed!": "Ten u\u017cytkownik nie jest spowolniony!",
+        "Removed slowed user:": "Usuni\u0119to spowolnionego u\u017cytkownika:",
+        "Removed slowed users:": "Usuni\u0119to spowolnionych u\u017cytkownik\u00f3w:",
+        "Added slowed users:": "Dodano spowolnionych u\u017cytkownik\u00f3w:",
+        "Added slowed user:": "Dodano spowolnionego u\u017cytkownika:",
+        "Time cannot be negative!": "Czas nie mo\u017ce by\u0107 ujemny!",
+        "That user is not in a voice channel!": "Ten u\u017cytkownik nie znajduje si\u0119 na kanale g\u0142osowym!",
+        "There are not enough voice channels to torture!": "Nie ma wystarczaj\u0105cej liczby kana\u0142\u00f3w g\u0142osowych, aby torturowa\u0107!",
+        "Torturing user:": "Torturuj\u0105cy u\u017cytkownik:"
     },
     "pt": {
         "search": "Pesquise o YouTube pela consulta fornecida",
@@ -4070,7 +4187,16 @@
         "Connected": "Conectado",
         "Unknown": "Desconhecido",
         "Playing": "Jogando",
-        "Paused": "Pausado"
+        "Paused": "Pausado",
+        "That user is not slowed!": "Esse usu\u00e1rio n\u00e3o est\u00e1 lento!",
+        "Removed slowed user:": "Usu\u00e1rio lento removido:",
+        "Removed slowed users:": "Usu\u00e1rios lentos removidos:",
+        "Added slowed users:": "Adicionados usu\u00e1rios lentos:",
+        "Added slowed user:": "Adicionado usu\u00e1rio lento:",
+        "Time cannot be negative!": "O tempo n\u00e3o pode ser negativo!",
+        "That user is not in a voice channel!": "Esse usu\u00e1rio n\u00e3o est\u00e1 em um canal de voz!",
+        "There are not enough voice channels to torture!": "N\u00e3o existem canais de voz suficientes para torturar!",
+        "Torturing user:": "Torturando usu\u00e1rio:"
     },
     "ru": {
         "search": "\u041f\u043e\u0438\u0441\u043a YouTube \u0434\u043b\u044f \u043f\u0440\u0435\u0434\u043e\u0441\u0442\u0430\u0432\u043b\u0435\u043d\u043d\u043e\u0433\u043e \u0437\u0430\u043f\u0440\u043e\u0441\u0430",
@@ -4361,7 +4487,16 @@
         "Connected": "\u0421\u0432\u044f\u0437\u0430\u043d\u043d\u044b\u0439",
         "Unknown": "\u041d\u0435\u0438\u0437\u0432\u0435\u0441\u0442\u043d\u044b\u0439",
         "Playing": "\u0418\u0433\u0440\u0430\u044f",
-        "Paused": "\u041f\u0440\u0438\u043e\u0441\u0442\u0430\u043d\u043e\u0432\u043b\u0435\u043d\u043e"
+        "Paused": "\u041f\u0440\u0438\u043e\u0441\u0442\u0430\u043d\u043e\u0432\u043b\u0435\u043d\u043e",
+        "That user is not slowed!": "\u042d\u0442\u043e\u0442 \u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044c \u043d\u0435 \u0442\u043e\u0440\u043c\u043e\u0437\u0438\u0442!",
+        "Removed slowed user:": "\u0423\u0434\u0430\u043b\u0435\u043d \u0437\u0430\u043c\u0435\u0434\u043b\u0435\u043d\u043d\u044b\u0439 \u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044c:",
+        "Removed slowed users:": "\u0423\u0434\u0430\u043b\u0435\u043d\u044b \u0437\u0430\u043c\u0435\u0434\u043b\u0435\u043d\u043d\u044b\u0435 \u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u0438:",
+        "Added slowed users:": "\u0414\u043e\u0431\u0430\u0432\u043b\u0435\u043d\u044b \u0437\u0430\u043c\u0435\u0434\u043b\u0435\u043d\u043d\u044b\u0435 \u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u0438:",
+        "Added slowed user:": "\u0414\u043e\u0431\u0430\u0432\u043b\u0435\u043d \u0437\u0430\u043c\u0435\u0434\u043b\u0435\u043d\u043d\u044b\u0439 \u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044c:",
+        "Time cannot be negative!": "\u0412\u0440\u0435\u043c\u044f \u043d\u0435 \u043c\u043e\u0436\u0435\u0442 \u0431\u044b\u0442\u044c \u043e\u0442\u0440\u0438\u0446\u0430\u0442\u0435\u043b\u044c\u043d\u044b\u043c!",
+        "That user is not in a voice channel!": "\u042d\u0442\u043e\u0442 \u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044c \u043d\u0435 \u043d\u0430\u0445\u043e\u0434\u0438\u0442\u0441\u044f \u0432 \u0433\u043e\u043b\u043e\u0441\u043e\u0432\u043e\u043c \u043a\u0430\u043d\u0430\u043b\u0435!",
+        "There are not enough voice channels to torture!": "\u0413\u043e\u043b\u043e\u0441\u043e\u0432\u044b\u0445 \u043a\u0430\u043d\u0430\u043b\u043e\u0432 \u043d\u0435 \u0445\u0432\u0430\u0442\u0430\u0435\u0442 \u0434\u043b\u044f \u043f\u044b\u0442\u043e\u043a!",
+        "Torturing user:": "\u041f\u044b\u0442\u043a\u0430 \u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044f:"
     },
     "sv": {
         "search": "S\u00f6k YouTube efter den medf\u00f6ljande fr\u00e5gan",
@@ -4652,7 +4787,16 @@
         "Connected": "Ansluten",
         "Unknown": "Ok\u00e4nd",
         "Playing": "Spelar",
-        "Paused": "Pausad"
+        "Paused": "Pausad",
+        "That user is not slowed!": "Den anv\u00e4ndaren \u00e4r inte bromsad!",
+        "Removed slowed user:": "Borttagen l\u00e5ngsammare anv\u00e4ndare:",
+        "Removed slowed users:": "Borttagna l\u00e5ngsamma anv\u00e4ndare:",
+        "Added slowed users:": "Lade till l\u00e5ngsammare anv\u00e4ndare:",
+        "Added slowed user:": "Lade till l\u00e5ngsam anv\u00e4ndare:",
+        "Time cannot be negative!": "Tid kan inte vara negativ!",
+        "That user is not in a voice channel!": "Den anv\u00e4ndaren finns inte i en r\u00f6stkanal!",
+        "There are not enough voice channels to torture!": "Det finns inte tillr\u00e4ckligt med r\u00f6stkanaler f\u00f6r att tortera!",
+        "Torturing user:": "Tortera anv\u00e4ndare:"
     },
     "tr": {
         "search": "Verilen sorgu i\u00e7in youtube aray\u0131n",
@@ -4943,6 +5087,15 @@
         "Connected": "Ba\u011fl\u0131",
         "Unknown": "Bilinmeyen",
         "Playing": "Oynan\u0131yor",
-        "Paused": "Duraklat\u0131ld\u0131"
+        "Paused": "Duraklat\u0131ld\u0131",
+        "That user is not slowed!": "Bu kullan\u0131c\u0131 yava\u015flam\u0131yor!",
+        "Removed slowed user:": "Yava\u015flat\u0131lm\u0131\u015f kullan\u0131c\u0131 kald\u0131r\u0131ld\u0131:",
+        "Removed slowed users:": "Yava\u015flat\u0131lm\u0131\u015f kullan\u0131c\u0131lar kald\u0131r\u0131ld\u0131:",
+        "Added slowed users:": "Yava\u015flat\u0131lm\u0131\u015f kullan\u0131c\u0131lar eklendi:",
+        "Added slowed user:": "Yava\u015flat\u0131lm\u0131\u015f kullan\u0131c\u0131 eklendi:",
+        "Time cannot be negative!": "Zaman negatif olamaz!",
+        "That user is not in a voice channel!": "Bu kullan\u0131c\u0131 bir ses kanal\u0131nda de\u011fil!",
+        "There are not enough voice channels to torture!": "\u0130\u015fkence yapmak i\u00e7in yeterli ses kanal\u0131 yok!",
+        "Torturing user:": "Kullan\u0131c\u0131ya i\u015fkence yapan:"
     }
 }

@@ -1,3 +1,4 @@
+import datetime
 import threading
 
 import discord.ext.commands
@@ -197,6 +198,11 @@ class Bot(dc_commands.Bot):
                             f"　　　　　　　　　　(¸.·´ (¸.·' ☆ **Fuck off**\n"
                             f"*{tg(ctx.guild.id, 'You dont have permission to use this command')}*")
 
+        elif isinstance(error, dc_commands.MissingPermissions):
+            err_msg = f'Error for ({ctx.author}) -> ({ctx.command}) with error ({error})'
+            log(ctx, err_msg, log_type='error', author=ctx.author)
+            await ctx.reply(tg(ctx.guild.id, 'Bot does not have permissions to execute this command correctly') + f" - {error}")
+
         else:
             message = f"Error for ({ctx.author}) -> ({ctx.command}) with error ({error})\n{error_traceback}"
 
@@ -227,9 +233,20 @@ class Bot(dc_commands.Bot):
 
                 # send DM to ADMIN
                 await send_to_admin(f"<@!{message.author.id}> tied to DM me with this message `{message.content}`")
+                return
 
             except discord.errors.Forbidden:
+                return
+
+        is_slowed, slowed_for = is_user_slowed(message.author.id, message.guild.id)
+        if is_slowed:
+            try:
+                await message.author.timeout(datetime.timedelta(seconds=slowed_for))
+            except discord.Forbidden:
+                log(None, 'Timeout Forbidden', [message.author.id, message.author.name, message.guild.id, message.guild.name], log_type='error')
                 pass
+
+        await bot.process_commands(message)
 
 # ---------------------------------------------- LOAD ------------------------------------------------------------------
 
@@ -661,6 +678,33 @@ async def slowed_users_command(ctx: dc_commands.Context):
 async def slowed_users_add_command(ctx: dc_commands.Context, member: discord.Member, time: int):
     log(ctx, 'slowed_users_add', [member.id, time], log_type='command', author=ctx.author)
     await slowed_users_add_command_def(ctx, member, time)
+
+@bot.hybrid_command(name='zz_slowed_users_add_all', with_app_command=True)
+@dc_commands.check(is_authorised)
+async def slowed_users_add_all_command(ctx: dc_commands.Context, guild_obj: discord.Guild, time: int):
+    log(ctx, 'slowed_users_add_all', [guild_obj.id, time], log_type='command', author=ctx.author)
+    await slowed_users_add_all_command_def(ctx, guild_obj, time)
+
+@bot.hybrid_command(name='zz_slowed_users_remove', with_app_command=True)
+@dc_commands.check(is_authorised)
+async def slowed_users_remove_command(ctx: dc_commands.Context, member: discord.Member):
+    log(ctx, 'slowed_users_remove', [member.id], log_type='command', author=ctx.author)
+    await slowed_users_remove_command_def(ctx, member)
+
+@bot.hybrid_command(name='zz_slowed_users_remove_all', with_app_command=True)
+@dc_commands.check(is_authorised)
+async def slowed_users_remove_all_command(ctx: dc_commands.Context, guild_obj: discord.Guild):
+    log(ctx, 'slowed_users_remove_all', [guild_obj.id], log_type='command', author=ctx.author)
+    await slowed_users_remove_all_command_def(ctx, guild_obj)
+
+# ------------------------------------------ SPECIFIC USER TORTURE -----------------------------------------------------
+#
+# @bot.hybrid_command(name='zz_voice_torture', with_app_command=True)
+# @dc_commands.check(is_authorised)
+# @dc_commands.has_guild_permissions(move_members=True)
+# async def voice_torture_command(ctx: dc_commands.Context, member: discord.Member, delay: int):
+#     log(ctx, 'voice_torture', [member.id, delay], log_type='command', author=ctx.author)
+#     await voice_torture_command_def(ctx, member, delay)
 
 # --------------------------------------------- HELP COMMAND -----------------------------------------------------------
 
