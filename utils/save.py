@@ -33,16 +33,19 @@ def update_guilds():
 
     for guild_id in db_guilds:
         guild_object = guild.guild(guild_id)
-        if guild_id not in bot_guilds and guild_object.connected:
-            guild_object.connected = False
-            log(None, f'Guild left: {guild_id} = {guild_object.data.name} -> Marked as disconnected')
-        else:
+
+        if guild_id not in bot_guilds:
+            if guild_object.connected:
+                guild_object.connected = False
+                log(None, f'Guild left: {guild_id} = {guild_object.data.name} -> Marked as disconnected')
+
+        if guild_id in bot_guilds:
             if not guild_object.connected:
                 log(None, f'Marked guild as connected: {guild_object.id} = {guild_object.data.name}')
                 guild_object.connected = True
 
-        get_session().commit()
-        get_session().query(GuildData).filter(GuildData.id == guild_id).first().renew()
+        # get_session().commit()
+        # get_session().query(GuildData).filter(GuildData.id == guild_id).first().renew()
 
         # db_g_data = get_session().query(GuildData).filter(GuildData.id == guild_id).first()
         # print(db_g_data)
