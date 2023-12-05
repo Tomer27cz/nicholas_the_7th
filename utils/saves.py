@@ -7,7 +7,7 @@ from utils.globals import get_session
 
 from database.guild import guild, guild_ids, guild_save_names
 
-def find_save(guild_id: int, save_name: str) -> Save | None:
+def find_save(guild_id: int, save_name: str) -> Save or None:
     """
     Finds a save object
     :param guild_id: int - id of guild

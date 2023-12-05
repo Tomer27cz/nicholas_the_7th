@@ -33,7 +33,7 @@ def update_guilds():
 
     for guild_id in db_guilds:
         guild_object = guild.guild(guild_id)
-        if guild_id not in bot_guilds:
+        if guild_id not in bot_guilds and guild_object.connected:
             guild_object.connected = False
             log(None, f'Guild left: {guild_id} = {guild_object.data.name} -> Marked as disconnected')
         else:

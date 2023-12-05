@@ -35,6 +35,8 @@ import asyncio
 
 from database.main import *
 from database.guild import *
+
+# db connect
 session = connect_to_db()
 
 # --------------------------------------------- LOAD DATA --------------------------------------------- #
@@ -84,6 +86,8 @@ badge_dict_new = {
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = config.WEB_SECRET_KEY
+app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{config.PARENT_DIR}db/database.db'
+
 @app.route('/favicon.ico')
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon/favicon.ico', mimetype='image/vnd.microsoft.icon')
@@ -96,6 +100,10 @@ def inject_data():
 @app.before_request
 def make_session_permanent():
     flask_session.permanent = True
+
+@app.teardown_appcontext
+def shutdown_session(exception=None):
+    get_session().remove()
 
 # -------------------------------------------------- Index page --------------------------------------------------------
 @app.route('/')
