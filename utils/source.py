@@ -1,6 +1,6 @@
 from __future__ import annotations
+from utils.global_vars import GlobalVars
 
-from utils.globals import get_sc
 from utils.log import log
 from database.guild import guild
 
@@ -42,11 +42,11 @@ def url_checker(url):
 class GetSource(discord.PCMVolumeTransformer):
     ytdl = yt_dlp.YoutubeDL(YTDL_OPTIONS)
 
-    def __init__(self, guild_id: int, source: discord.FFmpegPCMAudio):
-        super().__init__(source, guild(guild_id).options.volume)
+    def __init__(self, glob: GlobalVars, guild_id: int, source: discord.FFmpegPCMAudio):
+        super().__init__(source, guild(glob, guild_id).options.volume)
 
     @classmethod
-    async def create_source(cls, guild_id: int, url: str, source_type: str = 'Video', time_stamp: int=None, video_class=None, attempt: int=0):
+    async def create_source(cls, glob: GlobalVars, guild_id: int, url: str, source_type: str = 'Video', time_stamp: int=None, video_class=None, attempt: int=0):
         """
         Get source from url
 
@@ -54,6 +54,7 @@ class GetSource(discord.PCMVolumeTransformer):
         When the source type is 'SoundCloud', the url is a soundcloud track url
         Other it tries to get the source from the url
 
+        :param glob: GlobalVars
         :param guild_id: int
         :param url: str
         :param video_class: VideoClass child
@@ -88,10 +89,10 @@ class GetSource(discord.PCMVolumeTransformer):
                     pass
                 else:
                     attempt += 1
-                    return await cls.create_source(guild_id, org_url, source_type, time_stamp, video_class, attempt)
+                    return await cls.create_source(glob, guild_id, org_url, source_type, time_stamp, video_class, attempt)
 
         if source_type == 'SoundCloud':
-            track = get_sc().resolve(url)
+            track = glob.sc.resolve(url)
             url = track.get_stream_url()
 
         if source_type == 'Local':
@@ -103,4 +104,4 @@ class GetSource(discord.PCMVolumeTransformer):
         if video_class:
             video_class.stream_url = url
 
-        return cls(guild_id, discord.FFmpegPCMAudio(url, **SOURCE_FFMPEG_OPTIONS)), chapters
+        return cls(glob, guild_id, discord.FFmpegPCMAudio(url, **SOURCE_FFMPEG_OPTIONS)), chapters

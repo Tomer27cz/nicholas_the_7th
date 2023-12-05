@@ -1,3 +1,5 @@
+from utils.global_vars import GlobalVars
+
 from ipc.flaskapp import send_arg
 from config import PARENT_DIR
 import utils.files
@@ -21,9 +23,10 @@ def execute_function(function_name: str, web_data: classes.data_classes.WebData,
     return response
 
 # Guild
-def get_guild(guild_id: int):
+def get_guild(glob: GlobalVars, guild_id: int):
     """
     Get a guild from the database
+    :param glob: GlobalVars
     :param guild_id: guild id
     :return: guild object
     """
@@ -35,10 +38,11 @@ def get_guild(guild_id: int):
     # }
     # # send argument dictionary
     # return send_arg(arg_dict)
-    return guild(guild_id)
-def get_guilds():
+    return guild(glob, guild_id)
+def get_guilds(glob: GlobalVars):
     """
     Get the guilds list from database
+    :param glob: GlobalVars
     :return: list - list of guild objects
     """
     # arg_dict = {
@@ -50,7 +54,7 @@ def get_guilds():
     # guild = send_arg(arg_dict)
     # __main__.guild = guild
     # return guild
-    return guild_dict()
+    return guild_dict(glob)
 
 # Bot
 def get_bot_guilds():
@@ -125,9 +129,10 @@ def get_guild_voice_channels_index(guild_id: int, start_index:int, end_index:int
     return send_arg(arg_dict)
 
 # Guild Text Channels
-def get_guild_text_channels(guild_id: int):
+def get_guild_text_channels(bot, guild_id: int):
     """
     Get the guild text channels list from database
+    :param bot: Bot object
     :param guild_id: guild id
     :return: list - list of channel objects
     """
@@ -140,7 +145,7 @@ def get_guild_text_channels(guild_id: int):
     # send argument dictionary
     response = send_arg(arg_dict)
     if response is None:
-        return utils.files.get_guild_text_channels_file(guild_id)
+        return utils.files.get_guild_text_channels_file(bot, guild_id)
     return response
 def get_guild_text_channels_index(guild_id: int, start_index:int, end_index:int):
     """
@@ -296,13 +301,14 @@ def get_guild_invites(guild_id: int):
     return send_arg(arg_dict)
 
 # Guild specific data
-def get_update(guild_id: int):
+def get_update(glob: GlobalVars, guild_id: int):
     """
     Get update variable state from the database
+    :param glob: GlobalVars
     :param guild_id: guild id
     :return: bool - update variable state
     """
-    return guild(guild_id).options.last_updated
+    return guild(glob, guild_id).options.last_updated
 
     # # create argument dictionary
     # arg_dict = {
@@ -312,13 +318,14 @@ def get_update(guild_id: int):
     # }
     # # send argument dictionary
     # return send_arg(arg_dict)
-def get_language(guild_id: int):
+def get_language(glob: GlobalVars, guild_id: int):
     """
     Get language from the database
+    :param glob: GlobalVars
     :param guild_id: guild id
     :return: language
     """
-    return guild(guild_id).options.language
+    return guild(glob, guild_id).options.language
 
     # # create argument dictionary
     # arg_dict = {

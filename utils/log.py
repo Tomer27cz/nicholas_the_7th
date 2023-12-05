@@ -2,8 +2,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Union
 if TYPE_CHECKING:
     from classes.data_classes import WebData
+    from utils.global_vars import GlobalVars
 
-from utils.globals import get_bot
 from utils.convert import struct_to_time
 from config import PARENT_DIR, OWNER_ID
 
@@ -70,14 +70,15 @@ def collect_data(data) -> None:
     with open(f'{PARENT_DIR}db/log/data.log', "a", encoding="utf-8") as f:
         f.write(message)
 
-async def send_to_admin(data):
+async def send_to_admin(glob: GlobalVars, data):
     """
     Sends data to admin
+    :param glob: GlobalVars object
     :param data: str - data to send
     :return: None
     """
-    admin = get_bot().get_user(OWNER_ID)
-    developer = get_bot().get_user(349164237605568513)
+    admin = glob.bot.get_user(OWNER_ID)
+    developer = glob.bot.get_user(349164237605568513)
     # if length of data is more than 2000 symbols send a file
     if len(data) > 2000:
         file_to_send = discord.File(BytesIO(data.encode()), filename='data.txt')

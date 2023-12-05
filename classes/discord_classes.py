@@ -1,13 +1,17 @@
-from utils.globals import get_bot
-from config import DEFAULT_DISCORD_AVATAR as default_discord_avatar
+from utils.global_vars import GlobalVars
 
 import discord
 import asyncio
 import chat_exporter
 
 class DiscordGuild:
-    def __init__(self, guild_id: int):
-        guild_object = get_bot().get_guild(guild_id)
+    """
+    This class is used to store guild information
+    :param glob: GlobalVars object
+    :param guild_id: ID of the guild
+    """
+    def __init__(self, glob: GlobalVars, guild_id: int):
+        guild_object = glob.bot.get_guild(guild_id)
 
         if guild_object:
             self.id = guild_object.id
@@ -24,8 +28,13 @@ class DiscordGuild:
 
 
 class DiscordUser:
-    def __init__(self, user_id: int):
-        user_object = get_bot().get_user(user_id)
+    """
+    This class is used to store user information
+    :param glob: GlobalVars object
+    :param user_id: ID of the user
+    """
+    def __init__(self, glob: GlobalVars, user_id: int):
+        user_object = glob.bot.get_user(user_id)
 
         if user_object:
             # color
@@ -57,7 +66,7 @@ class DiscordUser:
             # mutual guilds
             guilds = []
             for guild in user_object.mutual_guilds:
-                guilds.append(DiscordGuild(guild.id))
+                guilds.append(DiscordGuild(glob, guild.id))
             self.mutual_guilds = guilds
 
             # public flags
@@ -82,7 +91,12 @@ class DiscordUser:
             self.badges = None
 
 class DiscordMember:
-    def __init__(self, member_object: discord.Member):
+    """
+    This class is used to store member information
+    :param glob: GlobalVars object
+    :param member_object: Member object
+    """
+    def __init__(self, glob: GlobalVars, member_object: discord.Member):
         # id
         self.id = member_object.id
         self.discriminator = member_object.discriminator
@@ -120,11 +134,18 @@ class DiscordMember:
         # Roles
         self.roles = []
         for role in member_object.roles:
-            self.roles.append(DiscordRole(role.id, member_object.guild.id, stripped=True))
+            self.roles.append(DiscordRole(glob, role.id, member_object.guild.id, stripped=True))
 
 
 class DiscordChannel:
-    def __init__(self, channel_id: int, no_members=False, json_data=None):
+    """
+    This class is used to store channel information
+    :param glob: GlobalVars object
+    :param channel_id: ID of the channel
+    :param no_members: Should members be loaded
+    :param json_data: JSON data to load from
+    """
+    def __init__(self, glob, channel_id: int, no_members=False, json_data=None):
         if json_data:
             self.id = json_data['id']
             self.name = json_data['name']
@@ -141,7 +162,7 @@ class DiscordChannel:
         self.member_count = None
         self.html = None
 
-        channel_object = get_bot().get_channel(channel_id)
+        channel_object = glob.bot.get_channel(channel_id)
 
         if channel_object:
             self.id = channel_object.id
@@ -152,16 +173,17 @@ class DiscordChannel:
             if not no_members:
                 if channel_object.members:
                     for member in channel_object.members:
-                        member_object = DiscordMember(member)
+                        member_object = DiscordMember(glob, member)
                         members.append(member_object)
 
             self.members = members
             self.member_count = len(channel_object.members)
 
-    async def get_first_messages(self, num_of_messages: int):
+    async def get_first_messages(self, glob,  num_of_messages: int):
         """
         Gets the first messages of a channel
         :param num_of_messages: Number of messages to get
+        :param glob: GlobalVars object
         :return: ReturnData object
         """
         async def get_messages(ch_obj, num):
@@ -169,28 +191,36 @@ class DiscordChannel:
             return msg_list
 
 
-        channel_object = get_bot().get_channel(self.id)
+        channel_object = glob.bot.get_channel(self.id)
         if not channel_object:
             return None
         if not channel_object.permissions_for(channel_object.guild.me).read_message_history:
             return None
 
-        messages = asyncio.run_coroutine_threadsafe(get_messages(channel_object, num_of_messages), get_bot().loop).result()
+        messages = asyncio.run_coroutine_threadsafe(get_messages(channel_object, num_of_messages), glob.bot.loop).result()
 
         transcript = asyncio.run_coroutine_threadsafe(chat_exporter.raw_export(channel=channel_object,
                                                                                messages=messages,
                                                                                tz_info='GMT',
                                                                                guild=channel_object.guild,
-                                                                               bot=get_bot(),
+                                                                               bot=glob.bot,
                                                                                military_time=True,
-                                                                               support_dev=False), get_bot().loop).result()
+                                                                               support_dev=False), glob.bot.loop).result()
         self.html = transcript
 
         return self.html
 
 class DiscordRole:
-    def __init__(self, role_id: int, guild_id: int, no_members: bool=False, stripped: bool=False):
-        role_object = get_bot().get_guild(guild_id).get_role(role_id)
+    """
+    This class is used to store role information
+    :param role_id: ID of the role
+    :param guild_id: ID of the guild
+    :param glob: GlobalVars object
+    :param no_members: Should members be loaded
+    :param stripped: Should the object be stripped
+    """
+    def __init__(self, glob: GlobalVars, role_id: int, guild_id: int, no_members: bool=False, stripped: bool=False):
+        role_object = glob.bot.get_guild(guild_id).get_role(role_id)
 
         if role_object:
             if stripped:
@@ -214,7 +244,7 @@ class DiscordRole:
             if not no_members:
                 if role_object.members:
                     for member in role_object.members:
-                        member_object = DiscordMember(member)
+                        member_object = DiscordMember(glob, member)
                         self.members.append(member_object)
             self.member_count = len(role_object.members)
 
@@ -228,14 +258,19 @@ class DiscordRole:
             self.member_count = None
 
 class DiscordInvite:
-    def __init__(self, invite_object: discord.Invite):
+    """
+    This class is used to store invite information
+    :param glob: GlobalVars object
+    :param invite_object: Invite object
+    """
+    def __init__(self, glob: GlobalVars, invite_object: discord.Invite):
         if invite_object:
             self.id = invite_object.id
             self.url = invite_object.url
             self.code = invite_object.code
 
             if invite_object.inviter:
-                self.inviter = DiscordUser(invite_object.inviter.id)
+                self.inviter = DiscordUser(glob, invite_object.inviter.id)
 
             self.created_at = invite_object.created_at.strftime("%d/%m/%Y %H:%M:%S")
 

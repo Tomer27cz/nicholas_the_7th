@@ -1,11 +1,13 @@
+from utils.global_vars import GlobalVars
+
 from classes.video_class import Queue
-from utils.globals import get_sp
 
 import youtubesearchpython
 
-def spotify_to_yt_video(spotify_url: str, author, guild_id: int):
+def spotify_to_yt_video(glob: GlobalVars, spotify_url: str, author, guild_id: int):
     """
     Converts spotify url to youtube video
+    :param glob: GlobalVars
     :param spotify_url: str - spotify url
     :param author: author of command
     :param guild_id: guild id
@@ -13,7 +15,7 @@ def spotify_to_yt_video(spotify_url: str, author, guild_id: int):
     """
     # noinspection PyBroadException
     try:
-        spotify_api = get_sp()
+        spotify_api = glob.sp
         if not spotify_api:
             raise Exception("Spotify API not initialized")
         spotify_track = spotify_api.track(spotify_url)
@@ -39,14 +41,15 @@ def spotify_to_yt_video(spotify_url: str, author, guild_id: int):
     yt_channel_name = video['channel']['name']
     yt_channel_link = video['channel']['link']
 
-    video_class = Queue('Video', author, guild_id, url=yt_url, title=yt_title, picture=yt_picture, duration=yt_duration,
+    video_class = Queue(glob,'Video', author, guild_id, url=yt_url, title=yt_title, picture=yt_picture, duration=yt_duration,
                              channel_name=yt_channel_name, channel_link=yt_channel_link)
 
     return video_class
 
-def spotify_playlist_to_yt_video_list(spotify_playlist_url: str, author, guild_id: int) -> list or None:
+def spotify_playlist_to_yt_video_list(glob: GlobalVars, spotify_playlist_url: str, author, guild_id: int) -> list or None:
     """
     Converts spotify playlist url to list of youtube videos
+    :param glob: GlobalVars
     :param spotify_playlist_url: str - spotify playlist url
     :param author: author of command
     :param guild_id: guild id
@@ -54,7 +57,7 @@ def spotify_playlist_to_yt_video_list(spotify_playlist_url: str, author, guild_i
     """
     # noinspection PyBroadException
     try:
-        spotify_api = get_sp()
+        spotify_api = glob.sp
         if not spotify_api:
             raise Exception("Spotify API not initialized")
         spotify_playlist = spotify_api.playlist_items(spotify_playlist_url, fields='items.track.name, items.track.artists.name')
@@ -85,16 +88,17 @@ def spotify_playlist_to_yt_video_list(spotify_playlist_url: str, author, guild_i
         yt_channel_name = video['channel']['name']
         yt_channel_link = video['channel']['link']
 
-        video_class = Queue('Video', author, guild_id, url=yt_url, title=yt_title, picture=yt_picture, duration=yt_duration,
+        video_class = Queue(glob,'Video', author, guild_id, url=yt_url, title=yt_title, picture=yt_picture, duration=yt_duration,
                                  channel_name=yt_channel_name, channel_link=yt_channel_link)
 
         video_list.append(video_class)
 
     return video_list
 
-def spotify_album_to_yt_video_list(spotify_album_url: str, author, guild_id: int) -> list or None:
+def spotify_album_to_yt_video_list(glob: GlobalVars, spotify_album_url: str, author, guild_id: int) -> list or None:
     """
     Converts spotify album url to list of youtube videos
+    :param glob: GlobalVars
     :param spotify_album_url: str - spotify album url
     :param author: author of command
     :param guild_id: guild id
@@ -102,7 +106,7 @@ def spotify_album_to_yt_video_list(spotify_album_url: str, author, guild_id: int
     """
     # noinspection PyBroadException
     try:
-        spotify_api = get_sp()
+        spotify_api = glob.sp
         if not spotify_api:
             raise Exception("Spotify API not initialized")
         spotify_album = spotify_api.album_tracks(spotify_album_url)
@@ -131,16 +135,9 @@ def spotify_album_to_yt_video_list(spotify_album_url: str, author, guild_id: int
         yt_channel_name = video['channel']['name']
         yt_channel_link = video['channel']['link']
 
-        video_class = Queue('Video', author, guild_id, url=yt_url, title=yt_title, picture=yt_picture, duration=yt_duration,
+        video_class = Queue(glob,'Video', author, guild_id, url=yt_url, title=yt_title, picture=yt_picture, duration=yt_duration,
                                  channel_name=yt_channel_name, channel_link=yt_channel_link)
 
         video_list.append(video_class)
 
     return video_list
-
-def check_spotify_initialized() -> bool:
-    """
-    Checks if spotify api is initialized
-    :return: bool
-    """
-    return get_sp() is not None

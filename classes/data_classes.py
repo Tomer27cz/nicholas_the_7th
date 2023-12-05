@@ -1,4 +1,5 @@
-from utils.globals import get_bot, get_session
+from utils.global_vars import GlobalVars
+
 from database.main import *
 
 import random
@@ -7,8 +8,9 @@ from time import time
 class Guild(Base):
     """
     Data class for storing data about guilds
-    :type guild_id: int
+    :param glob: GlobalVars object
     :param guild_id: ID of the guild
+    :param json_data: Data from json file
     """
     __tablename__ = 'guilds'
 
@@ -23,12 +25,12 @@ class Guild(Base):
     connected = Column(Boolean, default=True)
     slowed_users = relationship('SlowedUser', backref='guilds')
 
-    def __init__(self, guild_id, json_data=None):
+    def __init__(self, glob: GlobalVars, guild_id, json_data=None):
         self.id = guild_id
 
-        get_session().add(Options(self.id, json_data=json_data['options']))
-        get_session().add(GuildData(self.id, json_data=json_data['data']))
-        get_session().commit()
+        glob.ses.add(Options(self.id, json_data=json_data['options']))
+        glob.ses.add(GuildData(self.id, glob.bot, json_data=json_data['data']))
+        glob.ses.commit()
 
 class ReturnData:
     """
@@ -149,7 +151,7 @@ class GuildData(Base):
     discovery_splash = Column(String)
     voice_channels = Column(JSON)
 
-    def __init__(self, guild_id, json_data=None):
+    def __init__(self, glob: GlobalVars, guild_id, json_data=None):
         self.id: int = guild_id
 
         json_keys = []
@@ -174,10 +176,10 @@ class GuildData(Base):
         self.discovery_splash: str = json_data['discovery_splash'] if 'discovery_splash' in json_keys else None
         self.voice_channels: list = json_data['voice_channels'] if 'voice_channels' in json_keys else None
 
-        self.renew()
+        self.renew(glob)
 
-    def renew(self):
-        guild_object = get_bot().get_guild(int(self.id))
+    def renew(self, glob: GlobalVars):
+        guild_object = glob.bot.get_guild(int(self.id))
 
         # generate random key from the ID
         random.seed(self.id)  # set seed to the guild ID

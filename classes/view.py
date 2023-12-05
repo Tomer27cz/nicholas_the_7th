@@ -2,6 +2,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from classes.data_classes import ReturnData
+    from utils.global_vars import GlobalVars
 
 import commands.player
 import commands.queue
@@ -9,7 +10,6 @@ import commands.queue
 from utils.save import save_json
 from utils.translate import tg
 from utils.discord import get_voice_client, to_queue
-from utils.globals import get_bot, get_session
 from utils.url import get_playlist_from_url
 
 from database.guild import guild
@@ -45,15 +45,16 @@ react_dict = {
 }
 
 class PlayerControlView(View):
-    def __init__(self, ctx):
+    def __init__(self, ctx, glob: GlobalVars):
         super().__init__(timeout=7200)
         if type(ctx) == dc_commands.Context:
             self.guild = ctx.guild
             self.guild_id = ctx.guild.id
+            self.glob = glob
 
     @discord.ui.button(emoji=react_dict['play'], style=discord.ButtonStyle.blurple, custom_id='play')
     async def callback(self, interaction, button):
-        voice: discord.voice_client.VoiceClient = get_voice_client(get_bot().voice_clients, guild=self.guild)
+        voice: discord.voice_client.VoiceClient = get_voice_client(self.glob.bot.voice_clients, guild=self.guild)
         if voice:
             if voice.is_paused():
                 voice.resume()
@@ -72,7 +73,7 @@ class PlayerControlView(View):
 
     @discord.ui.button(emoji=react_dict['pause'], style=discord.ButtonStyle.blurple, custom_id='pause')
     async def pause_callback(self, interaction, button):
-        voice: discord.voice_client.VoiceClient = get_voice_client(get_bot().voice_clients, guild=self.guild)
+        voice: discord.voice_client.VoiceClient = get_voice_client(self.glob.bot.voice_clients, guild=self.guild)
         if voice:
             if voice.is_playing():
                 voice.pause()
@@ -92,12 +93,12 @@ class PlayerControlView(View):
     # noinspection PyUnusedLocal
     @discord.ui.button(emoji=react_dict['stop'], style=discord.ButtonStyle.red, custom_id='stop')
     async def stop_callback(self, interaction, button):
-        voice: discord.voice_client.VoiceClient = get_voice_client(get_bot().voice_clients, guild=self.guild)
+        voice: discord.voice_client.VoiceClient = get_voice_client(self.glob.bot.voice_clients, guild=self.guild)
         if voice:
             if voice.is_playing() or voice.is_paused():
                 voice.stop()
-                guild(interaction.guild_id).options.stopped = True
-                get_session().commit()
+                guild(self.glob, interaction.guild_id).options.stopped = True
+                self.glob.ses.commit()
                 await interaction.response.edit_message(view=None)
             else:
                 await interaction.response.send_message(tg(self.guild_id, "No audio playing"), ephemeral=True)
@@ -106,7 +107,7 @@ class PlayerControlView(View):
 
 class SearchOptionView(View):
 
-    def __init__(self, ctx, force=False, from_play=False):
+    def __init__(self, ctx, glob: GlobalVars, force=False, from_play=False):
         super().__init__(timeout=180)
 
         if type(ctx) == dc_commands.Context:
@@ -115,79 +116,80 @@ class SearchOptionView(View):
             self.guild_id = ctx.guild.id
             self.force = force
             self.from_play = from_play
+            self.glob = glob
 
     # noinspection PyUnusedLocal
     @discord.ui.button(emoji=react_dict['1'], style=discord.ButtonStyle.blurple, custom_id='1')
     async def callback_1(self, interaction, button):
-        video = guild(self.guild_id).search_list[0]
+        video = guild(self.glob, self.guild_id).search_list[0]
         if self.force:
-            to_queue(self.guild_id, video, position=0)
+            to_queue(self.glob, self.guild_id, video, position=0)
         else:
-            to_queue(self.guild_id, video)
-        save_json()
+            to_queue(self.glob, self.guild_id, video)
+        save_json(self.glob)
         await interaction.response.edit_message(content=f'[`{video.title}`](<{video.url}>) '
                                                         f'{tg(self.guild_id, "added to queue!")}', view=None)
         if self.from_play:
-            await commands.player.play_def(self.ctx)
+            await commands.player.play_def(self.ctx, self.glob)
 
     # noinspection PyUnusedLocal
     @discord.ui.button(emoji=react_dict['2'], style=discord.ButtonStyle.blurple, custom_id='2')
     async def callback_2(self, interaction, button):
-        video = guild(self.guild_id).search_list[1]
+        video = guild(self.glob, self.guild_id).search_list[1]
         if self.force:
-            to_queue(self.guild_id, video, position=0)
+            to_queue(self.glob, self.guild_id, video, position=0)
         else:
-            to_queue(self.guild_id, video)
-        save_json()
+            to_queue(self.glob, self.guild_id, video)
+        save_json(self.glob)
         await interaction.response.edit_message(content=f'[`{video.title}`](<{video.url}>) '
                                                         f'{tg(self.guild_id, "added to queue!")}', view=None)
         if self.from_play:
-            await commands.player.play_def(self.ctx)
+            await commands.player.play_def(self.ctx, self.glob)
 
     # noinspection PyUnusedLocal
     @discord.ui.button(emoji=react_dict['3'], style=discord.ButtonStyle.blurple, custom_id='3')
     async def callback_3(self, interaction, button):
-        video = guild(self.guild_id).search_list[2]
+        video = guild(self.glob, self.guild_id).search_list[2]
         if self.force:
-            to_queue(self.guild_id, video, position=0)
+            to_queue(self.glob, self.guild_id, video, position=0)
         else:
-            to_queue(self.guild_id, video)
-        save_json()
+            to_queue(self.glob, self.guild_id, video)
+        save_json(self.glob)
         await interaction.response.edit_message(content=f'[`{video.title}`](<{video.url}>) '
                                                         f'{tg(self.guild_id, "added to queue!")}', view=None)
         if self.from_play:
-            await commands.player.play_def(self.ctx)
+            await commands.player.play_def(self.ctx, self.glob)
 
     # noinspection PyUnusedLocal
     @discord.ui.button(emoji=react_dict['4'], style=discord.ButtonStyle.blurple, custom_id='4')
     async def callback_4(self, interaction, button):
-        video = guild(self.guild_id).search_list[3]
+        video = guild(self.glob, self.guild_id).search_list[3]
         if self.force:
-            to_queue(self.guild_id, video, position=0)
+            to_queue(self.glob, self.guild_id, video, position=0)
         else:
-            to_queue(self.guild_id, video)
-        save_json()
+            to_queue(self.glob, self.guild_id, video)
+        save_json(self.glob)
         await interaction.response.edit_message(content=f'[`{video.title}`](<{video.url}>) '
                                                         f'{tg(self.guild_id, "added to queue!")}', view=None)
         if self.from_play:
-            await commands.player.play_def(self.ctx)
+            await commands.player.play_def(self.ctx, self.glob)
 
     # noinspection PyUnusedLocal
     @discord.ui.button(emoji=react_dict['5'], style=discord.ButtonStyle.blurple, custom_id='5')
     async def callback_5(self, interaction, button):
-        video = guild(self.guild_id).search_list[4]
+        video = guild(self.glob, self.guild_id).search_list[4]
         if self.force:
-            to_queue(self.guild_id, video, position=0)
+            to_queue(self.glob, self.guild_id, video, position=0)
         else:
-            to_queue(self.guild_id, video)
-        save_json()
+            to_queue(self.glob, self.guild_id, video)
+        save_json(self.glob)
         await interaction.response.edit_message(content=f'[`{video.title}`](<{video.url}>) '
                                                         f'{tg(self.guild_id, "added to queue!")}', view=None)
         if self.from_play:
-            await commands.player.play_def(self.ctx)
+            await commands.player.play_def(self.ctx, self.glob)
 
 class PlaylistOptionView(View):
-    def __init__(self, ctx, url, force=False, from_play=False):
+    def __init__(self, ctx, glob: GlobalVars, url, force=False, from_play=False):
         super().__init__(timeout=180)
 
         if type(ctx) == dc_commands.Context:
@@ -197,6 +199,7 @@ class PlaylistOptionView(View):
             self.guild_id = ctx.guild.id
             self.force = force
             self.from_play = from_play
+            self.glob = glob
 
     # noinspection PyUnusedLocal
     @discord.ui.button(label='Yes', style=discord.ButtonStyle.blurple)
@@ -205,14 +208,14 @@ class PlaylistOptionView(View):
         await interaction.response.edit_message(content=tg(self.guild_id, "Adding playlist to queue..."), view=None)
 
         position = 0 if self.force else None
-        response: ReturnData = await commands.queue.queue_command_def(self.ctx, playlist_url, position=position, mute_response=True,
+        response: ReturnData = await commands.queue.queue_command_def(self.ctx, self.glob, playlist_url, position=position, mute_response=True,
                                                        force=self.force)
 
         # await interaction.response.edit_message(content=response.message, view=None)
         await interaction.followup.edit_message(content=response.message, view=None, message_id=interaction.message.id)
 
         if self.from_play:
-            await commands.player.play_def(self.ctx)
+            await commands.player.play_def(self.ctx, self.glob)
 
     # noinspection PyUnusedLocal
     @discord.ui.button(label='No', style=discord.ButtonStyle.blurple)
@@ -220,10 +223,10 @@ class PlaylistOptionView(View):
         pure_url = self.url[:self.url.index('&list=')]
 
         position = 0 if self.force else None
-        response: ReturnData = await commands.queue.queue_command_def(self.ctx, pure_url, position=position, mute_response=True,
+        response: ReturnData = await commands.queue.queue_command_def(self.ctx, self.glob, pure_url, position=position, mute_response=True,
                                                        force=self.force)
 
         await interaction.response.edit_message(content=response.message, view=None)
 
         if self.from_play:
-            await commands.player.play_def(self.ctx)
+            await commands.player.play_def(self.ctx, self.glob)

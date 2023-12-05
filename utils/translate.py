@@ -1,5 +1,5 @@
 from utils.log import log
-from utils.globals import get_languages_dict
+from utils.global_vars import languages_dict
 from database.guild import guild
 
 def tg(guild_id: int, content: str) -> str:
@@ -11,9 +11,11 @@ def tg(guild_id: int, content: str) -> str:
     :param content: str - translation key
     :return: str - translated text
     """
-    languages_dict = get_languages_dict()
+
+    return content
+
     try:
-        lang = guild(guild_id).options.language
+        lang = guild(glob, guild_id).options.language
     except KeyError:
         log(guild_id, f'KeyError: {guild_id} in guild')
         lang = 'en'
@@ -41,10 +43,11 @@ def ftg(guild_id: int, content: str) -> str:
     # return content
     # # for now until i figure out how to get this working in apache2
 
+    return content
 
     try:
-        languages_dict = get_languages_dict()
-        lang = guild(guild_id).options.language
+        languages_dict = languages_dict()
+        lang = guild(glob, guild_id).options.language
     except Exception as e:
         return content
 

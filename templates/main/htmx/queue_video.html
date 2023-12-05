@@ -2,7 +2,7 @@
   <div class="q-div">
     {% if track.radio_info is not none %}
       {% set radio_info = get_radio_info(track.radio_info['name']) %}
-      {% set renew = track.renew() %}
+      {% set renew = track.renew(glob) %}
     <div class="q-item0 q-div div-radio2 r-w1">
       <img loading="lazy" class="q-img" src="{{ radio_info.picture }}" alt="thumbnail">
       <div class="q-item1 q-wd">

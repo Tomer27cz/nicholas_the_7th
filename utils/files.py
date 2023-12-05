@@ -1,3 +1,5 @@
+from utils.global_vars import GlobalVars
+
 import classes.discord_classes
 
 import os
@@ -37,7 +39,7 @@ def getFolderSize(relPath) -> int:
             totalSize += os.path.getsize(fp)
     return totalSize
 
-def get_guild_text_channels_file(guild_id: int):
+def get_guild_text_channels_file(glob: GlobalVars, guild_id: int):
     path = f'{PARENT_DIR}db/guilds/{guild_id}/channels.json'
     if os.path.exists(path):
         with open(path, 'r', encoding='utf-8') as f:
@@ -46,7 +48,7 @@ def get_guild_text_channels_file(guild_id: int):
         if data:
             channel_list = []
             for channel_id, channel_data in data.items():
-                channel_class = classes.discord_classes.DiscordChannel(0, json_data=channel_data)
+                channel_class = classes.discord_classes.DiscordChannel(0, glob.bot, json_data=channel_data)
                 channel_list.append(channel_class)
             return channel_list
     return None

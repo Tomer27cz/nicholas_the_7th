@@ -2,15 +2,20 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Union
 if TYPE_CHECKING:
     from classes.typed_dictionaries import TimeSegment, TimeSegmentInner, VideoChapter
+    from utils.global_vars import GlobalVars
 
 import classes.video_class as video_class
 import database.guild as db
 from utils.save import save_json, push_update
-from utils.globals import get_session
 
 from time import time
 
-def set_stopped(video):
+def set_stopped(glob: GlobalVars, video):
+    """
+    Sets the time when the video was stopped
+    :param glob: GlobalVars
+    :param video: Video object
+    """
     last_segment: TimeSegment = video.played_duration[-1]
     start = last_segment['start']
     end = last_segment['end']
@@ -21,14 +26,21 @@ def set_stopped(video):
     pd = video.played_duration
 
     # for some reason this needs to be done like this
-    get_session().commit()
-    if db.guild(guild_id=video.guild_id).now_playing is not None:
-        db.guild(guild_id=video.guild_id).now_playing.played_duration = pd
-    get_session().commit()
+    glob.ses.commit()
+    if db.guild(glob, guild_id=video.guild_id).now_playing is not None:
+        db.guild(glob, guild_id=video.guild_id).now_playing.played_duration = pd
+    glob.ses.commit()
 
-    save_json()
+    save_json(glob)
 
-def set_started(video, guild_object, chapters: Union[list[VideoChapter], None]= None):
+def set_started(glob: GlobalVars, video, guild_object, chapters: Union[list[VideoChapter], None]= None):
+    """
+    Sets the time when the video was started
+    :param glob: GlobalVars
+    :param video: Video object
+    :param guild_object: Guild object
+    :param chapters: list[VideoChapter] - list of chapters
+    """
     if len(video.played_duration) == 0:
         assert video.played_duration == []
         video.played_duration += [
@@ -47,13 +59,18 @@ def set_started(video, guild_object, chapters: Union[list[VideoChapter], None]= 
         pass
 
     guild_id = guild_object.id
-    db.guild(guild_id).now_playing = video_class.to_now_playing_class(video)
-    get_session().commit()
-    push_update(guild_id)
+    db.guild(glob, guild_id).now_playing = video_class.to_now_playing_class(glob, video)
+    glob.ses.commit()
+    push_update(glob, guild_id)
 
-    save_json()
+    save_json(glob)
 
-def set_resumed(video):
+def set_resumed(glob: GlobalVars, video):
+    """
+    Sets the time when the video was resumed
+    :param glob: GlobalVars
+    :param video: Video object
+    """
     start_dict = {'epoch': int(time()), 'time_stamp': video.played_duration[-1]['end']['time_stamp']}
     end_dict = {'epoch': None, 'time_stamp': None}
 
@@ -61,15 +78,21 @@ def set_resumed(video):
     pd = video.played_duration
 
     # for some reason this needs to be done like this
-    get_session().commit()
-    db.guild(guild_id=video.guild_id).now_playing.played_duration = pd
-    get_session().commit()
+    glob.ses.commit()
+    db.guild(glob, guild_id=video.guild_id).now_playing.played_duration = pd
+    glob.ses.commit()
 
-    save_json()
+    save_json(glob)
 
-def set_new_time(video, time_stamp: int):
+def set_new_time(glob: GlobalVars, video, time_stamp: int):
+    """
+    Sets the time when the video was started
+    :param glob: GlobalVars
+    :param video: Video object
+    :param time_stamp: int - new time stamp
+    """
     if video.played_duration[-1]['end']['epoch'] is None:
-        set_stopped(video)
+        set_stopped(glob, video)
 
     start_dict = {'epoch': int(time()), 'time_stamp': time_stamp}
     end_dict = {'epoch': None, 'time_stamp': None}
@@ -78,11 +101,11 @@ def set_new_time(video, time_stamp: int):
     pd = video.played_duration
 
     # for some reason this needs to be done like this
-    get_session().commit()
-    db.guild(guild_id=video.guild_id).now_playing.played_duration = pd
-    get_session().commit()
+    glob.ses.commit()
+    db.guild(glob, guild_id=video.guild_id).now_playing.played_duration = pd
+    glob.ses.commit()
 
-    save_json()
+    save_json(glob)
 
 def video_time_from_start(video) -> float:
     len_played_duration = len(video.played_duration)

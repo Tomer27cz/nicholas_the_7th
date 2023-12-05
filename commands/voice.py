@@ -1,10 +1,11 @@
+from utils.global_vars import GlobalVars
+
 from classes.data_classes import ReturnData
 
 from utils.log import log
 from utils.translate import tg
 from utils.save import save_json, push_update
 from utils.discord import now_to_history, get_voice_client
-from utils.globals import get_bot, get_session
 from utils.video_time import set_stopped, set_resumed
 
 from database.guild import guild
@@ -15,19 +16,20 @@ from discord.ext import commands as dc_commands
 import traceback
 from typing import Union
 
-async def stop_def(ctx, mute_response: bool = False, keep_loop: bool = False) -> ReturnData:
+async def stop_def(ctx, glob: GlobalVars, mute_response: bool = False, keep_loop: bool = False) -> ReturnData:
     """
     Stops player
     :param ctx: Context
+    :param glob: GlobalVars
     :param mute_response: Should bot response be muted
     :param keep_loop: Should loop be kept
     :return: ReturnData
     """
     log(ctx, 'stop_def', [mute_response, keep_loop], log_type='function', author=ctx.author)
-    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
-    db_guild = guild(guild_id)
+    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
+    db_guild = guild(glob, guild_id)
 
-    voice: discord.voice_client.VoiceClient = get_voice_client(get_bot().voice_clients, guild=guild_object)
+    voice: discord.voice_client.VoiceClient = get_voice_client(glob.bot.voice_clients, guild=guild_object)
 
     if not voice:
         message = tg(guild_id, "Bot is not connected to a voice channel")
@@ -40,33 +42,34 @@ async def stop_def(ctx, mute_response: bool = False, keep_loop: bool = False) ->
     db_guild.options.stopped = True
     if not keep_loop:
         db_guild.options.loop = False
-    get_session().commit()
+    glob.ses.commit()
 
-    now_to_history(guild_id)
+    now_to_history(glob, guild_id)
 
     message = tg(guild_id, "Player **stopped!**")
     if not mute_response:
         await ctx.reply(message, ephemeral=True)
     return ReturnData(True, message)
 
-async def pause_def(ctx, mute_response: bool = False) -> ReturnData:
+async def pause_def(ctx, glob, mute_response: bool = False) -> ReturnData:
     """
     Pause player
     :param ctx: Context
+    :param glob: GlobalVars
     :param mute_response: Should bot response be muted
     :return: ReturnData
     """
     log(ctx, 'pause_def', [mute_response], log_type='function', author=ctx.author)
-    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
-    db_guild = guild(guild_id)
+    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
+    db_guild = guild(glob, guild_id)
 
-    voice: discord.voice_client.VoiceClient = get_voice_client(get_bot().voice_clients, guild=guild_object)
+    voice: discord.voice_client.VoiceClient = get_voice_client(glob.bot.voice_clients, guild=guild_object)
 
     if voice:
         if voice.is_playing():
             voice.pause()
             if db_guild.now_playing:
-                set_stopped(db_guild.now_playing)
+                set_stopped(glob, db_guild.now_playing)
             message = tg(guild_id, "Player **paused!**")
             resp = True
         elif voice.is_paused():
@@ -79,31 +82,32 @@ async def pause_def(ctx, mute_response: bool = False) -> ReturnData:
         message = tg(guild_id, "Bot is not connected to a voice channel")
         resp = False
 
-    save_json()
-    push_update(guild_id)
+    save_json(glob)
+    push_update(glob, guild_id)
 
     if not mute_response:
         await ctx.reply(message, ephemeral=True)
     return ReturnData(resp, message)
 
-async def resume_def(ctx, mute_response: bool = False) -> ReturnData:
+async def resume_def(ctx, glob: GlobalVars, mute_response: bool = False) -> ReturnData:
     """
     Resume player
     :param ctx: Context
+    :param glob: GlobalVars
     :param mute_response: Should bot response be muted
     :return: ReturnData
     """
     log(ctx, 'resume_def', [mute_response], log_type='function', author=ctx.author)
-    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
-    db_guild = guild(guild_id)
+    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
+    db_guild = guild(glob, guild_id)
 
-    voice: discord.voice_client.VoiceClient = get_voice_client(get_bot().voice_clients, guild=guild_object)
+    voice: discord.voice_client.VoiceClient = get_voice_client(glob.bot.voice_clients, guild=guild_object)
 
     if voice:
         if voice.is_paused():
             voice.resume()
             if db_guild.now_playing:
-                set_resumed(db_guild.now_playing)
+                set_resumed(glob, db_guild.now_playing)
             message = tg(guild_id, "Player **resumed!**")
             resp = True
         elif voice.is_playing():
@@ -116,26 +120,27 @@ async def resume_def(ctx, mute_response: bool = False) -> ReturnData:
         message = tg(guild_id, "Bot is not connected to a voice channel")
         resp = False
 
-    save_json()
-    push_update(guild_id)
+    save_json(glob)
+    push_update(glob, guild_id)
 
     if not mute_response:
         await ctx.reply(message, ephemeral=True)
     return ReturnData(resp, message)
 
-async def join_def(ctx, channel_id=None, mute_response: bool = False) -> ReturnData:
+async def join_def(ctx, glob: GlobalVars, channel_id=None, mute_response: bool = False) -> ReturnData:
     """
     Join voice channel
     :param ctx: Context
+    :param glob: GlobalVars
     :param channel_id: id of channel to join
     :param mute_response: Should bot response be muted
     :return: ReturnData
     """
     log(ctx, 'join_def', [channel_id, mute_response], log_type='function', author=ctx.author)
-    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
+    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
 
     # if video in now_playing -> add to history
-    now_to_history(guild_id)
+    now_to_history(glob, guild_id)
 
     # define author channel (for ide)
     author_channel = None
@@ -167,7 +172,7 @@ async def join_def(ctx, channel_id=None, mute_response: bool = False) -> ReturnD
         if author_channel:
             voice_channel = author_channel
         else:
-            voice_channel = get_bot().get_channel(int(channel_id))
+            voice_channel = glob.bot.get_channel(int(channel_id))
 
         # check if bot has permission to join channel
         if not voice_channel.permissions_for(guild_object.me).connect:
@@ -195,7 +200,7 @@ async def join_def(ctx, channel_id=None, mute_response: bool = False) -> ReturnD
         # deafen bot
         await guild_object.change_voice_state(channel=voice_channel, self_deaf=True)
 
-        push_update(guild_id)
+        push_update(glob, guild_id)
 
         message = f"{tg(guild_id, 'Joined voice channel:')}  `{voice_channel.name}`"
         if not mute_response:
@@ -213,50 +218,52 @@ async def join_def(ctx, channel_id=None, mute_response: bool = False) -> ReturnD
         await ctx.reply(message, ephemeral=True)
         return ReturnData(False, message)
 
-async def disconnect_def(ctx, mute_response: bool = False) -> ReturnData:
+async def disconnect_def(ctx, glob: GlobalVars, mute_response: bool = False) -> ReturnData:
     """
     Disconnect bot from voice channel
     :param ctx: Context
+    :param glob: GlobalVars
     :param mute_response: Should bot response be muted
     :return: ReturnData
     """
     log(ctx, 'disconnect_def', [mute_response], log_type='function', author=ctx.author)
-    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
-    db_guild = guild(guild_id)
+    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
+    db_guild = guild(glob, guild_id)
 
     if guild_object.voice_client:
-        await stop_def(ctx, mute_response=True)
+        await stop_def(ctx, glob, mute_response=True)
         db_guild.queue.clear()
-        get_session().commit()
+        glob.ses.commit()
 
         channel = guild_object.voice_client.channel
         await guild_object.voice_client.disconnect(force=True)
 
-        push_update(guild_id)
-        now_to_history(guild_id)
+        push_update(glob, guild_id)
+        now_to_history(glob, guild_id)
         message = f"{tg(guild_id, 'Left voice channel:')} `{channel}`"
         if not mute_response:
             await ctx.reply(message, ephemeral=True)
         return ReturnData(True, message)
     else:
-        now_to_history(guild_id)
+        now_to_history(glob, guild_id)
         message = tg(guild_id, "Bot is **not** in a voice channel")
         if not mute_response:
             await ctx.reply(message, ephemeral=True)
         return ReturnData(False, message)
 
-async def volume_command_def(ctx, volume: Union[float, int] = None, ephemeral: bool = False, mute_response: bool = False) -> ReturnData:
+async def volume_command_def(ctx, glob: GlobalVars, volume: Union[float, int] = None, ephemeral: bool = False, mute_response: bool = False) -> ReturnData:
     """
     Change volume of player
     :param ctx: Context
+    :param glob: GlobalVars
     :param volume: volume to set
     :param ephemeral: Should bot response be ephemeral
     :param mute_response: Should bot response be muted
     :return: ReturnData
     """
     log(ctx, 'volume_command_def', [volume, ephemeral, mute_response], log_type='function', author=ctx.author)
-    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
-    db_guild = guild(guild_id)
+    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
+    db_guild = guild(glob, guild_id)
 
     if volume:
         try:
@@ -270,7 +277,7 @@ async def volume_command_def(ctx, volume: Union[float, int] = None, ephemeral: b
         new_volume = volume / 100
 
         db_guild.options.volume = new_volume
-        get_session().commit()
+        glob.ses.commit()
         voice = guild_object.voice_client
         if voice:
             try:
@@ -284,7 +291,7 @@ async def volume_command_def(ctx, volume: Union[float, int] = None, ephemeral: b
     else:
         message = f'{tg(guild_id, "The volume for this server is:")} `{int(db_guild.options.volume * 100)}%`'
 
-    save_json()
+    save_json(glob)
 
     if not mute_response:
         await ctx.reply(message, ephemeral=ephemeral)

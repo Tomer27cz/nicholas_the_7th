@@ -1,3 +1,5 @@
+from utils.global_vars import GlobalVars
+
 import discord
 
 from classes.data_classes import ReturnData, SlowedUser, TorturedUser
@@ -5,9 +7,9 @@ from classes.data_classes import ReturnData, SlowedUser, TorturedUser
 from utils.log import log
 from utils.translate import tg
 from utils.save import save_json
-from utils.globals import get_bot, get_languages_dict, get_session
 from utils.checks import is_float
 from utils.convert import to_bool
+from utils.global_vars import languages_dict
 
 from database.guild import guild, is_user_tortured, delete_tortured_user
 
@@ -19,16 +21,17 @@ import random
 from discord.ext import commands as dc_commands
 from typing import Union
 
-async def announce_command_def(ctx, message: str, ephemeral: bool = False) -> ReturnData:
+async def announce_command_def(ctx, glob: GlobalVars, message: str, ephemeral: bool = False) -> ReturnData:
     """
     Announce message to all servers
+    :param glob: GlobalVars
     :param ctx: Context
     :param message: Message to announce
     :param ephemeral: Should bot response be ephemeral
     :return: ReturnData
     """
     log(ctx, 'announce_command_def', [message, ephemeral], log_type='function', author=ctx.author)
-    for guild_object in get_bot().guilds:
+    for guild_object in glob.bot.guilds:
         try:
             await guild_object.system_channel.send(message)
         except Exception as e:
@@ -39,25 +42,25 @@ async def announce_command_def(ctx, message: str, ephemeral: bool = False) -> Re
     await ctx.reply(message, ephemeral=ephemeral)
     return ReturnData(True, message)
 
-async def kys_def(ctx: dc_commands.Context):
+async def kys_def(ctx: dc_commands.Context, glob: GlobalVars):
     log(ctx, 'kys_def', [], log_type='function', author=ctx.author)
     guild_id = ctx.guild.id
     await ctx.reply(tg(guild_id, "Committing seppuku..."))
     sys.exit(3)
 
-async def options_def(ctx: dc_commands.Context, server: Union[str, int, None]=None, stopped: str = None, loop: str = None, is_radio: str = None,
+async def options_def(ctx: dc_commands.Context, glob: GlobalVars, server: Union[str, int, None]=None, stopped: str = None, loop: str = None, is_radio: str = None,
                       buttons: str = None, language: str = None, response_type: str = None, buffer: str = None,
                       history_length: str = None, volume: str = None, search_query: str = None, last_updated: str = None,
                       ephemeral=True):
     log(ctx, 'options_def',
         [server, stopped, loop, is_radio, buttons, language, response_type, buffer, history_length, volume, search_query, last_updated, ephemeral],
         log_type='function', author=ctx.author)
-    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
+    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
 
-    db_guild = guild(guild_id)
+    db_guild = guild(glob, guild_id)
 
     if not server:
-        options = guild(guild_id).options
+        options = guild(glob, guild_id).options
 
         message = f"""
         **Options:**
@@ -102,7 +105,7 @@ async def options_def(ctx: dc_commands.Context, server: Union[str, int, None]=No
         guilds.append(server)
 
     for for_guild_id in guilds:
-        options = guild(for_guild_id).options
+        options = guild(glob, for_guild_id).options
 
         bool_list_t = ['True', 'true', '1']
         bool_list_f = ['False', 'false', '0']
@@ -131,8 +134,8 @@ async def options_def(ctx: dc_commands.Context, server: Union[str, int, None]=No
             await ctx.reply(msg, ephemeral=ephemeral)
             return ReturnData(False, msg)
 
-        if language not in get_languages_dict() and language is not None and language != 'None':
-            msg = f'language has to be: {get_languages_dict().keys()} --> {language}'
+        if language not in languages_dict() and language is not None and language != 'None':
+            msg = f'language has to be: {languages_dict().keys()} --> {language}'
             await ctx.reply(msg, ephemeral=ephemeral)
             return ReturnData(False, msg)
 
@@ -179,7 +182,7 @@ async def options_def(ctx: dc_commands.Context, server: Union[str, int, None]=No
         if last_updated is not None and last_updated != 'None':
             options.last_updated = int(last_updated)
 
-        save_json()
+        save_json(glob)
 
     message = tg(guild_id, f'Edited options successfully!')
     await ctx.reply(message, ephemeral=ephemeral)
@@ -187,15 +190,16 @@ async def options_def(ctx: dc_commands.Context, server: Union[str, int, None]=No
 
 
 # Slow mode
-async def slowed_users_command_def(ctx: dc_commands.Context, ephemeral: bool=True):
+async def slowed_users_command_def(ctx: dc_commands.Context, glob: GlobalVars, ephemeral: bool=True):
     """
     Lists all slowed users
     :param ctx: Context
+    :param glob: GlobalVars
     :param ephemeral: Should bot response be ephemeral
     """
     log(ctx, 'slowed_users', [], log_type='function', author=ctx.author)
     guild_id = ctx.guild.id
-    slowed_users = guild(guild_id).slowed_users
+    slowed_users = guild(glob, guild_id).slowed_users
 
     message = f"**Slowed users:**\n"
     for slowed_user in slowed_users:
@@ -204,10 +208,11 @@ async def slowed_users_command_def(ctx: dc_commands.Context, ephemeral: bool=Tru
     await ctx.reply(message, ephemeral=ephemeral)
     return ReturnData(True, message)
 
-async def slowed_users_add_command_def(ctx: dc_commands.Context, member: discord.Member, slowed_for: int, ephemeral: bool=True):
+async def slowed_users_add_command_def(ctx: dc_commands.Context, ses, member: discord.Member, slowed_for: int, ephemeral: bool=True):
     """
     Adds a slowed user
     :param ctx: Context
+    :param ses: Session object
     :param member: Member object
     :param slowed_for: Time to slow the user for
     :param ephemeral: Should bot response be ephemeral
@@ -221,17 +226,18 @@ async def slowed_users_add_command_def(ctx: dc_commands.Context, member: discord
         return ReturnData(False, message)
 
     slowed_user = SlowedUser(guild_id=guild_id, user_id=member.id, user_name=member.name, slowed_for=slowed_for)
-    with get_session().no_autoflush:
-        get_session().add(slowed_user)
-        get_session().commit()
+    with ses.no_autoflush:
+        ses.add(slowed_user)
+        ses.commit()
 
     message = f"{tg(guild_id, 'Added slowed user:')} <@{member.id}> -> {slowed_for}"
     await ctx.reply(message, ephemeral=ephemeral)
     return ReturnData(True, message)
 
-async def slowed_users_add_all_command_def(ctx: dc_commands.Context, guild_obj: discord.Guild, slowed_for: int, ephemeral: bool=True):
+async def slowed_users_add_all_command_def(ctx: dc_commands.Context, ses, guild_obj: discord.Guild, slowed_for: int, ephemeral: bool=True):
     """
     Adds all users in a guild to the slowed users list
+    :param ses: Session object
     :param ctx: Context
     :param guild_obj: Guild object
     :param slowed_for: Time to slow the user for
@@ -250,17 +256,18 @@ async def slowed_users_add_all_command_def(ctx: dc_commands.Context, guild_obj: 
         slowed_user = SlowedUser(guild_id=guild_obj.id, user_id=member.id, user_name=member.name, slowed_for=slowed_for)
         slowed_users.append(slowed_user)
 
-    with get_session().no_autoflush:
-        get_session().add_all(slowed_users)
-        get_session().commit()
+    with ses.no_autoflush:
+        ses.add_all(slowed_users)
+        ses.commit()
 
     message = f"{tg(guild_id, 'Added slowed users:')} {len(slowed_users)}"
     await ctx.reply(message, ephemeral=ephemeral)
     return ReturnData(True, message)
 
-async def slowed_users_remove_command_def(ctx: dc_commands.Context, member: discord.Member, ephemeral: bool=True):
+async def slowed_users_remove_command_def(ctx: dc_commands.Context, ses, member: discord.Member, ephemeral: bool=True):
     """
     Removes a slowed user
+    :param ses: Session object
     :param ctx: Context
     :param member: Member object
     :param ephemeral: Should bot response be ephemeral
@@ -268,24 +275,25 @@ async def slowed_users_remove_command_def(ctx: dc_commands.Context, member: disc
     log(ctx, 'slowed_users_remove', [member.id], log_type='function', author=ctx.author)
     guild_id = ctx.guild.id
 
-    with get_session().no_autoflush:
-        slowed_user = get_session().query(SlowedUser).filter_by(user_id=member.id, guild_id=guild_id).first()
+    with ses.no_autoflush:
+        slowed_user = ses.query(SlowedUser).filter_by(user_id=member.id, guild_id=guild_id).first()
     if slowed_user is None:
         message = tg(guild_id, "That user is not slowed!")
         await ctx.reply(message, ephemeral=ephemeral)
         return ReturnData(False, message)
 
-    with get_session().no_autoflush:
-        get_session().delete(slowed_user)
-        get_session().commit()
+    with ses.no_autoflush:
+        ses.delete(slowed_user)
+        ses.commit()
 
     message = f"{tg(guild_id, 'Removed slowed user:')} <@{member.id}>"
     await ctx.reply(message, ephemeral=ephemeral)
     return ReturnData(True, message)
 
-async def slowed_users_remove_all_command_def(ctx: dc_commands.Context, guild_obj: discord.Guild, ephemeral: bool=True):
+async def slowed_users_remove_all_command_def(ctx: dc_commands.Context, ses, guild_obj: discord.Guild, ephemeral: bool=True):
     """
     Removes all slowed users in a guild
+    :param ses: Session object
     :param ctx: Context
     :param guild_obj: Guild object
     :param ephemeral: Should bot response be ephemeral
@@ -293,26 +301,27 @@ async def slowed_users_remove_all_command_def(ctx: dc_commands.Context, guild_ob
     log(ctx, 'slowed_users_remove_all', [guild_obj.id], log_type='function', author=ctx.author)
     guild_id = ctx.guild.id
 
-    with get_session().no_autoflush:
-        slowed_users = get_session().query(SlowedUser).filter_by(guild_id=guild_obj.id).all()
+    with ses.no_autoflush:
+        slowed_users = ses.query(SlowedUser).filter_by(guild_id=guild_obj.id).all()
     if slowed_users is None:
         message = tg(guild_id, "There are no slowed users!")
         await ctx.reply(message, ephemeral=ephemeral)
         return ReturnData(False, message)
 
-    with get_session().no_autoflush:
+    with ses.no_autoflush:
         for slowed_user in slowed_users:
-            get_session().delete(slowed_user)
-        get_session().commit()
+            ses.delete(slowed_user)
+        ses.commit()
 
     message = f"{tg(guild_id, 'Removed slowed users:')} {len(slowed_users)}"
     await ctx.reply(message, ephemeral=ephemeral)
     return ReturnData(True, message)
 
 # Torture
-async def voice_torture_command_def(ctx, member: discord.Member, delay: int, ephemeral: bool=True):
+async def voice_torture_command_def(ctx: dc_commands.Context, ses, member: discord.Member, delay: int, ephemeral: bool=True):
     """
     Keeps swapping the user between voice channels with n second delay
+    :param ses: Session object
     :param ctx: Context
     :param member: Member object
     :param delay: Time to torture the user for
@@ -337,24 +346,24 @@ async def voice_torture_command_def(ctx, member: discord.Member, delay: int, eph
         await ctx.reply(message, ephemeral=ephemeral)
         return ReturnData(False, message)
 
-    with get_session().no_autoflush:
-        tu = get_session().query(TorturedUser).filter_by(user_id=member.id, guild_id=guild_id).first()
+    with ses.no_autoflush:
+        tu = ses.query(TorturedUser).filter_by(user_id=member.id, guild_id=guild_id).first()
         if tu is not None:
             tu.torture_delay = delay
-            get_session().commit()
+            ses.commit()
             message = f"{tg(guild_id, 'Updated torture delay for user:')} <@{member.id}> -> {delay}"
             await ctx.reply(message, ephemeral=ephemeral)
             return ReturnData(True, message)
-        get_session().add(TorturedUser(guild_id=guild_id, user_id=member.id, torture_delay=delay))
-        get_session().commit()
+        ses.add(TorturedUser(guild_id=guild_id, user_id=member.id, torture_delay=delay))
+        ses.commit()
 
     message = f"{tg(guild_id, 'Torturing user:')} <@{member.id}> -> {delay}"
     await ctx.reply(message, ephemeral=ephemeral)
 
     while True:
-        is_tortured, delay = is_user_tortured(member.id, guild_id)
+        is_tortured, delay = is_user_tortured(ses, member.id, guild_id)
         if not is_tortured:
-            delete_tortured_user(member.id, guild_id)
+            delete_tortured_user(ses, member.id, guild_id)
             message = tg(guild_id, "That user is not being tortured!")
             await ctx.reply(message, ephemeral=ephemeral)
             return ReturnData(False, message)
@@ -362,17 +371,17 @@ async def voice_torture_command_def(ctx, member: discord.Member, delay: int, eph
         await asyncio.sleep(delay)
 
         if member.voice is None:
-            delete_tortured_user(member.id, guild_id)
+            delete_tortured_user(ses, member.id, guild_id)
             message = tg(guild_id, "That user is not in a voice channel!")
             await ctx.reply(message, ephemeral=ephemeral)
             return ReturnData(False, message)
         if member.voice.channel is None:
-            delete_tortured_user(member.id, guild_id)
+            delete_tortured_user(ses, member.id, guild_id)
             message = tg(guild_id, "That user is not in a voice channel!")
             await ctx.reply(message, ephemeral=ephemeral)
             return ReturnData(False, message)
         if member.voice.channel == ctx.guild.afk_channel:
-            delete_tortured_user(member.id, guild_id)
+            delete_tortured_user(ses, member.id, guild_id)
             message = tg(guild_id, "That user is in the AFK channel!")
             await ctx.reply(message, ephemeral=ephemeral)
             return ReturnData(False, message)
@@ -385,9 +394,10 @@ async def voice_torture_command_def(ctx, member: discord.Member, delay: int, eph
             await ctx.reply(message, ephemeral=ephemeral)
             return ReturnData(False, message)
 
-async def voice_torture_stop_command_def(ctx, member: discord.Member, ephemeral: bool=True):
+async def voice_torture_stop_command_def(ctx: dc_commands.Context, ses, member: discord.Member, ephemeral: bool=True):
     """
     Stops torturing the user
+    :param ses: Session object
     :param ctx: Context
     :param member: Member object
     :param ephemeral: Should bot response be ephemeral
@@ -395,16 +405,16 @@ async def voice_torture_stop_command_def(ctx, member: discord.Member, ephemeral:
     log(ctx, 'voice_torture_stop', [member.id], log_type='function', author=ctx.author)
     guild_id = ctx.guild.id
 
-    with get_session().no_autoflush:
-        tortured_user = get_session().query(TorturedUser).filter_by(user_id=member.id, guild_id=guild_id).first()
+    with ses.no_autoflush:
+        tortured_user = ses.query(TorturedUser).filter_by(user_id=member.id, guild_id=guild_id).first()
     if tortured_user is None:
         message = tg(guild_id, "That user is not being tortured!")
         await ctx.reply(message, ephemeral=ephemeral)
         return ReturnData(False, message)
 
-    with get_session().no_autoflush:
-        get_session().delete(tortured_user)
-        get_session().commit()
+    with ses.no_autoflush:
+        ses.delete(tortured_user)
+        ses.commit()
 
     message = f"{tg(guild_id, 'Stopped torturing user:')} <@{member.id}>"
     await ctx.reply(message, ephemeral=ephemeral)

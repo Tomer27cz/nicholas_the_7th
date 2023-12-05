@@ -2,12 +2,12 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from classes.typed_dictionaries import *
+    from utils.global_vars import GlobalVars
 
 from database.main import *
-from database.guild import *
 
-from utils.globals import get_radio_dict, get_sc, get_session
 from utils.convert import convert_duration
+from utils.global_vars import radio_dict
 import utils.video_time
 import utils.save
 
@@ -38,6 +38,7 @@ def get_video_data(url: str) -> (dict, str) or (None, str):
 # Video Class Functions
 
 def video_class_init(self,
+                     glob: GlobalVars,
                      class_type: str,
                      author: Union[str, int],
                      guild_id: int,
@@ -104,7 +105,6 @@ def video_class_init(self,
             raise ValueError("radio_info must contain name")
 
         if any(v is None for v in [url, title, picture, duration, channel_name, channel_link]):
-            radio_dict = get_radio_dict()
             radio_name = radio_info['name']
             self.url = radio_dict[radio_name]['url']
             self.title = radio_dict[radio_name]['name']
@@ -114,7 +114,7 @@ def video_class_init(self,
             self.channel_link = self.url
             self.radio_info['website'] = radio_dict[radio_name]['type']
 
-        video_class_renew(self, from_init=True)
+        video_class_renew(self, glob, from_init=True)
 
     elif self.class_type == 'Local':
         if local_number is None:
@@ -133,7 +133,7 @@ def video_class_init(self,
 
         if any(v is None for v in [title, picture, duration, channel_name, channel_link]):
             try:
-                soundcloud_api = get_sc()
+                soundcloud_api = glob.sc
                 if soundcloud_api is None:
                     raise ValueError("SoundCloud API is not initialized")
                 track = soundcloud_api.resolve(self.url)
@@ -154,18 +154,18 @@ def video_class_init(self,
     # set stream_url at the end for json readability
     self.stream_url = stream_url
 
-def video_class_renew(self, from_init: bool=False):
+def video_class_renew(self, glob: GlobalVars, from_init: bool=False):
     if self.class_type == 'Radio':
-        radio_info_class = get_session().query(RadioInfo).filter(RadioInfo.name == self.radio_info['name']).first()
+        radio_info_class = glob.ses.query(RadioInfo).filter(RadioInfo.name == self.radio_info['name']).first()
         if radio_info_class is None:
-            radio_info_class = RadioInfo(radio_id=get_radio_dict()[self.radio_info['name']]['id'])
-            get_session().add(radio_info_class)
-            get_session().commit()
+            radio_info_class = RadioInfo(radio_id=radio_dict[self.radio_info['name']]['id'])
+            glob.ses.add(radio_info_class)
+            glob.ses.commit()
 
         if int(time()) - radio_info_class.last_update > 10 or from_init:
             radio_info_class.update()
 
-def video_class_current_chapter(self):
+def video_class_current_chapter(self, glob: GlobalVars):
     if self.played_duration is None:
         return None
     if self.chapters is None:
@@ -186,9 +186,9 @@ def video_class_current_chapter(self):
         if chapter['start_time'] < time_from_play < chapter['end_time']:
             return chapter['title']
 
-    utils.save.save_json()
+    utils.save.save_json(glob)
 
-def video_class_time(self):
+def video_class_time(self, glob: GlobalVars):
     if self.duration is None:
         return '0:00 / 0:00'
     if self.played_duration[-1]['end']['epoch'] is not None:
@@ -204,7 +204,7 @@ def video_class_time(self):
     if time_from_play == 0:
         return '0:00 / ' + convert_duration(duration)
 
-    utils.save.save_json()
+    utils.save.save_json(glob)
 
     return f'{convert_duration(time_from_play)} / {convert_duration(duration)}'
 
@@ -226,9 +226,9 @@ class RadioInfo(Base):
 
     def __init__(self, radio_id: int):
         self.id: int = radio_id
-        self.url: str = [radio['url'] for radio in get_radio_dict().values() if radio['id'] == radio_id][0]
-        self.website: str = [radio['type'] for radio in get_radio_dict().values() if radio['id'] == radio_id][0]
-        self.name: str = [radio['name'] for radio in get_radio_dict().values() if radio['id'] == radio_id][0]
+        self.url: str = [radio['url'] for radio in radio_dict.values() if radio['id'] == radio_id][0]
+        self.website: str = [radio['type'] for radio in radio_dict.values() if radio['id'] == radio_id][0]
+        self.name: str = [radio['name'] for radio in radio_dict.values() if radio['id'] == radio_id][0]
         self.last_update: int = int(time())
 
     def update(self):
@@ -360,6 +360,7 @@ class Queue(Base):
     discord_channel = Column(JSON)
 
     def __init__(self,
+                 glob: GlobalVars,
                  class_type: str,
                  author: Union[str, int],
                  guild_id: int,
@@ -378,6 +379,7 @@ class Queue(Base):
                  discord_channel: DiscordChannelInfo = None
                  ):
         video_class_init(self,
+                         glob,
                          class_type=class_type,
                          author=author,
                          guild_id=guild_id,
@@ -395,14 +397,14 @@ class Queue(Base):
                          stream_url=stream_url,
                          discord_channel=discord_channel)
 
-    def renew(self):
-        video_class_renew(self)
+    def renew(self, glob: GlobalVars):
+        video_class_renew(self, glob)
 
-    def current_chapter(self):
-        return video_class_current_chapter(self)
+    def current_chapter(self, glob: GlobalVars):
+        return video_class_current_chapter(self, glob)
 
-    def time(self):
-        return video_class_time(self)
+    def time(self, glob: GlobalVars):
+        return video_class_time(self, glob)
 
 class NowPlaying(Base):
     """
@@ -433,6 +435,7 @@ class NowPlaying(Base):
     discord_channel = Column(JSON)
 
     def __init__(self,
+                 glob: GlobalVars,
                  class_type: str,
                  author: Union[str, int],
                  guild_id: int,
@@ -451,6 +454,7 @@ class NowPlaying(Base):
                  discord_channel: DiscordChannelInfo = None
                  ):
         video_class_init(self,
+                         glob,
                          class_type=class_type,
                          author=author,
                          guild_id=guild_id,
@@ -468,14 +472,14 @@ class NowPlaying(Base):
                          stream_url=stream_url,
                          discord_channel=discord_channel)
 
-    def renew(self):
-        video_class_renew(self)
+    def renew(self, glob: GlobalVars):
+        video_class_renew(self, glob)
 
-    def current_chapter(self):
-        return video_class_current_chapter(self)
+    def current_chapter(self, glob: GlobalVars):
+        return video_class_current_chapter(self, glob)
 
-    def time(self):
-        return video_class_time(self)
+    def time(self, glob: GlobalVars):
+        return video_class_time(self, glob)
 
 class History(Base):
     """
@@ -506,6 +510,7 @@ class History(Base):
     discord_channel = Column(JSON)
 
     def __init__(self,
+                 glob: GlobalVars,
                  class_type: str,
                  author: Union[str, int],
                  guild_id: int,
@@ -524,6 +529,7 @@ class History(Base):
                  discord_channel: DiscordChannelInfo = None
                  ):
         video_class_init(self,
+                        glob,
                          class_type=class_type,
                          author=author,
                          guild_id=guild_id,
@@ -541,14 +547,14 @@ class History(Base):
                          stream_url=stream_url,
                          discord_channel=discord_channel)
 
-    def renew(self):
-        video_class_renew(self)
+    def renew(self, glob: GlobalVars):
+        video_class_renew(self, glob)
 
-    def current_chapter(self):
-        return video_class_current_chapter(self)
+    def current_chapter(self, glob: GlobalVars):
+        return video_class_current_chapter(self, glob)
 
-    def time(self):
-        return video_class_time(self)
+    def time(self, glob: GlobalVars):
+        return video_class_time(self, glob)
 
 class SearchList(Base):
     """
@@ -579,6 +585,7 @@ class SearchList(Base):
     discord_channel = Column(JSON)
 
     def __init__(self,
+                 glob: GlobalVars,
                  class_type: str,
                  author: Union[str, int],
                  guild_id: int,
@@ -597,6 +604,7 @@ class SearchList(Base):
                  discord_channel: DiscordChannelInfo = None
                  ):
         video_class_init(self,
+                            glob,
                          class_type=class_type,
                          author=author,
                          guild_id=guild_id,
@@ -614,14 +622,14 @@ class SearchList(Base):
                          stream_url=stream_url,
                          discord_channel=discord_channel)
 
-    def renew(self):
-        video_class_renew(self)
+    def renew(self, glob: GlobalVars):
+        video_class_renew(self, glob)
 
-    def current_chapter(self):
-        return video_class_current_chapter(self)
+    def current_chapter(self, glob: GlobalVars):
+        return video_class_current_chapter(self, glob)
 
-    def time(self):
-        return video_class_time(self)
+    def time(self, glob: GlobalVars):
+        return video_class_time(self, glob)
 
 class SaveVideo(Base):
     """
@@ -654,6 +662,7 @@ class SaveVideo(Base):
     discord_channel = Column(JSON)
 
     def __init__(self,
+                 glob: GlobalVars,
                  class_type: str,
                  author: Union[str, int],
                  guild_id: int,
@@ -674,6 +683,7 @@ class SaveVideo(Base):
                  ):
         self.save_id = save_id
         video_class_init(self,
+                        glob,
                          class_type=class_type,
                          author=author,
                          guild_id=guild_id,
@@ -691,22 +701,23 @@ class SaveVideo(Base):
                          stream_url=stream_url,
                          discord_channel=discord_channel)
 
-    def renew(self):
-        video_class_renew(self)
+    def renew(self, glob: GlobalVars):
+        video_class_renew(self, glob)
 
-    def current_chapter(self):
-        return video_class_current_chapter(self)
+    def current_chapter(self, glob: GlobalVars):
+        return video_class_current_chapter(self, glob)
 
-    def time(self):
-        return video_class_time(self)
+    def time(self, glob: GlobalVars):
+        return video_class_time(self, glob)
 
 # Transforms
 
-def to_queue_class(_video_class):
+def to_queue_class(glob, _video_class):
     if _video_class.__class__.__name__ == 'Queue':
         return _video_class
 
     return Queue(
+        glob,
         class_type=_video_class.class_type,
         author=_video_class.author,
         guild_id=_video_class.guild_id,
@@ -725,11 +736,12 @@ def to_queue_class(_video_class):
         discord_channel=_video_class.discord_channel
     )
 
-def to_search_list_class(_video_class):
+def to_search_list_class(glob, _video_class):
     if _video_class.__class__.__name__ == 'SearchList':
         return _video_class
 
     return SearchList(
+        glob,
         class_type=_video_class.class_type,
         author=_video_class.author,
         guild_id=_video_class.guild_id,
@@ -748,11 +760,12 @@ def to_search_list_class(_video_class):
         discord_channel=_video_class.discord_channel
     )
 
-def to_now_playing_class(_video_class):
+def to_now_playing_class(glob, _video_class):
     if _video_class.__class__.__name__ == 'NowPlaying':
         return _video_class
 
     return NowPlaying(
+        glob,
         class_type=_video_class.class_type,
         author=_video_class.author,
         guild_id=_video_class.guild_id,
@@ -771,11 +784,12 @@ def to_now_playing_class(_video_class):
         discord_channel=_video_class.discord_channel
     )
 
-def to_history_class(_video_class):
+def to_history_class(glob, _video_class):
     if _video_class.__class__.__name__ == 'History':
         return _video_class
 
     return History(
+        glob,
         class_type=_video_class.class_type,
         author=_video_class.author,
         guild_id=_video_class.guild_id,
@@ -794,11 +808,12 @@ def to_history_class(_video_class):
         discord_channel=_video_class.discord_channel
     )
 
-def to_save_video_class(_video_class, save_id):
+def to_save_video_class(glob, _video_class, save_id):
     if _video_class.__class__.__name__ == 'SaveVideo':
         return _video_class
 
     return SaveVideo(
+        glob,
         class_type=_video_class.class_type,
         author=_video_class.author,
         guild_id=_video_class.guild_id,

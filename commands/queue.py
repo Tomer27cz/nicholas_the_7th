@@ -1,14 +1,15 @@
+from utils.global_vars import GlobalVars
+
 from classes.data_classes import ReturnData
-from classes.video_class import to_search_list_class, to_queue_class, Queue
+from classes.video_class import to_search_list_class, Queue
 import classes.view
 
-from utils.globals import get_sc, get_session
 from utils.log import log
 from utils.translate import tg
 from utils.url import get_url_type, extract_yt_id
 from utils.cli import get_url_probe_data
 from utils.discord import to_queue, create_embed
-from utils.spotify import spotify_album_to_yt_video_list, spotify_playlist_to_yt_video_list, spotify_to_yt_video, check_spotify_initialized
+from utils.spotify import spotify_album_to_yt_video_list, spotify_playlist_to_yt_video_list, spotify_to_yt_video
 from utils.save import save_json, push_update
 from utils.convert import convert_duration
 
@@ -29,11 +30,12 @@ from sclib import Track, Playlist
 import config
 from config import VLC_LOGO as vlc_logo
 
-async def queue_command_def(ctx, url=None, position: int = None, mute_response: bool = False, force: bool = False, from_play: bool = False, probe_data: list = None, no_search: bool = False, ephemeral: bool = False, ) -> ReturnData:
+async def queue_command_def(ctx, glob: GlobalVars, url=None, position: int = None, mute_response: bool = False, force: bool = False, from_play: bool = False, probe_data: list = None, no_search: bool = False, ephemeral: bool = False, ) -> ReturnData:
     """
     This function tries to queue a song. It is called by the queue command and the play command.
 
     :param ctx: Context
+    :param glob: GlobalVars
     :param url: An input string that is either a URL or a search query
     :param position: An integer that represents the position in the queue to insert the song
     :param mute_response: Whether to mute the response or not
@@ -45,8 +47,8 @@ async def queue_command_def(ctx, url=None, position: int = None, mute_response: 
     :return: ReturnData(bool, str, VideoClass child or None)
     """
     log(ctx, 'queue_command_def', [url, position, mute_response, force, from_play, probe_data, no_search, ephemeral], log_type='function', author=ctx.author)
-    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
-    db_guild = guild(guild_id)
+    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
+    db_guild = guild(glob, guild_id)
 
     if not url:
         message = tg(guild_id, "`url` is **required**")
@@ -81,9 +83,9 @@ async def queue_command_def(ctx, url=None, position: int = None, mute_response: 
 
         for index, val in enumerate(playlist_videos):
             url = f"https://www.youtube.com/watch?v={playlist_videos[index]['id']}"
-            video = Queue('Video', author_id, guild_id, url=url)
-            to_queue(guild_id, video, position=position, copy_video=False, no_push=True)
-        push_update(guild_id)
+            video = Queue(glob, 'Video', author_id, guild_id, url=url)
+            to_queue(glob, guild_id, video, position=position, copy_video=False, no_push=True)
+        push_update(glob, guild_id)
 
         message = f"`{len(playlist_videos)}` {tg(guild_id, 'songs from playlist added to queue!')} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={db_guild.data.key})"
         if not mute_response:
@@ -97,7 +99,7 @@ async def queue_command_def(ctx, url=None, position: int = None, mute_response: 
         return ReturnData(False, message)
 
     if url_type == 'Spotify Playlist' or url_type == 'Spotify Album':
-        if not check_spotify_initialized():
+        if not glob.sp:
             message = tg(guild_id, 'Spotify API is not initialized')
             if not mute_response:
                 await ctx.reply(message, ephemeral=ephemeral)
@@ -107,16 +109,16 @@ async def queue_command_def(ctx, url=None, position: int = None, mute_response: 
             adding_message = await ctx.reply(tg(guild_id, 'Adding songs to queue... (might take a while)'), ephemeral=ephemeral)
 
         if url_type == 'Spotify Playlist':
-            video_list = spotify_playlist_to_yt_video_list(url, author_id, guild_id)
+            video_list = spotify_playlist_to_yt_video_list(glob, url, author_id, guild_id)
         else:
-            video_list = spotify_album_to_yt_video_list(url, author_id, guild_id)
+            video_list = spotify_album_to_yt_video_list(glob, url, author_id, guild_id)
 
         if position is not None:
             video_list = list(reversed(video_list))
 
         for video in video_list:
-            to_queue(guild_id, video, position=position, copy_video=False, no_push=True)
-        push_update(guild_id)
+            to_queue(glob, guild_id, video, position=position, copy_video=False, no_push=True)
+        push_update(glob, guild_id)
 
         message = f'`{len(video_list)}` {tg(guild_id, "songs from playlist added to queue!")} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={db_guild.data.key})'
         if is_ctx:
@@ -124,39 +126,39 @@ async def queue_command_def(ctx, url=None, position: int = None, mute_response: 
         return ReturnData(True, message)
 
     if url_type == 'Spotify Track':
-        if not check_spotify_initialized():
+        if not glob.sp:
             message = tg(guild_id, 'Spotify API is not initialized')
             if not mute_response:
                 await ctx.reply(message, ephemeral=ephemeral)
             return ReturnData(False, message)
-        video = spotify_to_yt_video(url, author_id, guild_id)
+        video = spotify_to_yt_video(glob, url, author_id, guild_id)
         if video is not None:
-            message = to_queue(guild_id, video, position=position, copy_video=False)
+            message = to_queue(glob, guild_id, video, position=position, copy_video=False)
             if not mute_response:
                 await ctx.reply(message, ephemeral=ephemeral)
             return ReturnData(True, message)
 
     if url_type == 'Spotify URL':
-        if not check_spotify_initialized():
+        if not glob.sp:
             message = tg(guild_id, 'Spotify API is not initialized')
             if not mute_response:
                 await ctx.reply(message, ephemeral=ephemeral)
             return ReturnData(False, message)
-        video = spotify_to_yt_video(url, author_id, guild_id)
+        video = spotify_to_yt_video(glob, url, author_id, guild_id)
         if video is None:
             message = f'{tg(guild_id, "Invalid spotify url")}: `{url}`'
             if not mute_response:
                 await ctx.reply(message, ephemeral=ephemeral)
             return ReturnData(False, message)
 
-        message = to_queue(guild_id, video, position=position, copy_video=False)
+        message = to_queue(glob, guild_id, video, position=position, copy_video=False)
         if not mute_response:
             await ctx.reply(message, ephemeral=ephemeral)
         return ReturnData(True, message)
 
     if url_type == 'SoundCloud URL':
         try:
-            soundcloud_api = get_sc()
+            soundcloud_api = glob.sc
             if soundcloud_api is None:
                 message = tg(guild_id, 'SoundCloud API is not initialized')
                 if not mute_response:
@@ -171,13 +173,13 @@ async def queue_command_def(ctx, url=None, position: int = None, mute_response: 
 
         if type(track) == Track:
             try:
-                video = Queue('SoundCloud', author_id, guild_id, url=url)
+                video = Queue(glob,'SoundCloud', author_id, guild_id, url=url)
             except ValueError as e:
                 if not mute_response:
                     await ctx.reply(e, ephemeral=ephemeral)
                 return ReturnData(False, f"{e}")
 
-            message = to_queue(guild_id, video, position=position, copy_video=False)
+            message = to_queue(glob, guild_id, video, position=position, copy_video=False)
             if not mute_response:
                 await ctx.reply(message, ephemeral=ephemeral)
             return ReturnData(True, message)
@@ -191,11 +193,11 @@ async def queue_command_def(ctx, url=None, position: int = None, mute_response: 
                 duration = int(val.duration * 0.001)
                 artist_url = 'https://soundcloud.com/' + track.permalink_url.split('/')[-2]
 
-                video = Queue('SoundCloud', author=author_id, guild_id=guild_id, url=val.permalink_url, title=val.title,
+                video = Queue(glob,'SoundCloud', author=author_id, guild_id=guild_id, url=val.permalink_url, title=val.title,
                                    picture=val.artwork_url, duration=duration, channel_name=val.artist,
                                    channel_link=artist_url)
-                to_queue(guild_id, video, position=position, copy_video=False, no_push=True)
-            push_update(guild_id)
+                to_queue(glob, guild_id, video, position=position, copy_video=False, no_push=True)
+            push_update(glob, guild_id)
 
             message = f"`{len(tracks)}` {tg(guild_id, 'songs from playlist added to queue!')} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={db_guild.data.key})"
             if not mute_response:
@@ -204,8 +206,8 @@ async def queue_command_def(ctx, url=None, position: int = None, mute_response: 
 
     if url_type == 'YouTube Video' or yt_id is not None:
         url = f"https://www.youtube.com/watch?v={yt_id}"
-        video = Queue('Video', author_id, guild_id, url=url)
-        message = to_queue(guild_id, video, position=position, copy_video=False)
+        video = Queue(glob,'Video', author_id, guild_id, url=url)
+        message = to_queue(glob, guild_id, video, position=position, copy_video=False)
         if not mute_response:
             await ctx.reply(message, ephemeral=ephemeral)
         return ReturnData(True, message)
@@ -216,39 +218,40 @@ async def queue_command_def(ctx, url=None, position: int = None, mute_response: 
             if not probe_data:
                 probe_data = [extracted_url, extracted_url, extracted_url]
 
-            video = Queue('Probe', author_id, guild_id, url=extracted_url, title=probe_data[0], picture=vlc_logo, duration='Unknown', channel_name=probe_data[1], channel_link=probe_data[2])
-            message = to_queue(guild_id, video, position=position, copy_video=False)
+            video = Queue(glob,'Probe', author_id, guild_id, url=extracted_url, title=probe_data[0], picture=vlc_logo, duration='Unknown', channel_name=probe_data[1], channel_link=probe_data[2])
+            message = to_queue(glob, guild_id, video, position=position, copy_video=False)
             if not mute_response:
                 await ctx.reply(message, ephemeral=ephemeral)
             return ReturnData(True, message)
 
     if is_ctx and not no_search:
-        return await search_command_def(ctx, url, display_type='short', force=force, from_play=from_play, ephemeral=ephemeral)
+        return await search_command_def(ctx, glob, url, display_type='short', force=force, from_play=from_play, ephemeral=ephemeral)
 
     message = f'`{url}` {tg(guild_id, "is not supported!")} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={db_guild.data.key})'
     if not mute_response:
         await ctx.reply(message, ephemeral=ephemeral)
     return ReturnData(False, message)
 
-async def next_up_def(ctx, url, ephemeral: bool = False):
+async def next_up_def(ctx, glob: GlobalVars, url, ephemeral: bool = False):
     """
     Adds a song to the queue and plays it if the queue is empty
     :param ctx: Context
+    :param glob: GlobalVars
     :param url: An input url
     :param ephemeral: Should the response be ephemeral
     :return: None
     """
     log(ctx, 'next_up_def', [url, ephemeral], log_type='function', author=ctx.author)
-    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
-    response = await queue_command_def(ctx, url, position=0, mute_response=True, force=True)
+    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
+    response = await queue_command_def(ctx, glob, url, position=0, mute_response=True, force=True)
 
     if response.response:
         if guild_object.voice_client:
             if not guild_object.voice_client.is_playing():
-                await commands.player.play_def(ctx)
+                await commands.player.play_def(ctx, glob)
                 return
         else:
-            await commands.player.play_def(ctx)
+            await commands.player.play_def(ctx, glob)
             return
 
         await ctx.reply(response.message, ephemeral=ephemeral)
@@ -256,26 +259,27 @@ async def next_up_def(ctx, url, ephemeral: bool = False):
     else:
         return
 
-    save_json()
+    save_json(glob)
 
-async def skip_def(ctx) -> ReturnData:
+async def skip_def(ctx, glob: GlobalVars) -> ReturnData:
     """
     Skips the current song
     :param ctx: Context
+    :param glob: GlobalVars
     :return: ReturnData
     """
     log(ctx, 'skip_def', [], log_type='function', author=ctx.author)
-    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
+    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
 
     if guild_object.voice_client:
         if guild_object.voice_client.is_playing():
-            stop_response = await commands.voice.stop_def(ctx, mute_response=True, keep_loop=True)
+            stop_response = await commands.voice.stop_def(ctx, glob, mute_response=True, keep_loop=True)
             if not stop_response.response:
                 return stop_response
 
             await asyncio.sleep(0.5)
 
-            play_response = await commands.player.play_def(ctx)
+            play_response = await commands.player.play_def(ctx, glob)
             if not play_response.response:
                 return play_response
 
@@ -285,10 +289,11 @@ async def skip_def(ctx) -> ReturnData:
     await ctx.reply(message, ephemeral=True)
     return ReturnData(False, message)
 
-async def remove_def(ctx, number: int, display_type: Literal['short', 'long'] = None, ephemeral: bool = False, list_type: Literal['queue', 'history'] = 'queue') -> ReturnData:
+async def remove_def(ctx, glob: GlobalVars, number: int, display_type: Literal['short', 'long'] = None, ephemeral: bool = False, list_type: Literal['queue', 'history'] = 'queue') -> ReturnData:
     """
     Removes a song from the queue or history
     :param ctx: Context
+    :param glob: GlobalVars
     :param number: index of the song to be removed
     :param display_type: ('short' or 'long') How the response should be displayed
     :param ephemeral: Should the response be ephemeral
@@ -296,8 +301,8 @@ async def remove_def(ctx, number: int, display_type: Literal['short', 'long'] = 
     :return: ReturnData
     """
     log(ctx, 'remove_def', [number, display_type, ephemeral], log_type='function', author=ctx.author)
-    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
-    db_guild = guild(guild_id)
+    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
+    db_guild = guild(glob, guild_id)
 
     if not display_type:
         display_type = db_guild.options.response_type
@@ -318,15 +323,15 @@ async def remove_def(ctx, number: int, display_type: Literal['short', 'long'] = 
             message = f'REMOVED #{number} : [`{video.title}`](<{video.url}>)'
 
             if display_type == 'long':
-                embed = create_embed(video, f'{tg(guild_id, "REMOVED #")}{number}', guild_id)
+                embed = create_embed(glob, video, f'{tg(guild_id, "REMOVED #")}{number}', guild_id)
                 await ctx.reply(embed=embed, ephemeral=ephemeral)
             if display_type == 'short':
                 await ctx.reply(message, ephemeral=ephemeral)
 
             db_guild.queue.pop(number)
 
-            push_update(guild_id)
-            save_json()
+            push_update(glob, guild_id)
+            save_json(glob)
 
             return ReturnData(True, message)
 
@@ -346,86 +351,89 @@ async def remove_def(ctx, number: int, display_type: Literal['short', 'long'] = 
             message = f'REMOVED #{number} : [`{video.title}`](<{video.url}>)'
 
             if display_type == 'long':
-                embed = create_embed(video, f'{tg(guild_id, "REMOVED #")}{number}', guild_id)
+                embed = create_embed(glob, video, f'{tg(guild_id, "REMOVED #")}{number}', guild_id)
                 await ctx.reply(embed=embed, ephemeral=ephemeral)
             if display_type == 'short':
                 await ctx.reply(message, ephemeral=ephemeral)
 
             db_guild.history.pop(number)
 
-            push_update(guild_id)
-            save_json()
+            push_update(glob, guild_id)
+            save_json(glob)
 
             return ReturnData(True, message)
 
     else:
-        save_json()
+        save_json(glob)
         message = tg(guild_id, 'Invalid list type!')
         await ctx.reply(message, ephemeral=True)
         return ReturnData(False, message)
 
-    save_json()
+    save_json(glob)
 
     return ReturnData(False, tg(guild_id, 'No number given!'))
 
-async def clear_def(ctx, ephemeral: bool = False) -> ReturnData:
+async def clear_def(ctx, glob: GlobalVars, ephemeral: bool = False) -> ReturnData:
     """
     Clears the queue
     :param ctx: Context
+    :param glob: GlobalVars
     :param ephemeral: Should the response be ephemeral
     :return: ReturnData
     """
     log(ctx, 'clear_def', [ephemeral], log_type='function', author=ctx.author)
-    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
-    db_guild = guild(guild_id)
+    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
+    db_guild = guild(glob, guild_id)
 
     db_guild.queue.clear()
-    push_update(guild_id)
-    save_json()
+    push_update(glob, guild_id)
+    save_json(glob)
 
     message = tg(guild_id, 'Removed **all** songs from queue')
     await ctx.reply(message, ephemeral=ephemeral)
     return ReturnData(True, message)
 
-async def shuffle_def(ctx, ephemeral: bool = False) -> ReturnData:
+async def shuffle_def(ctx, glob: GlobalVars, ephemeral: bool = False) -> ReturnData:
     """
     Shuffles the queue
     :param ctx: Context
+    :param glob: GlobalVars
     :param ephemeral: Should the response be ephemeral
     :return: ReturnData
     """
     log(ctx, 'shuffle_def', [ephemeral], log_type='function', author=ctx.author)
-    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
+    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
 
-    queue = guild(guild_id).queue
+    queue = guild(glob, guild_id).queue
     rand_list = list(range(len(queue)))
     random.shuffle(rand_list)
 
     new_queue = []
     for i in rand_list:
         new_queue.append(queue[i])
-    guild(guild_id).queue = new_queue
-    get_session().commit()
-    get_session().commit()
-    push_update(guild_id)
-    save_json()
+    guild(glob, guild_id).queue = new_queue
+    glob.ses.commit()
+    glob.ses.commit()
+    push_update(glob, guild_id)
+    save_json(glob)
 
     message = tg(guild_id, 'Songs in queue shuffled')
     await ctx.reply(message, ephemeral=ephemeral)
     return ReturnData(True, message)
 
-async def show_def(ctx, display_type: Literal['short', 'medium', 'long'] = None, list_type: Literal['queue', 'history'] = 'queue', ephemeral: bool = False) -> ReturnData:
+async def show_def(ctx, glob: GlobalVars, display_type: Literal['short', 'medium', 'long'] = None, list_type: Literal['queue', 'history'] = 'queue', ephemeral: bool = False) -> ReturnData:
     """
     Shows the queue or history (only in discord)
     :param ctx: Context
+    :param glob: GlobalVars
     :param display_type: ('short', 'medium' or 'long') How the response should be displayed
     :param list_type: ('queue' or 'history') Which list to show
     :param ephemeral: Should the response be ephemeral
     :return: ReturnData
     """
     log(ctx, 'show_def', [display_type, list_type, ephemeral], log_type='function', author=ctx.author)
-    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
-    db_guild = guild(guild_id)
+    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
+    db_guild = guild(glob, guild_id)
 
     if not is_ctx:
         return ReturnData(False, tg(guild_id, 'Cannot use this command in WEB'))
@@ -454,7 +462,7 @@ async def show_def(ctx, display_type: Literal['short', 'medium', 'long'] = None,
         await ctx.send(message, ephemeral=ephemeral, mention_author=False)
 
         for index, val in enumerate(show_list):
-            embed = create_embed(val, f'{tg(guild_id, f"{list_type.upper()} #")}{index}', guild_id)
+            embed = create_embed(glob, val, f'{tg(guild_id, f"{list_type.upper()} #")}{index}', guild_id)
 
             await ctx.send(embed=embed, ephemeral=ephemeral, mention_author=False)
 
@@ -507,12 +515,13 @@ async def show_def(ctx, display_type: Literal['short', 'medium', 'long'] = None,
         else:
             await ctx.message.channel.send(content=message, mention_author=False)
 
-    save_json()
+    save_json(glob)
 
-async def search_command_def(ctx, search_query, display_type: Literal['short', 'long'] = None, force: bool = False, from_play: bool = False, ephemeral: bool = False) -> ReturnData:
+async def search_command_def(ctx, glob: GlobalVars, search_query, display_type: Literal['short', 'long'] = None, force: bool = False, from_play: bool = False, ephemeral: bool = False) -> ReturnData:
     """
     Search for a song and add it to the queue with single (only in discord)
     :param ctx: Context
+    :param glob: GlobalVars
     :param search_query: String to be searched for in YouTube
     :param display_type: ('short' or 'long') How the response should be displayed
     :param force: bool - if True, the song will be added to the front of the queue
@@ -522,8 +531,8 @@ async def search_command_def(ctx, search_query, display_type: Literal['short', '
     """
     log(ctx, 'search_command_def', [search_query, display_type, force, from_play, ephemeral], log_type='function',
         author=ctx.author)
-    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx)
-    db_guild = guild(guild_id)
+    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
+    db_guild = guild(glob, guild_id)
 
     if not is_ctx:
         return ReturnData(False, tg(guild_id, 'Search command cannot be used in WEB'))
@@ -544,9 +553,9 @@ async def search_command_def(ctx, search_query, display_type: Literal['short', '
 
     custom_search = youtubesearchpython.VideosSearch(search_query, limit=5)
     db_guild.search_list.clear()
-    get_session().commit()
+    glob.ses.commit()
 
-    view = classes.view.SearchOptionView(ctx, force, from_play)
+    view = classes.view.SearchOptionView(ctx, glob, force, from_play)
 
     if not custom_search.result()['result']:
         message = tg(guild_id, 'No results found!')
@@ -556,25 +565,25 @@ async def search_command_def(ctx, search_query, display_type: Literal['short', '
     for i in range(5):
         # noinspection PyTypeChecker
         url = custom_search.result()['result'][i]['link']
-        video = Queue('Video', ctx.author.id, guild_id, url=url)
-        db_guild.search_list.append(to_search_list_class(video))
-        get_session().commit()
+        video = Queue(glob,'Video', ctx.author.id, guild_id, url=url)
+        db_guild.search_list.append(to_search_list_class(glob, video))
+        glob.ses.commit()
 
         if display_type == 'long':
-            embed = create_embed(video, f'{tg(guild_id, "Result #")}{i + 1}', guild_id)
+            embed = create_embed(glob, video, f'{tg(guild_id, "Result #")}{i + 1}', guild_id)
             await ctx.message.channel.send(embed=embed, ephemeral=ephemeral)
         if display_type == 'short':
             message += f'{tg(guild_id, "Result #")}{i + 1} : [`{video.title}`](<{video.url}>)\n'
     if display_type == 'short':
         await ctx.reply(message, view=view, ephemeral=ephemeral)
 
-    save_json()
+    save_json(glob)
 
 # # -------------------------------- IMPORT / EXPORT --------------------------------
 #
 # async def export_queue(ctx, guild_id: int=None, ephemeral: bool=False):
 #     log(ctx, 'export_queue', [guild_id, ephemeral], log_type='function')
-#     is_ctx, ctx_guild_id, author_id, ctx_guild_object = ctx_check(ctx)
+#     is_ctx, ctx_guild_id, author_id, ctx_guild_object = ctx_check(ctx, bot, ses)
 #
 #     if not guild_id:
 #         if is_ctx:
@@ -590,7 +599,7 @@ async def search_command_def(ctx, search_query, display_type: Literal['short', '
 #         return ReturnData(False, message)
 #
 #     try:
-#         queue_dict = guild(guild_id).queue
+#         queue_dict = guild(glob, guild_id).queue
 #     except Exception as e:
 #         message = f"Error: {e}"
 #         await ctx.reply(message, ephemeral=ephemeral)
@@ -633,7 +642,7 @@ async def search_command_def(ctx, search_query, display_type: Literal['short', '
 #
 # async def import_queue(ctx, queue_data, guild_id: int=None, ephemeral: bool=False):
 #     log(ctx, 'import_queue', [queue_data, guild_id, ephemeral], log_type='function')
-#     is_ctx, ctx_guild_id, author_id, ctx_guild_object = ctx_check(ctx)
+#     is_ctx, ctx_guild_id, author_id, ctx_guild_object = ctx_check(ctx, bot, ses)
 #
 #     if type(queue_data) == discord.Attachment:
 #         queue_data = queue_data.read()
@@ -672,9 +681,9 @@ async def search_command_def(ctx, search_query, display_type: Literal['short', '
 #         video.renew()
 #         queue_list.append(to_queue_class(video))
 #
-#     guild(guild_id).queue += queue_list
-#     get_session().commit()
-#     push_update(guild_id)
+#     guild(glob, guild_id).queue += queue_list
+#     ses.commit()
+#     push_update(glob, guild_id)
 #
 #     message = f"Added to queue: `{len(queue_list)}` items"
 #     await ctx.reply(message, ephemeral=ephemeral)

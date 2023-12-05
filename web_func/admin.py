@@ -1,10 +1,11 @@
+from utils.global_vars import GlobalVars
+
 from classes.data_classes import ReturnData, Guild
 from classes.video_class import to_queue_class, to_now_playing_class, to_history_class, Queue
 
 from utils.log import log, send_to_admin
 from utils.translate import tg
 from utils.save import save_json, push_update
-from utils.globals import get_bot, get_session
 from database.guild import guild, delete_guild
 
 import commands.admin
@@ -14,11 +15,11 @@ import discord
 import ast
 import json
 
-async def web_video_edit(web_data, form) -> ReturnData:
+async def web_video_edit(web_data, glob: GlobalVars, form) -> ReturnData:
     log(web_data, 'web_video_edit', [form], log_type='function', author=web_data.author)
-    is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data)
+    is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data, glob)
     guild_id = web_data.guild_id
-    db_guild = guild(guild_id)
+    db_guild = guild(glob, guild_id)
     index = form['edit_btn']
     is_queue = True
     is_np = False
@@ -124,24 +125,24 @@ async def web_video_edit(web_data, form) -> ReturnData:
         except (TypeError, ValueError, json.decoder.JSONDecodeError, AssertionError, SyntaxError):
             return ReturnData(False, f'Invalid discord channel: {discord_channel}')
 
-    video = Queue(class_type, author, guild_id, url=url, title=title, picture=picture, duration=duration, channel_name=channel_name, channel_link=channel_link, radio_info=radio_info, local_number=local_number, created_at=created_at, played_duration=played_duration, chapters=chapters, discord_channel=discord_channel, stream_url=stream_url)
+    video = Queue(glob, class_type, author, guild_id, url=url, title=title, picture=picture, duration=duration, channel_name=channel_name, channel_link=channel_link, radio_info=radio_info, local_number=local_number, created_at=created_at, played_duration=played_duration, chapters=chapters, discord_channel=discord_channel, stream_url=stream_url)
 
     if is_np:
-        db_guild.now_playing = to_now_playing_class(video)
+        db_guild.now_playing = to_now_playing_class(glob, video)
     else:
         if is_queue:
-            db_guild.queue[index] = to_queue_class(video)
+            db_guild.queue[index] = to_queue_class(glob, video)
         else:
-            db_guild.history[index] = to_history_class(video)
+            db_guild.history[index] = to_history_class(glob, video)
 
-    push_update(guild_id)
-    save_json()
+    push_update(glob, guild_id)
+    save_json(glob)
 
     return ReturnData(True, tg(ctx_guild_id, 'Edited item') + f' {"h" if not is_queue else ""}{index} ' + tg(ctx_guild_id, 'successfully!'))
 
-async def web_options_edit(web_data, form) -> ReturnData:
+async def web_options_edit(web_data, glob: GlobalVars, form) -> ReturnData:
     log(web_data, 'web_options_edit', [form], log_type='function', author=web_data.author)
-    is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data)
+    is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data, glob)
 
     try:
         stopped = form['stopped']
@@ -158,16 +159,16 @@ async def web_options_edit(web_data, form) -> ReturnData:
     except KeyError:
         return ReturnData(False, tg(ctx_guild_id, 'Missing form data - please contact the developer (he fucked up when doing an update)'))
 
-    return await commands.admin.options_def(web_data, server='this', stopped=stopped, loop=loop, is_radio=is_radio, language=language,
+    return await commands.admin.options_def(web_data, glob, server='this', stopped=stopped, loop=loop, is_radio=is_radio, language=language,
                              response_type=response_type, search_query=search_query, buttons=buttons, volume=volume,
                              buffer=buffer, history_length=history_length, last_updated=last_updated)
 
 # TODO: Figure out how to do this
-async def web_delete_guild(web_data, guild_id) -> ReturnData:
+async def web_delete_guild(web_data, glob: GlobalVars, guild_id) -> ReturnData:
     log(web_data, 'web_delete_guild', [guild_id], log_type='function', author=web_data.author)
-    is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data)
+    is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data, glob)
 
-    db_guilds = [db_guild_object.id for db_guild_object in get_session().query(Guild).all()]
+    db_guilds = [db_guild_object.id for db_guild_object in glob.ses.query(Guild).all()]
 
     try:
         guild_id = int(guild_id)
@@ -177,41 +178,41 @@ async def web_delete_guild(web_data, guild_id) -> ReturnData:
     if guild_id not in db_guilds:
         return ReturnData(False, tg(ctx_guild_id, 'Guild not found') + f': {guild_id}')
 
-    delete_guild(int(guild_id))
+    delete_guild(glob, int(guild_id))
 
-    save_json()
+    save_json(glob)
 
     return ReturnData(True, tg(ctx_guild_id, 'Deleted guild') + f' {guild_id} ' + tg(ctx_guild_id, 'successfully!'))
 
-async def web_disconnect_guild(web_data, guild_id) -> ReturnData:
+async def web_disconnect_guild(web_data, glob: GlobalVars, guild_id) -> ReturnData:
     log(web_data, 'web_disconnect_guild', [guild_id], log_type='function', author=web_data.author)
-    is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data)
+    is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data, glob)
     try:
         guild_id = int(guild_id)
     except (TypeError, ValueError):
         return ReturnData(False, tg(ctx_guild_id, 'Invalid guild id') + f': {guild_id}')
 
-    bot_guild_ids = [guild_object.id for guild_object in get_bot().guilds]
+    bot_guild_ids = [guild_object.id for guild_object in glob.bot.guilds]
 
     if guild_id not in bot_guild_ids:
         return ReturnData(False, tg(ctx_guild_id, 'Guild not found in bot.guilds') + f': {guild_id}')
 
-    guild_to_disconnect = get_bot().get_guild(guild_id)
+    guild_to_disconnect = glob.bot.get_guild(guild_id)
 
     try:
         await guild_to_disconnect.leave()
     except discord.HTTPException as e:
         return ReturnData(False, f"Something Failed -> HTTPException: {e}")
 
-    save_json()
+    save_json(glob)
 
     return ReturnData(True, tg(ctx_guild_id, 'Left guild') + f' {guild_id} ' + tg(ctx_guild_id, 'successfully!'))
 
-async def web_create_invite(web_data, guild_id):
+async def web_create_invite(web_data, glob: GlobalVars, guild_id):
     log(web_data, 'web_create_invite', [guild_id], log_type='function', author=web_data.author)
-    is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data)
+    is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data, glob)
     try:
-        guild_object = get_bot().get_guild(int(guild_id))
+        guild_object = glob.bot.get_guild(int(guild_id))
     except (TypeError, ValueError):
         return ReturnData(False, tg(ctx_guild_id, 'Invalid guild id') + f': {guild_id}')
 
@@ -226,7 +227,7 @@ async def web_create_invite(web_data, guild_id):
     if guild_object_invites:
         message = f'Guild ({guild_object.id}) invites -> {guild_object_invites}'
         log(None, message)
-        await send_to_admin(message)
+        await send_to_admin(glob, message)
         return ReturnData(True, message)
 
     if not guild_object_invites:
@@ -235,7 +236,7 @@ async def web_create_invite(web_data, guild_id):
             invite = await channel.create_invite()
             message = tg(ctx_guild_id, 'Invite for guild') + f' ({guild_object.id}) -> {invite}'
             log(None, message)
-            await send_to_admin(message)
+            await send_to_admin(glob, message)
             return ReturnData(True, message)
         except discord.HTTPException as e:
             return ReturnData(False, tg(ctx_guild_id, "Something Failed -> HTTPException") + f": {e}")

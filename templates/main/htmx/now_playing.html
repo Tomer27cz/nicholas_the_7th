@@ -11,7 +11,7 @@
   <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse show">
     <div class="accordion-body">
       {% if guild.now_playing is not none %}
-        {% set renew = guild.now_playing.renew() %}
+        {% set renew = guild.now_playing.renew(glob) %}
         <div class="q-div q-history">
           {% if guild.now_playing.radio_info is not none %}
             {% set radio_info = get_radio_info(guild.now_playing.radio_info['name']) %}

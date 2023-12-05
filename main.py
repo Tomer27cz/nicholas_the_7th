@@ -12,6 +12,7 @@ from utils.discord import get_content_of_message
 from utils.log import send_to_admin
 from utils.save import update_guilds
 from utils.json import *
+from utils.global_vars import GlobalVars, radio_dict, languages_dict
 
 from commands.admin import *
 from commands.chat_export import *
@@ -35,7 +36,7 @@ d_id = 349164237605568513
 
 from database.main import *
 from database.guild import *
-session = connect_to_db()
+ses = connect_to_db(first_time=True)
 
 # ---------------- Bot class ------------
 
@@ -59,9 +60,9 @@ class Bot(dc_commands.Bot):
         await bot.change_presence(activity=discord.Game(name=f"/help"))
         log(None, f'Logged in as:\n{bot.user.name}\n{bot.user.id}')
 
-        update_guilds()
+        update_guilds(glob)
 
-        save_json()
+        save_json(glob)
 
     async def on_guild_join(self, guild_object):
         # log
@@ -69,11 +70,11 @@ class Bot(dc_commands.Bot):
         log(None, log_msg)
 
         # send log to admin
-        await send_to_admin(log_msg)
+        await send_to_admin(glob, log_msg)
 
         # create guild object
-        create_guild(guild_object.id)
-        save_json()
+        create_guild(glob, guild_object.id)
+        save_json(glob)
 
         # get text channels
         text_channels = guild_object.text_channels
@@ -88,7 +89,7 @@ class Bot(dc_commands.Bot):
             await text_channels[0].send(message)
 
         # download all channels
-        await download_guild(WebData(guild_object.id, bot.user.name, bot.user.id), guild_object.id, mute_response=True, ephemeral=True)
+        await download_guild(WebData(guild_object.id, bot.user.name, bot.user.id), glob, guild_object.id, mute_response=True, ephemeral=True)
 
     @staticmethod
     async def on_guild_remove(guild_object):
@@ -97,10 +98,10 @@ class Bot(dc_commands.Bot):
         log(None, log_msg)
 
         # send log to admin
-        await send_to_admin(log_msg)
+        await send_to_admin(glob, log_msg)
 
         # update guilds
-        save_json()
+        save_json(glob)
 
     async def on_voice_state_update(self, member, before, after):
         # set voice state
@@ -116,18 +117,18 @@ class Bot(dc_commands.Bot):
             await voice_state.disconnect()
 
             # set stopped to true
-            guild(guild_id).options.stopped = True
-            session.commit()
+            guild(glob, guild_id).options.stopped = True
+            ses.commit()
 
             # log
             log(guild_id, "-->> Disconnecting when last person left -> Queue Cleared <<--")
 
             # save history
-            now_to_history(guild_id)
+            now_to_history(glob, guild_id)
 
             # clear queue when last person leaves
-            guild(guild_id).queue.clear()
-            session.commit()
+            guild(glob, guild_id).queue.clear()
+            ses.commit()
 
         if not member.id == self.user.id:
             return
@@ -152,20 +153,20 @@ class Bot(dc_commands.Bot):
                     time_var = 0 # reset time_var
 
                 # check if time_var is greater than buffer
-                if time_var >= guild(guild_id).options.buffer:
+                if time_var >= guild(glob, guild_id).options.buffer:
                     # stop playing and disconnect
                     voice.stop()
                     await voice.disconnect()
 
                     # set stopped to true
-                    guild(guild_id).options.stopped = True
-                    session.commit()
+                    guild(glob, guild_id).options.stopped = True
+                    ses.commit()
 
                     # log
-                    log(guild_id, f"-->> Disconnecting after {guild(guild_id).options.buffer} seconds of no play <<--")
+                    log(guild_id, f"-->> Disconnecting after {guild(glob, guild_id).options.buffer} seconds of no play <<--")
 
                     # save history
-                    now_to_history(guild_id)
+                    now_to_history(glob, guild_id)
 
                 # check if bot is disconnected
                 if not voice.is_connected():
@@ -174,8 +175,8 @@ class Bot(dc_commands.Bot):
         # if bot leaves a voice channel
         elif after.channel is None:
             # clear queue when bot leaves
-            guild(guild_id).queue.clear()
-            session.commit()
+            guild(glob, guild_id).queue.clear()
+            ses.commit()
             # log
             log(guild_id, f"-->> Cleared Queue after bot Disconnected <<--")
 
@@ -191,7 +192,7 @@ class Bot(dc_commands.Bot):
         elif isinstance(error, dc_commands.CheckFailure):
             err_msg = f'Error for ({ctx.author}) -> ({ctx.command}) with error ({error})'
             log(ctx, err_msg, log_type='error', author=ctx.author)
-            await send_to_admin(err_msg)
+            await send_to_admin(glob, err_msg)
             await ctx.reply(f"（ ͡° ͜ʖ ͡°)つ━☆・。\n"
                             f"⊂　　 ノ 　　　・゜+.\n"
                             f"　しーＪ　　　°。+ ´¨)\n"
@@ -211,7 +212,7 @@ class Bot(dc_commands.Bot):
             log(ctx, message, log_type='error', author=ctx.author)
 
             # send log to admin
-            await send_to_admin(message)
+            await send_to_admin(glob, message)
 
             # send to user
             await ctx.reply(f"{error}   {bot.get_user(config.DEVELOPER_ID).mention}", ephemeral=True)
@@ -233,13 +234,13 @@ class Bot(dc_commands.Bot):
                     f"If you have any questions, you can DM my developer <@!{config.DEVELOPER_ID}>#4272")
 
                 # send DM to ADMIN
-                await send_to_admin(f"<@!{message.author.id}> tied to DM me with this message `{message.content}`")
+                await send_to_admin(glob, f"<@!{message.author.id}> tied to DM me with this message `{message.content}`")
                 return
 
             except discord.errors.Forbidden:
                 return
 
-        is_slowed, slowed_for = is_user_slowed(message.author.id, message.guild.id)
+        is_slowed, slowed_for = is_user_slowed(glob, message.author.id, message.guild.id)
         if is_slowed:
             try:
                 await message.author.timeout(datetime.timedelta(seconds=slowed_for))
@@ -259,11 +260,11 @@ build_old_guilds = False
 with open('db/radio.json', 'r', encoding='utf-8') as file:
     radio_dict = json.load(file)
     for radio_name in radio_dict:
-        radio_info_class = session.query(video_class.RadioInfo).filter(video_class.RadioInfo.name == radio_name).first()
+        radio_info_class = ses.query(video_class.RadioInfo).filter(video_class.RadioInfo.name == radio_name).first()
         if not radio_info_class:
             radio_info_class = video_class.RadioInfo(radio_dict[radio_name]['id'])
-            session.add(radio_info_class)
-            session.commit()
+            ses.add(radio_info_class)
+            ses.commit()
             log(None, f'Added {radio_name} to database')
 log(None, 'Loaded radio.json')
 
@@ -278,13 +279,6 @@ log(None, 'Loaded languages.json')
 bot = Bot()
 
 log(None, 'Discord API initialized')
-
-# ---------------- Load old guilds ------------
-
-if build_old_guilds:
-    with open('db/guilds.json', 'r', encoding='utf-8') as file:
-        load_json_to_database(json.load(file))
-        log(None, 'Loaded old guilds.json')
 
 # ---------------------------------------------- SPOTIPY ---------------------------------------------------------------
 
@@ -305,13 +299,24 @@ except Exception as e:
     log(None, f'Failed to initialize SoundCloud API : {e}')
     soundcloud_api = None
 
+# --------------------------------------------- Global Variables --------------------------------------------------------
+
+glob = GlobalVars(bot, ses, spotify_api, soundcloud_api)
+
+# ---------------- Load old guilds ------------
+
+if build_old_guilds:
+    with open('db/guilds.json', 'r', encoding='utf-8') as file:
+        load_json_to_database(glob, json.load(file))
+        log(None, 'Loaded old guilds.json')
+
 # --------------------------------------- QUEUE --------------------------------------------------
 
 @bot.hybrid_command(name='queue', with_app_command=True, description=text['queue_add'], help=text['queue_add'])
 @app_commands.describe(url=text['url'], position=text['pos'])
 async def queue_command(ctx: dc_commands.Context, url, position: int = None):
     log(ctx, 'queue', [url, position], log_type='command', author=ctx.author)
-    await queue_command_def(ctx, url, position=position)
+    await queue_command_def(ctx, glob, url, position=position)
 
 # @bot.hybrid_command(name='queue_export', with_app_command=True, description=text['queue_export'], help=text['queue_export'])
 # @app_commands.describe(guild_id=text['guild_id'], ephemeral=text['ephemeral'])
@@ -329,43 +334,43 @@ async def queue_command(ctx: dc_commands.Context, url, position: int = None):
 @app_commands.describe(url=text['url'], user_only=text['ephemeral'])
 async def next_up(ctx: dc_commands.Context, url, user_only: bool = False):
     log(ctx, 'next_up', [url, user_only], log_type='command', author=ctx.author)
-    await next_up_def(ctx, url, user_only)
+    await next_up_def(ctx, glob, url, user_only)
 
 @bot.hybrid_command(name='skip', with_app_command=True, description=text['skip'], help=text['skip'])
 async def skip(ctx: dc_commands.Context):
     log(ctx, 'skip', [], log_type='command', author=ctx.author)
-    await skip_def(ctx)
+    await skip_def(ctx, glob)
 
 @bot.hybrid_command(name='remove', with_app_command=True, description=text['queue_remove'], help=text['queue_remove'])
 @app_commands.describe(number=text['number'], user_only=text['ephemeral'])
 async def remove(ctx: dc_commands.Context, number: int, user_only: bool = False):
     log(ctx, 'remove', [number, user_only], log_type='command', author=ctx.author)
-    await remove_def(ctx, number, ephemeral=user_only)
+    await remove_def(ctx, glob, number, ephemeral=user_only)
 
 @bot.hybrid_command(name='clear', with_app_command=True, description=text['clear'], help=text['clear'])
 @app_commands.describe(user_only=text['ephemeral'])
 async def clear(ctx: dc_commands.Context, user_only: bool = False):
     log(ctx, 'clear', [user_only], log_type='command', author=ctx.author)
-    await clear_def(ctx, user_only)
+    await clear_def(ctx, glob, user_only)
 
 @bot.hybrid_command(name='shuffle', with_app_command=True, description=text['shuffle'], help=text['shuffle'])
 @app_commands.describe(user_only=text['ephemeral'])
 async def shuffle(ctx: dc_commands.Context, user_only: bool = False):
     log(ctx, 'shuffle', [user_only], log_type='command', author=ctx.author)
-    await shuffle_def(ctx, user_only)
+    await shuffle_def(ctx, glob, user_only)
 
 @bot.hybrid_command(name='show', with_app_command=True, description=text['queue_show'], help=text['queue_show'])
 @app_commands.describe(display_type=text['display_type'], user_only=text['ephemeral'])
 async def show(ctx: dc_commands.Context, display_type: Literal['short', 'medium', 'long'] = None,
                list_type: Literal['queue', 'history'] = 'queue', user_only: bool = False):
     log(ctx, 'show', [display_type, user_only], log_type='command', author=ctx.author)
-    await show_def(ctx, display_type, list_type, user_only)
+    await show_def(ctx, glob, display_type, list_type, user_only)
 
 @bot.hybrid_command(name='search', with_app_command=True, description=text['search'], help=text['search'])
 @app_commands.describe(search_query=text['search_query'])
 async def search_command(ctx: dc_commands.Context, search_query):
     log(ctx, 'search', [search_query], log_type='command', author=ctx.author)
-    await search_command_def(ctx, search_query)
+    await search_command_def(ctx, glob, search_query)
 
 # --------------------------------------- PLAYER --------------------------------------------------
 
@@ -373,7 +378,7 @@ async def search_command(ctx: dc_commands.Context, search_query):
 @app_commands.describe(url=text['play'], force=text['force'])
 async def play(ctx: dc_commands.Context, url=None, force=False):
     log(ctx, 'play', [url, force], log_type='command', author=ctx.author)
-    await play_def(ctx, url, force)
+    await play_def(ctx, glob, url, force)
 
 @bot.hybrid_command(name='radio', with_app_command=True, description=text['radio'], help=text['radio'])
 @app_commands.describe(favourite_radio=text['favourite_radio'], radio_code=text['radio_code'])
@@ -381,74 +386,74 @@ async def radio(ctx: dc_commands.Context, favourite_radio: Literal[
     'Rádio BLANÍK', 'Rádio BLANÍK CZ', 'Evropa 2', 'Fajn Radio', 'Hitrádio PopRock', 'Český rozhlas Pardubice', 'Radio Beat', 'Country Radio', 'Radio Kiss', 'Český rozhlas Vltava', 'Hitrádio Černá Hora'] = None,
                 radio_code: int = None):
     log(ctx, 'radio', [favourite_radio, radio_code], log_type='command', author=ctx.author)
-    await radio_def(ctx, favourite_radio, radio_code)
+    await radio_def(ctx, glob, favourite_radio, radio_code)
 
 @bot.hybrid_command(name='ps', with_app_command=True, description=text['ps'], help=text['ps'])
 @app_commands.describe(effect_number=text['effects_number'])
-async def ps(ctx: dc_commands.Context, effect_number: app_commands.Range[int, 1, len(all_sound_effects)]):
+async def ps(ctx: dc_commands.Context, effect_number: app_commands.Range[int, 1, len(sound_effects)]):
     log(ctx, 'ps', [effect_number], log_type='command', author=ctx.author)
-    await ps_def(ctx, effect_number)
+    await ps_def(ctx, glob, effect_number)
 
 @bot.hybrid_command(name='nowplaying', with_app_command=True, description=text['nowplaying'], help=text['nowplaying'])
 @app_commands.describe(user_only=text['ephemeral'])
 async def nowplaying(ctx: dc_commands.Context, user_only: bool = False):
     log(ctx, 'nowplaying', [user_only], log_type='command', author=ctx.author)
-    await now_def(ctx, user_only)
+    await now_def(ctx, glob, user_only)
 
 @bot.hybrid_command(name='last', with_app_command=True, description=text['last'], help=text['last'])
 @app_commands.describe(user_only=text['ephemeral'])
 async def last(ctx: dc_commands.Context, user_only: bool = False):
     log(ctx, 'last', [user_only], log_type='command', author=ctx.author)
-    await last_def(ctx, user_only)
+    await last_def(ctx, glob, user_only)
 
 @bot.hybrid_command(name='loop', with_app_command=True, description=text['loop'], help=text['loop'])
 async def loop_command(ctx: dc_commands.Context):
     log(ctx, 'loop', [], log_type='command', author=ctx.author)
-    await loop_command_def(ctx)
+    await loop_command_def(ctx, glob)
 
 @bot.hybrid_command(name='loop_this', with_app_command=True, description=text['loop_this'], help=text['loop_this'])
 async def loop_this(ctx: dc_commands.Context):
     log(ctx, 'loop_this', [], log_type='command', author=ctx.author)
-    await loop_command_def(ctx, clear_queue=True)
+    await loop_command_def(ctx, glob, clear_queue=True)
 
 @bot.hybrid_command(name='earrape', with_app_command=True)
 async def earrape_command(ctx: dc_commands.Context):
     log(ctx, 'earrape', [], log_type='command', author=ctx.author)
-    await earrape_command_def(ctx)
+    await earrape_command_def(ctx, glob)
 
 # --------------------------------------- VOICE --------------------------------------------------
 
 @bot.hybrid_command(name='stop', with_app_command=True, description=f'Stop the player')
 async def stop(ctx: dc_commands.Context):
     log(ctx, 'stop', [], log_type='command', author=ctx.author)
-    await stop_def(ctx)
+    await stop_def(ctx, glob)
 
 @bot.hybrid_command(name='pause', with_app_command=True, description=f'Pause the player')
 async def pause(ctx: dc_commands.Context):
     log(ctx, 'pause', [], log_type='command', author=ctx.author)
-    await pause_def(ctx)
+    await pause_def(ctx, glob)
 
 @bot.hybrid_command(name='resume', with_app_command=True, description=f'Resume the player')
 async def resume(ctx: dc_commands.Context):
     log(ctx, 'resume', [], log_type='command', author=ctx.author)
-    await resume_def(ctx)
+    await resume_def(ctx, glob)
 
 @bot.hybrid_command(name='join', with_app_command=True, description=text['join'], help=text['join'])
 @app_commands.describe(channel_id=text['channel_id'])
 async def join(ctx: dc_commands.Context, channel_id=None):
     log(ctx, 'join', [channel_id], log_type='command', author=ctx.author)
-    await join_def(ctx, channel_id)
+    await join_def(ctx, glob, channel_id)
 
 @bot.hybrid_command(name='disconnect', with_app_command=True, description=text['die'], help=text['die'])
 async def disconnect(ctx: dc_commands.Context):
     log(ctx, 'disconnect', [], log_type='command', author=ctx.author)
-    await disconnect_def(ctx)
+    await disconnect_def(ctx, glob)
 
 @bot.hybrid_command(name='volume', with_app_command=True, description=text['volume'], help=text['volume'])
 @app_commands.describe(volume=text['volume'], user_only=text['ephemeral'])
 async def volume_command(ctx: dc_commands.Context, volume=None, user_only: bool = False):
     log(ctx, 'volume', [volume, user_only], log_type='command', author=ctx.author)
-    await volume_command_def(ctx, volume, user_only)
+    await volume_command_def(ctx, glob, volume, user_only)
 
 # --------------------------------------- MENU --------------------------------------------------
 
@@ -462,13 +467,13 @@ async def play_now(inter, message: discord.Message):
                                           ephemeral=True)
         return
 
-    url, probe_data = get_content_of_message(message)
+    url, probe_data = get_content_of_message(glob, message)
 
-    response: ReturnData = await queue_command_def(ctx, url, mute_response=True, probe_data=probe_data, ephemeral=True,
+    response: ReturnData = await queue_command_def(ctx, glob, url, mute_response=True, probe_data=probe_data, ephemeral=True,
                                                    position=0, from_play=True)
     if response:
         if response.response:
-            await play_def(ctx, force=True)
+            await play_def(ctx, glob, force=True)
         else:
             if not inter.response.is_done():
                 await inter.response.send_message(content=response.message, ephemeral=True)
@@ -478,9 +483,9 @@ async def add_to_queue(inter, message: discord.Message):
     ctx = await bot.get_context(inter)
     log(ctx, 'add_to_queue', [message], log_type='command', author=ctx.author)
 
-    url, probe_data = get_content_of_message(message)
+    url, probe_data = get_content_of_message(glob, message)
 
-    response: ReturnData = await queue_command_def(ctx, url, mute_response=True, probe_data=probe_data, ephemeral=True)
+    response: ReturnData = await queue_command_def(ctx, glob, url, mute_response=True, probe_data=probe_data, ephemeral=True)
     if not inter.response.is_done():
         await inter.response.send_message(content=response.message, ephemeral=True)
 
@@ -535,7 +540,7 @@ async def add_to_queue(inter, message: discord.Message):
 @bot.hybrid_command(name='ping', with_app_command=True, description=text['ping'], help=text['ping'])
 async def ping_command(ctx: dc_commands.Context):
     log(ctx, 'ping', [], log_type='command', author=ctx.author)
-    await ping_def(ctx)
+    await ping_def(ctx, glob)
 
 # noinspection PyTypeHints
 @bot.hybrid_command(name='language', with_app_command=True, description=text['language'], help=text['language'])
@@ -543,27 +548,27 @@ async def ping_command(ctx: dc_commands.Context):
 async def language_command(ctx: dc_commands.Context, country_code: Literal[tuple(languages_dict.keys())]):
     log(ctx, 'language', [country_code], log_type='command', author=ctx.author)
 
-    await language_command_def(ctx, country_code)
+    await language_command_def(ctx, glob, country_code)
 
 @bot.hybrid_command(name='sound_effects', with_app_command=True, description=text['sound'], help=text['sound'])
 @app_commands.describe(user_only=text['ephemeral'])
 async def sound_effects(ctx: dc_commands.Context, user_only: bool = True):
     log(ctx, 'sound_effects', [user_only], log_type='command', author=ctx.author)
 
-    await sound_effects_def(ctx, user_only)
+    await sound_effects_def(ctx, glob, user_only)
 
 @bot.hybrid_command(name='list_radios', with_app_command=True, description=text['list_radios'], help=text['list_radios'])
 @app_commands.describe(user_only=text['ephemeral'])
 async def list_radios(ctx: dc_commands.Context, user_only: bool = True):
     log(ctx, 'list_radios', [user_only], log_type='command', author=ctx.author)
 
-    await list_radios_def(ctx, user_only)
+    await list_radios_def(ctx, glob, user_only)
 
 @bot.hybrid_command(name='key', with_app_command=True, description=text['key'], help=text['key'])
 async def key_command(ctx: dc_commands.Context):
     log(ctx, 'key', [], log_type='command', author=ctx.author)
 
-    await key_def(ctx)
+    await key_def(ctx, glob)
 
 # noinspection PyTypeHints
 @bot.hybrid_command(name='options', with_app_command=True, description=text['options'], help=text['options'])
@@ -582,7 +587,7 @@ async def options_command(ctx: dc_commands.Context,
                           history_length: discord.ext.commands.Range[int, 1, 100] = None):
     log(ctx, 'options', [loop, language, response_type, buttons, volume, buffer, history_length], log_type='command', author=ctx.author)
 
-    await options_command_def(ctx, loop=loop, language=language, response_type=response_type, buttons=buttons, volume=volume, buffer=buffer, history_length=history_length)
+    await options_command_def(ctx, glob, loop=loop, language=language, response_type=response_type, buttons=buttons, volume=volume, buffer=buffer, history_length=history_length)
 
 # ---------------------------------------- ADMIN --------------------------------------------------
 
@@ -594,13 +599,13 @@ async def is_authorised(ctx):
 @dc_commands.check(is_authorised)
 async def announce_command(ctx: dc_commands.Context, message):
     log(ctx, 'announce', [message], log_type='command', author=ctx.author)
-    await announce_command_def(ctx, message)
+    await announce_command_def(ctx, glob, message)
 
 @bot.hybrid_command(name='zz_kys', with_app_command=True)
 @dc_commands.check(is_authorised)
 async def kys(ctx: dc_commands.Context):
     log(ctx, 'kys', [], log_type='command', author=ctx.author)
-    await kys_def(ctx)
+    await kys_def(ctx, glob)
 
 # noinspection PyTypeHints
 @bot.hybrid_command(name='zz_options', with_app_command=True)
@@ -630,7 +635,7 @@ async def change_options(ctx: dc_commands.Context,
                          last_updated: int = None):
     log(ctx, 'zz_change_options', [server, stopped, loop, is_radio, buttons, language, response_type, buffer, history_length, volume, search_query, last_updated], log_type='command', author=ctx.author)
 
-    await options_def(ctx,
+    await options_def(ctx, glob,
                       server=str(server),
                       stopped=str(stopped),
                       loop=str(loop),
@@ -648,31 +653,31 @@ async def change_options(ctx: dc_commands.Context,
 @dc_commands.check(is_authorised)
 async def download_guild_command(ctx: dc_commands.Context, guild_id, ephemeral: bool=True):
     log(ctx, 'download_guild', [guild_id, ephemeral], log_type='command', author=ctx.author)
-    await download_guild(ctx, guild_id, ephemeral=ephemeral)
+    await download_guild(ctx, glob, guild_id, ephemeral=ephemeral)
 
 @bot.hybrid_command(name='zz_download_guild_channel', with_app_command=True)
 @dc_commands.check(is_authorised)
 async def download_guild_channel_command(ctx: dc_commands.Context, channel_id, ephemeral: bool=True):
     log(ctx, 'download_guild_channel', [channel_id, ephemeral], log_type='command', author=ctx.author)
-    await download_guild_channel(ctx, channel_id, ephemeral=ephemeral)
+    await download_guild_channel(ctx, glob, channel_id, ephemeral=ephemeral)
 
 @bot.hybrid_command(name='zz_get_guild', with_app_command=True)
 @dc_commands.check(is_authorised)
 async def get_guild_command(ctx: dc_commands.Context, guild_id, ephemeral: bool=True):
     log(ctx, 'get_guild', [guild_id, ephemeral], log_type='command', author=ctx.author)
-    await get_guild(ctx, guild_id, ephemeral=ephemeral)
+    await get_guild(ctx, glob, guild_id, ephemeral=ephemeral)
 
 @bot.hybrid_command(name='zz_get_guild_channel', with_app_command=True)
 @dc_commands.check(is_authorised)
 async def get_guild_channel_command(ctx: dc_commands.Context, channel_id, ephemeral: bool=True):
     log(ctx, 'get_guild_channel', [channel_id, ephemeral], log_type='command', author=ctx.author)
-    await get_guild_channel(ctx, channel_id, ephemeral=ephemeral)
+    await get_guild_channel(ctx, glob, channel_id, ephemeral=ephemeral)
 
 @bot.hybrid_command(name='zz_set_time', with_app_command=True)
 @dc_commands.check(is_authorised)
 async def set_time_command(ctx: dc_commands.Context, time_stamp: int, ephemeral: bool=True, mute_response: bool=False):
     log(ctx, 'set_time', [time_stamp, ephemeral, mute_response], log_type='command', author=ctx.author)
-    await set_video_time(ctx, time_stamp, ephemeral=ephemeral, mute_response=mute_response)
+    await set_video_time(ctx, glob, time_stamp, ephemeral=ephemeral, mute_response=mute_response)
 
 # ------------------------------------------ ADMIN SLOWED USERS --------------------------------------------------------
 
@@ -680,31 +685,31 @@ async def set_time_command(ctx: dc_commands.Context, time_stamp: int, ephemeral:
 @dc_commands.check(is_authorised)
 async def slowed_users_command(ctx: dc_commands.Context):
     log(ctx, 'slowed_users', [], log_type='command', author=ctx.author)
-    await slowed_users_command_def(ctx)
+    await slowed_users_command_def(ctx, glob)
 
 @bot.hybrid_command(name='zz_slowed_users_add', with_app_command=True)
 @dc_commands.check(is_authorised)
 async def slowed_users_add_command(ctx: dc_commands.Context, member: discord.Member, time: int):
     log(ctx, 'slowed_users_add', [member.id, time], log_type='command', author=ctx.author)
-    await slowed_users_add_command_def(ctx, member, time)
+    await slowed_users_add_command_def(ctx, glob, member, time)
 
 @bot.hybrid_command(name='zz_slowed_users_add_all', with_app_command=True)
 @dc_commands.check(is_authorised)
 async def slowed_users_add_all_command(ctx: dc_commands.Context, guild_obj: discord.Guild, time: int):
     log(ctx, 'slowed_users_add_all', [guild_obj.id, time], log_type='command', author=ctx.author)
-    await slowed_users_add_all_command_def(ctx, guild_obj, time)
+    await slowed_users_add_all_command_def(ctx, glob, guild_obj, time)
 
 @bot.hybrid_command(name='zz_slowed_users_remove', with_app_command=True)
 @dc_commands.check(is_authorised)
 async def slowed_users_remove_command(ctx: dc_commands.Context, member: discord.Member):
     log(ctx, 'slowed_users_remove', [member.id], log_type='command', author=ctx.author)
-    await slowed_users_remove_command_def(ctx, member)
+    await slowed_users_remove_command_def(ctx, glob, member)
 
 @bot.hybrid_command(name='zz_slowed_users_remove_all', with_app_command=True)
 @dc_commands.check(is_authorised)
 async def slowed_users_remove_all_command(ctx: dc_commands.Context, guild_obj: discord.Guild):
     log(ctx, 'slowed_users_remove_all', [guild_obj.id], log_type='command', author=ctx.author)
-    await slowed_users_remove_all_command_def(ctx, guild_obj)
+    await slowed_users_remove_all_command_def(ctx, glob, guild_obj)
 
 # ------------------------------------------ SPECIFIC USER TORTURE -----------------------------------------------------
 
@@ -713,13 +718,13 @@ async def slowed_users_remove_all_command(ctx: dc_commands.Context, guild_obj: d
 @dc_commands.has_guild_permissions(move_members=True)
 async def voice_torture_command(ctx: dc_commands.Context, member: discord.Member, delay: int):
     log(ctx, 'voice_torture', [member.id, delay], log_type='command', author=ctx.author)
-    await voice_torture_command_def(ctx, member, delay)
+    await voice_torture_command_def(ctx, glob, member, delay)
 
 @bot.hybrid_command(name='zz_voice_torture_stop', with_app_command=True)
 @dc_commands.check(is_authorised)
 async def voice_torture_stop_command(ctx: dc_commands.Context, member: discord.Member):
     log(ctx, 'voice_torture_stop', [member.id], log_type='command', author=ctx.author)
-    await voice_torture_stop_command_def(ctx, member)
+    await voice_torture_stop_command_def(ctx, glob, member)
 
 # --------------------------------------------- HELP COMMAND -----------------------------------------------------------
 
@@ -916,7 +921,7 @@ async def help_command(ctx: dc_commands.Context,
 # --------------------------------------------------- APP --------------------------------------------------------------
 
 def application():
-    web_thread = threading.Thread(target=ipc_run)
+    web_thread = threading.Thread(target=ipc_run, kwargs={'glob': glob})
     bot_thread = threading.Thread(target=bot.run, kwargs={'token': config.BOT_TOKEN})
 
     web_thread.start()

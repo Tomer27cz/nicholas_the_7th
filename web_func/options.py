@@ -1,17 +1,19 @@
+from utils.global_vars import GlobalVars
+
 from classes.data_classes import ReturnData
 
 from utils.log import log
 from utils.translate import tg
 from utils.convert import to_bool
-from utils.globals import get_languages_dict
+from utils.global_vars import languages_dict
 from database.guild import guild
 
 from commands.utils import ctx_check
 
-async def web_user_options_edit(web_data, form) -> ReturnData:
+async def web_user_options_edit(web_data, glob: GlobalVars, form) -> ReturnData:
     log(web_data, 'web_user_options_edit', [form], log_type='function', author=web_data.author)
-    is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data)
-    options = guild(web_data.guild_id).options
+    is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data, glob)
+    options = guild(glob, web_data.guild_id).options
 
     loop = form['loop']
     language = form['language']
@@ -34,8 +36,8 @@ async def web_user_options_edit(web_data, form) -> ReturnData:
     if response_type not in response_types:
         return ReturnData(False, f'response_type has to be: {response_types} --> {response_type}')
 
-    if language not in get_languages_dict():
-        return ReturnData(False, f'language has to be: {get_languages_dict()} --> {language}')
+    if language not in languages_dict():
+        return ReturnData(False, f'language has to be: {languages_dict()} --> {language}')
 
     if not volume.isdigit():
         return ReturnData(False, f'volume has to be a number: {volume}')
