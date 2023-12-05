@@ -29,7 +29,7 @@ class Guild(Base):
         self.id = guild_id
 
         glob.ses.add(Options(self.id, json_data=json_data['options']))
-        glob.ses.add(GuildData(self.id, glob.bot, json_data=json_data['data']))
+        glob.ses.add(GuildData(glob, self.id, json_data=json_data['data']))
         glob.ses.commit()
 
 class ReturnData:
