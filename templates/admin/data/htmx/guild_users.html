@@ -35,7 +35,7 @@
             <div class="dp-badge">&#x2713; Bot</div>
           {% endif %}
         </div>
-        <p style="color: white;">{{ user.name }}</p>
+        <p style="color: white;">{{ user.name }}{% if user.discriminator and user.discriminator not in [0, '0'] %}#{{ user.discriminator }}{% endif %}</p>
         <hr/>
         <div class="dp-basic-infos">
           <div class="dp-category-title">About Me</div>

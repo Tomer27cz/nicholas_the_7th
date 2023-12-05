@@ -1,4 +1,4 @@
-from utils.globals import get_bot, get_session, get_radio_dict
+from utils.globals import get_bot, get_session
 from database.main import *
 
 import random
@@ -23,11 +23,11 @@ class Guild(Base):
     connected = Column(Boolean, default=True)
     slowed_users = relationship('SlowedUser', backref='guilds')
 
-    def __init__(self, guild_id):
+    def __init__(self, guild_id, json_data=None):
         self.id = guild_id
 
-        get_session().add(Options(self.id))
-        get_session().add(GuildData(self.id))
+        get_session().add(Options(self.id, json_data=json_data['options']))
+        get_session().add(GuildData(self.id, json_data=json_data['data']))
         get_session().commit()
 
 class ReturnData:
@@ -92,19 +92,35 @@ class Options(Base):
     history_length = Column(Integer, default=20)
     last_updated = Column(Integer, default=int(time()))
 
-    def __init__(self, guild_id: int):
+    def __init__(self, guild_id: int, json_data=None):
         self.id: int = guild_id # id of the guild
-        self.stopped: bool = False # if the player is stopped
-        self.loop: bool = False # if the player is looping
-        self.is_radio: bool = False # if the current media is a radio
-        self.language: str = 'en' # language of the bot
-        self.response_type: str = 'short'  # long or short
-        self.search_query: str = 'Never gonna give you up' # last search query
-        self.buttons: bool = False # if single are enabled
-        self.volume: float = 1.0 # volume of the player
-        self.buffer: int = 600  # how many seconds of nothing playing before bot disconnects | 600 = 10min
-        self.history_length: int = 20 # how many songs are stored in the history
-        self.last_updated: int = int(time()) # when was the last time any of the guilds data was updated
+
+        if json_data:
+            json_keys = json_data.keys()
+
+            self.stopped: bool = json_data['stopped'] if 'stopped' in json_keys else False
+            self.loop: bool = json_data['loop'] if 'loop' in json_keys else False
+            self.is_radio: bool = json_data['is_radio'] if 'is_radio' in json_keys else False
+            self.language: str = json_data['language'] if 'language' in json_keys else 'en'
+            self.response_type: str = json_data['response_type'] if 'response_type' in json_keys else 'short'
+            self.search_query: str = json_data['search_query'] if 'search_query' in json_keys else 'Never gonna give you up'
+            self.buttons: bool = json_data['buttons'] if 'buttons' in json_keys else False
+            self.volume: float = json_data['volume'] if 'volume' in json_keys else 1.0
+            self.buffer: int = json_data['buffer'] if 'buffer' in json_keys else 600
+            self.history_length: int = json_data['history_length'] if 'history_length' in json_keys else 20
+            self.last_updated: int = json_data['last_updated'] if 'last_updated' in json_keys else int(time())
+        else:
+            self.stopped: bool = False # if the player is stopped
+            self.loop: bool = False # if the player is looping
+            self.is_radio: bool = False # if the current media is a radio
+            self.language: str = 'en' # language of the bot
+            self.response_type: str = 'short'  # long or short
+            self.search_query: str = 'Never gonna give you up' # last search query
+            self.buttons: bool = False # if single are enabled
+            self.volume: float = 1.0 # volume of the player
+            self.buffer: int = 600  # how many seconds of nothing playing before bot disconnects | 600 = 10min
+            self.history_length: int = 20 # how many songs are stored in the history
+            self.last_updated: int = int(time()) # when was the last time any of the guilds data was updated
 
 class GuildData(Base):
     """
@@ -133,12 +149,39 @@ class GuildData(Base):
     discovery_splash = Column(String)
     voice_channels = Column(JSON)
 
-    def __init__(self, guild_id):
+    def __init__(self, guild_id, json_data=None):
         self.id: int = guild_id
+
+        json_keys = []
+        if json_data:
+            json_keys = json_data.keys()
+            print(json_data)
+
+        self.name: str = json_data['name'] if 'name' in json_keys else None
+        self.key: str = json_data['key'] if 'key' in json_keys else None
+        self.member_count: int = json_data['member_count'] if 'member_count' in json_keys else None
+        self.text_channel_count: int = json_data['text_channel_count'] if 'text_channel_count' in json_keys else None
+        self.voice_channel_count: int = json_data['voice_channel_count'] if 'voice_channel_count' in json_keys else None
+        self.role_count: int = json_data['role_count'] if 'role_count' in json_keys else None
+        self.owner_id: int = json_data['owner_id'] if 'owner_id' in json_keys else None
+        self.owner_name: str = json_data['owner_name'] if 'owner_name' in json_keys else None
+        self.created_at: str = json_data['created_at'] if 'created_at' in json_keys else None
+        self.description: str = json_data['description'] if 'description' in json_keys else None
+        self.large: bool = json_data['large'] if 'large' in json_keys else None
+        self.icon: str = json_data['icon'] if 'icon' in json_keys else None
+        self.banner: str = json_data['banner'] if 'banner' in json_keys else None
+        self.splash: str = json_data['splash'] if 'splash' in json_keys else None
+        self.discovery_splash: str = json_data['discovery_splash'] if 'discovery_splash' in json_keys else None
+        self.voice_channels: list = json_data['voice_channels'] if 'voice_channels' in json_keys else None
+
         self.renew()
 
     def renew(self):
         guild_object = get_bot().get_guild(int(self.id))
+
+        # generate random key from the ID
+        random.seed(self.id)  # set seed to the guild ID
+        self.key = ''.join(random.choice('abcdefghijklmnopqrstuvwxyz0123456789') for _ in range(6))
 
         if guild_object:
             self.name = guild_object.name
@@ -169,28 +212,6 @@ class GuildData(Base):
             self.discovery_splash = guild_object.discovery_splash.url if guild_object.discovery_splash else None
             self.voice_channels = [{'name': channel.name, 'id': channel.id} for channel in
                                    guild_object.voice_channels] if guild_object.voice_channels else None
-
-        else:
-            self.name = None
-
-            # generate random key from the ID
-            random.seed(self.id)  # set seed to the guild ID
-            self.key = ''.join(random.choice('abcdefghijklmnopqrstuvwxyz0123456789') for _ in range(6))
-
-            self.member_count = None
-            self.text_channel_count = None
-            self.voice_channel_count = None
-            self.role_count = None
-            self.owner_id = None
-            self.owner_name = None
-            self.created_at = None
-            self.description = None
-            self.large = None
-            self.icon = None
-            self.banner = None
-            self.splash = None
-            self.discovery_splash = None
-            self.voice_channels = None
 
 class Save(Base):
     """
@@ -226,7 +247,8 @@ class SlowedUser(Base):
     """
     __tablename__ = 'slowed_users'
 
-    user_id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer)
     user_name = Column(String)
     guild_id = Column(Integer, ForeignKey('guilds.id'))
     slowed_for = Column(Integer)
@@ -236,3 +258,22 @@ class SlowedUser(Base):
         self.user_id: int = user_id
         self.user_name: str = user_name
         self.slowed_for: int = slowed_for
+
+class TorturedUser(Base):
+    """
+    Data class for storing tortured users
+    :type guild_id: int
+    :type user_id: int
+    :type torture_delay: int
+    """
+    __tablename__ = 'tortured_users'
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer)
+    guild_id = Column(Integer, ForeignKey('guilds.id'))
+    torture_delay = Column(Integer)
+
+    def __init__(self, guild_id: int, user_id: int, torture_delay: int):
+        self.guild_id: int = guild_id
+        self.user_id: int = user_id
+        self.torture_delay: int = torture_delay

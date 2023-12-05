@@ -163,3 +163,28 @@ def is_user_slowed(user_id: int, guild_id: int) -> (bool, int):
         if slowed_user is None:
             return False, None
         return True, slowed_user.slowed_for
+
+# Torture
+def is_user_tortured(user_id: int, guild_id: int) -> (bool, int):
+    """
+    Returns whether or not a user is tortured
+    :param user_id: ID of the user
+    :param guild_id: ID of the guild
+    :return: (bool, tortured_for)
+    """
+    with get_session().no_autoflush:
+        tortured_user = get_session().query(data_classes.TorturedUser).filter_by(user_id=user_id, guild_id=guild_id).first()
+        if tortured_user is None:
+            return False, None
+        return True, tortured_user.torture_delay
+
+def delete_tortured_user(user_id: int, guild_id: int):
+    """
+    Deletes a tortured user
+    :param user_id: ID of the user
+    :param guild_id: ID of the guild
+    :return: None
+    """
+    with get_session().no_autoflush:
+        get_session().query(data_classes.TorturedUser).filter_by(user_id=user_id, guild_id=guild_id).delete()
+        get_session().commit()

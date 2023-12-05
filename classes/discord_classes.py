@@ -124,7 +124,16 @@ class DiscordMember:
 
 
 class DiscordChannel:
-    def __init__(self, channel_id: int, no_members=False):
+    def __init__(self, channel_id: int, no_members=False, json_data=None):
+        if json_data:
+            self.id = json_data['id']
+            self.name = json_data['name']
+            self.created_at = json_data['created_at']
+            self.members = json_data['members']
+            self.member_count = 0
+            self.html = json_data['html']
+            return
+
         self.id = channel_id
         self.name = None
         self.created_at = None

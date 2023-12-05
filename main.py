@@ -11,6 +11,7 @@ from classes.data_classes import WebData
 from utils.discord import get_content_of_message
 from utils.log import send_to_admin
 from utils.save import update_guilds
+from utils.json import *
 
 from commands.admin import *
 from commands.chat_export import *
@@ -253,6 +254,7 @@ class Bot(dc_commands.Bot):
 log(None, "--------------------------------------- NEW / REBOOTED ----------------------------------------")
 
 build_new_guilds = False
+build_old_guilds = False
 
 with open('db/radio.json', 'r', encoding='utf-8') as file:
     radio_dict = json.load(file)
@@ -276,6 +278,13 @@ log(None, 'Loaded languages.json')
 bot = Bot()
 
 log(None, 'Discord API initialized')
+
+# ---------------- Load old guilds ------------
+
+if build_old_guilds:
+    with open('db/guilds.json', 'r', encoding='utf-8') as file:
+        load_json_to_database(json.load(file))
+        log(None, 'Loaded old guilds.json')
 
 # ---------------------------------------------- SPOTIPY ---------------------------------------------------------------
 
@@ -698,13 +707,19 @@ async def slowed_users_remove_all_command(ctx: dc_commands.Context, guild_obj: d
     await slowed_users_remove_all_command_def(ctx, guild_obj)
 
 # ------------------------------------------ SPECIFIC USER TORTURE -----------------------------------------------------
-#
-# @bot.hybrid_command(name='zz_voice_torture', with_app_command=True)
-# @dc_commands.check(is_authorised)
-# @dc_commands.has_guild_permissions(move_members=True)
-# async def voice_torture_command(ctx: dc_commands.Context, member: discord.Member, delay: int):
-#     log(ctx, 'voice_torture', [member.id, delay], log_type='command', author=ctx.author)
-#     await voice_torture_command_def(ctx, member, delay)
+
+@bot.hybrid_command(name='zz_voice_torture', with_app_command=True)
+@dc_commands.check(is_authorised)
+@dc_commands.has_guild_permissions(move_members=True)
+async def voice_torture_command(ctx: dc_commands.Context, member: discord.Member, delay: int):
+    log(ctx, 'voice_torture', [member.id, delay], log_type='command', author=ctx.author)
+    await voice_torture_command_def(ctx, member, delay)
+
+@bot.hybrid_command(name='zz_voice_torture_stop', with_app_command=True)
+@dc_commands.check(is_authorised)
+async def voice_torture_stop_command(ctx: dc_commands.Context, member: discord.Member):
+    log(ctx, 'voice_torture_stop', [member.id], log_type='command', author=ctx.author)
+    await voice_torture_stop_command_def(ctx, member)
 
 # --------------------------------------------- HELP COMMAND -----------------------------------------------------------
 

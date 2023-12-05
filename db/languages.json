@@ -296,7 +296,11 @@
         "Time cannot be negative!": "Time cannot be negative!",
         "That user is not in a voice channel!": "That user is not in a voice channel!",
         "There are not enough voice channels to torture!": "There are not enough voice channels to torture!",
-        "Torturing user:": "Torturing user:"
+        "Torturing user:": "Torturing user:",
+        "Stopped torturing user:": "Stopped torturing user:",
+        "That user is not being tortured!": "That user is not being tortured!",
+        "Updated torture delay for user:": "Updated torture delay for user:",
+        "That user is in the AFK channel!": "That user is in the AFK channel!"
     },
     "cs": {
         "search": "Vyhledejte na youtube zadan\u00fd dotaz",

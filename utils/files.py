@@ -46,8 +46,7 @@ def get_guild_text_channels_file(guild_id: int):
         if data:
             channel_list = []
             for channel_id, channel_data in data.items():
-                channel_class = classes.discord_classes.DiscordChannel(0)
-                channel_class.__dict__ = channel_data
+                channel_class = classes.discord_classes.DiscordChannel(0, json_data=channel_data)
                 channel_list.append(channel_class)
             return channel_list
     return None

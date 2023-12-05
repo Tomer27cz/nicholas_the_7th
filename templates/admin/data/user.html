@@ -21,9 +21,6 @@
       <h1 class="q-item1">User Info</h1>
       <a href="/admin" class="btn btn-primary q-item1">Return to Admin Panel</a>
     </div>
-
-
-
       <div class="dp-card">
         <div class="dp-card-header">
           <div class="dp-banner" style="background: {{ data.color }}"></div>
@@ -53,12 +50,12 @@
           </div>
           <div class="dp-profile-body">
             <div class="dp-username">
-              <a> {{ data.display_name }} <span style="color: rgb(128,128,128);">#{{ data.discriminator }}</span>  <span style="color: rgb(128,128,128);">{{ data.global_name }}</span> </a>
+              <a> {{ data.display_name }}  <span style="color: rgb(128,128,128);">{{ data.global_name }}</span> </a>
               {% if data.bot %}
                 <div class="dp-badge">&#x2713; Bot</div>
               {% endif %}
             </div>
-            <p style="color: white;">{{ data.name }}</p>
+            <p style="color: white;">{{ data.name }}#{{ data.discriminator }}</p>
             <hr/>
             <div class="dp-basic-infos">
               <div class="dp-category-title">About Me</div>

@@ -1,6 +1,6 @@
 import discord
 
-from classes.data_classes import ReturnData, SlowedUser
+from classes.data_classes import ReturnData, SlowedUser, TorturedUser
 
 from utils.log import log
 from utils.translate import tg
@@ -9,7 +9,7 @@ from utils.globals import get_bot, get_languages_dict, get_session
 from utils.checks import is_float
 from utils.convert import to_bool
 
-from database.guild import guild
+from database.guild import guild, is_user_tortured, delete_tortured_user
 
 from commands.utils import ctx_check
 
@@ -310,53 +310,102 @@ async def slowed_users_remove_all_command_def(ctx: dc_commands.Context, guild_ob
     return ReturnData(True, message)
 
 # Torture
-# async def voice_torture_command_def(ctx, member: discord.Member, delay: int, ephemeral: bool=True):
-#     """
-#     Keeps swapping the user between voice channels with n second delay
-#     :param ctx: Context
-#     :param member: Member object
-#     :param delay: Time to torture the user for
-#     :param ephemeral: Should bot response be ephemeral
-#     """
-#     log(ctx, 'voice_torture', [member.id, delay], log_type='function', author=ctx.author)
-#     guild_id = ctx.guild.id
-#
-#     if delay < 0:
-#         message = tg(guild_id, "Time cannot be negative!")
-#         await ctx.reply(message, ephemeral=ephemeral)
-#         return ReturnData(False, message)
-#
-#     if member.voice is None:
-#         message = tg(guild_id, "That user is not in a voice channel!")
-#         await ctx.reply(message, ephemeral=ephemeral)
-#         return ReturnData(False, message)
-#
-#     voice_channels = ctx.guild.voice_channels
-#     if len(voice_channels) < 2:
-#         message = tg(guild_id, "There are not enough voice channels to torture!")
-#         await ctx.reply(message, ephemeral=ephemeral)
-#         return ReturnData(False, message)
-#
-#     message = f"{tg(guild_id, 'Torturing user:')} <@{member.id}>"
-#     await ctx.reply(message, ephemeral=ephemeral)
-#
-#     while True:
-#         await asyncio.sleep(delay)
-#         if member.voice is None:
-#             break
-#         if member.voice.channel is None:
-#             break
-#         if member.voice.channel == ctx.guild.afk_channel:
-#             break
-#
-#         random_channel = random.choice([channel for channel in voice_channels if channel != member.voice.channel])
-#         # if random_channel.id == member.voice.channel.id:
-#         #     random_channel = random.choice(voice_channels-random_channel)
-#         try:
-#             await member.move_to(random_channel)
-#         except discord.Forbidden:
-#             message = tg(guild_id, "I don't have permission to move that user!")
-#             await ctx.reply(message, ephemeral=ephemeral)
-#             return ReturnData(False, message)
-#
-#     return
+async def voice_torture_command_def(ctx, member: discord.Member, delay: int, ephemeral: bool=True):
+    """
+    Keeps swapping the user between voice channels with n second delay
+    :param ctx: Context
+    :param member: Member object
+    :param delay: Time to torture the user for
+    :param ephemeral: Should bot response be ephemeral
+    """
+    log(ctx, 'voice_torture', [member.id, delay], log_type='function', author=ctx.author)
+    guild_id = ctx.guild.id
+
+    if delay < 0:
+        message = tg(guild_id, "Time cannot be negative!")
+        await ctx.reply(message, ephemeral=ephemeral)
+        return ReturnData(False, message)
+
+    if member.voice is None:
+        message = tg(guild_id, "That user is not in a voice channel!")
+        await ctx.reply(message, ephemeral=ephemeral)
+        return ReturnData(False, message)
+
+    voice_channels = ctx.guild.voice_channels
+    if len(voice_channels) < 2:
+        message = tg(guild_id, "There are not enough voice channels to torture!")
+        await ctx.reply(message, ephemeral=ephemeral)
+        return ReturnData(False, message)
+
+    with get_session().no_autoflush:
+        tu = get_session().query(TorturedUser).filter_by(user_id=member.id, guild_id=guild_id).first()
+        if tu is not None:
+            tu.torture_delay = delay
+            get_session().commit()
+            message = f"{tg(guild_id, 'Updated torture delay for user:')} <@{member.id}> -> {delay}"
+            await ctx.reply(message, ephemeral=ephemeral)
+            return ReturnData(True, message)
+        get_session().add(TorturedUser(guild_id=guild_id, user_id=member.id, torture_delay=delay))
+        get_session().commit()
+
+    message = f"{tg(guild_id, 'Torturing user:')} <@{member.id}> -> {delay}"
+    await ctx.reply(message, ephemeral=ephemeral)
+
+    while True:
+        is_tortured, delay = is_user_tortured(member.id, guild_id)
+        if not is_tortured:
+            delete_tortured_user(member.id, guild_id)
+            message = tg(guild_id, "That user is not being tortured!")
+            await ctx.reply(message, ephemeral=ephemeral)
+            return ReturnData(False, message)
+
+        await asyncio.sleep(delay)
+
+        if member.voice is None:
+            delete_tortured_user(member.id, guild_id)
+            message = tg(guild_id, "That user is not in a voice channel!")
+            await ctx.reply(message, ephemeral=ephemeral)
+            return ReturnData(False, message)
+        if member.voice.channel is None:
+            delete_tortured_user(member.id, guild_id)
+            message = tg(guild_id, "That user is not in a voice channel!")
+            await ctx.reply(message, ephemeral=ephemeral)
+            return ReturnData(False, message)
+        if member.voice.channel == ctx.guild.afk_channel:
+            delete_tortured_user(member.id, guild_id)
+            message = tg(guild_id, "That user is in the AFK channel!")
+            await ctx.reply(message, ephemeral=ephemeral)
+            return ReturnData(False, message)
+
+        random_channel = random.choice([channel for channel in voice_channels if channel != member.voice.channel])
+        try:
+            await member.move_to(random_channel)
+        except discord.Forbidden:
+            message = tg(guild_id, "I don't have permission to move that user!")
+            await ctx.reply(message, ephemeral=ephemeral)
+            return ReturnData(False, message)
+
+async def voice_torture_stop_command_def(ctx, member: discord.Member, ephemeral: bool=True):
+    """
+    Stops torturing the user
+    :param ctx: Context
+    :param member: Member object
+    :param ephemeral: Should bot response be ephemeral
+    """
+    log(ctx, 'voice_torture_stop', [member.id], log_type='function', author=ctx.author)
+    guild_id = ctx.guild.id
+
+    with get_session().no_autoflush:
+        tortured_user = get_session().query(TorturedUser).filter_by(user_id=member.id, guild_id=guild_id).first()
+    if tortured_user is None:
+        message = tg(guild_id, "That user is not being tortured!")
+        await ctx.reply(message, ephemeral=ephemeral)
+        return ReturnData(False, message)
+
+    with get_session().no_autoflush:
+        get_session().delete(tortured_user)
+        get_session().commit()
+
+    message = f"{tg(guild_id, 'Stopped torturing user:')} <@{member.id}>"
+    await ctx.reply(message, ephemeral=ephemeral)
+    return ReturnData(True, message)

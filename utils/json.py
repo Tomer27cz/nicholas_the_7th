@@ -111,3 +111,25 @@ def json_to_guilds(guilds_dict):
         guilds_object[int(guild_id)] = json_to_guild(guild_dict)
 
     return guilds_object
+
+
+def load_json_to_database(json_data):
+    """
+    Loads json data to database
+    :param json_data: json data
+    """
+    from utils.globals import get_session
+    from classes.data_classes import Guild
+
+    session = get_session()
+
+    with get_session().no_autoflush:
+        for guild_id, guild_dict in json_data.items():
+            if guild_id == 0 or guild_id == '0':
+                print("Skipping guild_id 0")
+                continue
+            print(f"Atempting to add {guild_id} to database")
+            guild = Guild(guild_id, json_data=guild_dict)
+            session.add(guild)
+
+        session.commit()
