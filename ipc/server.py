@@ -172,7 +172,7 @@ async def execute_get_data(request_dict, glob: GlobalVars):
         if not guild_object:
             return None
         for channel in guild_object.voice_channels:
-            guild_channels.append(DiscordChannel(channel.id, glob.bot, no_members=True))
+            guild_channels.append(DiscordChannel(glob, channel.id, no_members=True))
         return guild_channels
     elif data_type == 'guild_voice_channels_index':
         guild_id = request_dict['guild_id']
@@ -183,7 +183,7 @@ async def execute_get_data(request_dict, glob: GlobalVars):
         if not guild_object:
             return None
         for index, channel in enumerate(guild_object.voice_channels[start_index:end_index]):
-            guild_channels.append(DiscordChannel(channel.id, glob.bot, no_members=True))
+            guild_channels.append(DiscordChannel(glob, channel.id, no_members=True))
         return guild_channels
 
     # Text channels
@@ -194,7 +194,7 @@ async def execute_get_data(request_dict, glob: GlobalVars):
         if not guild_object:
             return None
         for channel in guild_object.text_channels:
-            guild_channels.append(DiscordChannel(channel.id, glob.bot, no_members=True))
+            guild_channels.append(DiscordChannel(glob, channel.id, no_members=True))
         return guild_channels
     elif data_type == 'guild_text_channels_index':
         guild_id = request_dict['guild_id']
@@ -205,7 +205,7 @@ async def execute_get_data(request_dict, glob: GlobalVars):
         if not guild_object:
             return None
         for index, channel in enumerate(guild_object.text_channels[start_index:end_index]):
-            guild_channels.append(DiscordChannel(channel.id, glob.bot, no_members=True))
+            guild_channels.append(DiscordChannel(glob, channel.id, no_members=True))
         return guild_channels
 
     # Channel members
@@ -220,14 +220,14 @@ async def execute_get_data(request_dict, glob: GlobalVars):
         if not channel_object:
             return None
         for member in channel_object.members:
-            guild_users.append(DiscordMember(member, glob.bot))
+            guild_users.append(DiscordMember(glob, member))
         return guild_users
 
     # Channel transcript
     elif data_type == 'channel_transcript':
         channel_id = request_dict['channel_id']
-        channel_object = DiscordChannel(channel_id, glob.bot)
-        return await channel_object.get_first_messages(100, glob.bot)
+        channel_object = DiscordChannel(glob, channel_id)
+        return await channel_object.get_first_messages(glob, 100)
 
     # Guild members
     elif data_type == 'guild_members':
@@ -237,7 +237,7 @@ async def execute_get_data(request_dict, glob: GlobalVars):
         if not guild_object:
             return None
         for member in guild_object.members:
-            guild_users.append(DiscordMember(member, glob.bot))
+            guild_users.append(DiscordMember(glob, member))
         return guild_users
     elif data_type == 'guild_members_index':
         guild_id = request_dict['guild_id']
@@ -248,7 +248,7 @@ async def execute_get_data(request_dict, glob: GlobalVars):
         if not guild_object:
             return None
         for index, member in enumerate(guild_object.members[start_index:end_index]):
-            guild_users.append(DiscordMember(member, glob.bot))
+            guild_users.append(DiscordMember(glob, member))
         return guild_users
 
     # Guild roles

@@ -13,7 +13,7 @@
   {% endif %}
 
   <div class="div-align">
-    <h2>The Bot is in: {{len(guild)}} servers</h2>
+    <h2>The Bot is in: {{ guild | sum(attribute='connected') }} servers</h2>
   </div>
   <div class="picker">
     <h3>Please select a server to get started</h3>
