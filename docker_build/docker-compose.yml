@@ -31,9 +31,14 @@ services:
 
   nginx:
     build: ./nginx
+    volumes:
+      - ./db:/db
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
     container_name: nginx
     restart: always
     ports:
       - "5420:5420"
+      - "80:80"
+      - "443:443"
     depends_on:
       - web

@@ -1,28 +1,6 @@
 import os
 import shutil, errno
 
-# this script creates a new folder at the same level as the current folder
-# with the name of the current folder + _docker
-# it then copies the contents of the current folder into the new folder
-# according to the pre-defined rules
-# then it copies Dockerfiles for each of the sub-folders
-# and copies a docker-compose.yml file to the new folder
-
-# the new folder will have the following structure:
-# - CURRENT-FOLDER-NAME_docker
-#   - docker-compose.yml
-#   - bot
-#     - Dockerfile
-#     - ...
-#   - web
-#     - Dockerfile
-#     - ...
-#   - nginx
-#     - Dockerfile
-#     - nginx.conf
-#   - db
-#     - ...
-
 def copy_anything(src, dst):
     try:
         shutil.copytree(src, dst)
@@ -31,101 +9,249 @@ def copy_anything(src, dst):
             shutil.copy(src, dst)
         else: raise
 
-
 # get environment
-sp = "/"
-windows = False
+sp, windows = "/", False
 if os.name == 'nt':
-    sp = "\\"
-    windows = True
+    sp, windows = "\\", True
 
+# this script creates a new folder at the same level as the current folder
+# with the name of the current folder + _docker
+# it then copies the contents of the current folder into the new folder
+# according to the pre-defined rules
+# then it copies Dockerfiles for each of the sub-folders
+# and copies a docker-compose.yml file to the new folder
 
-# get the current folder name and path
+# vars
+line_length = 70
+ignore_for_bot = ["uWSGI"]
+
+bot_requirements = """
+discord
+dnspython
+PyNaCl
+async-timeout
+youtube-search-python
+asyncio
+requests
+beautifulsoup4
+lxml
+yt_dlp
+asgiref
+spotipy
+soundcloud-lib
+emoji
+aiohttp
+grapheme
+pytz
+SQLAlchemy
+"""
+
+web_requirements = """
+discord
+dnspython
+PyNaCl
+async-timeout
+youtube-search-python
+asyncio
+requests
+beautifulsoup4
+lxml
+yt_dlp
+asgiref
+flask
+spotipy
+soundcloud-lib
+werkzeug
+emoji
+aiohttp
+grapheme
+pytz
+uWSGI
+SQLAlchemy
+"""
+
+# GET CURRENT FOLDER
 current_folder_path = os.path.dirname(os.getcwd())
 current_folder_name = os.path.basename(os.getcwd())
 
 # create the new folder with the name of the current folder + _docker
-new_folder_name = current_folder_path + sp + current_folder_name + "_docker"
+folder = current_folder_path + sp + current_folder_name + "_docker"
+fs = current_folder_name + "_docker"
 
+print("------------------- Nicholas the 7th Docker build --------------------")
 print("Current folder path: " + current_folder_path)
 print("Current folder name: " + current_folder_name)
-print("New folder name: " + new_folder_name)
+print("New folder path: " + folder)
+print("New folder name: " + fs)
+print("-"*line_length)
+
+print("\nCREATING FOLDER STRUCTURE...\n")
+
+# -------------------------------------------------- Folder structure --------------------------------------------------
+# - CURRENT-FOLDER-NAME_docker
+#   - bot
+#     - chat_exporter
+#     - classes
+#     - commands
+#     - database
+#     - dce
+#     - ipc
+#     - sound_effects
+#     - utils
+#     - web_func
+#     - config.py xxxxxxxxxxxxxxxxx
+#     - main.py
+#     - requirements.txt
+#   - web
+#     - chat_exporter
+#     - classes
+#     - commands
+#     - database
+#     - ipc
+#     - utils
+#     - static
+#     - templates
+#     - config.py xxxxxxxxxxxxxxxxx
+#     - flaskapp.py
+#     - oauth.py
+#     - requirements.txt
+#   - nginx
+#     - nginx.conf
+#   - db
+#     - add => config_bot.py
+#     - add => config_web.py
+#     - database.db
+#     - log
+#       - log.log
+#       - data.log
+#   - docker-compose.yml
+#   - .dockerignore
+#   - README.md
+#   - LICENSE
 
 # create the new folder
-print("Creating new folder " + new_folder_name + "...")
-os.mkdir(new_folder_name)
-print("Done creating new folder " + new_folder_name)
+print(f"Creating {folder}...")
+os.mkdir(folder)
 
 # create the sub-folders
-print("Creating sub-folders...")
-print(f"Creating {sp}bot...")
-os.mkdir(new_folder_name + sp + "bot")
-print(f"Creating {sp}web...")
-os.mkdir(new_folder_name + sp + "web")
+print(f"Creating {fs}{sp}bot...")
+os.mkdir(f"{folder}{sp}bot")
+print(f"Creating {fs}{sp}web...")
+os.mkdir(f"{folder}{sp}web")
+# Don't create nginx and db folder, it will be copied later
 
-# list of folders and files to copy to \\bot
-bot_folders_and_files = ["chat_exporter", "classes", "commands", "dce", "ipc", "sound_effects", "utils", "web_func", "config.py", "main.py", "requirements.txt"]
+# COPY FILES/FOLDERS TO BOT SUB-FOLDER ---------------------------------------------------------------------------------
+print(f"\nCOPYING FILES TO {fs}{sp}bot...")
+print("-"*line_length)
 
-# copy the folders and files to \\bot
+bot_folders_and_files = ["chat_exporter", "classes", "commands", "database", "dce", "ipc", "sound_effects", "utils", "web_func", "main.py"]
 for folder_or_file in bot_folders_and_files:
-    print("Copying " + folder_or_file + f" to {sp}bot...")
-    copy_anything(folder_or_file, new_folder_name + f"{sp}bot{sp}{folder_or_file}")
+    print(f"Copying {folder_or_file} to {fs}{sp}bot...")
+    copy_anything(folder_or_file, f"{folder}{sp}bot{sp}{folder_or_file}")
 
-# list of folders and files to copy to \\web
-web_folders_and_files = ["chat_exporter", "classes", "commands", "ipc", "utils", "static", "templates", "config.py", "flaskapp.py", "oauth.py", "requirements.txt"]
+print(f"Writing BOT requirements.txt to {fs}{sp}bot...")
+with open(f"{folder}{sp}bot{sp}requirements.txt", "w") as f:
+    f.write(bot_requirements)
 
-# copy the folders and files to \\web
+print(f"Writing BOT config.py to {fs}{sp}bot...")
+with open(f"{folder}{sp}bot{sp}config.py", "w") as f:
+    f.write("from db.config_bot import *")
+
+# COPY FILES/FOLDERS TO WEB SUB-FOLDER ---------------------------------------------------------------------------------
+print(f"\nCOPYING FILES TO {fs}{sp}web...")
+print("-"*line_length)
+
+web_folders_and_files = ["chat_exporter", "classes", "commands", "database", "ipc", "utils", "static", "templates", "flaskapp.py", "oauth.py"]
 for folder_or_file in web_folders_and_files:
-    print("Copying " + folder_or_file + f" to {sp}web...")
-    copy_anything(folder_or_file, new_folder_name + f"{sp}web{sp}{folder_or_file}")
+    print(f"Copying {folder_or_file} to {sp}web...")
+    copy_anything(folder_or_file, f"{folder}{sp}web{sp}{folder_or_file}")
 
-# copy folder to \\nginx
-print(f"Copying nginx to {sp}nginx...")
-copy_anything(f"docker_build{sp}nginx", new_folder_name + f"{sp}nginx")
+print(f"Writing WEB requirements.txt to {fs}{sp}web...")
+with open(f"{folder}{sp}web{sp}requirements.txt", "w") as f:
+    f.write(web_requirements)
 
-# copy folder to \\db
-print(f"Copying db to {sp}db...")
-copy_anything("db", new_folder_name + f"{sp}db")
+print(f"Writing WEB config.py to {fs}{sp}web...")
+with open(f"{folder}{sp}web{sp}config.py", "w") as f:
+    f.write("from db.config_web import *")
 
-# copy docker-compose.yml to new folder
-print(f"Copying docker-compose.yml to {sp}...")
-copy_anything(f"docker_build{sp}docker-compose.yml", new_folder_name + f"{sp}docker-compose.yml")
+# COPY FILES/FOLDERS TO NGINX SUB-FOLDER -------------------------------------------------------------------------------
+print(f"\nCOPYING FILES TO {fs}{sp}nginx...")
+print("-"*line_length)
 
-# list of folders and files to copy to \\bot from docker_build
+print(f"Copying nginx to {fs}{sp}nginx...")
+copy_anything(f"docker_build{sp}nginx", f"{folder}{sp}nginx")
+
+# COPY FILES/FOLDERS TO DB SUB-FOLDER ---------------------------------------------------------------------------------
+print(f"\nCOPYING FILES TO {fs}{sp}db...")
+print("-"*line_length)
+
+print(f"Copying db to {fs}{sp}db...")
+copy_anything("db", f"{folder}{sp}db")
+
+print("Creating __init__.py...")
+open(f"{folder}{sp}db{sp}__init__.py", "w").close()
+
+print("Creating config_bot.py...")
+with open(f"{folder}{sp}db{sp}config_bot.py", "w") as f:
+    with open("config.py", "r") as f2:
+        for line in f2:
+            if "PARENT_DIR" in line:
+                f.write(f"PARENT_DIR = '/bot/'\n")
+                continue
+            f.write(line)
+
+print("Creating config_web.py...")
+with open(f"{folder}{sp}db{sp}config_web.py", "w") as f:
+    with open("config.py", "r") as f2:
+        for line in f2:
+            if "PARENT_DIR" in line:
+                f.write(f"PARENT_DIR = '/web/'\n")
+                continue
+            f.write(line)
+
+# COPY FILES FROM docker_build -----------------------------------------------------------------------------------------
+print(f"\nCOPYING FILES FROM docker_build...")
+print("-"*line_length)
+
+print(f"Copying docker-compose.yml to {fs}{sp}...")
+copy_anything(f"docker_build{sp}docker-compose.yml", f"{folder}{sp}docker-compose.yml")
+
+# COPY FILES FROM docker_build/bot
 bot_folders_and_files = [f"bot{sp}Dockerfile"]
-
-# copy the folders and files to \\bot
 for folder_or_file in bot_folders_and_files:
-    print("Copying " + folder_or_file + f" to {sp}bot...")
-    copy_anything(f"docker_build{sp}" + folder_or_file, new_folder_name + f"{sp}{folder_or_file}")
+    print(f"Copying {folder_or_file} to {sp}bot...")
+    copy_anything(f"docker_build{sp}{folder_or_file}", f"{folder}{sp}{folder_or_file}")
 
-# list of folders and files to copy to \\web from docker_build
+# COPY FILES FROM docker_build/web
 web_folders_and_files = [f"web{sp}Dockerfile", f"web{sp}server.py", f"web{sp}app.ini"]
-
-# copy the folders and files to \\web
 for folder_or_file in web_folders_and_files:
-    print(f"Copying " + folder_or_file + f" to {sp}web...")
-    copy_anything(f"docker_build{sp}" + folder_or_file, new_folder_name + f"{sp}{folder_or_file}")
+    print(f"Copying {folder_or_file} to {sp}web...")
+    copy_anything(f"docker_build{sp}{folder_or_file}", f"{folder}{sp}{folder_or_file}")
 
-# copy .dockerignore to \\bot and \\web
-print(f"Copying .dockerignore to {sp}bot...")
-copy_anything(".dockerignore", new_folder_name + f"{sp}bot{sp}.dockerignore")
-print(f"Copying .dockerignore to {sp}web...")
-copy_anything(".dockerignore", new_folder_name + f"{sp}web{sp}.dockerignore")
+# COPY .dockerignore
+print(f"Copying .dockerignore to {fs}{sp}bot...")
+copy_anything(".dockerignore", f"{folder}{sp}bot{sp}.dockerignore")
+print(f"Copying .dockerignore to {fs}{sp}web...")
+copy_anything(".dockerignore", f"{folder}{sp}web{sp}.dockerignore")
 
-# list of folders and files to copy to the new folder
+# COPY FILES FROM CURRENT FOLDER ---------------------------------------------------------------------------------------
+print(f"\nCOPYING FILES FROM CURRENT FOLDER...")
+print("-"*line_length)
+
 folders_and_files = ["README.md", "LICENSE", ".dockerignore"]
-
-# copy the folders and files to the new folder
 for folder_or_file in folders_and_files:
-    print("Copying " + folder_or_file + f" to {sp}...")
-    copy_anything(folder_or_file, new_folder_name + f"{sp}{folder_or_file}")
+    print(f"Copying {folder_or_file} to {sp}...")
+    copy_anything(folder_or_file, f"{folder}{sp}{folder_or_file}")
 
-# wipe the log.log and data.log files
+# WIPE LOG FILES -------------------------------------------------------------------------------------------------------
+print(f"\nWIPE LOG FILES...")
+print("-"*line_length)
+
 print("Wiping log.log...")
-open(f"{new_folder_name}{sp}db{sp}log{sp}log.log", "w").close()
+open(f"{folder}{sp}db{sp}log{sp}log.log", "w").close()
 print("Wiping data.log...")
-open(f"{new_folder_name}{sp}db{sp}log{sp}data.log", "w").close()
+open(f"{folder}{sp}db{sp}log{sp}data.log", "w").close()
 
-print("----------------------------------------")
+# DONE -----------------------------------------------------------------------------------------------------------------
+print("-"*line_length)
 print("\nDone!")
