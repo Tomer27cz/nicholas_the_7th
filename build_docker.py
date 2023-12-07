@@ -37,8 +37,10 @@ beautifulsoup4
 lxml
 yt_dlp
 asgiref
+flask
 spotipy
 soundcloud-lib
+werkzeug
 emoji
 aiohttp
 grapheme

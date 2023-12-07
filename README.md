@@ -8,9 +8,11 @@ It is not meant to be used by anyone else, but if you want to use it, feel free 
 
 [![Dashboard](https://raw.githubusercontent.com/Tomer27cz/discord_bot_stanley_the_7th/master/.github/dashboard.png)](#readme)
 
-## Invite
+## [Invite](https://discord.com/api/oauth2/authorize?client_id=1007004463933952120&permissions=3198017&scope=bot)
 
 The bot is currently hosted by me. So if you want to, you can [Invite](https://discord.com/api/oauth2/authorize?client_id=1007004463933952120&permissions=3198017&scope=bot) him.
+
+## [Setup Guide](.github/SETUP.md)
 
 ## Configuration - config.py
 
@@ -58,71 +60,6 @@ DEFAULT_DISCORD_AVATAR = "https://cdn.discordapp.com/embed/avatars/0.png"
 VLC_LOGO = "https://cdn.discordapp.com/attachments/892403162315644931/1008054767379030096/vlc.png"
 DEVELOPER_ID = 349164237605568513
 ```
-
-## Installation
-
-### Windows
-- Install [Python](https://www.python.org/downloads/) and [Pip](https://pip.pypa.io/en/stable/installation/)
-- `cd` into the main directory
-- Install the requirements
-```
-pip install -r requirements.txt
-```
-- Create a file called `config.py` in the main directory and fill it out
-- Download [ffmpeg](https://ffmpeg.org/download.html) and add it to your `path`
-- Run the bot
-```
-python main.py
-```
-- Run `flaskapp.py` for Web Interface
-```
-python flaskapp.py
-```
-
-### Linux
-- Install [Python](https://www.python.org/downloads/) and [Pip](https://pip.pypa.io/en/stable/installation/)
-- `cd` into the main directory
-- Install the requirements
-```
-pip install -r requirements.txt
-```
-- Create a file called `config.py` in the main directory and fill it out
-- Install ffmpeg
-```
-sudo apt update
-sudo apt upgrade
-sudo apt install ffmpeg
-```
-- Run the bot
-```
-nohup python3 -u main.py &>> db/log/activity.log &
-```
-- Run `flaskapp.py` for Web Interface
-```
-nohup python3 -u flaskapp.py &>> db/log/flask.log &
-```
-
-## Docker
-
-- Install [Docker](https://docs.docker.com/get-docker/), [Docker Compose](https://docs.docker.com/compose/install/), [Python](https://www.python.org/downloads/) and [Pip](https://pip.pypa.io/en/stable/installation/)
-- `cd` into the main directory
-- Create a file called `config.py` in the main directory and fill it out
-- Run the `build_docker.py` script
-
-This will create a new folder called `FOLDERNAME_docker` with all the required files. 
-```
-python build_docker.py
-```
-- `cd` into the new folder
-- Run the `docker-compose.yml` file
-```
-docker-compose build
-```
-- Start the containers - you can use `-d` to run in the background
-```
-docker-compose up 
-```
-
 
 ## Credits
 
