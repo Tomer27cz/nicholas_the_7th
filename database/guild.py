@@ -14,6 +14,15 @@ def guild(glob: GlobalVars, guild_id: int):
     with glob.ses.no_autoflush:
         return glob.ses.query(data_classes.Guild).filter_by(id=int(guild_id)).first()
 
+def guilds(glob: GlobalVars):
+    """
+    Returns a list of guild objects
+    :param glob: GlobalVars
+    :return: [Guild object, ...]
+    """
+    with glob.ses.no_autoflush:
+        return glob.ses.query(data_classes.Guild).all()
+
 def guild_data(glob: GlobalVars, guild_id: int):
     """
     Returns a guild data object

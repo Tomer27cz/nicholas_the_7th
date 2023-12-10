@@ -130,9 +130,9 @@ def load_json_to_database(glob: GlobalVars, json_data):
     with glob.ses.no_autoflush:
         for guild_id, guild_dict in json_data.items():
             if guild_id == 0 or guild_id == '0':
-                print("Skipping guild_id 0")
+                print("Skipping guild_id 0", flush=True)
                 continue
-            print(f"Atempting to add {guild_id} to database")
+            print(f"Atempting to add {guild_id} to database", flush=True)
             guild = Guild(glob, guild_id, json_data=guild_dict)
             glob.ses.add(guild)
 

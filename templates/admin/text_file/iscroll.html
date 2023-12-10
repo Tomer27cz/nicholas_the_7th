@@ -4,8 +4,14 @@
 
 {% block head %}{{super()}}
   <script>
-  window.scrollTo({top: document.body.scrollHeight, behavior: 'instant'});
-  function onLoad() {
+
+
+  async function onLoad() {
+      function delay(time) {
+        return new Promise(resolve => setTimeout(resolve, time));
+      }
+      await delay(1);
+      window.scroll(0, document.body.scrollHeight);
       let elements = document.getElementsByClassName("hidden_on_load");
       for (let i = 0; i < elements.length; i++) {
           elements[i].style.display = "block";
@@ -38,16 +44,16 @@
 
   <div class="div-log">
     {% if lines %}
-      <div class="div-log">
-        {% for line in lines[:100] %}
-          <p>{{ line }}</p>
+      <div class="{% if separate_lines %}div-log-data{% else %}div-log{% endif %}">
+        {% for line_tuple in lines[:100] %}
+          <p><span>{{ line_tuple[1] }}.</span> {{ line_tuple[0] }}</p>
         {% endfor %}
       </div>
     {% endif %}
     {% if chunks %}
-      {% for i in range(1, chunks-1) %}
-        <div hx-get="/admin/inflog?type={{log_type}}&index={{i}}" hx-target="this" hx-trigger="intersect once"
-             hx-swap="outerHTML" style="display: none" class="hidden_on_load" hx-indicator="#spinner{{i}}">
+      {% for i in range(1, chunks) %}
+        <div hx-get="/admin/inflog?type={{log_type}}&index={{i}}{% if separate_lines %}&separate_lines=True{% endif %}" hx-target="this" hx-trigger="intersect once"
+             hx-swap="outerHTML"  hx-indicator="#spinner{{i}}">
           <div style="height: 150rem"></div>
           <div class="text-center">
             <div class="spinner-border text-primary htmx-indicator" role="status" id="spinner{{i}}" style="width: 3rem; height: 3rem;"></div>

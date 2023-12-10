@@ -51,9 +51,9 @@ def log(ctx: Union[dc_commands.Context, WebData, None, int], text_data, options=
         raise ValueError('Wrong log_type')
 
     if log_type == 'error':
-        print(message, file=sys.stderr)
+        print(message, file=sys.stderr, flush=True)
     else:
-        print(message)
+        print(message, flush=True)
 
     with open(f"{PARENT_DIR}db/log/log.log", "a", encoding="utf-8") as f:
         f.write(message + "\n")

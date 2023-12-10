@@ -150,6 +150,9 @@ def now_to_history(glob: GlobalVars, guild_id: int):
         glob.ses.query(NowPlaying).filter(NowPlaying.guild_id == guild_id).delete()
         glob.ses.commit()
 
+        # to history class
+        video = to_history_class(glob, video)
+
         # strip not needed data
         set_stopped(glob, video)
         video.chapters = None

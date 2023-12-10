@@ -353,7 +353,7 @@ async def execute_get_data(request_dict, glob: GlobalVars):
     elif data_type == 'guild_bot_status':
         return get_guild_bot_status(glob, request_dict['guild_id'])
     else:
-        print(f'Unknown data type: {data_type}', file=sys.stderr)
+        print(f'Unknown data type: {data_type}', file=sys.stderr, flush=True)
 
 # handle client
 async def handle_client(client, glob: GlobalVars):

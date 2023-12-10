@@ -3,44 +3,29 @@
 {% set title = "Server List" %}
 
 {% block content %}
-  {% if errors %}
-    {% for error in errors %}
-      <div class="alert alert-danger div-align alert-dismissible fade show" role="alert">
-        {{error}}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-    {% endfor %}
-  {% endif %}
-
   <div class="div-align">
-    <h2>The Bot is in: {{ guild | sum(attribute='connected') }} servers</h2>
+    <h2>The Bot is in: {{ guilds | sum(attribute='connected') }} servers</h2>
   </div>
   <div class="picker">
     <h3>Please select a server to get started</h3>
     <br/>
     <section class="d-cards">
-      {% for guild_object in guild %}
+      {% for guild_object in guilds %}
+        {% set icon = guild_object.data.icon if guild_object.data.icon is not none else "/static/img/discord_icon.svg" %}
+        {% set id = guild_object.data.id %}
         <div class="d-card">
-          <a href="/guild/{{guild_object.data.id}}">
-            {% if guild_object.data.id in mutual_guild_ids %}
-              {% if guild_object.connected %}
-                {% if guild_object.data.icon is not none %}
-                  <img loading="lazy" src="{{guild_object.data.icon}}" class="green-border" />
-                {% else %}
-                  <img loading="lazy" src="/static/img/discord_icon.svg" class="green-border" />
-                {% endif %}
+          <a href="/guild/{{id}}">
+            {% if guild_object.connected %}
+              {% if id in allowed_guilds %}
+                <img loading="lazy" src="{{icon}}" class="green-border" alt=""/>
               {% else %}
-                {% if guild_object.data.icon is not none %}
-                  <img loading="lazy" src="{{guild_object.data.icon}}" class="yellow-border" />
-                {% else %}
-                  <img loading="lazy" src="/static/img/discord_icon.svg" class="yellow-border" />
-                {% endif %}
+                <img loading="lazy" src="{{icon}}" class="yellow-border" alt=""/>
               {% endif %}
             {% else %}
-              {% if guild_object.data.icon is not none %}
-                <img loading="lazy" src="{{guild_object.data.icon}}" class="red-border" />
+              {% if id in allowed_guilds %}
+                <img loading="lazy" src="{{icon}}" class="orange-border" alt=""/>
               {% else %}
-                <img loading="lazy" src="/static/img/discord_icon.svg" class="red-border" />
+                <img loading="lazy" src="{{icon}}" class="red-border" alt=""/>
               {% endif %}
             {% endif %}
           </a>

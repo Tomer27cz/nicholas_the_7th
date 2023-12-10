@@ -1,5 +1,5 @@
-<div class="div-log">
-  {% for line in lines %}
-    <p>{{ line }}</p>
+<div class="{% if separate_lines %}div-log-data{% else %}div-log{% endif %}">
+  {% for line_tuple in lines %}
+    <p><span>{{ line_tuple[1] }}.</span> {{ line_tuple[0] }}</p>
   {% endfor %}
 </div>

@@ -157,7 +157,6 @@ class GuildData(Base):
         json_keys = []
         if json_data:
             json_keys = json_data.keys()
-            print(json_data)
 
         self.name: str = json_data['name'] if 'name' in json_keys else None
         self.key: str = json_data['key'] if 'key' in json_keys else None
