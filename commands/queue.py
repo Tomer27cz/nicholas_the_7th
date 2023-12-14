@@ -1,7 +1,7 @@
 from utils.global_vars import GlobalVars
 
 from classes.data_classes import ReturnData
-from classes.video_class import to_search_list_class, Queue
+from classes.video_class import to_search_list_class, Queue, SearchList
 import classes.view
 
 from utils.log import log
@@ -13,7 +13,7 @@ from utils.spotify import spotify_album_to_yt_video_list, spotify_playlist_to_yt
 from utils.save import save_json, push_update
 from utils.convert import convert_duration
 
-from database.guild import guild
+from database.guild import guild, clear_queue
 
 import commands.player
 import commands.voice
@@ -388,9 +388,8 @@ async def clear_def(ctx, glob: GlobalVars, ephemeral: bool = False) -> ReturnDat
     """
     log(ctx, 'clear_def', [ephemeral], log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
-    db_guild = guild(glob, guild_id)
 
-    db_guild.queue.clear()
+    clear_queue(glob, guild_id)
     push_update(glob, guild_id)
     save_json(glob)
 
@@ -557,8 +556,9 @@ async def search_command_def(ctx, glob: GlobalVars, search_query, display_type: 
         await ctx.reply(tg(guild_id, 'Searching...'), ephemeral=ephemeral)
 
     custom_search = youtubesearchpython.VideosSearch(search_query, limit=5)
-    db_guild.search_list.clear()
-    glob.ses.commit()
+    with glob.ses.no_autoflush:
+        glob.ses.query(SearchList).filter_by(guild_id=guild_id).delete()
+        glob.ses.commit()
 
     view = classes.view.SearchOptionView(ctx, glob, force, from_play)
 
@@ -583,6 +583,8 @@ async def search_command_def(ctx, glob: GlobalVars, search_query, display_type: 
         await ctx.reply(message, view=view, ephemeral=ephemeral)
 
     save_json(glob)
+
+    return ReturnData(False, 'terminate')
 
 # # -------------------------------- IMPORT / EXPORT --------------------------------
 #

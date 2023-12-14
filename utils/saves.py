@@ -94,7 +94,7 @@ def delete_queue_save(glob: GlobalVars, guild_id: int, save_name: str) -> Return
         return ReturnData(False, tg(guild_id, 'save not found'))
 
     save_delete = find_save(glob, guild_id, save_name)
-    glob.ses.query(SaveVideo).filter('save_id' == save_delete.id).all().delete()
+    glob.ses.query(SaveVideo).filter('save_id' == save_delete.id).delete()
     glob.ses.delete(save_delete)
     glob.ses.commit()
 

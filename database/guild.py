@@ -142,17 +142,29 @@ def delete_guild(glob: GlobalVars, guild_id: int):
     :return: None
     """
     with glob.ses.no_autoflush:
-        glob.ses.query(data_classes.Guild).filter_by(id=guild_id).all().delete()
-        glob.ses.query(data_classes.GuildData).filter_by(id=guild_id).all().delete()
-        glob.ses.query(data_classes.Options).filter_by(id=guild_id).all().delete()
-        glob.ses.query(data_classes.Save).filter_by(id=guild_id).all().delete()
+        glob.ses.query(data_classes.Guild).filter_by(id=guild_id).delete()
+        glob.ses.query(data_classes.GuildData).filter_by(id=guild_id).delete()
+        glob.ses.query(data_classes.Options).filter_by(id=guild_id).delete()
+        glob.ses.query(data_classes.Save).filter_by(id=guild_id).delete()
 
-        glob.ses.query(video_class.SearchList).filter_by(guild_id=guild_id).all().delete()
-        glob.ses.query(video_class.Queue).filter_by(guild_id=guild_id).all().delete()
-        glob.ses.query(video_class.NowPlaying).filter_by(guild_id=guild_id).all().delete()
-        glob.ses.query(video_class.History).filter_by(guild_id=guild_id).all().delete()
-        glob.ses.query(video_class.SaveVideo).filter_by(guild_id=guild_id).all().delete()
+        glob.ses.query(video_class.SearchList).filter_by(guild_id=guild_id).delete()
+        glob.ses.query(video_class.Queue).filter_by(guild_id=guild_id).delete()
+        glob.ses.query(video_class.NowPlaying).filter_by(guild_id=guild_id).delete()
+        glob.ses.query(video_class.History).filter_by(guild_id=guild_id).delete()
+        glob.ses.query(video_class.SaveVideo).filter_by(guild_id=guild_id).delete()
 
+        glob.ses.commit()
+
+# Queue
+def clear_queue(glob: GlobalVars, guild_id: int):
+    """
+    Clears the queue
+    :param glob: GlobalVars
+    :param guild_id: ID of the guild
+    :return: None
+    """
+    with glob.ses.no_autoflush:
+        glob.ses.query(video_class.Queue).filter_by(guild_id=guild_id).delete()
         glob.ses.commit()
 
 # Radio

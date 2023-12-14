@@ -8,7 +8,7 @@ from utils.save import save_json, push_update
 from utils.discord import now_to_history, get_voice_client
 from utils.video_time import set_stopped, set_resumed
 
-from database.guild import guild
+from database.guild import guild, clear_queue
 from commands.utils import ctx_check
 
 import discord
@@ -229,12 +229,10 @@ async def disconnect_def(ctx, glob: GlobalVars, mute_response: bool = False) -> 
     """
     log(ctx, 'disconnect_def', [mute_response], log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
-    db_guild = guild(glob, guild_id)
 
     if guild_object.voice_client:
         await stop_def(ctx, glob, mute_response=True)
-        db_guild.queue.clear()
-        glob.ses.commit()
+        clear_queue(glob, guild_id)
 
         channel = guild_object.voice_client.channel
         await guild_object.voice_client.disconnect(force=True)

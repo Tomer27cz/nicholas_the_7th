@@ -127,8 +127,7 @@ class Bot(dc_commands.Bot):
             now_to_history(glob, guild_id)
 
             # clear queue when last person leaves
-            guild(glob, guild_id).queue.clear()
-            ses.commit()
+            clear_queue(glob, guild_id)
 
         if not member.id == self.user.id:
             return
@@ -143,10 +142,10 @@ class Bot(dc_commands.Bot):
             time_var = 0
             while True:
                 # check every second
-                await asyncio.sleep(1)
+                await asyncio.sleep(5)
 
                 # increase time_var
-                time_var += 1
+                time_var += 5
 
                 # check if bot is playing and not paused
                 if voice.is_playing() and not voice.is_paused():
@@ -175,8 +174,7 @@ class Bot(dc_commands.Bot):
         # if bot leaves a voice channel
         elif after.channel is None:
             # clear queue when bot leaves
-            guild(glob, guild_id).queue.clear()
-            ses.commit()
+            clear_queue(glob, guild_id)
             # log
             log(guild_id, f"-->> Cleared Queue after bot Disconnected <<--")
 
@@ -322,13 +320,13 @@ async def queue_command(ctx: dc_commands.Context, url, position: int = None):
 # @app_commands.describe(guild_id=text['guild_id'], ephemeral=text['ephemeral'])
 # async def export_queue_command(ctx: dc_commands.Context, guild_id=None, ephemeral: bool=True):
 #     log(ctx, 'export_queue', [guild_id, ephemeral], log_type='command', author=ctx.author)
-#     await export_queue(ctx, guild_id, ephemeral=ephemeral)
+#     await export_queue(ctx, glob, guild_id, ephemeral=ephemeral)
 #
 # @bot.hybrid_command(name='queue_import', with_app_command=True, description=text['queue_import'], help=text['queue_import'])
 # @app_commands.describe(queue_string=text['queue_string'], guild_id=text['guild_id'], ephemeral=text['ephemeral'])
 # async def import_queue_command(ctx: dc_commands.Context, queue_string: str, guild_id=None, ephemeral: bool=True):
 #     log(ctx, 'import_queue', [queue_string, guild_id, ephemeral], log_type='command', author=ctx.author)
-#     await import_queue(ctx, queue_string, guild_id, ephemeral=ephemeral)
+#     await import_queue(ctx, glob, queue_string, guild_id, ephemeral=ephemeral)
 
 @bot.hybrid_command(name='next_up', with_app_command=True, description=text['next_up'], help=text['next_up'])
 @app_commands.describe(url=text['url'], user_only=text['ephemeral'])

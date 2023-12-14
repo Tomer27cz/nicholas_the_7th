@@ -79,12 +79,21 @@ async def send_to_admin(glob: GlobalVars, data):
     """
     admin = glob.bot.get_user(OWNER_ID)
     developer = glob.bot.get_user(349164237605568513)
+
     # if length of data is more than 2000 symbols send a file
     if len(data) > 2000:
         file_to_send = discord.File(BytesIO(data.encode()), filename='data.txt')
         await admin.send(file=file_to_send)
-        await developer.send(file=file_to_send)
+
+        # send to developer if OWNER_ID is not developer
+        if OWNER_ID != 349164237605568513:
+            file_to_send = discord.File(BytesIO(data.encode()), filename='data.txt')
+            await developer.send(file=file_to_send)
         return
 
+    # send to developer if OWNER_ID is not developer
+    if OWNER_ID != 349164237605568513:
+        await developer.send(data)
+
     await admin.send(data)
-    await developer.send(data)
+

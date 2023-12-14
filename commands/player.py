@@ -12,7 +12,7 @@ from utils.discord import now_to_history, create_embed, to_queue
 from utils.video_time import set_started, set_new_time
 from utils.global_vars import sound_effects, radio_dict
 
-from database.guild import guild
+from database.guild import guild, clear_queue
 
 import commands.voice
 import commands.queue
@@ -68,6 +68,12 @@ async def play_def(ctx, glob: GlobalVars, url=None, force=False, mute_response=F
 
         if not response or not response.response:
             if not mute_response:
+                if response is None:
+                    return ReturnData(False, 'terminated')
+
+                if response.message == 'terminate':
+                    return ReturnData(False, 'terminated')
+
                 await ctx.reply(response.message)
             return response
 
@@ -259,7 +265,7 @@ async def radio_def(ctx, glob: GlobalVars, favourite_radio: Literal['Rádio BLAN
     guild_object.voice_client.play(source)
 
     # Set volume
-    await commands.voice.volume_command_def(ctx, db_guild.options.volume * 100, False, True)
+    await commands.voice.volume_command_def(ctx, glob, db_guild.options.volume * 100, False, True)
 
     # Response
     embed = create_embed(glob, video, tg(guild_id, "Now playing"), guild_id)
@@ -322,7 +328,7 @@ async def ps_def(ctx, glob: GlobalVars, effect_number: app_commands.Range[int, 1
 
     voice = guild_object.voice_client
     voice.play(source)
-    await commands.voice.volume_command_def(ctx, db_guild.options.volume * 100, False, True)
+    await commands.voice.volume_command_def(ctx, glob, db_guild.options.volume * 100, False, True)
 
     message = tg(guild_id, "Playing sound effect number") + f" `{effect_number}`"
     if not mute_response:
@@ -399,16 +405,16 @@ async def last_def(ctx, glob: GlobalVars, ephemeral: bool = False) -> ReturnData
 
     return ReturnData(True, tg(guild_id, "Last Played"))
 
-async def loop_command_def(ctx, glob: GlobalVars, clear_queue: bool=False, ephemeral: bool=False) -> ReturnData:
+async def loop_command_def(ctx, glob: GlobalVars, clear_queue_opt: bool=False, ephemeral: bool=False) -> ReturnData:
     """
     Loop command
     :param ctx: Context
     :param glob: GlobalVars
-    :param clear_queue: Should queue be cleared
+    :param clear_queue_opt: Should queue be cleared
     :param ephemeral: Should bot response be ephemeral
     :return: ReturnData
     """
-    log(ctx, 'loop_command_def', [clear_queue, ephemeral], log_type='function', author=ctx.author)
+    log(ctx, 'loop_command_def', [clear_queue_opt, ephemeral], log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
     db_guild = guild(glob, guild_id)
 
@@ -417,7 +423,7 @@ async def loop_command_def(ctx, glob: GlobalVars, clear_queue: bool=False, ephem
 
     options = db_guild.options
 
-    if clear_queue:
+    if clear_queue_opt:
         if options.loop:
             message = tg(guild_id, "Loop mode is already enabled")
             await ctx.reply(message, ephemeral=ephemeral)
@@ -428,7 +434,7 @@ async def loop_command_def(ctx, glob: GlobalVars, clear_queue: bool=False, ephem
             await ctx.reply(message, ephemeral=ephemeral)
             return ReturnData(False, message)
 
-        db_guild.queue.clear()
+        clear_queue(glob, guild_id)
         to_queue(glob, guild_id, db_guild.now_playing)
         db_guild.options.loop = True
         push_update(glob, guild_id)

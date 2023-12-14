@@ -90,9 +90,9 @@ def create_embed(glob: GlobalVars, video, name: str, guild_id: int, embed_colour
         requested_by = video.author
     # set variables
     title = video.title
-    time_played = video.time()
+    time_played = video.time(glob)
     author = f'[{video.channel_name}]({video.channel_link})'
-    current_chapter = video.current_chapter()
+    current_chapter = video.current_chapter(glob)
     url = video.url
     thumbnail = video.picture
 
@@ -109,7 +109,7 @@ def create_embed(glob: GlobalVars, video, name: str, guild_id: int, embed_colour
     embed = (discord.Embed(title=name, description=f'```\n{title}\n```', color=discord.Color.from_rgb(*embed_colour)))
 
     embed.add_field(name=tg(guild_id, 'Duration'), value=time_played)
-    embed.add_field(name=tg(guild_id, 'Requested by'), value=requested_by)
+    embed.add_field(name=tg(guild_id, 'Requested by'), value=f"<@{requested_by}>")
     embed.add_field(name=tg(guild_id, 'Author'), value=author)
 
     if current_chapter is not None:

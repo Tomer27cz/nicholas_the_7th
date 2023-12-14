@@ -29,7 +29,7 @@ async def web_queue(web_data, glob: GlobalVars, video_type, position=None) -> Re
             return ReturnData(False, tg(ctx_guild_id, 'Invalid video type (Internal web error -> contact developer)'))
 
     if video.class_type == 'Radio':
-        return await web_queue_from_radio(web_data, video.radio_info['name'], position)
+        return await web_queue_from_radio(web_data, glob, video.radio_info['name'], position)
 
     try:
         to_queue(glob, guild_id, video, position=position)
