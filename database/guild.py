@@ -131,7 +131,7 @@ def create_guild(glob: GlobalVars, guild_id: int):
     :return: Guild object
     """
     with glob.ses.no_autoflush:
-        guild_object = data_classes.Guild(glob, guild_id)
+        guild_object = data_classes.Guild(glob, guild_id, {})
         glob.ses.add(guild_object)
         glob.ses.commit()
 def delete_guild(glob: GlobalVars, guild_id: int):

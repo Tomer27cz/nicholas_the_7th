@@ -132,11 +132,16 @@ async def queue_command_def(ctx, glob: GlobalVars, url=None, position: int = Non
                 await ctx.reply(message, ephemeral=ephemeral)
             return ReturnData(False, message)
         video = spotify_to_yt_video(glob, url, author_id, guild_id)
-        if video is not None:
-            message = to_queue(glob, guild_id, video, position=position, copy_video=False)
+        if video is None:
+            message = f'{tg(guild_id, "Invalid spotify url")}: `{url}`'
             if not mute_response:
                 await ctx.reply(message, ephemeral=ephemeral)
-            return ReturnData(True, message)
+            return ReturnData(False, message)
+
+        message = to_queue(glob, guild_id, video, position=position, copy_video=False)
+        if not mute_response:
+            await ctx.reply(message, ephemeral=ephemeral)
+        return ReturnData(True, message, video)
 
     if url_type == 'Spotify URL':
         if not glob.sp:
@@ -154,7 +159,7 @@ async def queue_command_def(ctx, glob: GlobalVars, url=None, position: int = Non
         message = to_queue(glob, guild_id, video, position=position, copy_video=False)
         if not mute_response:
             await ctx.reply(message, ephemeral=ephemeral)
-        return ReturnData(True, message)
+        return ReturnData(True, message, video)
 
     if url_type == 'SoundCloud URL':
         try:
@@ -182,7 +187,7 @@ async def queue_command_def(ctx, glob: GlobalVars, url=None, position: int = Non
             message = to_queue(glob, guild_id, video, position=position, copy_video=False)
             if not mute_response:
                 await ctx.reply(message, ephemeral=ephemeral)
-            return ReturnData(True, message)
+            return ReturnData(True, message, video)
 
         if type(track) == Playlist:
             tracks = track.tracks
@@ -210,7 +215,7 @@ async def queue_command_def(ctx, glob: GlobalVars, url=None, position: int = Non
         message = to_queue(glob, guild_id, video, position=position, copy_video=False)
         if not mute_response:
             await ctx.reply(message, ephemeral=ephemeral)
-        return ReturnData(True, message)
+        return ReturnData(True, message, video)
 
     if url_type == 'String with URL':
         probe, extracted_url = await get_url_probe_data(url)
@@ -222,7 +227,7 @@ async def queue_command_def(ctx, glob: GlobalVars, url=None, position: int = Non
             message = to_queue(glob, guild_id, video, position=position, copy_video=False)
             if not mute_response:
                 await ctx.reply(message, ephemeral=ephemeral)
-            return ReturnData(True, message)
+            return ReturnData(True, message, video)
 
     if is_ctx and not no_search:
         return await search_command_def(ctx, glob, url, display_type='short', force=force, from_play=from_play, ephemeral=ephemeral)

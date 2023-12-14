@@ -39,10 +39,11 @@ async def stop_def(ctx, glob: GlobalVars, mute_response: bool = False, keep_loop
 
     voice.stop()
 
-    db_guild.options.stopped = True
-    if not keep_loop:
-        db_guild.options.loop = False
-    glob.ses.commit()
+    with glob.ses.no_autoflush:
+        db_guild.options.stopped = True
+        if not keep_loop:
+            db_guild.options.loop = False
+        glob.ses.commit()
 
     now_to_history(glob, guild_id)
 

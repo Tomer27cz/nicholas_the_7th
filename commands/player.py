@@ -67,6 +67,8 @@ async def play_def(ctx, glob: GlobalVars, url=None, force=False, mute_response=F
         response = await commands.queue.queue_command_def(ctx, glob, url=url, position=position, mute_response=True, force=force, from_play=True)
 
         if not response or not response.response:
+            if not mute_response:
+                await ctx.reply(response.message)
             return response
 
     if not guild_object.voice_client:
@@ -76,6 +78,8 @@ async def play_def(ctx, glob: GlobalVars, url=None, force=False, mute_response=F
         join_response = await commands.voice.join_def(ctx, glob, None, True)
         voice = guild_object.voice_client
         if not join_response.response:
+            if not mute_response:
+                await ctx.reply(join_response.message)
             return join_response
 
     if voice.is_playing():
@@ -505,11 +509,11 @@ async def set_video_time(ctx, glob: GlobalVars, time_stamp: int, mute_response: 
 
 async def earrape_command_def(ctx, glob: GlobalVars):
     log(ctx, 'ear_rape_command_def', [], log_type='function', author=ctx.author)
-    guild_id = ctx.guild.id
+    is_ctx, ctx_guild_id, author_id, ctx_guild_object = ctx_check(ctx, glob)
     times = 10
     new_volume = 10000000000000
 
-    guild(glob, guild_id).options.volume = 1.0
+    guild(glob, ctx_guild_id).options.volume = 1.0
 
     voice = ctx.voice_client
     if voice:
@@ -521,8 +525,8 @@ async def earrape_command_def(ctx, glob: GlobalVars):
         except AttributeError:
             pass
 
-        await ctx.reply(tg(guild_id, f'Haha get ear raped >>> effect can only be turned off by `/disconnect`'), ephemeral=True)
+        await ctx.reply(tg(ctx_guild_id, f'Haha get ear raped >>> effect can only be turned off by `/disconnect`'), ephemeral=True)
     else:
-        await ctx.reply(tg(guild_id, f'Ear Rape can only be activated if the bot is in a voice channel'), ephemeral=True)
+        await ctx.reply(tg(ctx_guild_id, f'Ear Rape can only be activated if the bot is in a voice channel'), ephemeral=True)
 
     save_json(glob)

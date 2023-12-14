@@ -25,11 +25,12 @@ def set_stopped(glob: GlobalVars, video):
     video.played_duration[-1]['end']['time_stamp'] = (end['epoch'] - start['epoch']) + start['time_stamp']
     pd = video.played_duration
 
-    # for some reason this needs to be done like this
-    glob.ses.commit()
-    if db.guild(glob, guild_id=video.guild_id).now_playing is not None:
-        db.guild(glob, guild_id=video.guild_id).now_playing.played_duration = pd
-    glob.ses.commit()
+    if video.__class__.__name__ == 'NowPlaying':
+        # for some reason this needs to be done like this
+        glob.ses.commit()
+        if db.guild(glob, guild_id=video.guild_id).now_playing is not None:
+            db.guild(glob, guild_id=video.guild_id).now_playing.played_duration = pd
+        glob.ses.commit()
 
     save_json(glob)
 

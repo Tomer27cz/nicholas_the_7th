@@ -342,7 +342,7 @@ async def execute_get_data(request_dict, glob: GlobalVars):
         update_guilds(glob)
         bot_guilds = []
         for bot_guild in glob.bot.guilds:
-            to_append = GuildData(glob, bot_guild.id)
+            to_append = GuildData(glob, bot_guild.id, {})
             bot_guilds.append(to_append)
         return bot_guilds
     elif data_type == 'guilds_bot_status':

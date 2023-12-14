@@ -31,7 +31,7 @@ def update_guilds(glob: GlobalVars):
     for bot_guild_id in bot_guilds:
         if bot_guild_id not in db_guilds:
             bot_guild_object = glob.bot.get_guild(bot_guild_id)
-            glob.ses.add(Guild(glob, bot_guild_id))
+            glob.ses.add(Guild(glob, bot_guild_id, {}))
             log(None, f'Discovered a New guild: {bot_guild_id} = {bot_guild_object.name} -> Added to Database')
 
     for guild_id in db_guilds:

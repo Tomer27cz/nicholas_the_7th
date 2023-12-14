@@ -140,25 +140,25 @@ def now_to_history(glob: GlobalVars, guild_id: int):
             while len(guild_object.history) >= guild_object.options.history_length:
                 guild_object.history.pop(0)
 
-        video = guild_object.now_playing
+        np_video = guild_object.now_playing
 
         # if loop is enabled and video is Radio class, add video to queue
         if guild_object.options.loop:
-            to_queue(glob, guild_id, video, position=None, copy_video=True)
+            to_queue(glob, guild_id, np_video, position=None, copy_video=True)
+
+        # to history class (before delete - bug fix)
+        h_video = to_history_class(glob, np_video)
 
         # set now_playing to None
         glob.ses.query(NowPlaying).filter(NowPlaying.guild_id == guild_id).delete()
         glob.ses.commit()
 
-        # to history class
-        video = to_history_class(glob, video)
-
         # strip not needed data
-        set_stopped(glob, video)
-        video.chapters = None
+        set_stopped(glob, h_video)
+        h_video.chapters = None
 
         # add video to history
-        guild_object.history.append(to_history_class(glob, video))
+        guild_object.history.append(to_history_class(glob, h_video))
 
         # save json and push update
         save_json(glob)

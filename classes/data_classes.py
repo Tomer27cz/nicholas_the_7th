@@ -25,11 +25,11 @@ class Guild(Base):
     connected = Column(Boolean, default=True)
     slowed_users = relationship('SlowedUser', backref='guilds')
 
-    def __init__(self, glob: GlobalVars, guild_id, json_data=None):
+    def __init__(self, glob: GlobalVars, guild_id, json_data: dict):
         self.id = guild_id
 
-        glob.ses.add(Options(self.id, json_data=json_data['options']))
-        glob.ses.add(GuildData(glob, self.id, json_data=json_data['data']))
+        glob.ses.add(Options(self.id, json_data=json_data.get('options', {})))
+        glob.ses.add(GuildData(glob, self.id, json_data=json_data.get('data', {})))
         glob.ses.commit()
 
 class ReturnData:
@@ -94,35 +94,20 @@ class Options(Base):
     history_length = Column(Integer, default=20)
     last_updated = Column(Integer, default=int(time()))
 
-    def __init__(self, guild_id: int, json_data=None):
+    def __init__(self, guild_id: int, json_data: dict):
         self.id: int = guild_id # id of the guild
 
-        if json_data:
-            json_keys = json_data.keys()
-
-            self.stopped: bool = json_data['stopped'] if 'stopped' in json_keys else False
-            self.loop: bool = json_data['loop'] if 'loop' in json_keys else False
-            self.is_radio: bool = json_data['is_radio'] if 'is_radio' in json_keys else False
-            self.language: str = json_data['language'] if 'language' in json_keys else 'en'
-            self.response_type: str = json_data['response_type'] if 'response_type' in json_keys else 'short'
-            self.search_query: str = json_data['search_query'] if 'search_query' in json_keys else 'Never gonna give you up'
-            self.buttons: bool = json_data['buttons'] if 'buttons' in json_keys else False
-            self.volume: float = json_data['volume'] if 'volume' in json_keys else 1.0
-            self.buffer: int = json_data['buffer'] if 'buffer' in json_keys else 600
-            self.history_length: int = json_data['history_length'] if 'history_length' in json_keys else 20
-            self.last_updated: int = json_data['last_updated'] if 'last_updated' in json_keys else int(time())
-        else:
-            self.stopped: bool = False # if the player is stopped
-            self.loop: bool = False # if the player is looping
-            self.is_radio: bool = False # if the current media is a radio
-            self.language: str = 'en' # language of the bot
-            self.response_type: str = 'short'  # long or short
-            self.search_query: str = 'Never gonna give you up' # last search query
-            self.buttons: bool = False # if single are enabled
-            self.volume: float = 1.0 # volume of the player
-            self.buffer: int = 600  # how many seconds of nothing playing before bot disconnects | 600 = 10min
-            self.history_length: int = 20 # how many songs are stored in the history
-            self.last_updated: int = int(time()) # when was the last time any of the guilds data was updated
+        self.stopped: bool = json_data.get('stopped', False) # if the player is stopped
+        self.loop: bool = json_data.get('loop', False) # if the player is looping
+        self.is_radio: bool = json_data.get('is_radio', False) # if the current media is a radio
+        self.language: str = json_data.get('language', 'en') # language of the bot
+        self.response_type: str = json_data.get('response_type', 'short') # long or short
+        self.search_query: str = json_data.get('search_query', 'Never gonna give you up') # last search query
+        self.buttons: bool = json_data.get('buttons', False) # if single are enabled
+        self.volume: float = json_data.get('volume', 1.0) # volume of the player
+        self.buffer: int = json_data.get('buffer', 600) # how many seconds of nothing playing before bot disconnects | 600 = 10min
+        self.history_length: int = json_data.get('history_length', 20) # how many songs are stored in the history
+        self.last_updated: int = json_data.get('last_updated', int(time())) # when was the last time any of the guilds data was updated
 
 class GuildData(Base):
     """
@@ -151,29 +136,25 @@ class GuildData(Base):
     discovery_splash = Column(String)
     voice_channels = Column(JSON)
 
-    def __init__(self, glob: GlobalVars, guild_id, json_data=None):
+    def __init__(self, glob: GlobalVars, guild_id, json_data: dict):
         self.id: int = guild_id
 
-        json_keys = []
-        if json_data:
-            json_keys = json_data.keys()
-
-        self.name: str = json_data['name'] if 'name' in json_keys else None
-        self.key: str = json_data['key'] if 'key' in json_keys else None
-        self.member_count: int = json_data['member_count'] if 'member_count' in json_keys else None
-        self.text_channel_count: int = json_data['text_channel_count'] if 'text_channel_count' in json_keys else None
-        self.voice_channel_count: int = json_data['voice_channel_count'] if 'voice_channel_count' in json_keys else None
-        self.role_count: int = json_data['role_count'] if 'role_count' in json_keys else None
-        self.owner_id: int = json_data['owner_id'] if 'owner_id' in json_keys else None
-        self.owner_name: str = json_data['owner_name'] if 'owner_name' in json_keys else None
-        self.created_at: str = json_data['created_at'] if 'created_at' in json_keys else None
-        self.description: str = json_data['description'] if 'description' in json_keys else None
-        self.large: bool = json_data['large'] if 'large' in json_keys else None
-        self.icon: str = json_data['icon'] if 'icon' in json_keys else None
-        self.banner: str = json_data['banner'] if 'banner' in json_keys else None
-        self.splash: str = json_data['splash'] if 'splash' in json_keys else None
-        self.discovery_splash: str = json_data['discovery_splash'] if 'discovery_splash' in json_keys else None
-        self.voice_channels: list = json_data['voice_channels'] if 'voice_channels' in json_keys else None
+        self.name: str = json_data.get('name')
+        self.key: str = json_data.get('key')
+        self.member_count: int = json_data.get('member_count')
+        self.text_channel_count: int = json_data.get('text_channel_count')
+        self.voice_channel_count: int = json_data.get('voice_channel_count')
+        self.role_count: int = json_data.get('role_count')
+        self.owner_id: int = json_data.get('owner_id')
+        self.owner_name: str = json_data.get('owner_name')
+        self.created_at: str = json_data.get('created_at')
+        self.description: str = json_data.get('description')
+        self.large: bool = json_data.get('large')
+        self.icon: str = json_data.get('icon')
+        self.banner: str = json_data.get('banner')
+        self.splash: str = json_data.get('splash')
+        self.discovery_splash: str = json_data.get('discovery_splash')
+        self.voice_channels: list = json_data.get('voice_channels')
 
         self.renew(glob)
 
