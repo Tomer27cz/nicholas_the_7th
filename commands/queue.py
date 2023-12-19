@@ -93,10 +93,10 @@ async def queue_command_def(ctx, glob: GlobalVars, url=None, position: int = Non
         return ReturnData(True, message)
 
     if url_type == 'YouTube Playlist Video' and is_ctx:
-        view = classes.view.PlaylistOptionView(ctx, url, force, from_play)
+        view = classes.view.PlaylistOptionView(ctx, glob, url, force, from_play)
         message = tg(guild_id, 'This video is from a **playlist**, do you want to add the playlist to **queue?**')
         await ctx.reply(message, view=view, ephemeral=ephemeral)
-        return ReturnData(False, message)
+        return ReturnData(False, message, terminate=True)
 
     if url_type == 'Spotify Playlist' or url_type == 'Spotify Album':
         if not glob.sp:
@@ -584,7 +584,7 @@ async def search_command_def(ctx, glob: GlobalVars, search_query, display_type: 
 
     save_json(glob)
 
-    return ReturnData(False, 'terminate')
+    return ReturnData(False, 'Process terminated', terminate=True)
 
 # # -------------------------------- IMPORT / EXPORT --------------------------------
 #

@@ -71,7 +71,7 @@ async def play_def(ctx, glob: GlobalVars, url=None, force=False, mute_response=F
                 if response is None:
                     return ReturnData(False, 'terminated')
 
-                if response.message == 'terminate':
+                if response.terminate:
                     return ReturnData(False, 'terminated')
 
                 await ctx.reply(response.message)
