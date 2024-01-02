@@ -14,7 +14,7 @@
         {% set renew = guild.now_playing.renew(glob) %}
         <div class="q-div q-history">
           {% if guild.now_playing.radio_info is not none %}
-            {% set radio_info = get_radio_info(guild.now_playing.radio_info['name']) %}
+            {% set radio_info = get_radio_info(glob, guild.now_playing.radio_info['name']) %}
             <div class="q-item0 q-div div-radio3">
               <img loading="lazy" class="q-img" src="{{ radio_info.picture }}" alt="thumbnail">
               <div class="q-item1 q-wd">
