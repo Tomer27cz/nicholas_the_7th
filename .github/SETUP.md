@@ -88,11 +88,11 @@ cd /var/www/bot
 
 Build the containers - this will take a while
 ```bash
-docker-compose build
+docker compose build
 ```
 Run the containers - you can use `-d` to run in the background
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 ### Check if it works
