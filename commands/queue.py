@@ -30,7 +30,17 @@ from sclib import Track, Playlist
 import config
 from config import VLC_LOGO as vlc_logo
 
-async def queue_command_def(ctx, glob: GlobalVars, url=None, position: int = None, mute_response: bool = False, force: bool = False, from_play: bool = False, probe_data: list = None, no_search: bool = False, ephemeral: bool = False, ) -> ReturnData:
+async def queue_command_def(ctx,
+                            glob: GlobalVars,
+                            url=None,
+                            position: int = None,
+                            mute_response: bool = False,
+                            force: bool = False,
+                            from_play: bool = False,
+                            probe_data: list = None,
+                            no_search: bool = False,
+                            ephemeral: bool = False
+                            ) -> ReturnData:
     """
     This function tries to queue a song. It is called by the queue command and the play command.
 
@@ -46,7 +56,7 @@ async def queue_command_def(ctx, glob: GlobalVars, url=None, position: int = Non
     :param ephemeral: Should the response be ephemeral
     :return: ReturnData(bool, str, VideoClass child or None)
     """
-    log(ctx, 'queue_command_def', [url, position, mute_response, force, from_play, probe_data, no_search, ephemeral], log_type='function', author=ctx.author)
+    log(ctx, 'queue_command_def', locals(), log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
     db_guild = guild(glob, guild_id)
 
@@ -56,8 +66,32 @@ async def queue_command_def(ctx, glob: GlobalVars, url=None, position: int = Non
             await ctx.reply(message, ephemeral=True)
         return ReturnData(False, message)
 
+    # Get url type
     url_type, url = get_url_type(url)
     yt_id = extract_yt_id(url)
+
+    if url_type in ['Spotify Playlist', 'Spotify Album', 'Spotify Track', 'Spotify URL']:
+        if not glob.sp:
+            message = tg(guild_id, 'Spotify API is not initialized')
+            if not mute_response:
+                await ctx.reply(message, ephemeral=ephemeral)
+            return ReturnData(False, message)
+
+
+    # YOUTUBE ----------------------------------------------------------------------------------------------------------
+    if url_type == 'YouTube Playlist Video' and is_ctx:
+        view = classes.view.PlaylistOptionView(ctx, glob, url, force, from_play)
+        message = tg(guild_id, 'This video is from a **playlist**, do you want to add the playlist to **queue?**')
+        await ctx.reply(message, view=view, ephemeral=ephemeral)
+        return ReturnData(False, message, terminate=True)
+
+    if url_type == 'YouTube Video' or yt_id is not None:
+        url = f"https://www.youtube.com/watch?v={yt_id}"
+        video = Queue(glob,'Video', author_id, guild_id, url=url)
+        message = to_queue(glob, guild_id, video, position=position, copy_video=False)
+        if not mute_response:
+            await ctx.reply(message, ephemeral=ephemeral)
+        return ReturnData(True, message, video)
 
     if url_type == 'YouTube Playlist':
         if is_ctx:
@@ -65,15 +99,15 @@ async def queue_command_def(ctx, glob: GlobalVars, url=None, position: int = Non
                 await ctx.defer(ephemeral=ephemeral)
 
         try:
-            playlist_videos_result: dict = youtubesearchpython.Playlist.getVideos(url)
-            playlist_videos: list = playlist_videos_result['videos']
+            playlist_videos: list = youtubesearchpython.Playlist.getVideos(url)['videos']
         except KeyError:
-            log(ctx, "------------------------------- playlist -------------------------")
-            tb = traceback.format_exc()
-            log(ctx, tb)
-            log(ctx, "--------------------------------------------------------------")
-
             message = f'This playlist is not viewable: `{url}`'
+            if not mute_response:
+                await ctx.reply(message, ephemeral=ephemeral)
+            return ReturnData(False, message)
+
+        if playlist_videos is None:
+            message = f'An error occurred while getting the playlist: `{url}`'
             if not mute_response:
                 await ctx.reply(message, ephemeral=ephemeral)
             return ReturnData(False, message)
@@ -85,6 +119,10 @@ async def queue_command_def(ctx, glob: GlobalVars, url=None, position: int = Non
             url = f"https://www.youtube.com/watch?v={playlist_videos[index]['id']}"
             video = Queue(glob, 'Video', author_id, guild_id, url=url)
             to_queue(glob, guild_id, video, position=position, copy_video=False, no_push=True)
+
+
+
+
         push_update(glob, guild_id)
 
         message = f"`{len(playlist_videos)}` {tg(guild_id, 'songs from playlist added to queue!')} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={db_guild.data.key})"
@@ -92,19 +130,15 @@ async def queue_command_def(ctx, glob: GlobalVars, url=None, position: int = Non
             await ctx.reply(message, ephemeral=ephemeral)
         return ReturnData(True, message)
 
-    if url_type == 'YouTube Playlist Video' and is_ctx:
-        view = classes.view.PlaylistOptionView(ctx, glob, url, force, from_play)
-        message = tg(guild_id, 'This video is from a **playlist**, do you want to add the playlist to **queue?**')
-        await ctx.reply(message, view=view, ephemeral=ephemeral)
-        return ReturnData(False, message, terminate=True)
+    # SPOTIFY ----------------------------------------------------------------------------------------------------------
+
+
+
+
+
 
     if url_type == 'Spotify Playlist' or url_type == 'Spotify Album':
-        if not glob.sp:
-            message = tg(guild_id, 'Spotify API is not initialized')
-            if not mute_response:
-                await ctx.reply(message, ephemeral=ephemeral)
-            return ReturnData(False, message)
-        adding_message = None
+
         if is_ctx:
             adding_message = await ctx.reply(tg(guild_id, 'Adding songs to queue... (might take a while)'), ephemeral=ephemeral)
 
@@ -126,11 +160,6 @@ async def queue_command_def(ctx, glob: GlobalVars, url=None, position: int = Non
         return ReturnData(True, message)
 
     if url_type == 'Spotify Track':
-        if not glob.sp:
-            message = tg(guild_id, 'Spotify API is not initialized')
-            if not mute_response:
-                await ctx.reply(message, ephemeral=ephemeral)
-            return ReturnData(False, message)
         video = spotify_to_yt_video(glob, url, author_id, guild_id)
         if video is None:
             message = f'{tg(guild_id, "Invalid spotify url")}: `{url}`'
@@ -144,11 +173,6 @@ async def queue_command_def(ctx, glob: GlobalVars, url=None, position: int = Non
         return ReturnData(True, message, video)
 
     if url_type == 'Spotify URL':
-        if not glob.sp:
-            message = tg(guild_id, 'Spotify API is not initialized')
-            if not mute_response:
-                await ctx.reply(message, ephemeral=ephemeral)
-            return ReturnData(False, message)
         video = spotify_to_yt_video(glob, url, author_id, guild_id)
         if video is None:
             message = f'{tg(guild_id, "Invalid spotify url")}: `{url}`'
@@ -208,14 +232,6 @@ async def queue_command_def(ctx, glob: GlobalVars, url=None, position: int = Non
             if not mute_response:
                 await ctx.reply(message, ephemeral=ephemeral)
             return ReturnData(True, message)
-
-    if url_type == 'YouTube Video' or yt_id is not None:
-        url = f"https://www.youtube.com/watch?v={yt_id}"
-        video = Queue(glob,'Video', author_id, guild_id, url=url)
-        message = to_queue(glob, guild_id, video, position=position, copy_video=False)
-        if not mute_response:
-            await ctx.reply(message, ephemeral=ephemeral)
-        return ReturnData(True, message, video)
 
     if url_type == 'String with URL':
         probe, extracted_url = await get_url_probe_data(url)

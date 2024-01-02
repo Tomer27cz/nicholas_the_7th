@@ -220,7 +220,7 @@ async def guild_get_key_page(guild_id):
     if guild_object.id in allowed_guilds:
         return redirect(f'/guild/{guild_id}&key={guild_object.data.key}')
 
-    if user is not None:
+    if user:
         if int(user['id']) in authorized_users:
             return redirect(f'/guild/{guild_id}&key={guild_object.data.key}')
 

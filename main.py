@@ -36,7 +36,7 @@ d_id = 349164237605568513
 
 from database.main import *
 from database.guild import *
-ses = connect_to_db(first_time=True)
+ses = connect_to_db(config.PARENT_DIR, first_time=True)
 
 # ---------------- Bot class ------------
 
@@ -255,7 +255,7 @@ log(None, "--------------------------------------- NEW / REBOOTED --------------
 build_new_guilds = False
 build_old_guilds = False
 
-with open('db/radio.json', 'r', encoding='utf-8') as file:
+with open(f'{config.PARENT_DIR}db/radio.json', 'r', encoding='utf-8') as file:
     radio_dict = json.load(file)
     for radio_name in radio_dict:
         radio_info_class = ses.query(video_class.RadioInfo).filter(video_class.RadioInfo.name == radio_name).first()
@@ -266,7 +266,7 @@ with open('db/radio.json', 'r', encoding='utf-8') as file:
             log(None, f'Added {radio_name} to database')
 log(None, 'Loaded radio.json')
 
-with open('db/languages.json', 'r', encoding='utf-8') as file:
+with open(f'{config.PARENT_DIR}db/languages.json', 'r', encoding='utf-8') as file:
     languages_dict = json.load(file)
     text = languages_dict['en']
     authorized_users += [my_id, d_id, config.DEVELOPER_ID, 349164237605568513]
