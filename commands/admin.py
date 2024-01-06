@@ -48,6 +48,7 @@ async def kys_def(ctx: dc_commands.Context, glob: GlobalVars):
     await ctx.reply(tg(guild_id, "Committing seppuku..."))
     sys.exit(3)
 
+# noinspection DuplicatedCode
 async def options_def(ctx: dc_commands.Context, glob: GlobalVars, server: Union[str, int, None]=None, stopped: str = None, loop: str = None, is_radio: str = None,
                       buttons: str = None, language: str = None, response_type: str = None, buffer: str = None,
                       history_length: str = None, volume: str = None, search_query: str = None, last_updated: str = None,
@@ -97,7 +98,7 @@ async def options_def(ctx: dc_commands.Context, glob: GlobalVars, server: Union[
             await ctx.reply(message, ephemeral=ephemeral)
             return ReturnData(False, message)
 
-        if not server in db_guild.keys():
+        if server not in db_guild.keys():
             message = tg(guild_id, "That guild doesn't exist or the bot is not in it")
             await ctx.reply(message, ephemeral=ephemeral)
             return ReturnData(False, message)
@@ -164,7 +165,6 @@ async def options_def(ctx: dc_commands.Context, glob: GlobalVars, server: Union[
             options.is_radio = to_bool(is_radio)
         if buttons is not None and buttons != 'None':
             options.buttons = to_bool(buttons)
-
 
         if language is not None and language != 'None':
             options.language = language

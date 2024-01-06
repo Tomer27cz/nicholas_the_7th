@@ -5,7 +5,7 @@ def is_float(value) -> bool:
     try:
         float(value)
         return True
-    except:
+    except (ValueError, TypeError):
         return False
 
 def check_isdigit(var) -> bool:

@@ -17,6 +17,7 @@ class GlobalVars:
         self.sp = sp_var
         self.sc = sc_var
 
+
 with open(f'{config.PARENT_DIR}db/radio.json', 'r', encoding='utf-8') as file:
     radio_dict = json.load(file)
 
@@ -28,14 +29,13 @@ def load_sound_effects():
     Loads all sound effects from the sound_effects folder
     to the global variable sound_effects
     """
-    sound_effects = ["No sound effects found"]
     try:
-        sound_effects = listdir(f'{config.PARENT_DIR}sound_effects')
-        for file_index, file_val in enumerate(sound_effects):
-            sound_effects[file_index] = sound_effects[file_index][:len(file_val) - 4]
+        se = listdir(f'{config.PARENT_DIR}sound_effects')
+        for file_index, file_val in enumerate(se):
+            se[file_index] = se[file_index][:len(file_val) - 4]
     except FileNotFoundError:
         return ["No sound effects found"]
-    return sound_effects
+    return se
+
+
 sound_effects = load_sound_effects()
-
-

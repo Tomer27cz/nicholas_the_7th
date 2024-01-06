@@ -12,7 +12,6 @@ from utils.discord import get_content_of_message
 from utils.log import send_to_admin
 from utils.save import update_guilds
 from utils.json import *
-from utils.global_vars import GlobalVars, radio_dict, languages_dict
 
 from commands.admin import *
 from commands.chat_export import *
@@ -132,7 +131,6 @@ class Bot(dc_commands.Bot):
         if not member.id == self.user.id:
             return
 
-
         # if bot joins a voice channel
         elif before.channel is None:
             # get voice client
@@ -149,7 +147,7 @@ class Bot(dc_commands.Bot):
 
                 # check if bot is playing and not paused
                 if voice.is_playing() and not voice.is_paused():
-                    time_var = 0 # reset time_var
+                    time_var = 0  # reset time_var
 
                 # check if time_var is greater than buffer
                 if time_var >= guild(glob, guild_id).options.buffer:
@@ -169,7 +167,7 @@ class Bot(dc_commands.Bot):
 
                 # check if bot is disconnected
                 if not voice.is_connected():
-                    break # break loop
+                    break  # break loop
 
         # if bot leaves a voice channel
         elif after.channel is None:
@@ -203,6 +201,22 @@ class Bot(dc_commands.Bot):
             log(ctx, err_msg, log_type='error', author=ctx.author)
             await ctx.reply(tg(ctx.guild.id, 'Bot does not have permissions to execute this command correctly') + f" - {error}")
 
+        elif isinstance(error, PendingRollbackError):
+            err_msg = f'Error for ({ctx.author}) -> ({ctx.command}) with error ({error})'
+            log(ctx, err_msg, log_type='error', author=ctx.author)
+            await send_to_admin(glob, err_msg)
+
+            try:
+                glob.ses.rollback()  # Rollback the session
+            except Exception as rollback_error:
+                error_traceback = traceback.format_exception(type(error), error, error.__traceback__)
+                error_traceback = ''.join(error_traceback)
+
+                err_msg = f'Error for ({ctx.author}) -> Failed Rollback ({ctx.command}) with error ({rollback_error})({error_traceback})'
+                log(ctx, err_msg, log_type='error', author=ctx.author)
+                await send_to_admin(glob, err_msg)
+
+            await ctx.reply(f"Database error -> Attempted rollback (try again one time - if it doesn't work tell developer to restart bot)")
         else:
             message = f"Error for ({ctx.author}) -> ({ctx.command}) with error ({error})\n{error_traceback}"
 
@@ -248,28 +262,32 @@ class Bot(dc_commands.Bot):
 
         await bot.process_commands(message)
 
+
 # ---------------------------------------------- LOAD ------------------------------------------------------------------
+
 
 log(None, "--------------------------------------- NEW / REBOOTED ----------------------------------------")
 
 build_new_guilds = False
 build_old_guilds = False
 
-with open(f'{config.PARENT_DIR}db/radio.json', 'r', encoding='utf-8') as file:
-    radio_dict = json.load(file)
-    for radio_name in radio_dict:
-        radio_info_class = ses.query(video_class.RadioInfo).filter(video_class.RadioInfo.name == radio_name).first()
-        if not radio_info_class:
-            radio_info_class = video_class.RadioInfo(radio_dict[radio_name]['id'])
-            ses.add(radio_info_class)
-            ses.commit()
-            log(None, f'Added {radio_name} to database')
+# with open(f'{config.PARENT_DIR}db/radio.json', 'r', encoding='utf-8') as file:
+#     radio_dict = json.load(file)
+
+for radio_name in radio_dict:
+    radio_info_class = ses.query(video_class.RadioInfo).filter(video_class.RadioInfo.name == radio_name).first()
+    if not radio_info_class:
+        radio_info_class = video_class.RadioInfo(radio_dict[radio_name]['id'])
+        ses.add(radio_info_class)
+        ses.commit()
+        log(None, f'Added {radio_name} to database')
 log(None, 'Loaded radio.json')
 
-with open(f'{config.PARENT_DIR}db/languages.json', 'r', encoding='utf-8') as file:
-    languages_dict = json.load(file)
-    text = languages_dict['en']
-    authorized_users += [my_id, d_id, config.DEVELOPER_ID, 349164237605568513]
+# with open(f'{config.PARENT_DIR}db/languages.json', 'r', encoding='utf-8') as file:
+#     languages_dict = json.load(file)
+
+text = languages_dict['en']
+authorized_users += [my_id, d_id, config.DEVELOPER_ID, 349164237605568513]
 log(None, 'Loaded languages.json')
 
 # ---------------------------------------------- BOT -------------------------------------------------------------------
@@ -412,7 +430,7 @@ async def loop_command(ctx: dc_commands.Context):
 @bot.hybrid_command(name='loop_this', with_app_command=True, description=text['loop_this'], help=text['loop_this'])
 async def loop_this(ctx: dc_commands.Context):
     log(ctx, 'loop_this', [], log_type='command', author=ctx.author)
-    await loop_command_def(ctx, glob, clear_queue=True)
+    await loop_command_def(ctx, glob, clear_queue_opt=True)
 
 @bot.hybrid_command(name='earrape', with_app_command=True)
 async def earrape_command(ctx: dc_commands.Context):
@@ -757,8 +775,8 @@ async def help_command(ctx: dc_commands.Context,
                                           f"`/language` - {tg(gi, 'language')}\n"
                                           f"`/sound_ effects` - {tg(gi, 'sound')}\n"
                                           f"`/list_radios` - {tg(gi, 'list_radios')}\n"
-                                          f"`/key` - {tg(gi, 'key')}\n"
-                    , inline=False)
+                                          f"`/key` - {tg(gi, 'key')}\n",
+                    inline=False)
     embed.add_field(name="Player", value=f"`/play` - {tg(gi, 'play')}\n"
                                          f"`/radio` - {tg(gi, 'radio')}\n"
                                          f"`/ps` - {tg(gi, 'ps')}\n"
@@ -766,8 +784,8 @@ async def help_command(ctx: dc_commands.Context,
                                          f"`/nowplaying` - {tg(gi, 'nowplaying')}\n"
                                          f"`/last` - {tg(gi, 'last')}\n"
                                          f"`/loop` - {tg(gi, 'loop')}\n"
-                                         f"`/loop_this` - {tg(gi, 'loop_this')}\n"
-                    , inline=False)
+                                         f"`/loop_this` - {tg(gi, 'loop_this')}\n",
+                    inline=False)
     embed.add_field(name="Queue", value=f"`/queue` - {tg(gi, 'queue_add')}\n"
                                         # f"`/queue_import` - {tg(gi, 'queue_import')}\n"
                                         # f"`/queue_export` - {tg(gi, 'queue_export')}\n"
@@ -775,15 +793,15 @@ async def help_command(ctx: dc_commands.Context,
                                         f"`/clear` - {tg(gi, 'clear')}\n"
                                         f"`/shuffle` - {tg(gi, 'shuffle')}\n"
                                         f"`/show` - {tg(gi, 'queue_show')}\n"
-                                        f"`/search` - {tg(gi, 'search')}"
-                    , inline=False)
+                                        f"`/search` - {tg(gi, 'search')}",
+                    inline=False)
     embed.add_field(name="Voice", value=f"`/stop` - {tg(gi, 'stop')}\n"
                                         f"`/pause` - {tg(gi, 'pause')}\n"
                                         f"`/resume` - {tg(gi, 'resume')}\n"
                                         f"`/join` - {tg(gi, 'join')}\n"
                                         f"`/disconnect` - {tg(gi, 'die')}\n"
-                                        f"`/volume` - {tg(gi, 'volume')}"
-                    , inline=False)
+                                        f"`/volume` - {tg(gi, 'volume')}",
+                    inline=False)
     embed.add_field(name="Context Menu", value=f"`Add to queue` - {tg(gi, 'queue_add')}\n"
                                                # f"`Show Profile` - {tg(gi, 'profile')}\n"
                                                f"`Play now` - {tg(gi, 'play')}")
@@ -793,8 +811,8 @@ async def help_command(ctx: dc_commands.Context,
         embed.add_field(name=f"{tg(gi, 'Arguments')}", value=f"`general` - {tg(gi, 'The commands from')} General\n"
                                                              f"`player` - {tg(gi, 'The commands from')} Player\n"
                                                              f"`queue` - {tg(gi, 'The commands from')} Queue\n"
-                                                             f"`voice` - {tg(gi, 'The commands from')} Voice"
-                        , inline=False)
+                                                             f"`voice` - {tg(gi, 'The commands from')} Voice",
+                        inline=False)
 
     elif command == 'ping':
         embed = discord.Embed(title="Help", description=f"`/ping` - {tg(gi, 'ping')}")
@@ -927,6 +945,7 @@ def application():
 
     web_thread.join()
     bot_thread.join()
+
 
 if __name__ == '__main__':
     application()

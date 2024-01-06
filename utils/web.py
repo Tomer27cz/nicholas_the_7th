@@ -109,7 +109,7 @@ def get_guild_voice_channels(guild_id: int):
     }
     # send argument dictionary
     return send_arg(arg_dict)
-def get_guild_voice_channels_index(guild_id: int, start_index:int, end_index:int):
+def get_guild_voice_channels_index(guild_id: int, start_index: int, end_index: int):
     """
     Get the guild channels list from database
     :param guild_id: guild id
@@ -147,7 +147,7 @@ def get_guild_text_channels(bot, guild_id: int):
     if response is None:
         return utils.files.get_guild_text_channels_file(bot, guild_id)
     return response
-def get_guild_text_channels_index(guild_id: int, start_index:int, end_index:int):
+def get_guild_text_channels_index(guild_id: int, start_index: int, end_index: int):
     """
     Get the guild text channels list from database
     :param guild_id: guild id

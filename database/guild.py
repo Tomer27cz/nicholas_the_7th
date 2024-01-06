@@ -50,10 +50,10 @@ def guild_dict(glob: GlobalVars):
     :return: {guild_id: Guild object, ...}
     """
     with glob.ses.no_autoflush:
-        guilds = {}
+        _guilds = {}
         for guild_object in glob.ses.query(data_classes.Guild).all():
-            guilds[guild_object.id] = guild_object
-        return guilds
+            _guilds[guild_object.id] = guild_object
+        return _guilds
 
 def guild_ids(glob: GlobalVars):
     """
@@ -62,10 +62,10 @@ def guild_ids(glob: GlobalVars):
     :return: [guild_id, ...]
     """
     with glob.ses.no_autoflush:
-        guilds = []
+        _guilds = []
         for guild_object in glob.ses.query(data_classes.Guild).all():
-            guilds.append(guild_object.id)
-        return guilds
+            _guilds.append(guild_object.id)
+        return _guilds
 
 def guild_bar(glob: GlobalVars, guild_id: int) -> (int, int):
     """

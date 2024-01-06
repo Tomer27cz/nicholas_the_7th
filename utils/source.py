@@ -64,7 +64,7 @@ class GetSource(discord.PCMVolumeTransformer):
 
         :return source: discord.FFmpegPCMAudio
         """
-        SOURCE_FFMPEG_OPTIONS = {
+        source_ffmpeg_options = {
             'before_options': f'{f"-ss {time_stamp} " if time_stamp else ""}-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
             'options': '-vn'
         }
@@ -96,7 +96,7 @@ class GetSource(discord.PCMVolumeTransformer):
             url = track.get_stream_url()
 
         if source_type == 'Local':
-            SOURCE_FFMPEG_OPTIONS = {
+            source_ffmpeg_options = {
                 'before_options': f'{f"-ss {time_stamp} " if time_stamp else ""}',
                 'options': '-vn'
             }
@@ -104,4 +104,4 @@ class GetSource(discord.PCMVolumeTransformer):
         if video_class:
             video_class.stream_url = url
 
-        return cls(glob, guild_id, discord.FFmpegPCMAudio(url, **SOURCE_FFMPEG_OPTIONS)), chapters
+        return cls(glob, guild_id, discord.FFmpegPCMAudio(url, **source_ffmpeg_options)), chapters

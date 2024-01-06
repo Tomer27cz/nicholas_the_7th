@@ -22,14 +22,14 @@ def ctx_check(ctx: dc_commands.Context or classes.data_classes.WebData, glob: Gl
     :return: (is_ctx, guild_id, author_id, guild) - (bool, int, int, discord.Guild)
     """
     save_json(glob)
-    if type(ctx) == classes.data_classes.WebData:
+    if isinstance(ctx, classes.data_classes.WebData):
         bot = glob.bot
         is_ctx = False
         guild_id = ctx.guild_id
         author_id = ctx.author_id
         guild_object = bot.get_guild(guild_id)
 
-    elif type(ctx) == dc_commands.Context:
+    elif isinstance(ctx, dc_commands.Context):
         is_ctx = True
         guild_id = ctx.guild.id
         author_id = ctx.author.id

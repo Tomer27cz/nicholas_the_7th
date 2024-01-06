@@ -7,7 +7,7 @@ def struct_to_time(struct_time, first='date') -> str:
     :param first: ('date', 'time') == (01/01/1970 00:00:00, 00:00:00 01/01/1970)
     :return: str
     """
-    if type(struct_time) != int:
+    if not isinstance(struct_time, int):
         try:
             struct_time = int(struct_time)
         except (ValueError, TypeError):

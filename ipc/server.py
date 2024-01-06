@@ -389,7 +389,7 @@ async def run_server(glob: GlobalVars):
     ipc = True
     while ipc:
         client, _ = await loop.sock_accept(server)
-        loop.create_task(handle_client(client, glob))
+        await loop.create_task(handle_client(client, glob))
 
 def ipc_run(glob: GlobalVars):
     loop = asyncio.new_event_loop()

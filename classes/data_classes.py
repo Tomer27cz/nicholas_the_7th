@@ -44,7 +44,7 @@ class ReturnData:
     :param message: Message to be returned
     :param video: VideoClass child object to be returned if needed
     """
-    def __init__(self, response: bool, message: str, video = None, terminate = False):
+    def __init__(self, response: bool, message: str, video=None, terminate=False):
         self.response = response
         self.message = message
         self.video = video
@@ -62,7 +62,7 @@ class WebData:
     :param author: Name of the author
     :param author_id: ID of the author
     """
-    def __init__(self, guild_id: int, author: str, author_id: int):
+    def __init__(self, guild_id: int, author: str, author_id: int or str):
         self.guild_id = guild_id
         self.author = author
         self.author_id = author_id
@@ -96,19 +96,19 @@ class Options(Base):
     last_updated = Column(Integer, default=int(time()))
 
     def __init__(self, guild_id: int, json_data: dict):
-        self.id: int = guild_id # id of the guild
+        self.id: int = guild_id  # id of the guild
 
-        self.stopped: bool = json_data.get('stopped', False) # if the player is stopped
-        self.loop: bool = json_data.get('loop', False) # if the player is looping
-        self.is_radio: bool = json_data.get('is_radio', False) # if the current media is a radio
-        self.language: str = json_data.get('language', 'en') # language of the bot
-        self.response_type: str = json_data.get('response_type', 'short') # long or short
-        self.search_query: str = json_data.get('search_query', 'Never gonna give you up') # last search query
-        self.buttons: bool = json_data.get('buttons', False) # if single are enabled
-        self.volume: float = json_data.get('volume', 1.0) # volume of the player
-        self.buffer: int = json_data.get('buffer', 600) # how many seconds of nothing playing before bot disconnects | 600 = 10min
-        self.history_length: int = json_data.get('history_length', 20) # how many songs are stored in the history
-        self.last_updated: int = json_data.get('last_updated', int(time())) # when was the last time any of the guilds data was updated
+        self.stopped: bool = json_data.get('stopped', False)  # if the player is stopped
+        self.loop: bool = json_data.get('loop', False)  # if the player is looping
+        self.is_radio: bool = json_data.get('is_radio', False)  # if the current media is a radio
+        self.language: str = json_data.get('language', 'en')  # language of the bot
+        self.response_type: str = json_data.get('response_type', 'short')  # long or short
+        self.search_query: str = json_data.get('search_query', 'Never gonna give you up')  # last search query
+        self.buttons: bool = json_data.get('buttons', False)  # if single are enabled
+        self.volume: float = json_data.get('volume', 1.0)  # volume of the player
+        self.buffer: int = json_data.get('buffer', 600)  # how many seconds of nothing playing before bot disconnects | 600 = 10min
+        self.history_length: int = json_data.get('history_length', 20)  # how many songs are stored in the history
+        self.last_updated: int = json_data.get('last_updated', int(time()))  # when was the last time any of the guilds data was updated
 
 class GuildData(Base):
     """

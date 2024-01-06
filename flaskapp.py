@@ -12,7 +12,7 @@ from classes.discord_classes import DiscordUser
 
 from utils.convert import struct_to_time, convert_duration
 from utils.log import log, collect_data
-from utils.files import getReadableByteSize, getIconClassForFilename, get_log_files
+from utils.files import get_readable_byte_size, get_icon_class_for_filename, get_log_files
 from utils.translate import ftg
 from utils.video_time import video_time_from_start
 from utils.checks import check_isdigit
@@ -120,6 +120,7 @@ def check_admin(session_data) -> list:
         return guild_ids(glob)
 
     return session_data['allowed_guilds']
+
 
 # Global vars
 badge_dict_new = {
@@ -595,7 +596,7 @@ async def login_page():
 
     # Store data in session
     flask_session['discord_user'] = user
-    flask_session['discord_user_guilds'] = user_guilds
+    flask_session['discord_user_guilds'] = [int(u_guild['id']) for u_guild in user_guilds]
 
     # Set allowed guilds to user guilds
     allowed_guilds = user_guilds
@@ -807,8 +808,8 @@ async def admin_user_page(user_id):
 
 # Admin file ---------------------------------------------------------
 @app.route('/admin/file/', defaults={'reqPath': ''})
-@app.route('/admin/file/<path:reqPath>')
-async def getFiles(reqPath):
+@app.route('/admin/file/<path:req_path>')
+async def get_files(req_path):
     log(request.remote_addr, request.full_path, log_type='ip')
     user = flask_session.get('discord_user', {})
     if user is None:
@@ -819,34 +820,34 @@ async def getFiles(reqPath):
         return abort(403)
 
     # Joining the base and the requested path
-    absPath = safe_join(config.PARENT_DIR, reqPath)
+    abs_path = safe_join(config.PARENT_DIR, req_path)
 
     # Return 404 if path doesn't exist
-    if not os.path.exists(absPath):
+    if not os.path.exists(abs_path):
         return abort(404)
 
     # Check if path is a file and serve
-    if os.path.isfile(absPath):
-        return send_file(absPath)
+    if os.path.isfile(abs_path):
+        return send_file(abs_path)
 
     # Show directory contents
-    def fObjFromScan(x):
-        fileStat = x.stat()
+    def f_obj_from_scan(x):
+        file_stat = x.stat()
         # return file information for rendering
         return {'name': x.name,
-                'fIcon': "bi bi-folder-fill" if os.path.isdir(x.path) else getIconClassForFilename(x.name),
+                'fIcon': "bi bi-folder-fill" if os.path.isdir(x.path) else get_icon_class_for_filename(x.name),
                 'relPath': os.path.relpath(x.path, config.PARENT_DIR).replace("\\", "/"),
-                'mTime': struct_to_time(fileStat.st_mtime),
-                'size': getReadableByteSize(num=fileStat.st_size, relPath=os.path.relpath(x.path, config.PARENT_DIR).replace("\\", "/"))}
+                'mTime': struct_to_time(file_stat.st_mtime),
+                'size': get_readable_byte_size(num=file_stat.st_size, rel_path=os.path.relpath(x.path, config.PARENT_DIR).replace("\\", "/"))}
 
-    fileObjs = [fObjFromScan(x) for x in os.scandir(absPath)]
+    file_objs = [f_obj_from_scan(x) for x in os.scandir(abs_path)]
 
     # get parent directory url
-    parentFolderPath = os.path.relpath(Path(absPath).parents[0], config.PARENT_DIR).replace("\\", "/")
-    if parentFolderPath == '..':
-        parentFolderPath = '.'
+    parent_folder_path = os.path.relpath(Path(abs_path).parents[0], config.PARENT_DIR).replace("\\", "/")
+    if parent_folder_path == '..':
+        parent_folder_path = '.'
 
-    return render_template('admin/files.html', data={'files': fileObjs, 'parentFolder': parentFolderPath}, title='Files', user=user)
+    return render_template('admin/files.html', data={'files': file_objs, 'parentFolder': parent_folder_path}, title='Files', user=user)
 
 # Admin guild ----------------------------------------------------------------------------------------------------------
 @app.route('/admin/guild', methods=['GET', 'POST'])
@@ -1275,6 +1276,7 @@ async def internal_server_error(_):
 def main():
     # get_guilds()
     app.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 5420)))
+
 
 if __name__ == '__main__':
     main()

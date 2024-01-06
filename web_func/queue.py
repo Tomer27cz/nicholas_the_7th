@@ -47,7 +47,7 @@ async def web_queue_from_radio(web_data, glob: GlobalVars, radio_name=None, posi
     is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data, glob)
 
     if radio_name in radio_dict.keys():
-        video = Queue(glob,'Radio', web_data.author_id, ctx_guild_id, radio_info=dict(name=radio_name))
+        video = Queue(glob, 'Radio', web_data.author_id, ctx_guild_id, radio_info=dict(name=radio_name))
 
         if position == 'start':
             to_queue(glob, web_data.guild_id, video, position=0, copy_video=False)

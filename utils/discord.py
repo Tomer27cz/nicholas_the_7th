@@ -253,5 +253,5 @@ def get_username(glob: GlobalVars, user_id: int) -> str:
     # noinspection PyBroadException
     try:
         return glob.bot.get_user(int(user_id)).name
-    except:
+    except Exception:
         return str(user_id)

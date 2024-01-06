@@ -1,7 +1,7 @@
 from utils.global_vars import GlobalVars
 
-import classes.video_class
-from classes.data_classes import Guild
+# import classes.video_class
+# from classes.data_classes import Guild
 
 # def guild_to_json(guild_object):
 #     """

@@ -507,7 +507,7 @@ async def set_video_time(ctx, glob: GlobalVars, time_stamp: int, mute_response: 
     set_new_time(glob, now_playing_video, time_stamp)
     push_update(glob, ctx_guild_id)
 
-    message = tg(ctx_guild_id, f'Video time set to') + ": " +str(time_stamp)
+    message = tg(ctx_guild_id, f'Video time set to') + ": " + str(time_stamp)
     if not mute_response:
         await ctx.reply(message, ephemeral=ephemeral)
     return ReturnData(True, message)

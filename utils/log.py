@@ -96,4 +96,3 @@ async def send_to_admin(glob: GlobalVars, data):
         await developer.send(data)
 
     await admin.send(data)
-

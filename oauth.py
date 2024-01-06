@@ -42,4 +42,3 @@ class Oauth:
         response = requests.get(url=f"{Oauth.discord_api_endpoint}/users/@me/guilds", headers={"authorization": f"Bot {config.BOT_TOKEN}"})
         response.raise_for_status()
         return response.json()
-

@@ -63,20 +63,34 @@ async def web_video_edit(web_data, glob: GlobalVars, form) -> ReturnData:
 
     none_list = ['None', '']
 
-    if author in none_list: author = None
-    if url in none_list: url = None
-    if title in none_list: title = None
-    if picture in none_list: picture = None
-    if duration in none_list: duration = None
-    if channel_name in none_list: channel_name = None
-    if channel_link in none_list: channel_link = None
-    if radio_info in none_list: radio_info = None
-    if local_number in none_list: local_number = None
-    if created_at in none_list: created_at = None
-    if played_duration in none_list: played_duration = None
-    if chapters in none_list: chapters = None
-    if discord_channel in none_list: discord_channel = None
-    if stream_url in none_list: stream_url = None
+    if author in none_list:
+        author = None
+    if url in none_list:
+        url = None
+    if title in none_list:
+        title = None
+    if picture in none_list:
+        picture = None
+    if duration in none_list:
+        duration = None
+    if channel_name in none_list:
+        channel_name = None
+    if channel_link in none_list:
+        channel_link = None
+    if radio_info in none_list:
+        radio_info = None
+    if local_number in none_list:
+        local_number = None
+    if created_at in none_list:
+        created_at = None
+    if played_duration in none_list:
+        played_duration = None
+    if chapters in none_list:
+        chapters = None
+    if discord_channel in none_list:
+        discord_channel = None
+    if stream_url in none_list:
+        stream_url = None
 
     if class_type not in ['Video', 'Radio', 'Local', 'Probe', 'SoundCloud']:
         return ReturnData(False, f'Invalid class type: {class_type}')
@@ -100,32 +114,35 @@ async def web_video_edit(web_data, glob: GlobalVars, form) -> ReturnData:
     if radio_info:
         try:
             radio_info = ast.literal_eval(radio_info)
-            assert type(radio_info) == dict
+            assert isinstance(radio_info, dict)
         except (TypeError, ValueError, json.decoder.JSONDecodeError, AssertionError, SyntaxError):
             return ReturnData(False, f'Invalid radio info: {radio_info}')
 
     if played_duration:
         try:
             played_duration = ast.literal_eval(played_duration)
-            assert type(played_duration) == list
+            assert isinstance(played_duration, list)
         except (TypeError, ValueError, json.decoder.JSONDecodeError, AssertionError, SyntaxError):
             return ReturnData(False, f'Invalid played duration: {played_duration}')
 
     if chapters:
         try:
             chapters = ast.literal_eval(chapters)
-            assert type(chapters) == list
+            assert isinstance(chapters, list)
         except (TypeError, ValueError, json.decoder.JSONDecodeError, AssertionError, SyntaxError):
             return ReturnData(False, f'Invalid chapters: {chapters}')
 
     if discord_channel:
         try:
             discord_channel = ast.literal_eval(discord_channel)
-            assert type(discord_channel) == dict
+            assert isinstance(discord_channel, dict)
         except (TypeError, ValueError, json.decoder.JSONDecodeError, AssertionError, SyntaxError):
             return ReturnData(False, f'Invalid discord channel: {discord_channel}')
 
-    video = Queue(glob, class_type, author, guild_id, url=url, title=title, picture=picture, duration=duration, channel_name=channel_name, channel_link=channel_link, radio_info=radio_info, local_number=local_number, created_at=created_at, played_duration=played_duration, chapters=chapters, discord_channel=discord_channel, stream_url=stream_url)
+    video = Queue(glob, class_type, author, guild_id, url=url, title=title, picture=picture, duration=duration,
+                  channel_name=channel_name, channel_link=channel_link, radio_info=radio_info,
+                  local_number=local_number, created_at=created_at, played_duration=played_duration, chapters=chapters,
+                  discord_channel=discord_channel, stream_url=stream_url)
 
     if is_np:
         db_guild.now_playing = to_now_playing_class(glob, video)
@@ -138,7 +155,9 @@ async def web_video_edit(web_data, glob: GlobalVars, form) -> ReturnData:
     push_update(glob, guild_id)
     save_json(glob)
 
-    return ReturnData(True, tg(ctx_guild_id, 'Edited item') + f' {"h" if not is_queue else ""}{index} ' + tg(ctx_guild_id, 'successfully!'))
+    return ReturnData(True,
+                      tg(ctx_guild_id, 'Edited item') + f' {"h" if not is_queue else ""}{index} ' + tg(ctx_guild_id,
+                                                                                                       'successfully!'))
 
 async def web_options_edit(web_data, glob: GlobalVars, form) -> ReturnData:
     log(web_data, 'web_options_edit', [form], log_type='function', author=web_data.author)
@@ -157,11 +176,14 @@ async def web_options_edit(web_data, glob: GlobalVars, form) -> ReturnData:
         history_length = form['history_length']
         last_updated = form['last_updated']
     except KeyError:
-        return ReturnData(False, tg(ctx_guild_id, 'Missing form data - please contact the developer (he fucked up when doing an update)'))
+        return ReturnData(False, tg(ctx_guild_id,
+                                    'Missing form data - please contact the developer (he fucked up when doing an update)'))
 
-    return await commands.admin.options_def(web_data, glob, server='this', stopped=stopped, loop=loop, is_radio=is_radio, language=language,
-                             response_type=response_type, search_query=search_query, buttons=buttons, volume=volume,
-                             buffer=buffer, history_length=history_length, last_updated=last_updated)
+    return await commands.admin.options_def(web_data, glob, server='this', stopped=stopped, loop=loop,
+                                            is_radio=is_radio, language=language,
+                                            response_type=response_type, search_query=search_query, buttons=buttons,
+                                            volume=volume,
+                                            buffer=buffer, history_length=history_length, last_updated=last_updated)
 
 # TODO: Figure out how to do this
 async def web_delete_guild(web_data, glob: GlobalVars, guild_id) -> ReturnData:

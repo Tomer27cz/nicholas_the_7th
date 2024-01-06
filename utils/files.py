@@ -8,10 +8,10 @@ import json
 
 from config import PARENT_DIR
 
-def getReadableByteSize(num, suffix='B', relPath=None) -> str:
+def get_readable_byte_size(num, suffix='B', rel_path=None) -> str:
     if num is None or num == 0:
         try:
-            num = getFolderSize(relPath)
+            num = get_folder_size(rel_path)
         except (FileNotFoundError, TypeError, PermissionError):
             pass
 
@@ -21,23 +21,23 @@ def getReadableByteSize(num, suffix='B', relPath=None) -> str:
         num /= 1024.0
     return "%.1f%s%s" % (num, 'Y', suffix)
 
-def getIconClassForFilename(fName) -> str:
-    fileExt = Path(fName).suffix
-    fileExt = fileExt[1:] if fileExt.startswith(".") else fileExt
-    fileTypes = ["aac", "ai", "bmp", "cs", "css", "csv", "doc", "docx", "exe", "gif", "heic", "html", "java", "jpg",
-                 "js", "json", "jsx", "key", "m4p", "md", "mdx", "mov", "mp3",
-                 "mp4", "otf", "pdf", "php", "png", "pptx", "psd", "py", "raw", "rb", "sass", "scss", "sh", "sql",
-                 "svg", "tiff", "tsx", "ttf", "txt", "wav", "woff", "xlsx", "xml", "yml"]
-    fileIconClass = f"bi bi-filetype-{fileExt}" if fileExt in fileTypes else "bi bi-file-earmark"
-    return fileIconClass
+def get_icon_class_for_filename(f_name) -> str:
+    file_ext = Path(f_name).suffix
+    file_ext = file_ext[1:] if file_ext.startswith(".") else file_ext
+    file_types = ["aac", "ai", "bmp", "cs", "css", "csv", "doc", "docx", "exe", "gif", "heic", "html", "java", "jpg",
+                  "js", "json", "jsx", "key", "m4p", "md", "mdx", "mov", "mp3",
+                  "mp4", "otf", "pdf", "php", "png", "pptx", "psd", "py", "raw", "rb", "sass", "scss", "sh", "sql",
+                  "svg", "tiff", "tsx", "ttf", "txt", "wav", "woff", "xlsx", "xml", "yml"]
+    file_icon_class = f"bi bi-filetype-{file_ext}" if file_ext in file_types else "bi bi-file-earmark"
+    return file_icon_class
 
-def getFolderSize(relPath) -> int:
-    totalSize = 0
-    for dirpath, dirnames, filenames in os.walk(relPath):
+def get_folder_size(rel_path) -> int:
+    total_size = 0
+    for dirpath, dirnames, filenames in os.walk(rel_path):
         for f in filenames:
             fp = os.path.join(dirpath, f)
-            totalSize += os.path.getsize(fp)
-    return totalSize
+            total_size += os.path.getsize(fp)
+    return total_size
 
 def get_guild_text_channels_file(glob: GlobalVars, guild_id: int):
     path = f'{PARENT_DIR}db/guilds/{guild_id}/channels.json'

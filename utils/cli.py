@@ -40,8 +40,7 @@ async def get_url_probe_data(url: str) -> (tuple or None, str or None):
             codec = streamdata.get('codec_name')
             bitrate = int(streamdata.get('bit_rate', 0))
             bitrate = max(round(bitrate / 1000), 512)
-
-    except:
+    except Exception:
         codec, bitrate = None, None
 
     if codec and bitrate:

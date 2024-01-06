@@ -1,5 +1,6 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
+
 if TYPE_CHECKING:
     from classes.typed_dictionaries import *
     from utils.global_vars import GlobalVars
@@ -17,8 +18,7 @@ from bs4 import BeautifulSoup
 import requests
 import youtubesearchpython
 
-from config import VLC_LOGO as vlc_logo
-from config import WEB_URL
+import config
 
 def get_video_data(url: str) -> (dict, str) or (None, str):
     """
@@ -42,19 +42,19 @@ def video_class_init(self,
                      class_type: str,
                      author: Union[str, int],
                      guild_id: int,
-                     url: str=None,
-                     title: str=None,
-                     picture: str=None,
-                     duration: Union[str, int]=None,
-                     channel_name: str=None,
-                     channel_link: str=None,
-                     radio_info: RadioInfoDict=None,
-                     local_number: int=None,
-                     created_at: int=None,
-                     played_duration: [TimeSegment]=None,
-                     chapters: [VideoChapter]=None,
-                     stream_url: str=None,
-                     discord_channel: DiscordChannelInfo=None
+                     url: str = None,
+                     title: str = None,
+                     picture: str = None,
+                     duration: Union[str, int] = None,
+                     channel_name: str = None,
+                     channel_link: str = None,
+                     radio_info: RadioInfoDict = None,
+                     local_number: int = None,
+                     created_at: int = None,
+                     played_duration: [TimeSegment] = None,
+                     chapters: [VideoChapter] = None,
+                     stream_url: str = None,
+                     discord_channel: DiscordChannelInfo = None
                      ):
     self.class_type = class_type
     self.author = author
@@ -98,7 +98,7 @@ def video_class_init(self,
         if radio_info is None:
             raise ValueError("radio_info required")
 
-        if type(radio_info) != dict:
+        if not isinstance(radio_info, dict):
             raise ValueError("radio_info must be a dict")
 
         if 'name' not in radio_info.keys():
@@ -108,7 +108,7 @@ def video_class_init(self,
             radio_name = radio_info['name']
             self.url = radio_dict[radio_name]['url']
             self.title = radio_dict[radio_name]['name']
-            self.picture = f'{WEB_URL}/static/radio_png/png_radio_{radio_dict[radio_name]["id"]}.png'
+            self.picture = f'{config.WEB_URL}/static/radio_png/png_radio_{radio_dict[radio_name]["id"]}.png'
             self.duration = 'Stream'
             self.channel_name = radio_dict[radio_name]['type']
             self.channel_link = self.url
@@ -120,7 +120,7 @@ def video_class_init(self,
         if local_number is None:
             raise ValueError("Local number required")
 
-        self.picture = vlc_logo
+        self.picture = config.VLC_LOGO
         self.channel_name = 'Local File'
 
     elif self.class_type == 'Probe':
@@ -154,7 +154,7 @@ def video_class_init(self,
     # set stream_url at the end for json readability
     self.stream_url = stream_url
 
-def video_class_renew(self, glob: GlobalVars, from_init: bool=False):
+def video_class_renew(self, glob: GlobalVars, from_init: bool = False):
     if self.class_type == 'Radio':
         radio_info_class = glob.ses.query(RadioInfo).filter(RadioInfo.name == self.radio_info['name']).first()
         if radio_info_class is None:
@@ -208,7 +208,6 @@ def video_class_time(self, glob: GlobalVars):
 
     return f'{convert_duration(time_from_play)} / {convert_duration(duration)}'
 
-
 class RadioInfo(Base):
     """
     Data class for storing radio information
@@ -254,7 +253,6 @@ class RadioInfo(Base):
             raise ValueError("Invalid radio website")
 
         self.last_update = int(time())
-
 
 # Video Classes
 
@@ -529,7 +527,7 @@ class History(Base):
                  discord_channel: DiscordChannelInfo = None
                  ):
         video_class_init(self,
-                        glob,
+                         glob,
                          class_type=class_type,
                          author=author,
                          guild_id=guild_id,
@@ -604,7 +602,7 @@ class SearchList(Base):
                  discord_channel: DiscordChannelInfo = None
                  ):
         video_class_init(self,
-                            glob,
+                         glob,
                          class_type=class_type,
                          author=author,
                          guild_id=guild_id,
@@ -683,7 +681,7 @@ class SaveVideo(Base):
                  ):
         self.save_id = save_id
         video_class_init(self,
-                        glob,
+                         glob,
                          class_type=class_type,
                          author=author,
                          guild_id=guild_id,
