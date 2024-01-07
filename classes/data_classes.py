@@ -136,6 +136,7 @@ class GuildData(Base):
     splash = Column(String)
     discovery_splash = Column(String)
     voice_channels = Column(JSON)
+    last_updated = Column(Integer)
 
     def __init__(self, glob: GlobalVars, guild_id, json_data: dict):
         self.id: int = guild_id
@@ -156,6 +157,7 @@ class GuildData(Base):
         self.splash: str = json_data.get('splash')
         self.discovery_splash: str = json_data.get('discovery_splash')
         self.voice_channels: list = json_data.get('voice_channels')
+        self.last_updated: int = json_data.get('last_updated', int(time()))
 
         self.renew(glob)
 
@@ -195,6 +197,8 @@ class GuildData(Base):
             self.discovery_splash = guild_object.discovery_splash.url if guild_object.discovery_splash else None
             self.voice_channels = [{'name': channel.name, 'id': channel.id} for channel in
                                    guild_object.voice_channels] if guild_object.voice_channels else None
+
+        self.last_updated = int(time())
 
 class Save(Base):
     """

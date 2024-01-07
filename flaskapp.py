@@ -31,8 +31,8 @@ d_id = 349164237605568513
 
 # -------------------------------------------- Database -------------------------------------------- #
 
-from database.main import *
 from database.guild import *
+from database.main import *
 
 # db connect
 session = connect_to_db()
@@ -657,7 +657,8 @@ async def admin_page():
 
     guild_list = sort_guilds(guilds(glob), flask_session.get('discord_user_guilds', []))
 
-    return render_template('admin/admin.html', user=user, guild=guild_list, bot_status=get_guilds_bot_status())
+    return render_template('admin/admin.html', user=user, guild=guild_list,
+                           bot_status=get_guilds_bot_status(), last_played=guilds_last_played(glob))
 
 # Admin Files ---------------------------------------------------
 @app.route('/admin/log')

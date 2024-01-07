@@ -19,3 +19,4 @@ grapheme
 pytz
 uWSGI
 SQLAlchemy
+alembic

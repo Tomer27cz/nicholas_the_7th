@@ -3,7 +3,7 @@ from utils.global_vars import GlobalVars
 from utils.log import log
 import database.guild as guild
 
-from classes.data_classes import Guild
+from classes.data_classes import Guild, GuildData
 from time import time
 
 def save_json(glob: GlobalVars):
@@ -20,7 +20,7 @@ def save_json(glob: GlobalVars):
 def update_guilds(glob: GlobalVars):
     """
     Checks if bot is in a new guild or left a guild
-    and renews all guild objects
+    and renews all guild objects if they have not been renewed in the last hour
     :param glob: GlobalVars object
     :return: None
     """
@@ -46,6 +46,17 @@ def update_guilds(glob: GlobalVars):
             if not guild_object.connected:
                 log(None, f'Marked guild as connected: {guild_object.id} = {guild_object.data.name}')
                 guild_object.connected = True
+
+        guild_data_object = glob.ses.query(GuildData).filter(GuildData.id == guild_id).first()
+        if guild_data_object is None:
+            continue
+
+        if not isinstance(guild_data_object.last_updated, int):
+            guild_data_object.renew(glob)
+
+        if guild_data_object.last_updated < int(time()) - 3600:
+            guild_data_object.renew(glob)
+
 
         # ses.commit()
         # ses.query(GuildData).filter(GuildData.id == guild_id).first().renew()

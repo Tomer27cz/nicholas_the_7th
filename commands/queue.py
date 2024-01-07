@@ -387,11 +387,11 @@ async def clear_def(ctx, glob: GlobalVars, ephemeral: bool = False) -> ReturnDat
     log(ctx, 'clear_def', [ephemeral], log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
 
-    clear_queue(glob, guild_id)
+    queue_count = clear_queue(glob, guild_id)
     push_update(glob, guild_id)
     save_json(glob)
 
-    message = tg(guild_id, 'Removed **all** songs from queue')
+    message = tg(guild_id, 'Removed **all** songs from queue') + ' -> ' + f'`{queue_count}` songs removed'
     await ctx.reply(message, ephemeral=ephemeral)
     return ReturnData(True, message)
 

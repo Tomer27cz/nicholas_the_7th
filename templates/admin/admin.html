@@ -71,6 +71,7 @@
             </a>
             <p class="d-name">{{ guild_object.data.name }}</p>
             <p class="{{ 'd-g' if bot_status[guild_object.id] in ['Connected', 'Playing'] }}  d-status">{{ bot_status[guild_object.id] }}</p>
+            <p class="d-status">{{ struct_to_time(last_played[guild_object.id]) }}</p>
           </div>
         {% endfor %}
       </section>

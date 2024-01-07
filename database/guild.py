@@ -3,6 +3,7 @@ from utils.global_vars import GlobalVars
 import classes.data_classes as data_classes
 import classes.video_class as video_class
 from utils.global_vars import radio_dict
+from utils.convert import struct_to_time
 
 def guild(glob: GlobalVars, guild_id: int):
     """
@@ -22,6 +23,49 @@ def guilds(glob: GlobalVars):
     """
     with glob.ses.no_autoflush:
         return glob.ses.query(data_classes.Guild).all()
+
+def guilds_last_played(glob: GlobalVars):
+    """
+    Returns a dictionary of guild ids and when was the last time they played a song
+    if they never played a song, it will return "None"
+    if they are playing a song, it will return "Now"
+    :param glob: GlobalVars
+    :return: [Guild object, ...]
+    """
+    with glob.ses.no_autoflush:
+        guilds_dict = {}
+        for guild_object in glob.ses.query(data_classes.Guild).all():
+            if guild_object.now_playing is not None:
+                guilds_dict[guild_object.id] = "Now"
+                continue
+
+            if not guild_object.history:
+                guilds_dict[guild_object.id] = "None"
+                continue
+
+            last_played = guild_object.history[-1]
+            if last_played is None:
+                guilds_dict[guild_object.id] = "history[-1] is None"
+                continue
+
+            if not isinstance(last_played, video_class.History):
+                guilds_dict[guild_object.id] = "last_played not history class"
+                continue
+
+            if last_played.played_duration is None:
+                guilds_dict[guild_object.id] = "played_duration is None"
+                continue
+
+            if last_played.played_duration[-1]['end']['epoch'] is None:
+                if last_played.played_duration[-1]['start']['epoch'] is None:
+                    guilds_dict[guild_object.id] = "played_duration end&start = None"
+                    continue
+                guilds_dict[guild_object.id] = f"end none({struct_to_time(last_played.played_duration[-1]['start']['epoch'])})"
+                continue
+
+            guilds_dict[guild_object.id] = last_played.played_duration[-1]['end']['epoch']
+
+        return guilds_dict
 
 def guild_data(glob: GlobalVars, guild_id: int):
     """
@@ -164,8 +208,11 @@ def clear_queue(glob: GlobalVars, guild_id: int):
     :return: None
     """
     with glob.ses.no_autoflush:
-        glob.ses.query(video_class.Queue).filter_by(guild_id=guild_id).delete()
+        query = glob.ses.query(video_class.Queue).filter_by(guild_id=guild_id)
+        query_count = query.count()
+        query.delete()
         glob.ses.commit()
+        return query_count
 
 # Radio
 def get_radio_info(glob: GlobalVars, radio_name: str):

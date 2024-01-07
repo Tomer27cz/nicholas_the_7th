@@ -35,7 +35,7 @@ d_id = 349164237605568513
 
 from database.main import *
 from database.guild import *
-ses = connect_to_db(config.PARENT_DIR, first_time=True)
+ses = connect_to_db(first_time=True)
 
 # ---------------- Bot class ------------
 
@@ -262,9 +262,7 @@ class Bot(dc_commands.Bot):
 
         await bot.process_commands(message)
 
-
 # ---------------------------------------------- LOAD ------------------------------------------------------------------
-
 
 log(None, "--------------------------------------- NEW / REBOOTED ----------------------------------------")
 
