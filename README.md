@@ -2,7 +2,7 @@
 
 ## About
 
-This is a discord bot that I made for a few discord servers. It is a work in progress, and I will be adding more features as I go along.
+This is a discord bot that I made for a few discord servers. It is a work in progress, and I will be adding more features as I go along. I use this project to learn about programing and web development.
 
 It is not meant to be used by anyone else, but if you want to use it, feel free to do so.
 
