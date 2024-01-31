@@ -16,7 +16,7 @@ import ast
 import json
 
 async def web_video_edit(web_data, glob: GlobalVars, form) -> ReturnData:
-    log(web_data, 'web_video_edit', [form], log_type='function', author=web_data.author)
+    log(web_data, 'web_video_edit', options=locals(), log_type='function', author=web_data.author)
     is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data, glob)
     guild_id = web_data.guild_id
     db_guild = guild(glob, guild_id)
@@ -160,7 +160,7 @@ async def web_video_edit(web_data, glob: GlobalVars, form) -> ReturnData:
                                                                                                        'successfully!'))
 
 async def web_options_edit(web_data, glob: GlobalVars, form) -> ReturnData:
-    log(web_data, 'web_options_edit', [form], log_type='function', author=web_data.author)
+    log(web_data, 'web_options_edit', options=locals(), log_type='function', author=web_data.author)
     is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data, glob)
 
     try:
@@ -187,7 +187,7 @@ async def web_options_edit(web_data, glob: GlobalVars, form) -> ReturnData:
 
 # TODO: Figure out how to do this
 async def web_delete_guild(web_data, glob: GlobalVars, guild_id) -> ReturnData:
-    log(web_data, 'web_delete_guild', [guild_id], log_type='function', author=web_data.author)
+    log(web_data, 'web_delete_guild', options=locals(), log_type='function', author=web_data.author)
     is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data, glob)
 
     db_guilds = [db_guild_object.id for db_guild_object in glob.ses.query(Guild).all()]
@@ -207,7 +207,7 @@ async def web_delete_guild(web_data, glob: GlobalVars, guild_id) -> ReturnData:
     return ReturnData(True, tg(ctx_guild_id, 'Deleted guild') + f' {guild_id} ' + tg(ctx_guild_id, 'successfully!'))
 
 async def web_disconnect_guild(web_data, glob: GlobalVars, guild_id) -> ReturnData:
-    log(web_data, 'web_disconnect_guild', [guild_id], log_type='function', author=web_data.author)
+    log(web_data, 'web_disconnect_guild', options=locals(), log_type='function', author=web_data.author)
     is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data, glob)
     try:
         guild_id = int(guild_id)
@@ -231,7 +231,7 @@ async def web_disconnect_guild(web_data, glob: GlobalVars, guild_id) -> ReturnDa
     return ReturnData(True, tg(ctx_guild_id, 'Left guild') + f' {guild_id} ' + tg(ctx_guild_id, 'successfully!'))
 
 async def web_create_invite(web_data, glob: GlobalVars, guild_id):
-    log(web_data, 'web_create_invite', [guild_id], log_type='function', author=web_data.author)
+    log(web_data, 'web_create_invite', options=locals(), log_type='function', author=web_data.author)
     is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data, glob)
     try:
         guild_object = glob.bot.get_guild(int(guild_id))

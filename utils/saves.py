@@ -22,7 +22,7 @@ def find_save(glob: GlobalVars, guild_id: int, save_name: str) -> Save or None:
             return save
     return None
 
-def new_queue_save(glob: GlobalVars, guild_id: int, save_name: str, author_name:str, author_id: int) -> ReturnData:
+def new_queue_save(glob: GlobalVars, guild_id: int, save_name: str, author_name: str, author_id: int) -> ReturnData:
     """
     Creates new queue save
     :param glob: GlobalVars

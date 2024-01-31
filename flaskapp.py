@@ -273,54 +273,51 @@ async def guild_page(guild_id, key):
 
         keys = request.form.keys()
         if 'play_btn' in keys:
-            log(web_data, 'play', [], log_type='web', author=web_data.author)
+            log(web_data, 'play', {}, log_type='web', author=web_data.author)
             response = execute_function('play_def', web_data=web_data)
         if 'stop_btn' in keys:
-            log(web_data, 'stop', [], log_type='web', author=web_data.author)
+            log(web_data, 'stop', {}, log_type='web', author=web_data.author)
             response = execute_function('stop_def', web_data=web_data)
         if 'pause_btn' in keys:
-            log(web_data, 'pause', [], log_type='web', author=web_data.author)
+            log(web_data, 'pause', {}, log_type='web', author=web_data.author)
             response = execute_function('pause_def', web_data=web_data)
         if 'skip_btn' in keys:
-            log(web_data, 'skip', [], log_type='web', author=web_data.author)
+            log(web_data, 'skip', {}, log_type='web', author=web_data.author)
             response = execute_function('skip_def', web_data=web_data)
 
         if 'disconnect_btn' in keys:
-            log(web_data, 'disconnect', [], log_type='web', author=web_data.author)
+            log(web_data, 'disconnect', {}, log_type='web', author=web_data.author)
             response = execute_function('web_disconnect', web_data=web_data)
         if 'join_btn' in keys:
-            log(web_data, 'join', [], log_type='web', author=web_data.author)
+            log(web_data, 'join', {}, log_type='web', author=web_data.author)
             response = execute_function('web_join', web_data=web_data, form=request.form)
 
         if 'edit_btn' in keys:
-            log(web_data, 'web_video_edit', [request.form['edit_btn']], log_type='web', author=web_data.author)
+            log(web_data, 'web_video_edit', {'form': request.form}, log_type='web', author=web_data.author)
             response = execute_function('web_video_edit', web_data=web_data, form=request.form)
         if 'options_btn' in keys:
-            log(web_data, 'web_options', [request.form], log_type='web', author=web_data.author)
+            log(web_data, 'web_options', {'form': request.form}, log_type='web', author=web_data.author)
             response = execute_function('web_user_options_edit', web_data=web_data, form=request.form)
 
         if 'volume_btn' in keys:
-            log(web_data, 'volume_command_def', [request.form['volumeRange'], request.form['volumeInput']],
-                log_type='web', author=web_data.author)
+            log(web_data, 'volume_command_def', {'form': request.form}, log_type='web', author=web_data.author)
             response = execute_function('volume_command_def', web_data=web_data, volume=int(request.form['volumeRange']))
         if 'jump_btn' in keys:
-            log(web_data, 'set_video_time', [request.form['jump_btn']], log_type='web', author=web_data.author)
+            log(web_data, 'set_video_time', {'form': request.form}, log_type='web', author=web_data.author)
             response = execute_function('set_video_time', web_data=web_data, time_stamp=request.form['jump_btn'])
         if 'time_btn' in keys:
-            log(web_data, 'set_video_time', [request.form['timeInput']], log_type='web', author=web_data.author)
+            log(web_data, 'set_video_time', {'form': request.form}, log_type='web', author=web_data.author)
             response = execute_function('set_video_time', web_data=web_data, time_stamp=request.form['timeInput'])
 
         if 'ytURL' in keys:
-            log(web_data, 'queue_command_def', [request.form['ytURL']], log_type='web', author=web_data.author)
+            log(web_data, 'queue_command_def', {'form': request.form}, log_type='web', author=web_data.author)
             response = execute_function('queue_command_def', web_data=web_data, url=request.form['ytURL'])
         if 'radio-checkbox' in keys:
-            log(web_data, 'web_queue_from_radio', [request.form['radio-checkbox']], log_type='web',
-                author=web_data.author)
-            response = execute_function('web_queue_from_radio', web_data=web_data,
-                                        radio_name=request.form['radio-checkbox'])
+            log(web_data, 'web_queue_from_radio', {'form': request.form}, log_type='web', author=web_data.author)
+            response = execute_function('web_queue_from_radio', web_data=web_data, radio_name=request.form['radio-checkbox'])
 
         if 'saveName' in keys:
-            log(web_data, 'web_save_queue', [request.form['saveName']], log_type='web', author=web_data.author)
+            log(web_data, 'web_save_queue', {'form': request.form}, log_type='web', author=web_data.author)
             response = execute_function('new_queue_save', web_data=web_data, save_name=request.form['saveName'], author_name=user_name, author_id=user_id)
 
         if response:
@@ -380,49 +377,49 @@ async def htmx_queue(guild_id):
 
         if 'del_btn' in keys:
             var = request.args.get('var')
-            log(web_data, 'remove', [var], log_type='web', author=web_data.author)
+            log(web_data, 'remove', {'var': var}, log_type='web', author=web_data.author)
             execute_function('remove_def', web_data=web_data, number=int(var), list_type='queue')
         if 'up_btn' in keys:
             var = request.args.get('var')
-            log(web_data, 'up', [var], log_type='web', author=web_data.author)
+            log(web_data, 'up', {'var': var}, log_type='web', author=web_data.author)
             execute_function('web_up', web_data=web_data, number=int(var))
         if 'down_btn' in keys:
             var = request.args.get('var')
-            log(web_data, 'down', [var], log_type='web', author=web_data.author)
+            log(web_data, 'down', {'var': var}, log_type='web', author=web_data.author)
             execute_function('web_down', web_data=web_data, number=int(var))
         if 'top_btn' in keys:
             var = request.args.get('var')
-            log(web_data, 'top', [var], log_type='web', author=web_data.author)
+            log(web_data, 'top', {'var': var}, log_type='web', author=web_data.author)
             execute_function('web_top', web_data=web_data, number=int(var))
         if 'bottom_btn' in keys:
             var = request.args.get('var')
-            log(web_data, 'bottom', [var], log_type='web', author=web_data.author)
+            log(web_data, 'bottom', {'var': var}, log_type='web', author=web_data.author)
             execute_function('web_bottom', web_data=web_data, number=int(var))
         if 'duplicate_btn' in keys:
             var = request.args.get('var')
-            log(web_data, 'duplicate', [var], log_type='web', author=web_data.author)
+            log(web_data, 'duplicate', {'var': var}, log_type='web', author=web_data.author)
             execute_function('web_duplicate', web_data=web_data, number=int(var))
 
         # Buttons
         if 'loop_btn' in keys:
-            log(web_data, 'loop', [], log_type='web', author=web_data.author)
+            log(web_data, 'loop', {}, log_type='web', author=web_data.author)
             execute_function('loop_command_def', web_data=web_data)
             return render_template('main/htmx/single/loop.html', gi=guild_id, guild=guild_object, key=key)
         if 'shuffle_btn' in keys:
-            log(web_data, 'shuffle', [], log_type='web', author=web_data.author)
+            log(web_data, 'shuffle', {}, log_type='web', author=web_data.author)
             execute_function('shuffle_def', web_data=web_data)
         if 'clear_btn' in keys:
-            log(web_data, 'clear', [], log_type='web', author=web_data.author)
+            log(web_data, 'clear', {}, log_type='web', author=web_data.author)
             execute_function('clear_def', web_data=web_data)
 
         # History Video
         if 'queue_btn' in keys:
             var = request.args.get('var')
-            log(web_data, 'queue', [var], log_type='web', author=web_data.author)
+            log(web_data, 'queue', {'var': var}, log_type='web', author=web_data.author)
             execute_function('web_queue', web_data=web_data, video_type=var, position=None)
         if 'nextup_btn' in keys:
             var = request.args.get('var')
-            log(web_data, 'nextup', [var, 0], log_type='web', author=web_data.author)
+            log(web_data, 'nextup', {'var': var, 'position': 0}, log_type='web', author=web_data.author)
             execute_function('web_queue', web_data=web_data, video_type=var, position=0)
 
         # Admin
@@ -435,7 +432,7 @@ async def htmx_queue(guild_id):
 
         if 'ytURL' in keys:
             var = request.args.get('ytURL')
-            log(web_data, 'queue_command_def', [var], log_type='web', author=web_data.author)
+            log(web_data, 'queue_command_def', {'var': var}, log_type='web', author=web_data.author)
             execute_function('queue_command_def', web_data=web_data, url=var)
         if 'radio-checkbox' in keys:
             var = request.args.get('var')
@@ -445,14 +442,13 @@ async def htmx_queue(guild_id):
                     radio_name = radio['name']
                     break
 
-            log(web_data, 'web_queue_from_radio', [var], log_type='web', author=web_data.author)
+            log(web_data, 'web_queue_from_radio', {'var': var}, log_type='web', author=web_data.author)
             execute_function('web_queue_from_radio', web_data=web_data, radio_name=radio_name)
 
         if 'loadName' in keys:
             load_name = request.args.get('loadName')
-            log(web_data, 'web_load_queue', [load_name], log_type='web', author=web_data.author)
+            log(web_data, 'web_load_queue', {'load_name': load_name}, log_type='web', author=web_data.author)
             execute_function('load_queue_save', web_data=web_data, save_name=load_name)
-
 
     guild_object = guild(glob, guild_id)
 
@@ -487,7 +483,7 @@ async def htmx_history(guild_id):
         keys = [act]
         if 'hdel_btn' in keys:
             var = request.args.get('var')
-            log(web_data, 'history remove', [var], log_type='web', author=web_data.author)
+            log(web_data, 'history remove', {'var': var}, log_type='web', author=web_data.author)
             execute_function('remove_def', web_data=web_data, number=int(var), list_type='history')
 
     return render_template('main/htmx/history.html', gi=int(guild_id), guild=guild_object,
@@ -878,20 +874,20 @@ async def admin_guild(guild_id):
         form = request.form
         try:
             if 'edit_btn' in keys:
-                log(web_data, 'web_options_edit', [form], log_type='web', author=web_data.author)
+                log(web_data, 'web_options_edit', {'form': form}, log_type='web', author=web_data.author)
                 response = execute_function('web_options_edit', web_data, form=form)
             if 'delete_guild_btn' in keys:
-                log(web_data, 'web_delete_guild', [guild_id], log_type='web', author=web_data.author)
+                log(web_data, 'web_delete_guild', {'guild_id': guild_id}, log_type='web', author=web_data.author)
                 response = execute_function('web_delete_guild', web_data, guild_id=guild_id)
             if 'disconnect_guild_btn' in keys:
-                log(web_data, 'web_disconnect_guild', [guild_id], log_type='web', author=web_data.author)
+                log(web_data, 'web_disconnect_guild', {'guild_id': guild_id}, log_type='web', author=web_data.author)
                 response = execute_function('web_disconnect_guild', web_data, guild_id=guild_id)
             if 'invite_btn' in keys:
-                log(web_data, 'web_create_invite', [guild_id], log_type='web', author=web_data.author)
+                log(web_data, 'web_create_invite', {'guild_id': guild_id}, log_type='web', author=web_data.author)
                 response = execute_function('web_create_invite', web_data, guild_id=guild_id)
         except Exception as e:
             errors = [str(e)]
-            log(web_data, 'error', [str(e)], log_type='web', author=web_data.author)
+            log(web_data, 'error', {'error': str(e)}, log_type='web', author=web_data.author)
 
         if response:
             if response.response:
@@ -999,13 +995,13 @@ async def admin_guild_saves(guild_id):
         form = request.form
         try:
             if 'deleteSave' in keys:
-                log(web_data, 'web_delete_save', [form['save_name']], log_type='web', author=web_data.author)
+                log(web_data, 'web_delete_save', {'form': form}, log_type='web', author=web_data.author)
                 execute_function('delete_queue_save', web_data, save_name=form['save_name'])
             if 'renameSave' in keys:
-                log(web_data, 'web_rename_save', [form['old_name'], form['new_name']], log_type='web', author=web_data.author)
+                log(web_data, 'web_rename_save', {'form': form}, log_type='web', author=web_data.author)
                 execute_function('rename_queue_save', web_data, old_name=form['old_name'], new_name=form['new_name'])
         except Exception as e:
-            log(web_data, 'error', [str(e)], log_type='web', author=web_data.author)
+            log(web_data, 'error', {'error': str(e)}, log_type='web', author=web_data.author)
 
     data = guild_data(glob, int(guild_id))
     saves_count = guild_save_count(glob, int(guild_id))
@@ -1183,14 +1179,14 @@ async def admin_chat(guild_id, channel_id):
         form = request.form
         try:
             if 'download_btn' in keys:
-                log(web_data, 'download_guild_channel', [form['download_btn']], log_type='web', author=web_data.author)
+                log(web_data, 'download_guild_channel', {'form': form}, log_type='web', author=web_data.author)
                 response = execute_function('download_guild_channel', web_data, channel_id=form['download_btn'])
             if 'download_guild_btn' in keys:
-                log(web_data, 'download_guild', [form['download_guild_btn']], log_type='web', author=web_data.author)
+                log(web_data, 'download_guild', {'form': form}, log_type='web', author=web_data.author)
                 response = execute_function('download_guild', web_data, guild_id=form['download_guild_btn'])
         except Exception as e:
             errors = [str(e)]
-            log(web_data, 'error', [str(e)], log_type='web', author=web_data.author)
+            log(web_data, 'error', {'error': str(e)}, log_type='web', author=web_data.author)
 
         if response:
             if response.response:

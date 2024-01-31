@@ -29,7 +29,7 @@ import traceback
 import config
 
 async def play_def(ctx, glob: GlobalVars, url=None, force=False, mute_response=False, after=False) -> ReturnData:
-    log(ctx, 'play_def', [url, force, mute_response, after], log_type='function', author=ctx.author)
+    log(ctx, 'play_def', options=locals(), log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
     db_guild = guild(glob, guild_id)
     response = ReturnData(False, tg(guild_id, 'Unknown error'))
@@ -210,7 +210,7 @@ async def radio_def(ctx, glob: GlobalVars, favourite_radio: Literal['Rádio BLAN
     :param video_from_queue: VideoClass child
     :return: ReturnData
     """
-    log(ctx, 'radio_def', [favourite_radio, radio_code], log_type='function', author=ctx.author)
+    log(ctx, 'radio_def', options=locals(), log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
     db_guild = guild(glob, guild_id)
 
@@ -288,7 +288,7 @@ async def ps_def(ctx, glob: GlobalVars, effect_number: app_commands.Range[int, 1
     :param mute_response: bool - Should bot response be muted
     :return: ReturnData
     """
-    log(ctx, 'ps_def', [effect_number, mute_response], log_type='function', author=ctx.author)
+    log(ctx, 'ps_def', options=locals(), log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
     db_guild = guild(glob, guild_id)
     db_guild.options.is_radio = False
@@ -343,7 +343,7 @@ async def now_def(ctx, glob: GlobalVars, ephemeral: bool = False) -> ReturnData:
     :param ephemeral: Should bot response be ephemeral
     :return: ReturnData
     """
-    log(ctx, 'now_def', [ephemeral], log_type='function', author=ctx.author)
+    log(ctx, 'now_def', options=locals(), log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
     db_guild = guild(glob, guild_id)
     if not is_ctx:
@@ -384,7 +384,7 @@ async def last_def(ctx, glob: GlobalVars, ephemeral: bool = False) -> ReturnData
     :param ephemeral: Should bot response be ephemeral
     :return: ReturnData
     """
-    log(ctx, 'last_def', [ephemeral], log_type='function', author=ctx.author)
+    log(ctx, 'last_def', options=locals(), log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
     db_guild = guild(glob, guild_id)
     if not is_ctx:
@@ -414,7 +414,7 @@ async def loop_command_def(ctx, glob: GlobalVars, clear_queue_opt: bool=False, e
     :param ephemeral: Should bot response be ephemeral
     :return: ReturnData
     """
-    log(ctx, 'loop_command_def', [clear_queue_opt, ephemeral], log_type='function', author=ctx.author)
+    log(ctx, 'loop_command_def', options=locals(), log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
     db_guild = guild(glob, guild_id)
 
@@ -464,7 +464,7 @@ async def loop_command_def(ctx, glob: GlobalVars, clear_queue_opt: bool=False, e
     return ReturnData(True, message)
 
 async def set_video_time(ctx, glob: GlobalVars, time_stamp: int, mute_response: bool=False, ephemeral: bool=False):
-    log(ctx, 'set_video_time', [time_stamp, mute_response, ephemeral], log_type='function')
+    log(ctx, 'set_video_time', options=locals(), log_type='function')
     is_ctx, ctx_guild_id, author_id, ctx_guild_object = ctx_check(ctx, glob)
     try:
         time_stamp = int(time_stamp)
@@ -514,7 +514,7 @@ async def set_video_time(ctx, glob: GlobalVars, time_stamp: int, mute_response: 
 
 
 async def earrape_command_def(ctx, glob: GlobalVars):
-    log(ctx, 'ear_rape_command_def', [], log_type='function', author=ctx.author)
+    log(ctx, 'ear_rape_command_def', options=locals(), log_type='function', author=ctx.author)
     is_ctx, ctx_guild_id, author_id, ctx_guild_object = ctx_check(ctx, glob)
     times = 10
     new_volume = 10000000000000

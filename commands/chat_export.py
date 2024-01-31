@@ -25,7 +25,7 @@ async def save_channel_info_to_file(glob: GlobalVars, guild_id: int, file_path) 
     :param file_path: Path of the resulting json file
     :return: ReturnData
     """
-    log(None, 'save_channel_info_to_file', [guild_id], log_type='function')
+    log(None, 'save_channel_info_to_file', options=locals(), log_type='function')
 
     guild_object = glob.bot.get_guild(guild_id)
     if not guild_object:
@@ -45,7 +45,7 @@ async def save_channel_info_to_file(glob: GlobalVars, guild_id: int, file_path) 
     return ReturnData(True, f'Saved channels of ({guild_id}) to file')
 
 async def download_guild_channel(ctx, glob, channel_id: int, mute_response: bool=False, ephemeral: bool=True):
-    log(ctx, 'download_guild_channel', [channel_id, mute_response, ephemeral], log_type='function')
+    log(ctx, 'download_guild_channel', options=locals(), log_type='function')
     is_ctx, ctx_guild_id, author_id, ctx_guild_object = ctx_check(ctx, glob)
     try:
         channel_id = int(channel_id)
@@ -91,7 +91,7 @@ async def download_guild_channel(ctx, glob, channel_id: int, mute_response: bool
     return ReturnData(True, msg)
 
 async def download_guild(ctx, glob: GlobalVars, guild_id: int, mute_response: bool=False, ephemeral: bool=True):
-    log(ctx, 'download_guild', [guild_id, mute_response, ephemeral], log_type='function')
+    log(ctx, 'download_guild', options=locals(), log_type='function')
     is_ctx, ctx_guild_id, author_id, ctx_guild_object = ctx_check(ctx, glob)
     try:
         guild_id = int(guild_id)
@@ -138,7 +138,7 @@ async def download_guild(ctx, glob: GlobalVars, guild_id: int, mute_response: bo
     return ReturnData(True, msg)
 
 async def get_guild_channel(ctx, glob: GlobalVars, channel_id: int, mute_response: bool=False, guild_id=None, ephemeral: bool=True):
-    log(ctx, 'get_guild_channel', [channel_id, mute_response, guild_id, ephemeral], log_type='function')
+    log(ctx, 'get_guild_channel', options=locals(), log_type='function')
     is_ctx, ctx_guild_id, author_id, ctx_guild_object = ctx_check(ctx, glob)
 
     try:
@@ -183,7 +183,7 @@ async def get_guild_channel(ctx, glob: GlobalVars, channel_id: int, mute_respons
     return ReturnData(True, 'files sent')
 
 async def get_guild(ctx, glob: GlobalVars, guild_id: int, mute_response: bool=False, ephemeral: bool=True):
-    log(ctx, 'get_guild', [guild_id, mute_response, ephemeral], log_type='function')
+    log(ctx, 'get_guild', options=locals(), log_type='function')
     is_ctx, ctx_guild_id, author_id, ctx_guild_object = ctx_check(ctx, glob)
     try:
         guild_id = int(guild_id)

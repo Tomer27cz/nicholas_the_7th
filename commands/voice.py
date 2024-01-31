@@ -25,7 +25,7 @@ async def stop_def(ctx, glob: GlobalVars, mute_response: bool = False, keep_loop
     :param keep_loop: Should loop be kept
     :return: ReturnData
     """
-    log(ctx, 'stop_def', [mute_response, keep_loop], log_type='function', author=ctx.author)
+    log(ctx, 'stop_def', options=locals(), log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
     db_guild = guild(glob, guild_id)
 
@@ -60,7 +60,7 @@ async def pause_def(ctx, glob, mute_response: bool = False) -> ReturnData:
     :param mute_response: Should bot response be muted
     :return: ReturnData
     """
-    log(ctx, 'pause_def', [mute_response], log_type='function', author=ctx.author)
+    log(ctx, 'pause_def', options=locals(), log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
     db_guild = guild(glob, guild_id)
 
@@ -98,7 +98,7 @@ async def resume_def(ctx, glob: GlobalVars, mute_response: bool = False) -> Retu
     :param mute_response: Should bot response be muted
     :return: ReturnData
     """
-    log(ctx, 'resume_def', [mute_response], log_type='function', author=ctx.author)
+    log(ctx, 'resume_def', options=locals(), log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
     db_guild = guild(glob, guild_id)
 
@@ -137,7 +137,7 @@ async def join_def(ctx, glob: GlobalVars, channel_id=None, mute_response: bool =
     :param mute_response: Should bot response be muted
     :return: ReturnData
     """
-    log(ctx, 'join_def', [channel_id, mute_response], log_type='function', author=ctx.author)
+    log(ctx, 'join_def', options=locals(), log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
 
     # if video in now_playing -> add to history
@@ -227,7 +227,7 @@ async def disconnect_def(ctx, glob: GlobalVars, mute_response: bool = False) -> 
     :param mute_response: Should bot response be muted
     :return: ReturnData
     """
-    log(ctx, 'disconnect_def', [mute_response], log_type='function', author=ctx.author)
+    log(ctx, 'disconnect_def', options=locals(), log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
 
     if guild_object.voice_client:
@@ -260,7 +260,7 @@ async def volume_command_def(ctx, glob: GlobalVars, volume: Union[float, int] = 
     :param mute_response: Should bot response be muted
     :return: ReturnData
     """
-    log(ctx, 'volume_command_def', [volume, ephemeral, mute_response], log_type='function', author=ctx.author)
+    log(ctx, 'volume_command_def', options=locals(), log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
     db_guild = guild(glob, guild_id)
 

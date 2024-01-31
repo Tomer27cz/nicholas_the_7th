@@ -25,7 +25,7 @@ async def ping_def(ctx, glob: GlobalVars) -> ReturnData:
     :param glob: GlobalVars
     :return: ReturnData
     """
-    log(ctx, 'ping_def', [], log_type='function', author=ctx.author)
+    log(ctx, 'ping_def', options=locals(), log_type='function', author=ctx.author)
     save_json(glob)
 
     message = f'**Pong!** Latency: {round(glob.bot.latency * 1000)}ms'
@@ -41,7 +41,7 @@ async def language_command_def(ctx, glob: GlobalVars, country_code: Literal[tupl
     :param country_code: Country code of language (e.g. en, cs, sk ...)
     :return: ReturnData
     """
-    log(ctx, 'language_command_def', [country_code], log_type='function', author=ctx.author)
+    log(ctx, 'language_command_def', options=locals(), log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
     db_guild = guild(glob, guild_id)
 
@@ -60,7 +60,7 @@ async def sound_effects_def(ctx, glob: GlobalVars, ephemeral: bool = True) -> Re
     :param ephemeral: Should bot response be ephemeral
     :return: ReturnData
     """
-    log(ctx, 'sound_effects_def', [ephemeral], log_type='function', author=ctx.author)
+    log(ctx, 'sound_effects_def', options=locals(), log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
 
     if not is_ctx:
@@ -91,7 +91,7 @@ async def list_radios_def(ctx, glob: GlobalVars, ephemeral: bool = True) -> Retu
     :param ephemeral: Should bot response be ephemeral
     :return: ReturnData
     """
-    log(ctx, 'list_radios_def', [ephemeral], log_type='function', author=ctx.author)
+    log(ctx, 'list_radios_def', options=locals(), log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
 
     if not is_ctx:
@@ -121,7 +121,7 @@ async def key_def(ctx: dc_commands.Context, glob: GlobalVars) -> ReturnData:
     :param glob: GlobalVars
     :return: ReturnData
     """
-    log(ctx, 'key_def', [], log_type='function', author=ctx.author)
+    log(ctx, 'key_def', options=locals(), log_type='function', author=ctx.author)
     db_guild = guild(glob, ctx.guild.id)
     save_json(glob)
 
@@ -130,8 +130,7 @@ async def key_def(ctx: dc_commands.Context, glob: GlobalVars) -> ReturnData:
     return ReturnData(True, message)
 
 async def options_command_def(ctx, glob: GlobalVars, loop=None, language=None, response_type=None, buttons=None, volume=None, buffer=None, history_length=None) -> ReturnData:
-    log(ctx, 'options_command_def', [loop, language, response_type, buttons, volume, buffer, history_length],
-        log_type='function', author=ctx.author)
+    log(ctx, 'options_command_def', options=locals(), log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
 
     if not is_ctx:

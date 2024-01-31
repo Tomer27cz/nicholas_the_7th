@@ -243,7 +243,7 @@ async def next_up_def(ctx, glob: GlobalVars, url, ephemeral: bool = False):
     :param ephemeral: Should the response be ephemeral
     :return: None
     """
-    log(ctx, 'next_up_def', [url, ephemeral], log_type='function', author=ctx.author)
+    log(ctx, 'next_up_def', options=locals(), log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
     response = await queue_command_def(ctx, glob, url, position=0, mute_response=True, force=True)
 
@@ -270,7 +270,7 @@ async def skip_def(ctx, glob: GlobalVars) -> ReturnData:
     :param glob: GlobalVars
     :return: ReturnData
     """
-    log(ctx, 'skip_def', [], log_type='function', author=ctx.author)
+    log(ctx, 'skip_def', options=locals(), log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
 
     if guild_object.voice_client:
@@ -303,7 +303,7 @@ async def remove_def(ctx, glob: GlobalVars, number: int, display_type: Literal['
     :param list_type: ('queue' or 'history') Which list to remove from
     :return: ReturnData
     """
-    log(ctx, 'remove_def', [number, display_type, ephemeral], log_type='function', author=ctx.author)
+    log(ctx, 'remove_def', options=locals(), log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
     db_guild = guild(glob, guild_id)
 
@@ -384,7 +384,7 @@ async def clear_def(ctx, glob: GlobalVars, ephemeral: bool = False) -> ReturnDat
     :param ephemeral: Should the response be ephemeral
     :return: ReturnData
     """
-    log(ctx, 'clear_def', [ephemeral], log_type='function', author=ctx.author)
+    log(ctx, 'clear_def', options=locals(), log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
 
     queue_count = clear_queue(glob, guild_id)
@@ -403,7 +403,7 @@ async def shuffle_def(ctx, glob: GlobalVars, ephemeral: bool = False) -> ReturnD
     :param ephemeral: Should the response be ephemeral
     :return: ReturnData
     """
-    log(ctx, 'shuffle_def', [ephemeral], log_type='function', author=ctx.author)
+    log(ctx, 'shuffle_def', options=locals(), log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
 
     queue = guild(glob, guild_id).queue
@@ -434,7 +434,7 @@ async def show_def(ctx, glob: GlobalVars, display_type: Literal['short', 'medium
     :param ephemeral: Should the response be ephemeral
     :return: ReturnData
     """
-    log(ctx, 'show_def', [display_type, list_type, ephemeral], log_type='function', author=ctx.author)
+    log(ctx, 'show_def', options=locals(), log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
     db_guild = guild(glob, guild_id)
 
@@ -533,7 +533,7 @@ async def search_command_def(ctx, glob: GlobalVars, search_query, display_type: 
     :param ephemeral: Should the response be ephemeral
     :return: ReturnData
     """
-    log(ctx, 'search_command_def', [search_query, display_type, force, from_play, ephemeral], log_type='function',
+    log(ctx, 'search_command_def', options=locals(), log_type='function',
         author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
     db_guild = guild(glob, guild_id)

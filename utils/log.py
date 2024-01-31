@@ -10,53 +10,108 @@ from config import PARENT_DIR, OWNER_ID
 from time import time
 from io import BytesIO
 from typing import Literal
+import logging
 import sys
 
 import discord
 from discord.ext import commands as dc_commands
 
-def log(ctx: Union[dc_commands.Context, WebData, None, int], text_data, options=None, log_type: Literal['command', 'function', 'web', 'text', 'ip', 'error']='text', author=None) -> None:
+# ---------------- Create Loggers ------------
+
+# Formatters
+formatter = logging.Formatter('%(asctime)s | %(name)s | %(message)s', datefmt='%d/%m/%Y %H:%M:%S')
+
+# Print handler
+print_handler = logging.StreamHandler(sys.stdout)
+print_handler.setLevel(logging.INFO)
+print_handler.setFormatter(formatter)
+
+# File handlers
+file_handler = logging.FileHandler('db/log/log.log')
+file_handler.setLevel(logging.INFO)
+file_handler.setFormatter(formatter)
+web_handler = logging.FileHandler('db/log/web.log')
+web_handler.setLevel(logging.INFO)
+web_handler.setFormatter(formatter)
+
+# Main logger
+main_logger = logging.getLogger('main')
+main_logger.setLevel(logging.INFO)
+main_logger.addHandler(print_handler)
+main_logger.addHandler(file_handler)
+
+# Web logger
+web_logger = logging.getLogger('web')
+web_logger.setLevel(logging.INFO)
+web_logger.addHandler(print_handler)
+web_logger.addHandler(web_handler)
+
+# logging.basicConfig(filename='db/log/log.log', level=logging.INFO, format='%(asctime)s | %(levelname)s | %(message)s')
+
+def log(ctx: Union[dc_commands.Context, WebData, None, int], text_data, options: dict=None, log_type: Literal['command', 'function', 'web', 'text', 'ip', 'error', 'warning']='text', author=None) -> None:
     """
     Logs data to the console and to the log file
     :param ctx: dc_commands.Context or WebData or guild_id
     :param text_data: The data to be logged
-    :param options: list - options to be logged from command
+    :param options: dict - options to be logged from command
     :param log_type: ('command', 'function', 'web', 'text', 'ip') - type of log
     :param author: Author of the command
     :return: None
     """
-    now_time_str = struct_to_time(time())
+    def readable_dict(_dict: dict) -> str:
+        ignored_keys = ['ctx', 'glob', 'web_data']
 
-    try:
+        out_str = ''
+        for _key, _value in _dict.items():
+            if _key in ignored_keys:
+                continue
+
+            if isinstance(_value, str):
+                out_str += f"{_key}='{_value}', "
+                continue
+
+            out_str += f"{_key}={_value}, "
+
+        return out_str[:-2]
+
+    if isinstance(ctx, dc_commands.Context):
         guild_id = ctx.guild.id
-    except AttributeError:
-        try:
-            guild_id = ctx.guild_id
-        except AttributeError:
-            guild_id = ctx
-
-    if log_type == 'command':
-        message = f"{now_time_str} | C {guild_id} | Command ({text_data}) was requested by ({author}) -> {options}"
-    elif log_type == 'function':
-        message = f"{now_time_str} | F {guild_id} | {text_data} -> {options}"
-    elif log_type == 'web':
-        message = f"{now_time_str} | W {guild_id} | Command ({text_data}) was requested by ({author}) -> {options}"
-    elif log_type == 'text':
-        message = f"{now_time_str} | T {guild_id} | {text_data}"
-    elif log_type == 'ip':
-        message = f"{now_time_str} | I {guild_id} | Requested: {text_data}"
-    elif log_type == 'error':
-        message = f"{now_time_str} | E {guild_id} | {text_data} -> {options}"
+    elif ctx.__class__.__name__ == 'WebData':
+        guild_id = f'WD{ctx.guild_id}'
     else:
-        raise ValueError('Wrong log_type')
+        guild_id = ctx
 
-    if log_type == 'error':
-        print(message, file=sys.stderr, flush=True)
-    else:
-        print(message, flush=True)
-
-    with open(f"db/log/log.log", "a", encoding="utf-8") as f:
-        f.write(message + "\n")
+    match log_type:
+        case 'command':
+            message = f"CMD  {guild_id} | {text_data} by ({author}) -> {readable_dict(options)}"
+            logging.getLogger('main').info(message)
+            return
+        case 'function':
+            message = f"FUNC {guild_id} | {text_data} -> {readable_dict(options)}"
+            logging.getLogger('main').info(message)
+            return
+        case 'web':
+            message = f"WEB  {guild_id} | Command ({text_data}) was requested by ({author}) -> {readable_dict(options)}"
+            logging.getLogger('web').info(message)
+            return
+        case 'text':
+            message = f"TXT  {guild_id} | {text_data}"
+            logging.getLogger('main').info(message)
+            return
+        case 'ip':
+            message = f"IP   {guild_id} | Requested: {text_data}"
+            logging.getLogger('web').info(message)
+            return
+        case 'error':
+            message = f"ERR  {guild_id} | {text_data} -> {options}"
+            logging.getLogger('main').error(message)
+            return
+        case 'warning':
+            message = f"WRN  {guild_id} | {text_data} -> {options}"
+            logging.getLogger('main').warning(message)
+            return
+        case _:
+            raise ValueError('Wrong log_type')
 
 def collect_data(data) -> None:
     """

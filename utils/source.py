@@ -84,7 +84,7 @@ class GetSource(discord.PCMVolumeTransformer):
             url = data['url']
             response, code = url_checker(url)
             if not response:
-                log(guild_id, f'Failed to get source (Attempt {attempt}) from ({org_url}): {code} -> {url}', 'error')
+                log(guild_id, f'Failed to get source', options={'attempt': attempt, 'org_url': org_url, 'code': code, 'url': url},  log_type='error')
                 if attempt > 9:
                     pass
                 else:

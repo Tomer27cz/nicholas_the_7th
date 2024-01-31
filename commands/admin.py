@@ -30,20 +30,19 @@ async def announce_command_def(ctx, glob: GlobalVars, message: str, ephemeral: b
     :param ephemeral: Should bot response be ephemeral
     :return: ReturnData
     """
-    log(ctx, 'announce_command_def', [message, ephemeral], log_type='function', author=ctx.author)
+    log(ctx, 'announce_command_def', options=locals(), log_type='function', author=ctx.author)
     for guild_object in glob.bot.guilds:
         try:
             await guild_object.system_channel.send(message)
         except Exception as e:
-            log(ctx, f"Error while announcing message to ({guild_object.name}): {e}", [guild_object.id, ephemeral],
-                log_type='error', author=ctx.author)
+            log(ctx, f"Error while announcing message to ({guild_object.name}): {e}", {'guild_id': guild_object.id, 'guild_name': guild_object.name, 'message': message, 'ephemeral': ephemeral}, log_type='error', author=ctx.author)
 
     message = f'Announced message to all servers: `{message}`'
     await ctx.reply(message, ephemeral=ephemeral)
     return ReturnData(True, message)
 
 async def kys_def(ctx: dc_commands.Context, glob: GlobalVars):
-    log(ctx, 'kys_def', [], log_type='function', author=ctx.author)
+    log(ctx, 'kys_def', options=locals(), log_type='function', author=ctx.author)
     guild_id = ctx.guild.id
     await ctx.reply(tg(guild_id, "Committing seppuku..."))
     sys.exit(3)
@@ -53,9 +52,7 @@ async def options_def(ctx: dc_commands.Context, glob: GlobalVars, server: Union[
                       buttons: str = None, language: str = None, response_type: str = None, buffer: str = None,
                       history_length: str = None, volume: str = None, search_query: str = None, last_updated: str = None,
                       ephemeral=True):
-    log(ctx, 'options_def',
-        [server, stopped, loop, is_radio, buttons, language, response_type, buffer, history_length, volume, search_query, last_updated, ephemeral],
-        log_type='function', author=ctx.author)
+    log(ctx, 'options_def', options=locals(), log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
 
     db_guild = guild(glob, guild_id)
@@ -199,7 +196,7 @@ async def slowed_users_command_def(ctx: dc_commands.Context, glob: GlobalVars, g
     :param list_all: List all slowed users and their guilds
     :param ephemeral: Should bot response be ephemeral
     """
-    log(ctx, 'slowed_users', [], log_type='function', author=ctx.author)
+    log(ctx, 'slowed_users', options=locals(), log_type='function', author=ctx.author)
     guild_id = ctx.guild.id if guild_id == 0 else guild_id
 
     if list_all:
@@ -235,7 +232,7 @@ async def slowed_users_add_command_def(ctx: dc_commands.Context, glob: GlobalVar
     :param guild_id: Guild id - 0 for current guild
     :param ephemeral: Should bot response be ephemeral
     """
-    log(ctx, 'slowed_users_add', [member.id, slowed_for], log_type='function', author=ctx.author)
+    log(ctx, 'slowed_users_add', options=locals(), log_type='function', author=ctx.author)
     guild_id = ctx.guild.id if guild_id == 0 else guild_id
 
     if slowed_for < 0:
@@ -262,7 +259,9 @@ async def slowed_users_add_all_command_def(ctx: dc_commands.Context, glob: Globa
     :param guild_id: Guild id - 0 for current guild
     :param ephemeral: Should bot response be ephemeral
     """
-    log(ctx, 'slowed_users_add_all', [guild_obj.id, slowed_for], log_type='function', author=ctx.author)
+    log(ctx, 'slowed_users_add_all',
+        options={'ctx': ctx, 'glob': glob, 'guild_obj': guild_obj.id, 'slowed_for': slowed_for, 'ephemeral': ephemeral},
+        log_type='function', author=ctx.author)
     guild_id = ctx.guild.id if guild_id == 0 else guild_id
 
     if slowed_for < 0:
@@ -292,7 +291,7 @@ async def slowed_users_remove_command_def(ctx: dc_commands.Context, glob: Global
     :param guild_id: Guild id - 0 for current guild
     :param ephemeral: Should bot response be ephemeral
     """
-    log(ctx, 'slowed_users_remove', [member.id], log_type='function', author=ctx.author)
+    log(ctx, 'slowed_users_remove', {'ctx': ctx, 'glob': glob, 'member': member.id, 'ephemeral': ephemeral}, log_type='function', author=ctx.author)
     guild_id = ctx.guild.id if guild_id == 0 else guild_id
 
     slowed_user = glob.ses.query(SlowedUser).filter_by(user_id=member.id, guild_id=guild_id).first()
@@ -318,7 +317,7 @@ async def slowed_users_remove_all_command_def(ctx: dc_commands.Context, glob: Gl
     :param guild_id: Guild id - 0 for current guild
     :param ephemeral: Should bot response be ephemeral
     """
-    log(ctx, 'slowed_users_remove_all', [guild_obj.id], log_type='function', author=ctx.author)
+    log(ctx, 'slowed_users_remove_all', options=locals(), log_type='function', author=ctx.author)
     guild_id = ctx.guild.id if guild_id == 0 else guild_id
 
     slowed_users = glob.ses.query(SlowedUser).filter_by(guild_id=guild_obj.id).all()
@@ -347,7 +346,8 @@ async def voice_torture_command_def(ctx: dc_commands.Context, glob: GlobalVars, 
     :param guild_id: Guild id - 0 for current guild
     :param ephemeral: Should bot response be ephemeral
     """
-    log(ctx, 'voice_torture', [member.id, delay], log_type='function', author=ctx.author)
+    log(ctx, 'voice_torture', {'ctx': ctx, 'glob': glob, 'member': member.id, 'delay': delay, 'ephemeral': ephemeral},
+        log_type='function', author=ctx.author)
     guild_id = ctx.guild.id if guild_id == 0 else guild_id
 
     if delay < 0:
@@ -426,7 +426,7 @@ async def voice_torture_stop_command_def(ctx: dc_commands.Context, glob: GlobalV
     :param guild_id: Guild id - 0 for current guild
     :param ephemeral: Should bot response be ephemeral
     """
-    log(ctx, 'voice_torture_stop', [member.id], log_type='function', author=ctx.author)
+    log(ctx, 'voice_torture_stop', {'ctx': ctx, 'glob': glob, 'member': member.id, 'ephemeral': ephemeral}, log_type='function', author=ctx.author)
     guild_id = ctx.guild.id if guild_id == 0 else guild_id
 
     tortured_user = glob.ses.query(TorturedUser).filter_by(user_id=member.id, guild_id=guild_id).first()
