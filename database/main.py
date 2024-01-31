@@ -31,6 +31,3 @@ def connect_to_db(first_time=False):
 
     session = sessionmaker(bind=engine, autoflush=False)
     return session()
-
-
-

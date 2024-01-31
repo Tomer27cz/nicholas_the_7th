@@ -18,10 +18,10 @@ class GlobalVars:
         self.sc = sc_var
 
 
-with open(f'{config.PARENT_DIR}db/radio.json', 'r', encoding='utf-8') as file:
+with open(f'db/radio.json', 'r', encoding='utf-8') as file:
     radio_dict = json.load(file)
 
-with open(f'{config.PARENT_DIR}db/languages.json', 'r', encoding='utf-8') as file:
+with open(f'db/languages.json', 'r', encoding='utf-8') as file:
     languages_dict = json.load(file)
 
 def load_sound_effects():

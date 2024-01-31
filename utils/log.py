@@ -55,7 +55,7 @@ def log(ctx: Union[dc_commands.Context, WebData, None, int], text_data, options=
     else:
         print(message, flush=True)
 
-    with open(f"{PARENT_DIR}db/log/log.log", "a", encoding="utf-8") as f:
+    with open(f"db/log/log.log", "a", encoding="utf-8") as f:
         f.write(message + "\n")
 
 def collect_data(data) -> None:
@@ -67,7 +67,7 @@ def collect_data(data) -> None:
     now_time_str = struct_to_time(time())
     message = f"{now_time_str} | {data}\n"
 
-    with open(f'{PARENT_DIR}db/log/data.log', "a", encoding="utf-8") as f:
+    with open(f'db/log/data.log', "a", encoding="utf-8") as f:
         f.write(message)
 
 async def send_to_admin(glob: GlobalVars, data):

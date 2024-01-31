@@ -39,10 +39,10 @@ session = connect_to_db()
 
 # --------------------------------------------- LOAD DATA --------------------------------------------- #
 
-with open(f'{config.PARENT_DIR}db/radio.json', 'r', encoding='utf-8') as file:
+with open(f'db/radio.json', 'r', encoding='utf-8') as file:
     radio_dict = json.load(file)
 
-with open(f'{config.PARENT_DIR}db/languages.json', 'r', encoding='utf-8') as file:
+with open(f'db/languages.json', 'r', encoding='utf-8') as file:
     languages_dict = json.load(file)
     text = languages_dict['en']
     authorized_users += [my_id, 349164237605568513]
@@ -184,7 +184,7 @@ def make_session_permanent():
 # -------------------------------------------------- Index page --------------------------------------------------------
 @app.route('/')
 async def index_page():
-    log(request.remote_addr, '/index', log_type='ip')
+    log(request.remote_addr, request.full_path, log_type='ip')
     user = flask_session.get('discord_user', {})
 
     return render_template('nav/index.html', user=user)
@@ -693,7 +693,7 @@ async def admin_log_page(file_name):
         return abort(404)
 
     try:
-        with open(f'{config.PARENT_DIR}db/log/{file_name}', 'r', encoding='utf-8') as f:
+        with open(f'db/log/{file_name}', 'r', encoding='utf-8') as f:
             lines = list(reversed([(value, index) for index, value in enumerate(f.readlines())]))
             chunks = math.ceil(len(lines) / 100)
     except Exception as e:
@@ -764,7 +764,7 @@ async def admin_inflog_page():
         return abort(404)
 
     try:
-        with open(f'{config.PARENT_DIR}db/log/{log_type}', 'r', encoding='utf-8') as f:
+        with open(f'db/log/{log_type}', 'r', encoding='utf-8') as f:
             lines = list(reversed([(value, index) for index, value in enumerate(f.readlines())]))
     except Exception as e:
         log(request.remote_addr, [str(e)], log_type='error', author=user['username'])
@@ -1233,44 +1233,29 @@ async def admin_fastchat(guild_id, channel_id):
 @app.errorhandler(404)
 async def page_not_found(_):
     log(request.remote_addr, f'{request.full_path} -> 404', log_type='ip')
-    if 'discord_user' in flask_session.keys():
-        user = flask_session['discord_user']
-    else:
-        user = None
-    return render_template('base/message.html', message="404 Not Found",
+    return render_template('base/error.html', title='404 Not Found', message="404 Not Found",
                            message4='The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.',
-                           errors=None, user=user, title='404 Not Found'), 404
+                           ), 404
 
 @app.errorhandler(403)
 async def page_forbidden(_):
     log(request.remote_addr, f'{request.full_path} -> 403', log_type='ip')
-    if 'discord_user' in flask_session.keys():
-        user = flask_session['discord_user']
-    else:
-        user = None
-    return render_template('base/message.html', message="403 Forbidden", message4='You do not have permission.',
-                           user=user, errors=None, title='403 Forbidden'), 403
+    return render_template('base/error.html', message="403 Forbidden", message4='You do not have permission.',
+                           title='403 Forbidden'), 403
 
 @app.errorhandler(400)
 async def bad_request(_):
     log(request.remote_addr, f'{request.full_path} -> 400', log_type='ip')
-    if 'discord_user' in flask_session.keys():
-        user = flask_session['discord_user']
-    else:
-        user = None
-    return render_template('base/message.html', message="400 Bad Request", message4='The server could not understand the request due to invalid syntax.',
-                           user=user, errors=None, title='400 Bad Request'), 400
+    return render_template('base/error.html', message="400 Bad Request", title='400 Bad Request',
+                           message4='The server could not understand the request due to invalid syntax.'
+                           ), 400
 
 @app.errorhandler(500)
 async def internal_server_error(_):
     log(request.remote_addr, f'{request.full_path} -> 500', log_type='ip')
-    if 'discord_user' in flask_session.keys():
-        user = flask_session['discord_user']
-    else:
-        user = None
-    return render_template('base/message.html', message="500 Internal Server Error",
-                           message4='The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application.',
-                           user=user, errors=None, title='500 Internal Server Error'), 500
+    return render_template('base/error.html', message="500 Internal Server Error",
+                           message4='The server encountered an internal error and was unable to complete your request.',
+                           title='500 Internal Server Error'), 500
 
 # -------------------------------------------------- Main --------------------------------------------------------------
 

@@ -236,6 +236,8 @@ class Bot(dc_commands.Bot):
 
         # check if message is a DM
         if not message.guild:
+            # send DM to ADMIN
+            await send_to_admin(glob, f"<@!{message.author.id}> tied to DM me with this message `{message.content}`")
             try:
                 # respond to DM
                 await message.channel.send(
@@ -244,9 +246,6 @@ class Bot(dc_commands.Bot):
                     f"If you want me to join your server, you can invite me with this link: {config.INVITE_URL}\n\n"
                     f""
                     f"If you have any questions, you can DM my developer <@!{config.DEVELOPER_ID}>#4272")
-
-                # send DM to ADMIN
-                await send_to_admin(glob, f"<@!{message.author.id}> tied to DM me with this message `{message.content}`")
                 return
 
             except discord.errors.Forbidden:
@@ -697,48 +696,48 @@ async def set_time_command(ctx: dc_commands.Context, time_stamp: int, ephemeral:
 
 @bot.hybrid_command(name='zz_slowed_users', with_app_command=True)
 @dc_commands.check(is_authorised)
-async def slowed_users_command(ctx: dc_commands.Context):
+async def slowed_users_command(ctx: dc_commands.Context, guild_id: int=0, list_all: bool=False):
     log(ctx, 'slowed_users', [], log_type='command', author=ctx.author)
-    await slowed_users_command_def(ctx, glob)
+    await slowed_users_command_def(ctx, glob, guild_id=guild_id, list_all=list_all)
 
 @bot.hybrid_command(name='zz_slowed_users_add', with_app_command=True)
 @dc_commands.check(is_authorised)
-async def slowed_users_add_command(ctx: dc_commands.Context, member: discord.Member, time: int):
+async def slowed_users_add_command(ctx: dc_commands.Context, member: discord.Member, time: int, guild_id: int=0):
     log(ctx, 'slowed_users_add', [member.id, time], log_type='command', author=ctx.author)
-    await slowed_users_add_command_def(ctx, glob, member, time)
+    await slowed_users_add_command_def(ctx, glob, member, time, guild_id=guild_id)
 
 @bot.hybrid_command(name='zz_slowed_users_add_all', with_app_command=True)
 @dc_commands.check(is_authorised)
-async def slowed_users_add_all_command(ctx: dc_commands.Context, guild_obj: discord.Guild, time: int):
+async def slowed_users_add_all_command(ctx: dc_commands.Context, guild_obj: discord.Guild, time: int, guild_id: int=0):
     log(ctx, 'slowed_users_add_all', [guild_obj.id, time], log_type='command', author=ctx.author)
-    await slowed_users_add_all_command_def(ctx, glob, guild_obj, time)
+    await slowed_users_add_all_command_def(ctx, glob, guild_obj, time, guild_id=guild_id)
 
 @bot.hybrid_command(name='zz_slowed_users_remove', with_app_command=True)
 @dc_commands.check(is_authorised)
-async def slowed_users_remove_command(ctx: dc_commands.Context, member: discord.Member):
+async def slowed_users_remove_command(ctx: dc_commands.Context, member: discord.Member, guild_id: int=0):
     log(ctx, 'slowed_users_remove', [member.id], log_type='command', author=ctx.author)
-    await slowed_users_remove_command_def(ctx, glob, member)
+    await slowed_users_remove_command_def(ctx, glob, member, guild_id=guild_id)
 
 @bot.hybrid_command(name='zz_slowed_users_remove_all', with_app_command=True)
 @dc_commands.check(is_authorised)
-async def slowed_users_remove_all_command(ctx: dc_commands.Context, guild_obj: discord.Guild):
+async def slowed_users_remove_all_command(ctx: dc_commands.Context, guild_obj: discord.Guild, guild_id: int=0):
     log(ctx, 'slowed_users_remove_all', [guild_obj.id], log_type='command', author=ctx.author)
-    await slowed_users_remove_all_command_def(ctx, glob, guild_obj)
+    await slowed_users_remove_all_command_def(ctx, glob, guild_obj, guild_id=guild_id)
 
 # ------------------------------------------ SPECIFIC USER TORTURE -----------------------------------------------------
 
 @bot.hybrid_command(name='zz_voice_torture', with_app_command=True)
 @dc_commands.check(is_authorised)
 @dc_commands.has_guild_permissions(move_members=True)
-async def voice_torture_command(ctx: dc_commands.Context, member: discord.Member, delay: int):
+async def voice_torture_command(ctx: dc_commands.Context, member: discord.Member, delay: int, guild_id: int=0):
     log(ctx, 'voice_torture', [member.id, delay], log_type='command', author=ctx.author)
-    await voice_torture_command_def(ctx, glob, member, delay)
+    await voice_torture_command_def(ctx, glob, member, delay, guild_id=guild_id)
 
 @bot.hybrid_command(name='zz_voice_torture_stop', with_app_command=True)
 @dc_commands.check(is_authorised)
-async def voice_torture_stop_command(ctx: dc_commands.Context, member: discord.Member):
+async def voice_torture_stop_command(ctx: dc_commands.Context, member: discord.Member, guild_id: int=0):
     log(ctx, 'voice_torture_stop', [member.id], log_type='command', author=ctx.author)
-    await voice_torture_stop_command_def(ctx, glob, member)
+    await voice_torture_stop_command_def(ctx, glob, member, guild_id=guild_id)
 
 # --------------------------------------------- HELP COMMAND -----------------------------------------------------------
 
