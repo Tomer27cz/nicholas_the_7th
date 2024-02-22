@@ -120,6 +120,32 @@ def guild_bar(glob: GlobalVars, guild_id: int) -> (int, int):
     """
     return guild(glob, guild_id).bar, guild(glob, guild_id).max_bar
 
+# Guild variables
+def guild_data_key(glob: GlobalVars, guild_id: int):
+    """
+    Returns the key of the guild
+    :param glob: GlobalVars
+    :param guild_id: ID of the guild
+    :return: str
+    """
+    return glob.ses.query(data_classes.GuildData).filter_by(id=guild_id).with_entities(data_classes.GuildData.key)[0][0]
+def guild_options_loop(glob: GlobalVars, guild_id: int):
+    """
+    Returns the loop of the guild
+    :param glob: GlobalVars
+    :param guild_id: ID of the guild
+    :return: bool
+    """
+    return glob.ses.query(data_classes.Options).filter_by(id=guild_id).with_entities(data_classes.Options.loop)[0][0]
+def guild_options_buffer(glob: GlobalVars, guild_id: int):
+    """
+    Returns the buffer of the guild
+    :param glob: GlobalVars
+    :param guild_id: ID of the guild
+    :return: int
+    """
+    return glob.ses.query(data_classes.Options).filter_by(id=guild_id).with_entities(data_classes.Options.buffer)[0][0]
+
 # Guild Save
 def guild_save_count(glob: GlobalVars, guild_id: int):
     """
@@ -178,6 +204,7 @@ def create_guild(glob: GlobalVars, guild_id: int):
         guild_object = data_classes.Guild(glob, guild_id, {})
         glob.ses.add(guild_object)
         glob.ses.commit()
+
 def delete_guild(glob: GlobalVars, guild_id: int):
     """
     Deletes a guild object
@@ -200,12 +227,31 @@ def delete_guild(glob: GlobalVars, guild_id: int):
         glob.ses.commit()
 
 # Queue
-def clear_queue(glob: GlobalVars, guild_id: int):
+def guild_queue(glob: GlobalVars, guild_id: int):
+    """
+    Returns a list of videos in the queue
+    :param glob: GlobalVars
+    :param guild_id: ID of the guild
+    :return: [Queue object, ...]
+    """
+    with glob.ses.no_autoflush:
+        return glob.ses.query(video_class.Queue).filter_by(guild_id=guild_id).all()
+def guild_history(glob: GlobalVars, guild_id: int):
+    """
+    Returns a list of videos in the history
+    :param glob: GlobalVars
+    :param guild_id: ID of the guild
+    :return: [History object, ...]
+    """
+    with glob.ses.no_autoflush:
+        return glob.ses.query(video_class.History).filter_by(guild_id=guild_id).all()
+
+def clear_queue(glob: GlobalVars, guild_id: int) -> int:
     """
     Clears the queue
     :param glob: GlobalVars
     :param guild_id: ID of the guild
-    :return: None
+    :return: int - number of videos deleted
     """
     with glob.ses.no_autoflush:
         query = glob.ses.query(video_class.Queue).filter_by(guild_id=guild_id)

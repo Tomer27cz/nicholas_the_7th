@@ -1,5 +1,6 @@
 {
     "en": {
+        "query": "Can be URL or search query",
         "search": "Search youtube for the provided query",
         "queue_add": "Add song to queue",
         "queue_remove": "Removes song from queue",
@@ -50,10 +51,13 @@
         "search_query": "Searches youtube for this",
         "effects_number": "ID of sound effect from /sound_effects",
         "queue_number": "Number in the queue",
+        "remove_song": "Song to be removed (autocomplete or ID)",
         "channel_id": "ID of the channel you want the bot to connect to",
+        "channel": "The channel you want the bot to connect to (can be ID)",
         "number_of_searches": "How many result to show(default = 5)",
         "game_size": "The size of the game board",
         "radio_menu": "The menu had to be split (limit is 25 per menu)",
+        "radio_name": "The name of the radio or ID >> /list_radios",
         "favourite_radio": "Favourite radios",
         "country_code": "The country code of the language you want to use",
         "radio_list": "Radio list",

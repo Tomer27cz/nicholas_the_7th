@@ -1,6 +1,38 @@
+import typing
+
 from utils.log import log
-from utils.global_vars import languages_dict
+from utils.global_vars import languages_dict, GlobalVars
 from database.guild import guild
+
+# noinspection PyTypeHints
+def text(content: str, glob: GlobalVars=None, guild_id: int=0, lang: typing.Literal[tuple(languages_dict.keys())]=None) -> str:
+    """
+    Translates text to english
+    Gets text from languages.json
+    :param content: str - translation key
+    :param glob: GlobalVars - global variables object (only when getting language from guild)
+    :param guild_id: int - id of guild (default: 0 - no guild)
+    :param lang: str - language to translate to (default: 'en')
+    :return: str - translated text
+    """
+    if lang is None:
+        lang = 'en'
+        if guild_id != 0:
+            lang = guild(glob, guild_id).options.language
+
+    if content not in languages_dict[lang].keys():
+        with open('db/missing.txt', 'ar', encoding='utf-8') as file:
+            lines = file.readlines()
+            if content not in lines:
+                file.write(f'{lang},{content}\n')
+                log(None, f'KeyError: {content} in {lang} - added to missing.txt')
+        return content
+
+    try:
+        return languages_dict[lang][content]
+    except KeyError:
+        log(None, f'KeyError: {content} in {lang} - Should not happen!')
+        return content
 
 def tg(guild_id: int, content: str) -> str:
     """

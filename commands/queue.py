@@ -10,10 +10,10 @@ from utils.url import get_url_type, extract_yt_id
 from utils.cli import get_url_probe_data
 from utils.discord import to_queue, create_embed
 from utils.spotify import spotify_album_to_yt_video_list, spotify_playlist_to_yt_video_list, spotify_to_yt_video
-from utils.save import save_json, push_update
+from utils.save import update, push_update
 from utils.convert import convert_duration
 
-from database.guild import guild, clear_queue
+from database.guild import guild, clear_queue, guild_queue, guild_history, guild_data_key, guild_options_loop
 
 import commands.player
 import commands.voice
@@ -56,13 +56,14 @@ async def queue_command_def(ctx,
     """
     log(ctx, 'queue_command_def', locals(), log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
-    db_guild = guild(glob, guild_id)
 
     if not url:
         message = tg(guild_id, "`url` is **required**")
         if not mute_response:
             await ctx.reply(message, ephemeral=True)
         return ReturnData(False, message)
+
+    _guild_key = guild_data_key(glob, guild_id)
 
     # Get url type
     url_type, url = get_url_type(url)
@@ -119,7 +120,7 @@ async def queue_command_def(ctx,
 
         push_update(glob, guild_id)
 
-        message = f"`{len(playlist_videos)}` {tg(guild_id, 'songs from playlist added to queue!')} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={db_guild.data.key})"
+        message = f"`{len(playlist_videos)}` {tg(guild_id, 'songs from playlist added to queue!')} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={_guild_key})"
         if not mute_response:
             await ctx.reply(message, ephemeral=ephemeral)
         return ReturnData(True, message)
@@ -144,7 +145,7 @@ async def queue_command_def(ctx,
             to_queue(glob, guild_id, video, position=position, copy_video=False, no_push=True)
         push_update(glob, guild_id)
 
-        message = f'`{len(video_list)}` {tg(guild_id, "songs from playlist added to queue!")} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={db_guild.data.key})'
+        message = f'`{len(video_list)}` {tg(guild_id, "songs from playlist added to queue!")} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={_guild_key})'
         if is_ctx and adding_message:
             await adding_message.edit(content=message)
         return ReturnData(True, message)
@@ -206,7 +207,7 @@ async def queue_command_def(ctx,
                 to_queue(glob, guild_id, video, position=position, copy_video=False, no_push=True)
             push_update(glob, guild_id)
 
-            message = f"`{len(tracks)}` {tg(guild_id, 'songs from playlist added to queue!')} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={db_guild.data.key})"
+            message = f"`{len(tracks)}` {tg(guild_id, 'songs from playlist added to queue!')} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={_guild_key})"
             if not mute_response:
                 await ctx.reply(message, ephemeral=ephemeral)
             return ReturnData(True, message)
@@ -229,7 +230,7 @@ async def queue_command_def(ctx,
         return await search_command_def(ctx, glob, url, display_type='short', force=force, from_play=from_play,
                                         ephemeral=ephemeral)
 
-    message = f'`{url}` {tg(guild_id, "is not supported!")} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={db_guild.data.key})'
+    message = f'`{url}` {tg(guild_id, "is not supported!")} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={_guild_key})'
     if not mute_response:
         await ctx.reply(message, ephemeral=ephemeral)
     return ReturnData(False, message)
@@ -261,7 +262,7 @@ async def next_up_def(ctx, glob: GlobalVars, url, ephemeral: bool = False):
     else:
         return
 
-    save_json(glob)
+    update(glob)
 
 async def skip_def(ctx, glob: GlobalVars) -> ReturnData:
     """
@@ -291,7 +292,7 @@ async def skip_def(ctx, glob: GlobalVars) -> ReturnData:
     await ctx.reply(message, ephemeral=True)
     return ReturnData(False, message)
 
-async def remove_def(ctx, glob: GlobalVars, number: int, display_type: Literal['short', 'long'] = None,
+async def remove_def(ctx, glob: GlobalVars, number, display_type: Literal['short', 'long'] = None,
                      ephemeral: bool = False, list_type: Literal['queue', 'history'] = 'queue') -> ReturnData:
     """
     Removes a song from the queue or history
@@ -305,6 +306,14 @@ async def remove_def(ctx, glob: GlobalVars, number: int, display_type: Literal['
     """
     log(ctx, 'remove_def', options=locals(), log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
+
+    try:
+        number = int(number)
+    except ValueError:
+        message = tg(guild_id, 'Invalid number!')
+        await ctx.reply(message, ephemeral=True)
+        return ReturnData(False, message)
+
     db_guild = guild(glob, guild_id)
 
     if not display_type:
@@ -334,7 +343,7 @@ async def remove_def(ctx, glob: GlobalVars, number: int, display_type: Literal['
             db_guild.queue.pop(number)
 
             push_update(glob, guild_id)
-            save_json(glob)
+            update(glob)
 
             return ReturnData(True, message)
 
@@ -362,17 +371,17 @@ async def remove_def(ctx, glob: GlobalVars, number: int, display_type: Literal['
             db_guild.history.pop(number)
 
             push_update(glob, guild_id)
-            save_json(glob)
+            update(glob)
 
             return ReturnData(True, message)
 
     else:
-        save_json(glob)
+        update(glob)
         message = tg(guild_id, 'Invalid list type!')
         await ctx.reply(message, ephemeral=True)
         return ReturnData(False, message)
 
-    save_json(glob)
+    update(glob)
 
     return ReturnData(False, tg(guild_id, 'No number given!'))
 
@@ -389,7 +398,7 @@ async def clear_def(ctx, glob: GlobalVars, ephemeral: bool = False) -> ReturnDat
 
     queue_count = clear_queue(glob, guild_id)
     push_update(glob, guild_id)
-    save_json(glob)
+    update(glob)
 
     message = tg(guild_id, 'Removed **all** songs from queue') + ' -> ' + f'`{queue_count}` songs removed'
     await ctx.reply(message, ephemeral=ephemeral)
@@ -417,7 +426,7 @@ async def shuffle_def(ctx, glob: GlobalVars, ephemeral: bool = False) -> ReturnD
     glob.ses.commit()
     glob.ses.commit()
     push_update(glob, guild_id)
-    save_json(glob)
+    update(glob)
 
     message = tg(guild_id, 'Songs in queue shuffled')
     await ctx.reply(message, ephemeral=ephemeral)
@@ -436,15 +445,16 @@ async def show_def(ctx, glob: GlobalVars, display_type: Literal['short', 'medium
     """
     log(ctx, 'show_def', options=locals(), log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
-    db_guild = guild(glob, guild_id)
 
     if not is_ctx:
         return ReturnData(False, tg(guild_id, 'Cannot use this command in WEB'))
 
+    # db_guild = guild(glob, guild_id)
+
     if list_type == 'queue':
-        show_list = db_guild.queue
+        show_list = guild_queue(glob, guild_id)
     elif list_type == 'history':
-        show_list = list(reversed(db_guild.history))
+        show_list = list(reversed(guild_history(glob, guild_id)))
     else:
         return ReturnData(False, tg(guild_id, 'Bad list_type'))
 
@@ -460,8 +470,11 @@ async def show_def(ctx, glob: GlobalVars, display_type: Literal['short', 'medium
         else:
             display_type = 'medium'
 
+    loop = guild_options_loop(glob, guild_id)
+    key = guild_data_key(glob, guild_id)
+
     if display_type == 'long':
-        message = f"**THE {list_type.capitalize()}**\n **Loop** mode  `{db_guild.options.loop}`,  **Display** type `{display_type}`, [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={db_guild.data.key})"
+        message = f"**THE {list_type.capitalize()}**\n **Loop** mode  `{loop}`,  **Display** type `{display_type}`, [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={key})"
         await ctx.send(message, ephemeral=ephemeral, mention_author=False)
 
         for index, val in enumerate(show_list):
@@ -471,7 +484,7 @@ async def show_def(ctx, glob: GlobalVars, display_type: Literal['short', 'medium
 
     if display_type == 'medium':
         embed = discord.Embed(title=f"Song {list_type}",
-                              description=f'Loop: {db_guild.options.loop} | Display type: {display_type} | [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={db_guild.data.key})',
+                              description=f'Loop: {loop} | Display type: {display_type} | [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={loop})',
                               color=0x00ff00)
 
         message = ''
@@ -494,7 +507,7 @@ async def show_def(ctx, glob: GlobalVars, display_type: Literal['short', 'medium
             display_type = 'short'
 
     if display_type == 'short':
-        send = f"**THE {list_type.upper()}**\n **Loop** mode  `{db_guild.options.loop}`,  **Display** type `{display_type}`, [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={db_guild.data.key})"
+        send = f"**THE {list_type.upper()}**\n **Loop** mode  `{loop}`,  **Display** type `{display_type}`, [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={key})"
         # noinspection PyUnresolvedReferences
         if ctx.interaction.response.is_done():
             await ctx.send(send, ephemeral=ephemeral, mention_author=False)
@@ -518,7 +531,7 @@ async def show_def(ctx, glob: GlobalVars, display_type: Literal['short', 'medium
         else:
             await ctx.message.channel.send(content=message, mention_author=False)
 
-    save_json(glob)
+    update(glob)
 
 async def search_command_def(ctx, glob: GlobalVars, search_query, display_type: Literal['short', 'long'] = None,
                              force: bool = False, from_play: bool = False, ephemeral: bool = False) -> ReturnData:
@@ -536,7 +549,6 @@ async def search_command_def(ctx, glob: GlobalVars, search_query, display_type: 
     log(ctx, 'search_command_def', options=locals(), log_type='function',
         author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
-    db_guild = guild(glob, guild_id)
 
     if not is_ctx:
         return ReturnData(False, tg(guild_id, 'Search command cannot be used in WEB'))
@@ -545,6 +557,7 @@ async def search_command_def(ctx, glob: GlobalVars, search_query, display_type: 
     if not ctx.interaction.response.is_done():
         await ctx.defer(ephemeral=ephemeral)
 
+    db_guild = guild(glob, guild_id)
     db_guild.options.search_query = search_query
 
     if display_type is None:
@@ -582,9 +595,10 @@ async def search_command_def(ctx, glob: GlobalVars, search_query, display_type: 
     if display_type == 'short':
         await ctx.reply(message, view=view, ephemeral=ephemeral)
 
-    save_json(glob)
+    update(glob)
 
     return ReturnData(False, 'Process terminated', terminate=True)
+
 
 # # -------------------------------- IMPORT / EXPORT --------------------------------
 #

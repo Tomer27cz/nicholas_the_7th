@@ -10,7 +10,7 @@ from classes.data_classes import *
 from utils.convert import struct_to_time
 from utils.translate import tg
 from utils.video_time import set_stopped
-from utils.save import save_json, push_update
+from utils.save import update, push_update
 from database.guild import guild, get_radio_info
 
 import discord
@@ -161,7 +161,7 @@ def now_to_history(glob: GlobalVars, guild_id: int):
         guild_object.history.append(to_history_class(glob, h_video))
 
         # save json and push update
-        save_json(glob)
+        update(glob)
         push_update(glob, guild_id)
 
 def to_queue(glob: GlobalVars, guild_id: int, video, position: int = None, copy_video: bool=True, no_push: bool=False) -> ReturnData or None:
@@ -199,7 +199,7 @@ def to_queue(glob: GlobalVars, guild_id: int, video, position: int = None, copy_
 
     if not no_push:
         push_update(glob, guild_id)
-    save_json(glob)
+    update(glob)
 
     return f'[`{video.title}`](<{video.url}>) {tg(guild_id, "added to queue!")} -> [Control Panel]({WEB_URL}/guild/{guild_id}&key={guild_object.data.key})'
 

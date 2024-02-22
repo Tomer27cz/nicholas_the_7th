@@ -5,7 +5,7 @@ from classes.discord_classes import DiscordChannel, DiscordRole, DiscordUser, Di
 
 from utils.log import log
 from utils.discord import get_username
-from utils.save import update_guilds
+from utils.save import update
 from utils.saves import new_queue_save, delete_queue_save, rename_queue_save, load_queue_save
 
 from database.guild import guild, guild_ids
@@ -339,7 +339,7 @@ async def execute_get_data(request_dict, glob: GlobalVars):
 
     # BOT
     elif data_type == 'bot_guilds':
-        update_guilds(glob)
+        update(glob)
         bot_guilds = []
         for bot_guild in glob.bot.guilds:
             to_append = GuildData(glob, bot_guild.id, {})

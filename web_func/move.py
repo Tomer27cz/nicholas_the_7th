@@ -5,7 +5,7 @@ from classes.video_class import Queue
 
 from utils.log import log
 from utils.translate import tg
-from utils.save import save_json, push_update
+from utils.save import update, push_update
 from utils.discord import to_queue
 from database.guild import guild
 
@@ -31,7 +31,7 @@ async def move_def(ctx, glob: GlobalVars, org_number, destination_number, epheme
             video = db_guild.queue.pop(org_number)
             db_guild.queue.insert(destination_number, video)
 
-            save_json(glob)
+            update(glob)
             push_update(glob, guild_id)
 
             message = f"{tg(guild_id, 'Moved')} #{org_number} to #{destination_number} : {video.title}"

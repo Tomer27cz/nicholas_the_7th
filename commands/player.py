@@ -7,7 +7,7 @@ import classes.view
 from utils.source import GetSource
 from utils.log import log
 from utils.translate import tg
-from utils.save import save_json, push_update
+from utils.save import update, push_update
 from utils.discord import now_to_history, create_embed, to_queue
 from utils.video_time import set_started, set_new_time
 from utils.global_vars import sound_effects, radio_dict
@@ -20,7 +20,6 @@ from commands.utils import ctx_check
 
 import discord
 from discord import app_commands
-from typing import Literal
 from os import path
 import asyncio
 import sys
@@ -160,7 +159,7 @@ async def play_def(ctx, glob: GlobalVars, url=None, force=False, mute_response=F
         glob.ses.commit()
 
         push_update(glob, guild_id)
-        save_json(glob)
+        update(glob)
 
         # Response
         options = db_guild.options
@@ -199,14 +198,12 @@ async def play_def(ctx, glob: GlobalVars, url=None, force=False, mute_response=F
         await ctx.reply(message)
         return ReturnData(False, message)
 
-async def radio_def(ctx, glob: GlobalVars, favourite_radio: Literal['Rádio BLANÍK', 'Rádio BLANÍK CZ', 'Evropa 2', 'Fajn Radio', 'Hitrádio PopRock', 'Český rozhlas Pardubice', 'Radio Beat', 'Country Radio', 'Radio Kiss', 'Český rozhlas Vltava', 'Hitrádio Černá Hora'] = None,
-                    radio_code: int = None, video_from_queue=None) -> ReturnData:
+async def radio_def(ctx, glob: GlobalVars, radio_name: str, video_from_queue=None) -> ReturnData:
     """
     Play radio
     :param glob: GlobalVars
     :param ctx: Context
-    :param favourite_radio: ('Rádio BLANÍK', 'Rádio BLANÍK CZ', 'Evropa 2', 'Fajn Radio', 'Hitrádio PopRock', 'Český rozhlas Pardubice', 'Radio Beat', 'Country Radio', 'Radio Kiss', 'Český rozhlas Vltava', 'Hitrádio Černá Hora')
-    :param radio_code: (0-95)
+    :param radio_name: Name of the radio
     :param video_from_queue: VideoClass child
     :return: ReturnData
     """
@@ -218,12 +215,6 @@ async def radio_def(ctx, glob: GlobalVars, favourite_radio: Literal['Rádio BLAN
     if is_ctx:
         if not ctx.interaction.response.is_done():
             await ctx.defer()
-
-    # Check arguments
-    if favourite_radio and radio_code:
-        message = tg(guild_id, "Only **one** argument possible!")
-        await ctx.reply(message, ephemeral=True)
-        return ReturnData(False, message)
 
     # Connect to voice channel
     if not guild_object.voice_client:
@@ -246,12 +237,9 @@ async def radio_def(ctx, glob: GlobalVars, favourite_radio: Literal['Rádio BLAN
         url = video.stream_url
 
     else:
-        # Get radio type
-        radio_type: str = favourite_radio if favourite_radio else list(radio_dict.keys())[radio_code] if radio_code else 'Evropa 2'
-
         # Create NowPlaying class
-        url = radio_dict[radio_type]['stream']
-        video = NowPlaying(glob, 'Radio', author_id, guild_id, radio_info=dict(name=radio_type), stream_url=url)
+        url = radio_dict[radio_name]['stream']
+        video = NowPlaying(glob, 'Radio', author_id, guild_id, radio_info=dict(name=radio_name), stream_url=url)
 
     # Set is_radio to True (just to be sure)
     guild(glob, guild_id).options.is_radio = True
@@ -275,7 +263,7 @@ async def radio_def(ctx, glob: GlobalVars, favourite_radio: Literal['Rádio BLAN
     else:
         await ctx.reply(embed=embed)
 
-    save_json(glob)
+    update(glob)
 
     return ReturnData(True, tg(guild_id, "Radio **started**"))
 
@@ -438,7 +426,7 @@ async def loop_command_def(ctx, glob: GlobalVars, clear_queue_opt: bool=False, e
         to_queue(glob, guild_id, db_guild.now_playing)
         db_guild.options.loop = True
         push_update(glob, guild_id)
-        save_json(glob)
+        update(glob)
 
         message = f'{tg(guild_id, "Queue **cleared**, Player will now loop **currently** playing song:")} [`{db_guild.now_playing.title}`](<{db_guild.now_playing.url}>)'
         await ctx.reply(message)
@@ -447,7 +435,7 @@ async def loop_command_def(ctx, glob: GlobalVars, clear_queue_opt: bool=False, e
     if options.loop:
         db_guild.options.loop = False
         push_update(glob, guild_id)
-        save_json(glob)
+        update(glob)
 
         message = tg(guild_id, "Loop mode: `False`")
         await ctx.reply(message, ephemeral=ephemeral)
@@ -457,7 +445,7 @@ async def loop_command_def(ctx, glob: GlobalVars, clear_queue_opt: bool=False, e
     if db_guild.now_playing and add_to_queue_when_activated:
         to_queue(glob, guild_id, db_guild.now_playing)
     push_update(glob, guild_id)
-    save_json(glob)
+    update(glob)
 
     message = tg(guild_id, 'Loop mode: `True`')
     await ctx.reply(message, ephemeral=True)
@@ -535,4 +523,4 @@ async def earrape_command_def(ctx, glob: GlobalVars):
     else:
         await ctx.reply(tg(ctx_guild_id, f'Ear Rape can only be activated if the bot is in a voice channel'), ephemeral=True)
 
-    save_json(glob)
+    update(glob)

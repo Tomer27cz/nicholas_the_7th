@@ -8,10 +8,11 @@ if TYPE_CHECKING:
 import commands.player
 import commands.queue
 
-from utils.save import save_json
+from utils.save import update
 from utils.translate import tg
 from utils.discord import get_voice_client, to_queue
 from utils.url import get_playlist_from_url
+from utils.log import log
 
 from database.guild import guild
 
@@ -107,7 +108,6 @@ class PlayerControlView(View):
             await interaction.response.send_message(tg(self.guild_id, "No audio"), ephemeral=True)
 
 class SearchOptionView(View):
-
     def __init__(self, ctx, glob: GlobalVars, force=False, from_play=False):
         super().__init__(timeout=180)
 
@@ -125,7 +125,7 @@ class SearchOptionView(View):
             to_queue(self.glob, self.guild_id, video, position=0)
         else:
             to_queue(self.glob, self.guild_id, video)
-        save_json(self.glob)
+        update(self.glob)
         await interaction.response.edit_message(content=f'[`{video.title}`](<{video.url}>) '
                                                         f'{tg(self.guild_id, "added to queue!")}', view=None)
         if self.from_play:

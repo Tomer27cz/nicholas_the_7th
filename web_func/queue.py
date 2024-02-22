@@ -5,7 +5,7 @@ from classes.data_classes import ReturnData
 
 from utils.log import log
 from utils.translate import tg
-from utils.save import save_json
+from utils.save import update
 from utils.discord import to_queue
 from utils.global_vars import radio_dict
 from database.guild import guild
@@ -34,7 +34,7 @@ async def web_queue(web_data, glob: GlobalVars, video_type, position=None) -> Re
     try:
         to_queue(glob, guild_id, video, position=position)
 
-        save_json(glob)
+        update(glob)
         log(guild_id, f"web_queue -> Queued: {video.url}", log_type='function')
         return ReturnData(True, f'{tg(ctx_guild_id, "Queued")} {video.title}', video)
 
@@ -55,10 +55,10 @@ async def web_queue_from_radio(web_data, glob: GlobalVars, radio_name=None, posi
             to_queue(glob, web_data.guild_id, video, copy_video=False)
 
         message = f'`{video.title}` ' + tg(ctx_guild_id, 'added to queue!')
-        save_json(glob)
+        update(glob)
         return ReturnData(True, message, video)
 
     else:
         message = tg(ctx_guild_id, 'Radio station') + f' `{radio_name}` ' + tg(ctx_guild_id, 'does not exist!')
-        save_json(glob)
+        update(glob)
         return ReturnData(False, message)

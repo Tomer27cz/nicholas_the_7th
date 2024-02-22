@@ -1,7 +1,7 @@
 from utils.global_vars import GlobalVars
 
 import classes.data_classes
-from utils.save import save_json
+from utils.save import update
 
 import discord
 from discord.ext import commands as dc_commands
@@ -21,7 +21,7 @@ def ctx_check(ctx: dc_commands.Context or classes.data_classes.WebData, glob: Gl
     :param glob: GlobalVars
     :return: (is_ctx, guild_id, author_id, guild) - (bool, int, int, discord.Guild)
     """
-    save_json(glob)
+    update(glob)
     if isinstance(ctx, classes.data_classes.WebData):
         bot = glob.bot
         is_ctx = False

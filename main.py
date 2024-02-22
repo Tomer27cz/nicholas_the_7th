@@ -8,10 +8,13 @@ from spotipy.oauth2 import SpotifyClientCredentials
 
 from classes.data_classes import WebData
 
+from commands.autocomplete import *
+
 from utils.discord import get_content_of_message
 from utils.log import send_to_admin
-from utils.save import update_guilds
+# from utils.save import update
 from utils.json import *
+from utils.translate import text
 
 from commands.admin import *
 from commands.chat_export import *
@@ -19,6 +22,8 @@ from commands.general import *
 from commands.player import *
 from commands.queue import *
 from commands.voice import *
+
+from discord.ext import commands as dc_commands
 
 from ipc.server import ipc_run
 import config
@@ -59,9 +64,7 @@ class Bot(dc_commands.Bot):
         await bot.change_presence(activity=discord.Game(name=f"/help"))
         log(None, f'Logged in as:\n{bot.user.name}\n{bot.user.id}')
 
-        update_guilds(glob)
-
-        save_json(glob)
+        update(glob)
 
     async def on_guild_join(self, guild_object):
         # log
@@ -73,7 +76,7 @@ class Bot(dc_commands.Bot):
 
         # create guild object
         create_guild(glob, guild_object.id)
-        save_json(glob)
+        update(glob)
 
         # get text channels
         text_channels = guild_object.text_channels
@@ -100,7 +103,7 @@ class Bot(dc_commands.Bot):
         await send_to_admin(glob, log_msg)
 
         # update guilds
-        save_json(glob)
+        update(glob)
 
     async def on_voice_state_update(self, member, before, after):
         # set voice state
@@ -271,19 +274,19 @@ build_old_guilds = False
 # with open(f'{config.PARENT_DIR}db/radio.json', 'r', encoding='utf-8') as file:
 #     radio_dict = json.load(file)
 
-for radio_name in radio_dict:
-    radio_info_class = ses.query(video_class.RadioInfo).filter(video_class.RadioInfo.name == radio_name).first()
+for radio_name_ in radio_dict:
+    radio_info_class = ses.query(video_class.RadioInfo).filter(video_class.RadioInfo.name == radio_name_).first()
     if not radio_info_class:
-        radio_info_class = video_class.RadioInfo(radio_dict[radio_name]['id'])
+        radio_info_class = video_class.RadioInfo(radio_dict[radio_name_]['id'])
         ses.add(radio_info_class)
         ses.commit()
-        log(None, f'Added {radio_name} to database')
+        log(None, f'Added {radio_name_} to database')
 log(None, 'Loaded radio.json')
 
 # with open(f'{config.PARENT_DIR}db/languages.json', 'r', encoding='utf-8') as file:
 #     languages_dict = json.load(file)
 
-text = languages_dict['en']
+# text = languages_dict['en']
 authorized_users += [my_id, d_id, config.DEVELOPER_ID, 349164237605568513]
 log(None, 'Loaded languages.json')
 
@@ -325,106 +328,92 @@ if build_old_guilds:
 
 # --------------------------------------- QUEUE --------------------------------------------------
 
-@bot.hybrid_command(name='queue', with_app_command=True, description=text['queue_add'], help=text['queue_add'])
-@app_commands.describe(url=text['url'], position=text['pos'])
-async def queue_command(ctx: dc_commands.Context, url, position: int = None):
+@bot.hybrid_command(name='queue', with_app_command=True, description=text('queue_add'), help=text('queue_add'))
+@app_commands.describe(query=text('query'), position=text('pos'))
+async def queue_command(ctx: dc_commands.Context, query, position: int = None):
     log(ctx, 'queue', options=locals(), log_type='command', author=ctx.author)
-    await queue_command_def(ctx, glob, url, position=position)
+    await queue_command_def(ctx, glob, query, position=position)
 
-# @bot.hybrid_command(name='queue_export', with_app_command=True, description=text['queue_export'], help=text['queue_export'])
-# @app_commands.describe(guild_id=text['guild_id'], ephemeral=text['ephemeral'])
-# async def export_queue_command(ctx: dc_commands.Context, guild_id=None, ephemeral: bool=True):
-#     log(ctx, 'export_queue', [guild_id, ephemeral], log_type='command', author=ctx.author)
-#     await export_queue(ctx, glob, guild_id, ephemeral=ephemeral)
-#
-# @bot.hybrid_command(name='queue_import', with_app_command=True, description=text['queue_import'], help=text['queue_import'])
-# @app_commands.describe(queue_string=text['queue_string'], guild_id=text['guild_id'], ephemeral=text['ephemeral'])
-# async def import_queue_command(ctx: dc_commands.Context, queue_string: str, guild_id=None, ephemeral: bool=True):
-#     log(ctx, 'import_queue', [queue_string, guild_id, ephemeral], log_type='command', author=ctx.author)
-#     await import_queue(ctx, glob, queue_string, guild_id, ephemeral=ephemeral)
-
-@bot.hybrid_command(name='next_up', with_app_command=True, description=text['next_up'], help=text['next_up'])
-@app_commands.describe(url=text['url'], user_only=text['ephemeral'])
-async def next_up(ctx: dc_commands.Context, url, user_only: bool = False):
+@bot.hybrid_command(name='next_up', with_app_command=True, description=text('next_up'), help=text('next_up'))
+@app_commands.describe(query=text('query'), user_only=text('ephemeral'))
+async def next_up(ctx: dc_commands.Context, query, user_only: bool = False):
     log(ctx, 'next_up', options=locals(), log_type='command', author=ctx.author)
-    await next_up_def(ctx, glob, url, user_only)
+    await next_up_def(ctx, glob, query, user_only)
 
-@bot.hybrid_command(name='skip', with_app_command=True, description=text['skip'], help=text['skip'])
+@bot.hybrid_command(name='skip', with_app_command=True, description=text('skip'), help=text('skip'))
 async def skip(ctx: dc_commands.Context):
     log(ctx, 'skip', options=locals(), log_type='command', author=ctx.author)
     await skip_def(ctx, glob)
 
-@bot.hybrid_command(name='remove', with_app_command=True, description=text['queue_remove'], help=text['queue_remove'])
-@app_commands.describe(number=text['number'], user_only=text['ephemeral'])
-async def remove(ctx: dc_commands.Context, number: int, user_only: bool = False):
+@bot.hybrid_command(name='remove', with_app_command=True, description=text('queue_remove'), help=text('queue_remove'))
+@app_commands.describe(song=text('remove_song'), user_only=text('ephemeral'))
+async def remove(ctx: dc_commands.Context, song, user_only: bool = False):
     log(ctx, 'remove', options=locals(), log_type='command', author=ctx.author)
-    await remove_def(ctx, glob, number, ephemeral=user_only)
+    await remove_def(ctx, glob, song, ephemeral=user_only)
 
-@bot.hybrid_command(name='clear', with_app_command=True, description=text['clear'], help=text['clear'])
-@app_commands.describe(user_only=text['ephemeral'])
+@bot.hybrid_command(name='clear', with_app_command=True, description=text('clear'), help=text('clear'))
+@app_commands.describe(user_only=text('ephemeral'))
 async def clear(ctx: dc_commands.Context, user_only: bool = False):
     log(ctx, 'clear', options=locals(), log_type='command', author=ctx.author)
     await clear_def(ctx, glob, user_only)
 
-@bot.hybrid_command(name='shuffle', with_app_command=True, description=text['shuffle'], help=text['shuffle'])
-@app_commands.describe(user_only=text['ephemeral'])
+@bot.hybrid_command(name='shuffle', with_app_command=True, description=text('shuffle'), help=text('shuffle'))
+@app_commands.describe(user_only=text('ephemeral'))
 async def shuffle(ctx: dc_commands.Context, user_only: bool = False):
     log(ctx, 'shuffle', options=locals(), log_type='command', author=ctx.author)
     await shuffle_def(ctx, glob, user_only)
 
-@bot.hybrid_command(name='show', with_app_command=True, description=text['queue_show'], help=text['queue_show'])
-@app_commands.describe(display_type=text['display_type'], user_only=text['ephemeral'])
+@bot.hybrid_command(name='show', with_app_command=True, description=text('queue_show'), help=text('queue_show'))
+@app_commands.describe(display_type=text('display_type'), user_only=text('ephemeral'))
 async def show(ctx: dc_commands.Context, display_type: Literal['short', 'medium', 'long'] = None,
                list_type: Literal['queue', 'history'] = 'queue', user_only: bool = False):
     log(ctx, 'show', options=locals(), log_type='command', author=ctx.author)
     await show_def(ctx, glob, display_type, list_type, user_only)
 
-@bot.hybrid_command(name='search', with_app_command=True, description=text['search'], help=text['search'])
-@app_commands.describe(search_query=text['search_query'])
-async def search_command(ctx: dc_commands.Context, search_query):
-    log(ctx, 'search', options=locals(), log_type='command', author=ctx.author)
-    await search_command_def(ctx, glob, search_query)
+# @bot.hybrid_command(name='search', with_app_command=True, description=text('search'), help=text('search'))
+# @app_commands.describe(search_query=text('search_query'))
+# async def search_command(ctx: dc_commands.Context, search_query):
+#     log(ctx, 'search', options=locals(), log_type='command', author=ctx.author)
+#     await search_command_def(ctx, glob, search_query)
 
 # --------------------------------------- PLAYER --------------------------------------------------
 
-@bot.hybrid_command(name='play', with_app_command=True, description=text['play'], help=text['play'])
-@app_commands.describe(url=text['play'], force=text['force'])
-async def play(ctx: dc_commands.Context, url=None, force=False):
+@bot.hybrid_command(name='play', with_app_command=True, description=text('play'), help=text('play'))
+@app_commands.describe(query=text('query'), force=text('force'))
+async def play(ctx: dc_commands.Context, query, force=False):
     log(ctx, 'play', options=locals(), log_type='command', author=ctx.author)
-    await play_def(ctx, glob, url, force)
+    await play_def(ctx, glob, query, force)
 
-@bot.hybrid_command(name='radio', with_app_command=True, description=text['radio'], help=text['radio'])
-@app_commands.describe(favourite_radio=text['favourite_radio'], radio_code=text['radio_code'])
-async def radio(ctx: dc_commands.Context, favourite_radio: Literal[
-    'Rádio BLANÍK', 'Rádio BLANÍK CZ', 'Evropa 2', 'Fajn Radio', 'Hitrádio PopRock', 'Český rozhlas Pardubice', 'Radio Beat', 'Country Radio', 'Radio Kiss', 'Český rozhlas Vltava', 'Hitrádio Černá Hora'] = None,
-                radio_code: int = None):
+@bot.hybrid_command(name='radio', with_app_command=True, description=text('radio'), help=text('radio'))
+@app_commands.describe(radio_name=text('radio_name'))
+async def radio(ctx: dc_commands.Context, radio_name: str):
     log(ctx, 'radio', options=locals(), log_type='command', author=ctx.author)
-    await radio_def(ctx, glob, favourite_radio, radio_code)
+    await radio_def(ctx, glob, radio_name)
 
-@bot.hybrid_command(name='ps', with_app_command=True, description=text['ps'], help=text['ps'])
-@app_commands.describe(effect_number=text['effects_number'])
+@bot.hybrid_command(name='ps', with_app_command=True, description=text('ps'), help=text('ps'))
+@app_commands.describe(effect_number=text('effects_number'))
 async def ps(ctx: dc_commands.Context, effect_number: app_commands.Range[int, 1, len(sound_effects)]):
     log(ctx, 'ps', options=locals(), log_type='command', author=ctx.author)
     await ps_def(ctx, glob, effect_number)
 
-@bot.hybrid_command(name='nowplaying', with_app_command=True, description=text['nowplaying'], help=text['nowplaying'])
-@app_commands.describe(user_only=text['ephemeral'])
+@bot.hybrid_command(name='nowplaying', with_app_command=True, description=text('nowplaying'), help=text('nowplaying'))
+@app_commands.describe(user_only=text('ephemeral'))
 async def nowplaying(ctx: dc_commands.Context, user_only: bool = False):
     log(ctx, 'nowplaying', options=locals(), log_type='command', author=ctx.author)
     await now_def(ctx, glob, user_only)
 
-@bot.hybrid_command(name='last', with_app_command=True, description=text['last'], help=text['last'])
-@app_commands.describe(user_only=text['ephemeral'])
+@bot.hybrid_command(name='last', with_app_command=True, description=text('last'), help=text('last'))
+@app_commands.describe(user_only=text('ephemeral'))
 async def last(ctx: dc_commands.Context, user_only: bool = False):
     log(ctx, 'last', options=locals(), log_type='command', author=ctx.author)
     await last_def(ctx, glob, user_only)
 
-@bot.hybrid_command(name='loop', with_app_command=True, description=text['loop'], help=text['loop'])
+@bot.hybrid_command(name='loop', with_app_command=True, description=text('loop'), help=text('loop'))
 async def loop_command(ctx: dc_commands.Context):
     log(ctx, 'loop', options=locals(), log_type='command', author=ctx.author)
     await loop_command_def(ctx, glob)
 
-@bot.hybrid_command(name='loop_this', with_app_command=True, description=text['loop_this'], help=text['loop_this'])
+@bot.hybrid_command(name='loop_this', with_app_command=True, description=text('loop_this'), help=text('loop_this'))
 async def loop_this(ctx: dc_commands.Context):
     log(ctx, 'loop_this', options=locals(), log_type='command', author=ctx.author)
     await loop_command_def(ctx, glob, clear_queue_opt=True)
@@ -451,20 +440,20 @@ async def resume(ctx: dc_commands.Context):
     log(ctx, 'resume', options=locals(), log_type='command', author=ctx.author)
     await resume_def(ctx, glob)
 
-@bot.hybrid_command(name='join', with_app_command=True, description=text['join'], help=text['join'])
-@app_commands.describe(channel_id=text['channel_id'])
-async def join(ctx: dc_commands.Context, channel_id=None):
+@bot.hybrid_command(name='join', with_app_command=True, description=text('join'), help=text('join'))
+@app_commands.describe(channel=text('channel'))
+async def join(ctx: dc_commands.Context, channel: discord.VoiceChannel=None):
     log(ctx, 'join', options=locals(), log_type='command', author=ctx.author)
-    await join_def(ctx, glob, channel_id)
+    await join_def(ctx, glob, channel_id=channel.id if channel else None)
 
-@bot.hybrid_command(name='disconnect', with_app_command=True, description=text['die'], help=text['die'])
+@bot.hybrid_command(name='disconnect', with_app_command=True, description=text('die'), help=text('die'))
 async def disconnect(ctx: dc_commands.Context):
     log(ctx, 'disconnect', options=locals(), log_type='command', author=ctx.author)
     await disconnect_def(ctx, glob)
 
-@bot.hybrid_command(name='volume', with_app_command=True, description=text['volume'], help=text['volume'])
-@app_commands.describe(volume=text['volume'], user_only=text['ephemeral'])
-async def volume_command(ctx: dc_commands.Context, volume=None, user_only: bool = False):
+@bot.hybrid_command(name='volume', with_app_command=True, description=text('volume'), help=text('volume'))
+@app_commands.describe(volume=text('volume'), user_only=text('ephemeral'))
+async def volume_command(ctx: dc_commands.Context, volume: int=None, user_only: bool = False):
     log(ctx, 'volume', options=locals(), log_type='command', author=ctx.author)
     await volume_command_def(ctx, glob, volume, user_only)
 
@@ -505,22 +494,22 @@ async def add_to_queue(inter, message: discord.Message):
 # @bot.tree.context_menu(name='Show Profile')
 # async def show_profile(inter, member: discord.Member):
 #     ctx = await bot.get_context(inter)
-#     log(ctx, 'show_profile', [member], log_type='command', author=ctx.author)
+#     log(ctx, 'show_profile', [member), log_type='command', author=ctx.author)
 #
 #     embed = discord.Embed(title=f"{member.name}#{member.discriminator}",
 #                           description=f"ID: `{member.id}` | Name: `{member.display_name}` | Nickname: `{member.nick}`")
 #     embed.add_field(name="Created at", value=member.created_at.strftime("%d/%m/%Y %H:%M:%S"), inline=True)
 #     embed.add_field(name="Joined at", value=member.joined_at.strftime("%d/%m/%Y %H:%M:%S"), inline=True)
 #
-#     embed.add_field(name="Roles", value=", ".join([role.mention for role in member.roles[1:]]), inline=False)
+#     embed.add_field(name="Roles", value=", ".join([role.mention for role in member.roles[1:))), inline=False)
 #
 #     embed.add_field(name='Top Role', value=f'{member.top_role.mention}', inline=True)
 #
 #     # noinspection PyUnresolvedReferences
-#     embed.add_field(name='Badges', value=', '.join([badge.name for badge in member.public_flags.all()]), inline=False)
+#     embed.add_field(name='Badges', value=', '.join([badge.name for badge in member.public_flags.all())), inline=False)
 #
 #     embed.add_field(name='Avatar',
-#                     value=f'[Default Avatar]({member.avatar}) | [Display Avatar]({member.display_avatar})',
+#                     value=f'[Default Avatar)({member.avatar}) | [Display Avatar)({member.display_avatar})',
 #                     inline=False)
 #
 #     embed.add_field(name='Activity', value=f'`{member.activity}`', inline=False)
@@ -550,41 +539,41 @@ async def add_to_queue(inter, message: discord.Message):
 
 # --------------------------------------- GENERAL --------------------------------------------------
 
-@bot.hybrid_command(name='ping', with_app_command=True, description=text['ping'], help=text['ping'])
+@bot.hybrid_command(name='ping', with_app_command=True, description=text('ping'), help=text('ping'))
 async def ping_command(ctx: dc_commands.Context):
     log(ctx, 'ping', options=locals(), log_type='command', author=ctx.author)
     await ping_def(ctx, glob)
 
 # noinspection PyTypeHints
-@bot.hybrid_command(name='language', with_app_command=True, description=text['language'], help=text['language'])
-@app_commands.describe(country_code=text['country_code'])
+@bot.hybrid_command(name='language', with_app_command=True, description=text('language'), help=text('language'))
+@app_commands.describe(country_code=text('country_code'))
 async def language_command(ctx: dc_commands.Context, country_code: Literal[tuple(languages_dict.keys())]):
     log(ctx, 'language', options=locals(), log_type='command', author=ctx.author)
 
     await language_command_def(ctx, glob, country_code)
 
-@bot.hybrid_command(name='sound_effects', with_app_command=True, description=text['sound'], help=text['sound'])
-@app_commands.describe(user_only=text['ephemeral'])
+@bot.hybrid_command(name='sound_effects', with_app_command=True, description=text('sound'), help=text('sound'))
+@app_commands.describe(user_only=text('ephemeral'))
 async def sound_effects(ctx: dc_commands.Context, user_only: bool = True):
     log(ctx, 'sound_effects', options=locals(), log_type='command', author=ctx.author)
 
     await sound_effects_def(ctx, glob, user_only)
 
-@bot.hybrid_command(name='list_radios', with_app_command=True, description=text['list_radios'], help=text['list_radios'])
-@app_commands.describe(user_only=text['ephemeral'])
+@bot.hybrid_command(name='list_radios', with_app_command=True, description=text('list_radios'), help=text('list_radios'))
+@app_commands.describe(user_only=text('ephemeral'))
 async def list_radios(ctx: dc_commands.Context, user_only: bool = True):
     log(ctx, 'list_radios', options=locals(), log_type='command', author=ctx.author)
 
     await list_radios_def(ctx, glob, user_only)
 
-@bot.hybrid_command(name='key', with_app_command=True, description=text['key'], help=text['key'])
+@bot.hybrid_command(name='key', with_app_command=True, description=text('key'), help=text('key'))
 async def key_command(ctx: dc_commands.Context):
     log(ctx, 'key', options=locals(), log_type='command', author=ctx.author)
 
     await key_def(ctx, glob)
 
 # noinspection PyTypeHints
-@bot.hybrid_command(name='options', with_app_command=True, description=text['options'], help=text['options'])
+@bot.hybrid_command(name='options', with_app_command=True, description=text('options'), help=text('options'))
 @app_commands.describe(volume='In percentage (200 max)',
                        buffer='In seconds (what time to wait after no music is playing to disconnect)',
                        language='Language code', response_type='short/long -> embeds/plain text',
@@ -601,6 +590,25 @@ async def options_command(ctx: dc_commands.Context,
     log(ctx, 'options', options=locals(), log_type='command', author=ctx.author)
 
     await options_command_def(ctx, glob, loop=loop, language=language, response_type=response_type, buttons=buttons, volume=volume, buffer=buffer, history_length=history_length)
+
+# ---------------------------------------------- AUTOCOMPLETE ----------------------------------------------------------
+
+@radio.autocomplete('radio_name')
+async def radio_autocomplete(ctx: discord.Interaction, current: str):
+    return await radio_autocomplete_def(ctx, current)
+
+@remove.autocomplete('song')
+async def song_autocomplete(ctx: discord.Interaction, current: str):
+    return await song_autocomplete_def(ctx, current, glob)
+
+# @queue_command.autocomplete('query')
+# @next_up.autocomplete('query')
+# @play.autocomplete('query')
+# async def query_autocomplete(ctx: discord.Interaction, query: str):
+#     print(f"query_autocomplete: {query}")
+#     return await query_autocomplete_def(ctx, query)
+
+
 
 # ---------------------------------------- ADMIN --------------------------------------------------
 

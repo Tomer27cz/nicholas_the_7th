@@ -1,7 +1,5 @@
 from utils.global_vars import GlobalVars
-
 from classes.data_classes import ReturnData
-
 from utils.log import log
 from utils.translate import tg
 

@@ -4,7 +4,7 @@ from classes.data_classes import ReturnData
 
 from utils.log import log
 from utils.translate import tg
-from utils.save import save_json, push_update
+from utils.save import update, push_update
 from utils.discord import now_to_history, get_voice_client
 from utils.video_time import set_stopped, set_resumed
 
@@ -83,7 +83,7 @@ async def pause_def(ctx, glob, mute_response: bool = False) -> ReturnData:
         message = tg(guild_id, "Bot is not connected to a voice channel")
         resp = False
 
-    save_json(glob)
+    update(glob)
     push_update(glob, guild_id)
 
     if not mute_response:
@@ -121,7 +121,7 @@ async def resume_def(ctx, glob: GlobalVars, mute_response: bool = False) -> Retu
         message = tg(guild_id, "Bot is not connected to a voice channel")
         resp = False
 
-    save_json(glob)
+    update(glob)
     push_update(glob, guild_id)
 
     if not mute_response:
@@ -290,7 +290,7 @@ async def volume_command_def(ctx, glob: GlobalVars, volume: Union[float, int] = 
     else:
         message = f'{tg(guild_id, "The volume for this server is:")} `{int(db_guild.options.volume * 100)}%`'
 
-    save_json(glob)
+    update(glob)
 
     if not mute_response:
         await ctx.reply(message, ephemeral=ephemeral)

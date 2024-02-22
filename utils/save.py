@@ -6,7 +6,7 @@ import database.guild as guild
 from classes.data_classes import Guild, GuildData
 from time import time
 
-def save_json(glob: GlobalVars):
+def update(glob: GlobalVars):
     """
     Commits data to the database
     Updates guilds ( update_guilds() )
@@ -14,18 +14,19 @@ def save_json(glob: GlobalVars):
     :return: None
     """
     glob.ses.commit()
-    update_guilds(glob)
+    _update_guilds(glob)
     glob.ses.commit()
 
-def update_guilds(glob: GlobalVars):
+def _update_guilds(glob: GlobalVars):
     """
     Checks if bot is in a new guild or left a guild
     and renews all guild objects if they have not been renewed in the last hour
     :param glob: GlobalVars object
     :return: None
     """
+
     glob.ses.commit()
-    db_guilds = [db_guild_object.id for db_guild_object in glob.ses.query(Guild).all()]
+    db_guilds = [_[0] for _ in glob.ses.query(Guild.id).with_entities(Guild.id).all()]
     bot_guilds = [guild_object.id for guild_object in glob.bot.guilds]
 
     for bot_guild_id in bot_guilds:
@@ -63,7 +64,6 @@ def update_guilds(glob: GlobalVars):
 
         # db_g_data = ses.query(GuildData).filter(GuildData.id == guild_id).first()
         # print(db_g_data)
-
 
 def push_update(glob: GlobalVars, guild_id: int):
     glob.ses.commit()

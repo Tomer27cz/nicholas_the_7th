@@ -6,7 +6,7 @@ if TYPE_CHECKING:
 
 import classes.video_class as video_class
 import database.guild as db
-from utils.save import save_json, push_update
+from utils.save import update, push_update
 
 from time import time
 
@@ -32,7 +32,7 @@ def set_stopped(glob: GlobalVars, video):
             db.guild(glob, guild_id=video.guild_id).now_playing.played_duration = pd
         glob.ses.commit()
 
-    save_json(glob)
+    update(glob)
 
 def set_started(glob: GlobalVars, video, guild_object, chapters: Union[list[VideoChapter], None]= None):
     """
@@ -64,7 +64,7 @@ def set_started(glob: GlobalVars, video, guild_object, chapters: Union[list[Vide
     glob.ses.commit()
     push_update(glob, guild_id)
 
-    save_json(glob)
+    update(glob)
 
 def set_resumed(glob: GlobalVars, video):
     """
@@ -83,7 +83,7 @@ def set_resumed(glob: GlobalVars, video):
     db.guild(glob, guild_id=video.guild_id).now_playing.played_duration = pd
     glob.ses.commit()
 
-    save_json(glob)
+    update(glob)
 
 def set_new_time(glob: GlobalVars, video, time_stamp: int):
     """
@@ -106,26 +106,16 @@ def set_new_time(glob: GlobalVars, video, time_stamp: int):
     db.guild(glob, guild_id=video.guild_id).now_playing.played_duration = pd
     glob.ses.commit()
 
-    save_json(glob)
+    update(glob)
 
 def video_time_from_start(video) -> float:
-    len_played_duration = len(video.played_duration)
-    if len_played_duration == 0:
+    """
+    Returns the time from the start of the video
+    @param video: Video object
+    @return: float - time from the start of the video
+    """
+    if len(video.played_duration) == 0:
         return 0.0
-
-    # unnecessary code
-    # if len_played_duration == 1:
-    #     segment: TimeSegment = video.played_duration[0]
-    #     start: Union[None, int] = segment['start']['epoch']
-    #     end: Union[None, int] = segment['end']['epoch']
-    #
-    #     if start is None:
-    #         return 0.0
-    #
-    #     if end is None:
-    #         return int(time()) - start
-    #
-    #     return segment['end']['time_stamp']
 
     segment: TimeSegment = video.played_duration[-1]
     start: TimeSegmentInner = segment['start']
@@ -134,4 +124,9 @@ def video_time_from_start(video) -> float:
     if end['epoch'] is not None:
         return end['time_stamp']
 
+    # edge case
+    if start['epoch'] is None:
+        return 0.0
+
+    # time_stamp case - when the video was paused --///--
     return (int(time()) - start['epoch']) + start['time_stamp']

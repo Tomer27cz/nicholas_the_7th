@@ -15,15 +15,15 @@ class Guild(Base):
     __tablename__ = 'guilds'
 
     id = Column(Integer, primary_key=True)
-    options = relationship('Options', uselist=False, backref='guilds')
-    saves = relationship('Save', backref='guilds', order_by='Save.position', collection_class=ordering_list('position'))
-    queue = relationship('Queue', backref='guilds', order_by='Queue.position', collection_class=ordering_list('position'))
-    search_list = relationship('SearchList', backref='guilds', order_by='SearchList.position', collection_class=ordering_list('position'))
-    now_playing = relationship('NowPlaying', uselist=False, backref='guilds')
-    history = relationship('History', backref='guilds', order_by='History.position', collection_class=ordering_list('position'))
-    data = relationship('GuildData', uselist=False, backref='guilds')
+    options = relationship('Options', uselist=False, backref='guilds', lazy=True)
+    saves = relationship('Save', backref='guilds', order_by='Save.position', collection_class=ordering_list('position'), lazy=True)
+    queue = relationship('Queue', backref='guilds', order_by='Queue.position', collection_class=ordering_list('position'), lazy=True)
+    search_list = relationship('SearchList', backref='guilds', order_by='SearchList.position', collection_class=ordering_list('position'), lazy=True)
+    now_playing = relationship('NowPlaying', uselist=False, backref='guilds', lazy=True)
+    history = relationship('History', backref='guilds', order_by='History.position', collection_class=ordering_list('position'), lazy=True)
+    data = relationship('GuildData', uselist=False, backref='guilds', lazy=True)
     connected = Column(Boolean, default=True)
-    slowed_users = relationship('SlowedUser', backref='guilds')
+    slowed_users = relationship('SlowedUser', backref='guilds', lazy=True)
 
     def __init__(self, glob: GlobalVars, guild_id, json_data: dict):
         self.id = guild_id
@@ -215,7 +215,7 @@ class Save(Base):
     author_id = Column(Integer)
     created_at = Column(Integer)
 
-    queue = relationship('SaveVideo', backref='saves', order_by='SaveVideo.position', collection_class=ordering_list('position'))
+    queue = relationship('SaveVideo', backref='saves', order_by='SaveVideo.position', collection_class=ordering_list('position'), lazy=True)
 
     def __init__(self, guild_id: int, name: str, author_name: str, author_id: int):
         self.guild_id: int = guild_id

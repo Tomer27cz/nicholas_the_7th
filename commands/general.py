@@ -4,7 +4,7 @@ from classes.data_classes import ReturnData
 
 from utils.log import log
 from utils.translate import tg
-from utils.save import save_json
+from utils.save import update
 from utils.global_vars import radio_dict, sound_effects
 from database.guild import guild
 from utils.global_vars import languages_dict
@@ -26,7 +26,7 @@ async def ping_def(ctx, glob: GlobalVars) -> ReturnData:
     :return: ReturnData
     """
     log(ctx, 'ping_def', options=locals(), log_type='function', author=ctx.author)
-    save_json(glob)
+    update(glob)
 
     message = f'**Pong!** Latency: {round(glob.bot.latency * 1000)}ms'
     await ctx.reply(message)
@@ -46,7 +46,7 @@ async def language_command_def(ctx, glob: GlobalVars, country_code: Literal[tupl
     db_guild = guild(glob, guild_id)
 
     db_guild.options.language = country_code
-    save_json(glob)
+    update(glob)
 
     message = f'{tg(guild_id, "Changed the language for this server to: ")} `{db_guild.options.language}`'
     await ctx.reply(message)
@@ -79,7 +79,7 @@ async def sound_effects_def(ctx, glob: GlobalVars, ephemeral: bool = True) -> Re
 
     embed.add_field(name="", value=message, inline=False)
 
-    save_json(glob)
+    update(glob)
     await ctx.send(embed=embed, ephemeral=ephemeral)
     return ReturnData(True, tg(guild_id, 'Sound effects'))
 
@@ -110,7 +110,7 @@ async def list_radios_def(ctx, glob: GlobalVars, ephemeral: bool = True) -> Retu
 
     embed.add_field(name="", value=message, inline=False)
 
-    save_json(glob)
+    update(glob)
     await ctx.send(embed=embed, ephemeral=ephemeral)
     return ReturnData(True, tg(guild_id, 'Radio list'))
 
@@ -123,7 +123,7 @@ async def key_def(ctx: dc_commands.Context, glob: GlobalVars) -> ReturnData:
     """
     log(ctx, 'key_def', options=locals(), log_type='function', author=ctx.author)
     db_guild = guild(glob, ctx.guild.id)
-    save_json(glob)
+    update(glob)
 
     message = f'Key: `{db_guild.data.key}` -> [Control Panel]({config.WEB_URL}/guild/{ctx.guild.id}&key={db_guild.data.key})'
     await ctx.reply(message)

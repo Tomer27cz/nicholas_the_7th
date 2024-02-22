@@ -186,27 +186,32 @@ def video_class_current_chapter(self, glob: GlobalVars):
         if chapter['start_time'] < time_from_play < chapter['end_time']:
             return chapter['title']
 
-    utils.save.save_json(glob)
-
-def video_class_time(self, glob: GlobalVars):
-    if self.duration is None:
+def video_class_time(self, glob: GlobalVars) -> str:
+    """
+    Returns time from start and duration of video
+    @param self: VideoClass object child
+    @param glob: GlobalVars - consistency
+    @return: str - '{elapsed_time} / {duration}'
+    """
+    if self.duration is None or self.played_duration is None:
         return '0:00 / 0:00'
-    if self.played_duration[-1]['end']['epoch'] is not None:
-        return '0:00 / ' + convert_duration(self.duration)
 
-    time_from_play = int(utils.video_time.video_time_from_start(self))
+    # # i dont know why this is here past me?
+    # if self.played_duration[-1]['end']['epoch'] is not None:
+    #     return '0:00 / ' + convert_duration(self.duration)
+
+    # will be 0.0 if never played
+    elapsed_time = int(utils.video_time.video_time_from_start(self))
 
     try:
         duration = int(self.duration)
     except (ValueError, TypeError):
-        return f'{convert_duration(time_from_play)} / {self.duration}'
+        return f'{convert_duration(elapsed_time)} / {self.duration}'
 
-    if time_from_play == 0:
+    if elapsed_time == 0:
         return '0:00 / ' + convert_duration(duration)
 
-    utils.save.save_json(glob)
-
-    return f'{convert_duration(time_from_play)} / {convert_duration(duration)}'
+    return f'{convert_duration(elapsed_time)} / {convert_duration(duration)}'
 
 class RadioInfo(Base):
     """

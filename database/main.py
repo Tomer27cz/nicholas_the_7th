@@ -1,7 +1,7 @@
 # noinspection PyUnresolvedReferences
 from sqlalchemy import create_engine, ForeignKey, Column, Integer, String, DateTime, Boolean, CHAR, Float, JSON
 # noinspection PyUnresolvedReferences
-from sqlalchemy.orm import relationship, backref, sessionmaker, declarative_base, declarative_mixin, scoped_session
+from sqlalchemy.orm import relationship, backref, sessionmaker, declarative_base, declarative_mixin, scoped_session, load_only
 # noinspection PyUnresolvedReferences
 from sqlalchemy.ext.orderinglist import ordering_list
 # noinspection PyUnresolvedReferences

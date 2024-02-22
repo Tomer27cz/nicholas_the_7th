@@ -5,7 +5,7 @@ from classes.video_class import to_queue_class, to_now_playing_class, to_history
 
 from utils.log import log, send_to_admin
 from utils.translate import tg
-from utils.save import save_json, push_update
+from utils.save import update, push_update
 from database.guild import guild, delete_guild
 
 import commands.admin
@@ -153,7 +153,7 @@ async def web_video_edit(web_data, glob: GlobalVars, form) -> ReturnData:
             db_guild.history[index] = to_history_class(glob, video)
 
     push_update(glob, guild_id)
-    save_json(glob)
+    update(glob)
 
     return ReturnData(True,
                       tg(ctx_guild_id, 'Edited item') + f' {"h" if not is_queue else ""}{index} ' + tg(ctx_guild_id,
@@ -202,7 +202,7 @@ async def web_delete_guild(web_data, glob: GlobalVars, guild_id) -> ReturnData:
 
     delete_guild(glob, int(guild_id))
 
-    save_json(glob)
+    update(glob)
 
     return ReturnData(True, tg(ctx_guild_id, 'Deleted guild') + f' {guild_id} ' + tg(ctx_guild_id, 'successfully!'))
 
@@ -226,7 +226,7 @@ async def web_disconnect_guild(web_data, glob: GlobalVars, guild_id) -> ReturnDa
     except discord.HTTPException as e:
         return ReturnData(False, f"Something Failed -> HTTPException: {e}")
 
-    save_json(glob)
+    update(glob)
 
     return ReturnData(True, tg(ctx_guild_id, 'Left guild') + f' {guild_id} ' + tg(ctx_guild_id, 'successfully!'))
 

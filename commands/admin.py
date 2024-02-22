@@ -6,7 +6,7 @@ from classes.data_classes import ReturnData, SlowedUser, TorturedUser
 
 from utils.log import log
 from utils.translate import tg
-from utils.save import save_json
+from utils.save import update
 from utils.checks import is_float
 from utils.convert import to_bool
 from utils.global_vars import languages_dict
@@ -179,7 +179,7 @@ async def options_def(ctx: dc_commands.Context, glob: GlobalVars, server: Union[
         if last_updated is not None and last_updated != 'None':
             options.last_updated = int(last_updated)
 
-        save_json(glob)
+        update(glob)
 
     message = tg(guild_id, f'Edited options successfully!')
     await ctx.reply(message, ephemeral=ephemeral)
