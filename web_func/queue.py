@@ -4,7 +4,7 @@ from classes.video_class import Queue
 from classes.data_classes import ReturnData
 
 from utils.log import log
-from utils.translate import tg
+from utils.translate import text
 from utils.save import update
 from utils.discord import to_queue
 from utils.global_vars import radio_dict
@@ -26,7 +26,7 @@ async def web_queue(web_data, glob: GlobalVars, video_type, position=None) -> Re
             video = db_guild.history[index]
         except (TypeError, ValueError, IndexError):
             log(guild_id, "web_queue -> Invalid video type", log_type='function')
-            return ReturnData(False, tg(ctx_guild_id, 'Invalid video type (Internal web error -> contact developer)'))
+            return ReturnData(False, text(ctx_guild_id, glob, 'Invalid video type (Internal web error -> contact developer)'))
 
     if video.class_type == 'Radio':
         return await web_queue_from_radio(web_data, glob, video.radio_info['name'], position)
@@ -36,11 +36,11 @@ async def web_queue(web_data, glob: GlobalVars, video_type, position=None) -> Re
 
         update(glob)
         log(guild_id, f"web_queue -> Queued: {video.url}", log_type='function')
-        return ReturnData(True, f'{tg(ctx_guild_id, "Queued")} {video.title}', video)
+        return ReturnData(True, f'{text(ctx_guild_id, glob, "Queued")} {video.title}', video)
 
     except Exception as e:
         log(guild_id, f"web_queue -> Error while queuing: {e}", log_type='function')
-        return ReturnData(False, tg(ctx_guild_id, 'Error while queuing (Internal web error -> contact developer)'))
+        return ReturnData(False, text(ctx_guild_id, glob, 'Error while queuing (Internal web error -> contact developer)'))
 
 async def web_queue_from_radio(web_data, glob: GlobalVars, radio_name=None, position=None) -> ReturnData:
     log(web_data, 'web_queue_from_radio', options=locals(), log_type='function', author=web_data.author)
@@ -54,11 +54,11 @@ async def web_queue_from_radio(web_data, glob: GlobalVars, radio_name=None, posi
         else:
             to_queue(glob, web_data.guild_id, video, copy_video=False)
 
-        message = f'`{video.title}` ' + tg(ctx_guild_id, 'added to queue!')
+        message = f'`{video.title}` ' + text(ctx_guild_id, glob, 'added to queue!')
         update(glob)
         return ReturnData(True, message, video)
 
     else:
-        message = tg(ctx_guild_id, 'Radio station') + f' `{radio_name}` ' + tg(ctx_guild_id, 'does not exist!')
+        message = text(ctx_guild_id, glob, 'Radio station') + f' `{radio_name}` ' + text(ctx_guild_id, glob, 'does not exist!')
         update(glob)
         return ReturnData(False, message)

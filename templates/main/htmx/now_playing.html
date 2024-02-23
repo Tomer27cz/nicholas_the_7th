@@ -4,7 +4,7 @@
       <a class="btn btn-dark accordion-button" type="button" data-bs-toggle="collapse"
          data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="true"
          aria-controls="panelsStayOpen-collapseTwo">
-        <h3>{{ tg(gi, 'Now Playing') }}</h3>
+        <h3>{{ text(gi, glob, 'Now Playing') }}</h3>
       </a>
     </div>
   </div>
@@ -37,7 +37,7 @@
             <p class="q-text q-3">{{ convert_duration(guild.now_playing.duration) }}</p>
           </div>
           <div class="q-item3 q-items-center">
-            <p class="q-text q-1">{{ tg(gi, 'Played at') }}</p>
+            <p class="q-text q-1">{{ text(gi, glob, 'Played at') }}</p>
             <p class="q-text q-2">{{ struct_to_time(guild.now_playing.played_duration[0]['start']['epoch'], first='time') }}</p>
           </div>
           <div class="q-item2 q-items-center">
@@ -54,20 +54,20 @@
                 <button class="btn btn-outline btn-primary btn-sm btn-m" type="button" data-bs-toggle="modal"
                         data-bs-target=#videoEditModal_np hx-target="#videoEditModal_np_content" hx-swap="outerHTML"
                         hx-trigger="click once" hx-get="/guild/{{ gi }}/modals?type=now_playing_edit&key={{ key }}"
-                >{{ tg(gi, 'Edit') }}</button>
+                >{{ text(gi, glob, 'Edit') }}</button>
               {% endif %}
               <button type="button" class="btn btn-secondary btn-sm dropdown-toggle btn-m" data-bs-toggle="dropdown"
-                      aria-expanded="false">{{ tg(gi, 'More') }}</button>
+                      aria-expanded="false">{{ text(gi, glob, 'More') }}</button>
               <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
                 <li>
                   <button class="dropdown-item" hx-trigger="click throttle:500ms" hx-target="#q-main"
                           hx-swap="outerHTML" hx-get="/guild/{{ gi }}/queue?act=queue_btn&var=np&key={{ key }}"
-                  >{{ tg(gi, 'Add to queue') }}</button>
+                  >{{ text(gi, glob, 'Add to queue') }}</button>
                 </li>
                 <li>
                   <button class="dropdown-item" hx-trigger="click throttle:500ms" hx-target="#q-main"
                           hx-swap="outerHTML" hx-get="/guild/{{ gi }}/queue?act=nextup_btn&var=np&key={{ key }}"
-                  >{{ tg(gi, 'Play next') }}</button>
+                  >{{ text(gi, glob, 'Play next') }}</button>
                 </li>
                 <li>
                   <hr class="dropdown-divider">
@@ -76,7 +76,7 @@
                   <button class="dropdown-item" type="button" data-bs-toggle="modal"
                           data-bs-target=#videoModal_np hx-target="#videoModal_np_content" hx-swap="outerHTML"
                           hx-trigger="click once" hx-get="/guild/{{ gi }}/modals?act=now_playing&key={{ key }}"
-                  >{{ tg(gi, 'Info') }}</button>
+                  >{{ text(gi, glob, 'Info') }}</button>
                 </li>
               </ul>
             </form>
@@ -98,7 +98,7 @@
                         {{ chapter['title'] }} ({{ convert_duration(chapter['start_time']) }}
                         - {{ convert_duration(chapter['end_time']) }})
                         <button type="submit" class="btn btn-primary btn-sm" name="jump_btn"
-                                value={{ chapter['start_time'] }}>{{ tg(gi, 'Jump') }}</button>
+                                value={{ chapter['start_time'] }}>{{ text(gi, glob, 'Jump') }}</button>
                       </div>
                     </form>
                   </div>
@@ -119,7 +119,7 @@
         </div>
       {% else %}
         <div class="div-align">
-          <p>{{ tg(gi, 'Nothing is playing right now') }}</p>
+          <p>{{ text(gi, glob, 'Nothing is playing right now') }}</p>
         </div>
       {% endif %}
     </div>

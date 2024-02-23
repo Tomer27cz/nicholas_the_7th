@@ -17,8 +17,6 @@ class CustomUnpickler(pickle.Unpickler):
             return classes.data_classes.GuildData
         if name == 'Guild':
             return classes.data_classes.Guild
-        if name == 'SearchList':
-            return classes.video_class.SearchList
         if name == 'Queue':
             return classes.video_class.Queue
         if name == 'NowPlaying':

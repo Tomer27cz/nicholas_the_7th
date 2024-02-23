@@ -145,6 +145,30 @@ def guild_options_buffer(glob: GlobalVars, guild_id: int):
     :return: int
     """
     return glob.ses.query(data_classes.Options).filter_by(id=guild_id).with_entities(data_classes.Options.buffer)[0][0]
+def guild_options_response_type(glob: GlobalVars, guild_id: int):
+    """
+    Returns the response type of the guild
+    :param glob: GlobalVars
+    :param guild_id: ID of the guild
+    :return: str
+    """
+    return glob.ses.query(data_classes.Options).filter_by(id=guild_id).with_entities(data_classes.Options.response_type)[0][0]
+def guild_options_search_query(glob: GlobalVars, guild_id: int):
+    """
+    Returns the search query of the guild
+    :param glob: GlobalVars
+    :param guild_id: ID of the guild
+    :return: str
+    """
+    return glob.ses.query(data_classes.Options).filter_by(id=guild_id).with_entities(data_classes.Options.search_query)[0][0]
+def guild_options_language(glob: GlobalVars, guild_id: int):
+    """
+    Returns the language of the guild
+    :param glob: GlobalVars
+    :param guild_id: ID of the guild
+    :return: str
+    """
+    return glob.ses.query(data_classes.Options).filter_by(id=guild_id).with_entities(data_classes.Options.language)[0][0]
 
 # Guild Save
 def guild_save_count(glob: GlobalVars, guild_id: int):
@@ -156,7 +180,6 @@ def guild_save_count(glob: GlobalVars, guild_id: int):
     """
     with glob.ses.no_autoflush:
         return glob.ses.query(data_classes.Save).filter_by(guild_id=int(guild_id)).count()
-
 def guild_save_queue_count(glob: GlobalVars, guild_id: int, save_id: int):
     """
     Returns the number of videos in a save
@@ -167,7 +190,6 @@ def guild_save_queue_count(glob: GlobalVars, guild_id: int, save_id: int):
     """
     with glob.ses.no_autoflush:
         return glob.ses.query(video_class.SaveVideo).filter_by(guild_id=int(guild_id), save_id=save_id).count()
-
 def guild_save(glob: GlobalVars, guild_id: int, save_id: int):
     """
     Returns a save object
@@ -178,7 +200,6 @@ def guild_save(glob: GlobalVars, guild_id: int, save_id: int):
     """
     with glob.ses.no_autoflush:
         return glob.ses.query(data_classes.Save).filter_by(guild_id=int(guild_id), id=int(save_id)).first()
-
 def guild_save_names(glob: GlobalVars, guild_id: int):
     """
     Returns a list of save names
@@ -204,7 +225,6 @@ def create_guild(glob: GlobalVars, guild_id: int):
         guild_object = data_classes.Guild(glob, guild_id, {})
         glob.ses.add(guild_object)
         glob.ses.commit()
-
 def delete_guild(glob: GlobalVars, guild_id: int):
     """
     Deletes a guild object
@@ -218,7 +238,6 @@ def delete_guild(glob: GlobalVars, guild_id: int):
         glob.ses.query(data_classes.Options).filter_by(id=guild_id).delete()
         glob.ses.query(data_classes.Save).filter_by(id=guild_id).delete()
 
-        glob.ses.query(video_class.SearchList).filter_by(guild_id=guild_id).delete()
         glob.ses.query(video_class.Queue).filter_by(guild_id=guild_id).delete()
         glob.ses.query(video_class.NowPlaying).filter_by(guild_id=guild_id).delete()
         glob.ses.query(video_class.History).filter_by(guild_id=guild_id).delete()
@@ -308,7 +327,6 @@ def is_user_tortured(glob: GlobalVars, user_id: int, guild_id: int) -> (bool, in
         if tortured_user is None:
             return False, None
         return True, tortured_user.torture_delay
-
 def delete_tortured_user(glob: GlobalVars, user_id: int, guild_id: int):
     """
     Deletes a tortured user

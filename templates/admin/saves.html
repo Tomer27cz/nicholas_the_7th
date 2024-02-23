@@ -38,9 +38,9 @@
         <div id="panelsStayOpen-{{ save_name }}" class="accordion-collapse collapse">
           <div class="accordion-body">
             <div class="l-div e-wrap gap1 btn-m">
-              <a class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#renameModal_{{ save_name }}" title="{{ tg(gi, 'Rename') }}">{{ tg(gi, 'Rename') }}</a>
+              <a class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#renameModal_{{ save_name }}" title="{{ text(gi, glob, 'Rename') }}">{{ text(gi, glob, 'Rename') }}</a>
               <form method="POST" id="deleteForm_{{ save_name }}" action="">
-                <button class="btn btn-danger" title="{{ tg(gi, 'Delete') }}" type="submit" name="deleteSave">{{ tg(gi, 'Delete') }}</button>
+                <button class="btn btn-danger" title="{{ text(gi, glob, 'Delete') }}" type="submit" name="deleteSave">{{ text(gi, glob, 'Delete') }}</button>
                 <input type="hidden" name="save_name" value="{{ save_name }}">
               </form>
             </div>
@@ -55,7 +55,7 @@
                   <p class="q-text q-3">{{ convert_duration(track['duration']) }}</p>
                 </div>
                 <div class="q-item3 q-items-center">
-                  <p class="q-text q-1">{{ tg(gi, 'From/To') }}</p>
+                  <p class="q-text q-1">{{ text(gi, glob, 'From/To') }}</p>
                   <p class="q-text q-2">{{ struct_to_time(track['played_duration'][0]['start']['epoch'], first='time') }}</p>
                   <p class="q-text q-2">{{ struct_to_time(track['played_duration'][-1]['end']['epoch'], first='time') }}</p>
                 </div>
@@ -91,7 +91,7 @@
       <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
           <div class="modal-header">
-            <h1 class="modal-title fs-5" id="renameLabel_{{ save_name }}">{{ tg(gi, 'Rename Save') }} - {{ save_name }}</h1>
+            <h1 class="modal-title fs-5" id="renameLabel_{{ save_name }}">{{ text(gi, glob, 'Rename Save') }} - {{ save_name }}</h1>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <form method="POST" id="renameForm_{{ save_name }}" action="">
@@ -101,13 +101,13 @@
                 <input type="hidden" name="old_name" value="{{ save_name }}">
               </div>
               <div class="mb-3">
-                <label for="new_name" class="btn-m">{{ tg(gi, 'Name') }}</label>
+                <label for="new_name" class="btn-m">{{ text(gi, glob, 'Name') }}</label>
                 <input type="text" class="form-control" name="new_name" id="new_name" required>
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-dark" data-bs-dismiss="modal">{{ tg(gi, 'Close') }}</button>
-              <button type="submit" class="btn btn-primary" name="renameSave">{{ tg(gi, 'Rename') }}</button>
+              <button type="button" class="btn btn-dark" data-bs-dismiss="modal">{{ text(gi, glob, 'Close') }}</button>
+              <button type="submit" class="btn btn-primary" name="renameSave">{{ text(gi, glob, 'Rename') }}</button>
             </div>
           </form>
         </div>

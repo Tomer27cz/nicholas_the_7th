@@ -2,10 +2,10 @@ import typing
 
 from utils.log import log
 from utils.global_vars import languages_dict, GlobalVars
-from database.guild import guild
+from database.guild import guild_options_language
 
 # noinspection PyTypeHints
-def text(content: str, glob: GlobalVars=None, guild_id: int=0, lang: typing.Literal[tuple(languages_dict.keys())]=None) -> str:
+def text(guild_id: int, glob: GlobalVars, content: str, lang: typing.Literal[tuple(languages_dict.keys())]=None) -> str:
     """
     Translates text to english
     Gets text from languages.json
@@ -18,7 +18,7 @@ def text(content: str, glob: GlobalVars=None, guild_id: int=0, lang: typing.Lite
     if lang is None:
         lang = 'en'
         if guild_id != 0:
-            lang = guild(glob, guild_id).options.language
+            lang = guild_options_language(glob, guild_id)
 
     if content not in languages_dict[lang].keys():
         with open('db/missing.txt', 'ar', encoding='utf-8') as file:
@@ -34,58 +34,58 @@ def text(content: str, glob: GlobalVars=None, guild_id: int=0, lang: typing.Lite
         log(None, f'KeyError: {content} in {lang} - Should not happen!')
         return content
 
-def tg(guild_id: int, content: str) -> str:
-    """
-    Translates text to guild language
-    Selects language from guild options
-    Gets text from languages.json
-    :param guild_id: int - id of guild
-    :param content: str - translation key
-    :return: str - translated text
-    """
-
-    return content
-
-    try:
-        lang = guild(glob, guild_id).options.language
-    except KeyError:
-        log(guild_id, f'KeyError: {guild_id} in guild')
-        lang = 'en'
-    except AttributeError:
-        log(guild_id, f'AttributeError: {guild_id} in guild')
-        lang = 'en'
-
-    try:
-        to_return = languages_dict[lang][content]
-    except KeyError:
-        log(None, f'KeyError: {content} in {lang}')
-        to_return = content
-    return to_return
-
-
-def ftg(guild_id: int, content: str) -> str:
-    """
-    Translates text to guild language
-    Selects language from guild options
-    Gets text from languages.json
-    :param guild_id: int - id of guild
-    :param content: str - translation key
-    :return: str - translated text
-    """
-    # return content
-    # # for now until i figure out how to get this working in apache2
-
-    return content
-
-    try:
-        languages_dict = languages_dict()
-        lang = guild(glob, guild_id).options.language
-    except Exception as e:
-        return content
-
-    try:
-        to_return = languages_dict[lang][content]
-    except KeyError:
-        log(None, f'KeyError: {content} in {lang}')
-        to_return = content
-    return to_return
+# def tg(guild_id: int, content: str) -> str:
+#     """
+#     Translates text to guild language
+#     Selects language from guild options
+#     Gets text from languages.json
+#     :param guild_id: int - id of guild
+#     :param content: str - translation key
+#     :return: str - translated text
+#     """
+#
+#     return content
+#
+#     try:
+#         lang = guild(glob, guild_id).options.language
+#     except KeyError:
+#         log(guild_id, f'KeyError: {guild_id} in guild')
+#         lang = 'en'
+#     except AttributeError:
+#         log(guild_id, f'AttributeError: {guild_id} in guild')
+#         lang = 'en'
+#
+#     try:
+#         to_return = languages_dict[lang][content]
+#     except KeyError:
+#         log(None, f'KeyError: {content} in {lang}')
+#         to_return = content
+#     return to_return
+#
+#
+# def ftg(guild_id: int, content: str) -> str:
+#     """
+#     Translates text to guild language
+#     Selects language from guild options
+#     Gets text from languages.json
+#     :param guild_id: int - id of guild
+#     :param content: str - translation key
+#     :return: str - translated text
+#     """
+#     # return content
+#     # # for now until i figure out how to get this working in apache2
+#
+#     return content
+#
+#     try:
+#         languages_dict = languages_dict()
+#         lang = guild(glob, guild_id).options.language
+#     except Exception as e:
+#         return content
+#
+#     try:
+#         to_return = languages_dict[lang][content]
+#     except KeyError:
+#         log(None, f'KeyError: {content} in {lang}')
+#         to_return = content
+#     return to_return

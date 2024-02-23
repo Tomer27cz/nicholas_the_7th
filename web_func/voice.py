@@ -1,7 +1,7 @@
 from utils.global_vars import GlobalVars
 from classes.data_classes import ReturnData
 from utils.log import log
-from utils.translate import tg
+from utils.translate import text
 
 import commands.voice
 from commands.utils import ctx_check
@@ -17,12 +17,12 @@ async def web_join(web_data, glob: GlobalVars, form) -> ReturnData:
     elif form['join_btn'] == 'name':
         channel_id = form['channel_name']
     else:
-        return ReturnData(False, tg(ctx_guild_id, 'Invalid channel id (Internal web error -> contact developer)'))
+        return ReturnData(False, text(ctx_guild_id, glob, 'Invalid channel id (Internal web error -> contact developer)'))
 
     try:
         channel_id = int(channel_id)
     except ValueError:
-        return ReturnData(False, tg(ctx_guild_id, 'Invalid channel id') + f': {channel_id}')
+        return ReturnData(False, text(ctx_guild_id, glob, 'Invalid channel id') + f': {channel_id}')
 
     task = asyncio.run_coroutine_threadsafe(commands.voice.join_def(web_data, glob, channel_id), glob.bot.loop)
 

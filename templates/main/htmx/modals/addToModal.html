@@ -1,6 +1,6 @@
 <div class="modal-content" id="addToModal_content">
   <div class="modal-header">
-    <h1 class="modal-title fs-5" id="staticBackdropLabel">{{ tg(gi, 'Add to queue') }}</h1>
+    <h1 class="modal-title fs-5" id="staticBackdropLabel">{{ text(gi, glob, 'Add to queue') }}</h1>
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
   </div>
   <div class="modal-body">
@@ -10,15 +10,15 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-dark" data-bs-dismiss="modal">{{ tg(gi, 'Close') }}</button>
+    <button type="button" class="btn btn-dark" data-bs-dismiss="modal">{{ text(gi, glob, 'Close') }}</button>
     <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
             data-bs-target="#addToModalRadio" hx-target="#addToModalRadio_content" hx-trigger="click once"
             hx-swap="outerHTML" hx-get="/guild/{{ gi }}/modals?type=addToModalRadio&key={{ key }}"
-    >{{ tg(gi, 'Radio') }}</button>
+    >{{ text(gi, glob, 'Radio') }}</button>
     <button type="submit" class="btn btn-primary" id="addToModal_submit"
             hx-trigger="click throttle:1s" hx-target="#q-main" hx-swap="outerHTML"
             hx-get="/guild/{{ gi }}/queue?act=ytURL&key={{ key }}" hx-include="#ytURL" hx-validate="#ytForm"
-    >{{ tg(gi, 'Add') }}</button>
+    >{{ text(gi, glob, 'Add') }}</button>
     <script>
       document.body.addEventListener('htmx:afterSwap', function (event) {
         if (event.detail.elt.id === "addToModal_submit") {

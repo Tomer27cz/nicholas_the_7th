@@ -10,11 +10,11 @@
       <div class="e-item2">
         <input type="number" class="form-control" name="channel_id">
       </div>
-      <button type="submit" class="btn btn-primary" name="join_btn" value="id">{{ tg(gi, 'Join') }}</button>
+      <button type="submit" class="btn btn-primary" name="join_btn" value="id">{{ text(gi, glob, 'Join') }}</button>
     </div>
     {% if guild.data.voice_channels %}
       <div class="j-div">
-        <label class="btn-m j-label">{{ tg(gi, 'Channel') }}</label>
+        <label class="btn-m j-label">{{ text(gi, glob, 'Channel') }}</label>
         <div class="e-item2">
           <select class="form-select" aria-label="channel_name" name="channel_name">
             {% for channel in guild.data.voice_channels %}
@@ -22,7 +22,7 @@
             {% endfor %}
           </select>
         </div>
-        <button type="submit" class="btn btn-primary" name="join_btn" value="name">{{ tg(gi, 'Join') }}</button>
+        <button type="submit" class="btn btn-primary" name="join_btn" value="name">{{ text(gi, glob, 'Join') }}</button>
       </div>
     {% endif %}
   </form>

@@ -27,7 +27,7 @@ def get_video_data(url: str) -> (dict, str) or (None, str):
     :return: dict - video info
     """
     try:
-        video = youtubesearchpython.Video.getInfo(url)  # mode=ResultMode.json
+        video: VideoInfo = youtubesearchpython.Video.getInfo(url)  # mode=ResultMode.json
         if not video:
             return None, 'not video'
     except Exception as e:
@@ -559,81 +559,6 @@ class History(Base):
     def time(self, glob: GlobalVars):
         return video_class_time(self, glob)
 
-class SearchList(Base):
-    """
-    Stores all the data for each video
-    Can do, YouTube, SoundCloud, Czech Radios, Url Probes, Local Files and Fake Spotify
-
-    Raises ValueError: If URL is not provided or is incorrect for class_type
-    """
-    __tablename__ = 'search_list'
-
-    id = Column(Integer, primary_key=True)
-    position = Column(Integer)
-    class_type = Column(String)
-    author = Column(String)
-    guild_id = Column(Integer, ForeignKey('guilds.id'))
-    url = Column(String)
-    title = Column(String)
-    picture = Column(String)
-    duration = Column(String)
-    channel_name = Column(String)
-    channel_link = Column(String)
-    radio_info = Column(JSON)
-    local_number = Column(Integer)
-    created_at = Column(Integer)
-    played_duration = Column(JSON)
-    chapters = Column(JSON)
-    stream_url = Column(String)
-    discord_channel = Column(JSON)
-
-    def __init__(self,
-                 glob: GlobalVars,
-                 class_type: str,
-                 author: Union[str, int],
-                 guild_id: int,
-                 url: str = None,
-                 title: str = None,
-                 picture: str = None,
-                 duration: Union[str, int] = None,
-                 channel_name: str = None,
-                 channel_link: str = None,
-                 radio_info: RadioInfoDict = None,
-                 local_number: int = None,
-                 created_at: int = None,
-                 played_duration: [TimeSegment] = None,
-                 chapters: [VideoChapter] = None,
-                 stream_url: str = None,
-                 discord_channel: DiscordChannelInfo = None
-                 ):
-        video_class_init(self,
-                         glob,
-                         class_type=class_type,
-                         author=author,
-                         guild_id=guild_id,
-                         url=url,
-                         title=title,
-                         picture=picture,
-                         duration=duration,
-                         channel_name=channel_name,
-                         channel_link=channel_link,
-                         radio_info=radio_info,
-                         local_number=local_number,
-                         created_at=created_at,
-                         played_duration=played_duration,
-                         chapters=chapters,
-                         stream_url=stream_url,
-                         discord_channel=discord_channel)
-
-    def renew(self, glob: GlobalVars):
-        video_class_renew(self, glob)
-
-    def current_chapter(self, glob: GlobalVars):
-        return video_class_current_chapter(self, glob)
-
-    def time(self, glob: GlobalVars):
-        return video_class_time(self, glob)
-
 class SaveVideo(Base):
     """
     Stores all the data for each video
@@ -720,30 +645,6 @@ def to_queue_class(glob, _video_class):
         return _video_class
 
     return Queue(
-        glob,
-        class_type=_video_class.class_type,
-        author=_video_class.author,
-        guild_id=_video_class.guild_id,
-        url=_video_class.url,
-        title=_video_class.title,
-        picture=_video_class.picture,
-        duration=_video_class.duration,
-        channel_name=_video_class.channel_name,
-        channel_link=_video_class.channel_link,
-        radio_info=_video_class.radio_info,
-        local_number=_video_class.local_number,
-        created_at=_video_class.created_at,
-        played_duration=_video_class.played_duration,
-        chapters=_video_class.chapters,
-        stream_url=_video_class.stream_url,
-        discord_channel=_video_class.discord_channel
-    )
-
-def to_search_list_class(glob, _video_class):
-    if _video_class.__class__.__name__ == 'SearchList':
-        return _video_class
-
-    return SearchList(
         glob,
         class_type=_video_class.class_type,
         author=_video_class.author,

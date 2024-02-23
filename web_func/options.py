@@ -3,7 +3,7 @@ from utils.global_vars import GlobalVars
 from classes.data_classes import ReturnData
 
 from utils.log import log
-from utils.translate import tg
+from utils.translate import text
 from utils.convert import to_bool
 from utils.global_vars import languages_dict
 from database.guild import guild
@@ -56,4 +56,4 @@ async def web_user_options_edit(web_data, glob: GlobalVars, form) -> ReturnData:
     options.buffer = int(buffer)
     options.history_length = int(history_length)
 
-    return ReturnData(True, tg(ctx_guild_id, f'Edited options successfully!'))
+    return ReturnData(True, text(ctx_guild_id, glob, f'Edited options successfully!'))

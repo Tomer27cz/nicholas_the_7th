@@ -13,7 +13,7 @@ from classes.discord_classes import DiscordUser
 from utils.convert import struct_to_time, convert_duration
 from utils.log import log, collect_data
 from utils.files import get_readable_byte_size, get_icon_class_for_filename, get_log_files
-from utils.translate import ftg
+from utils.translate import text
 from utils.video_time import video_time_from_start
 from utils.checks import check_isdigit
 from utils.web import *
@@ -44,7 +44,6 @@ with open(f'db/radio.json', 'r', encoding='utf-8') as file:
 
 with open(f'db/languages.json', 'r', encoding='utf-8') as file:
     languages_dict = json.load(file)
-    text = languages_dict['en']
     authorized_users += [my_id, 349164237605568513]
 
 # --------------------------------------------- GLOBAL VARS --------------------------------------------- #
@@ -163,7 +162,7 @@ def inject_data():
                 len=len,
                 vars=vars,
                 dict=dict,
-                tg=ftg,
+                text=text,
                 get_radio_info=get_radio_info,
                 get_username=get_username,
                 struct_to_time=struct_to_time,

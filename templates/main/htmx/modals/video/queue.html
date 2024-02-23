@@ -1,7 +1,7 @@
 <div class="modal-content" id="videoModal_{{ guild.queue.index(track) }}_content">
   <div class="modal-header">
     <h1 class="modal-title fs-5"
-        id="videoLabel_{{ guild.queue.index(track) }}">{{ tg(gi, 'Video') }} {{ guild.queue.index(track) }} {{ tg(gi, 'Info') }}</h1>
+        id="videoLabel_{{ guild.queue.index(track) }}">{{ text(gi, glob, 'Video') }} {{ guild.queue.index(track) }} {{ text(gi, glob, 'Info') }}</h1>
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
   </div>
   <div class="info-modal">

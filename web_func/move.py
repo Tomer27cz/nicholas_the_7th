@@ -4,7 +4,7 @@ from classes.data_classes import ReturnData
 from classes.video_class import Queue
 
 from utils.log import log
-from utils.translate import tg
+from utils.translate import text
 from utils.save import update, push_update
 from utils.discord import to_queue
 from database.guild import guild
@@ -19,7 +19,7 @@ async def move_def(ctx, glob: GlobalVars, org_number, destination_number, epheme
 
     if queue_length == 0:
         log(ctx, "move_def -> No songs in queue", log_type='function')
-        message = tg(guild_id, "No songs in queue")
+        message = text(guild_id, glob, "No songs in queue")
         await ctx.reply(message, ephemeral=ephemeral)
         return ReturnData(False, message)
 
@@ -34,16 +34,16 @@ async def move_def(ctx, glob: GlobalVars, org_number, destination_number, epheme
             update(glob)
             push_update(glob, guild_id)
 
-            message = f"{tg(guild_id, 'Moved')} #{org_number} to #{destination_number} : {video.title}"
+            message = f"{text(guild_id, glob, 'Moved')} #{org_number} to #{destination_number} : {video.title}"
             await ctx.reply(message, ephemeral=ephemeral)
             return ReturnData(True, message)
 
-        message = f'{tg(guild_id, "Destination number must be between 0 and")} {queue_length - 1}'
+        message = f'{text(guild_id, glob, "Destination number must be between 0 and")} {queue_length - 1}'
         log(guild_id, f"move_def -> {message}", log_type='function')
         await ctx.reply(message, ephemeral=ephemeral)
         return ReturnData(False, message)
 
-    message = f'{tg(guild_id, "Original number must be between 0 and")} {queue_length - 1}'
+    message = f'{text(guild_id, glob, "Original number must be between 0 and")} {queue_length - 1}'
     log(guild_id, f"move_def -> {message}", log_type='function')
     await ctx.reply(message, ephemeral=ephemeral)
     return ReturnData(False, message)
@@ -57,7 +57,7 @@ async def web_up(web_data, glob: GlobalVars, number) -> ReturnData:
 
     if queue_length == 0:
         log(guild_id, "web_up -> No songs in queue", log_type='function')
-        return ReturnData(False, tg(ctx_guild_id, 'No songs in queue'))
+        return ReturnData(False, text(ctx_guild_id, glob, 'No songs in queue'))
 
     if number == 0:
         return await move_def(web_data, glob, 0, queue_length - 1)
@@ -73,7 +73,7 @@ async def web_down(web_data, glob: GlobalVars, number) -> ReturnData:
 
     if queue_length == 0:
         log(guild_id, "web_down -> No songs in queue", log_type='function')
-        return ReturnData(False, tg(ctx_guild_id, 'No songs in queue'))
+        return ReturnData(False, text(ctx_guild_id, glob, 'No songs in queue'))
 
     if number == queue_length - 1:
         return await move_def(web_data, glob, number, 0)
@@ -89,11 +89,11 @@ async def web_top(web_data, glob: GlobalVars, number) -> ReturnData:
 
     if queue_length == 0:
         log(guild_id, "web_top -> No songs in queue", log_type='function')
-        return ReturnData(False, tg(ctx_guild_id, 'No songs in queue'))
+        return ReturnData(False, text(ctx_guild_id, glob, 'No songs in queue'))
 
     if number == 0:
         log(guild_id, "web_top -> Already at the top", log_type='function')
-        return ReturnData(False, tg(ctx_guild_id, 'Already at the top'))
+        return ReturnData(False, text(ctx_guild_id, glob, 'Already at the top'))
 
     return await move_def(web_data, glob, number, 0)
 
@@ -106,11 +106,11 @@ async def web_bottom(web_data, glob: GlobalVars, number) -> ReturnData:
 
     if queue_length == 0:
         log(guild_id, "web_bottom -> No songs in queue", log_type='function')
-        return ReturnData(False, tg(ctx_guild_id, 'No songs in queue'))
+        return ReturnData(False, text(ctx_guild_id, glob, 'No songs in queue'))
 
     if number == queue_length - 1:
         log(guild_id, "web_bottom -> Already at the bottom", log_type='function')
-        return ReturnData(False, tg(ctx_guild_id, 'Already at the bottom'))
+        return ReturnData(False, text(ctx_guild_id, glob, 'Already at the bottom'))
 
     return await move_def(web_data, glob, number, queue_length - 1)
 
@@ -124,7 +124,7 @@ async def web_duplicate(web_data, glob: GlobalVars, number) -> ReturnData:
 
     if queue_length == 0:
         log(guild_id, "web_duplicate -> No songs in queue", log_type='function')
-        return ReturnData(False, tg(ctx_guild_id, 'No songs in queue'))
+        return ReturnData(False, text(ctx_guild_id, glob, 'No songs in queue'))
 
     video = db_guild.queue[number]
 
@@ -142,6 +142,6 @@ async def web_duplicate(web_data, glob: GlobalVars, number) -> ReturnData:
 
     to_queue(glob, guild_id, new_video, position=number + 1, copy_video=True)
 
-    message = f'{tg(ctx_guild_id, "Duplicated")} #{number} : {video.title}'
+    message = f'{text(ctx_guild_id, glob, "Duplicated")} #{number} : {video.title}'
     log(guild_id, f"web_duplicate -> {message}", log_type='function')
     return ReturnData(True, message)

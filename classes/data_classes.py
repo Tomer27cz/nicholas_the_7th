@@ -18,7 +18,6 @@ class Guild(Base):
     options = relationship('Options', uselist=False, backref='guilds', lazy=True)
     saves = relationship('Save', backref='guilds', order_by='Save.position', collection_class=ordering_list('position'), lazy=True)
     queue = relationship('Queue', backref='guilds', order_by='Queue.position', collection_class=ordering_list('position'), lazy=True)
-    search_list = relationship('SearchList', backref='guilds', order_by='SearchList.position', collection_class=ordering_list('position'), lazy=True)
     now_playing = relationship('NowPlaying', uselist=False, backref='guilds', lazy=True)
     history = relationship('History', backref='guilds', order_by='History.position', collection_class=ordering_list('position'), lazy=True)
     data = relationship('GuildData', uselist=False, backref='guilds', lazy=True)

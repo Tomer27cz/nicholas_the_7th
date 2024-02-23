@@ -186,7 +186,7 @@ class Bot(dc_commands.Bot):
 
         if isinstance(error, discord.errors.Forbidden):
             log(ctx, 'error.Forbidden', {'error': error}, log_type='error', author=ctx.author)
-            await ctx.send(tg(ctx.guild.id, "The command failed because I don't have the required permissions.\n Please give me the required permissions and try again."))
+            await ctx.send(text(ctx.guild.id, glob, "The command failed because I don't have the required permissions.\n Please give me the required permissions and try again."))
 
         elif isinstance(error, dc_commands.CheckFailure):
             err_msg = f'Error for ({ctx.author}) -> ({ctx.command}) with error ({error})'
@@ -197,12 +197,12 @@ class Bot(dc_commands.Bot):
                             f"　しーＪ　　　°。+ ´¨)\n"
                             f"　　　　　　　　　.· ´¸.·´¨) ¸.·*¨)\n"
                             f"　　　　　　　　　　(¸.·´ (¸.·' ☆ **Fuck off**\n"
-                            f"*{tg(ctx.guild.id, 'You dont have permission to use this command')}*")
+                            f"*{text(ctx.guild.id, glob, 'You dont have permission to use this command')}*")
 
         elif isinstance(error, dc_commands.MissingPermissions):
             err_msg = f'Error for ({ctx.author}) -> ({ctx.command}) with error ({error})'
             log(ctx, err_msg, log_type='error', author=ctx.author)
-            await ctx.reply(tg(ctx.guild.id, 'Bot does not have permissions to execute this command correctly') + f" - {error}")
+            await ctx.reply(text(ctx.guild.id, glob, 'Bot does not have permissions to execute this command correctly') + f" - {error}")
 
         elif isinstance(error, PendingRollbackError):
             err_msg = f'Error for ({ctx.author}) -> ({ctx.command}) with error ({error})'
@@ -328,92 +328,92 @@ if build_old_guilds:
 
 # --------------------------------------- QUEUE --------------------------------------------------
 
-@bot.hybrid_command(name='queue', with_app_command=True, description=text('queue_add'), help=text('queue_add'))
-@app_commands.describe(query=text('query'), position=text('pos'))
+@bot.hybrid_command(name='queue', with_app_command=True, description=text(0, glob, 'queue_add'), help=text(0, glob, 'queue_add'))
+@app_commands.describe(query=text(0, glob, 'query'), position=text(0, glob, 'pos'))
 async def queue_command(ctx: dc_commands.Context, query, position: int = None):
     log(ctx, 'queue', options=locals(), log_type='command', author=ctx.author)
     await queue_command_def(ctx, glob, query, position=position)
 
-@bot.hybrid_command(name='next_up', with_app_command=True, description=text('next_up'), help=text('next_up'))
-@app_commands.describe(query=text('query'), user_only=text('ephemeral'))
+@bot.hybrid_command(name='next_up', with_app_command=True, description=text(0, glob, 'next_up'), help=text(0, glob, 'next_up'))
+@app_commands.describe(query=text(0, glob, 'query'), user_only=text(0, glob, 'ephemeral'))
 async def next_up(ctx: dc_commands.Context, query, user_only: bool = False):
     log(ctx, 'next_up', options=locals(), log_type='command', author=ctx.author)
     await next_up_def(ctx, glob, query, user_only)
 
-@bot.hybrid_command(name='skip', with_app_command=True, description=text('skip'), help=text('skip'))
+@bot.hybrid_command(name='skip', with_app_command=True, description=text(0, glob, 'skip'), help=text(0, glob, 'skip'))
 async def skip(ctx: dc_commands.Context):
     log(ctx, 'skip', options=locals(), log_type='command', author=ctx.author)
     await skip_def(ctx, glob)
 
-@bot.hybrid_command(name='remove', with_app_command=True, description=text('queue_remove'), help=text('queue_remove'))
-@app_commands.describe(song=text('remove_song'), user_only=text('ephemeral'))
+@bot.hybrid_command(name='remove', with_app_command=True, description=text(0, glob, 'queue_remove'), help=text(0, glob, 'queue_remove'))
+@app_commands.describe(song=text(0, glob, 'remove_song'), user_only=text(0, glob, 'ephemeral'))
 async def remove(ctx: dc_commands.Context, song, user_only: bool = False):
     log(ctx, 'remove', options=locals(), log_type='command', author=ctx.author)
     await remove_def(ctx, glob, song, ephemeral=user_only)
 
-@bot.hybrid_command(name='clear', with_app_command=True, description=text('clear'), help=text('clear'))
-@app_commands.describe(user_only=text('ephemeral'))
+@bot.hybrid_command(name='clear', with_app_command=True, description=text(0, glob, 'clear'), help=text(0, glob, 'clear'))
+@app_commands.describe(user_only=text(0, glob, 'ephemeral'))
 async def clear(ctx: dc_commands.Context, user_only: bool = False):
     log(ctx, 'clear', options=locals(), log_type='command', author=ctx.author)
     await clear_def(ctx, glob, user_only)
 
-@bot.hybrid_command(name='shuffle', with_app_command=True, description=text('shuffle'), help=text('shuffle'))
-@app_commands.describe(user_only=text('ephemeral'))
+@bot.hybrid_command(name='shuffle', with_app_command=True, description=text(0, glob, 'shuffle'), help=text(0, glob, 'shuffle'))
+@app_commands.describe(user_only=text(0, glob, 'ephemeral'))
 async def shuffle(ctx: dc_commands.Context, user_only: bool = False):
     log(ctx, 'shuffle', options=locals(), log_type='command', author=ctx.author)
     await shuffle_def(ctx, glob, user_only)
 
-@bot.hybrid_command(name='show', with_app_command=True, description=text('queue_show'), help=text('queue_show'))
-@app_commands.describe(display_type=text('display_type'), user_only=text('ephemeral'))
+@bot.hybrid_command(name='show', with_app_command=True, description=text(0, glob, 'queue_show'), help=text(0, glob, 'queue_show'))
+@app_commands.describe(display_type=text(0, glob, 'display_type'), user_only=text(0, glob, 'ephemeral'))
 async def show(ctx: dc_commands.Context, display_type: Literal['short', 'medium', 'long'] = None,
                list_type: Literal['queue', 'history'] = 'queue', user_only: bool = False):
     log(ctx, 'show', options=locals(), log_type='command', author=ctx.author)
     await show_def(ctx, glob, display_type, list_type, user_only)
 
-# @bot.hybrid_command(name='search', with_app_command=True, description=text('search'), help=text('search'))
-# @app_commands.describe(search_query=text('search_query'))
-# async def search_command(ctx: dc_commands.Context, search_query):
-#     log(ctx, 'search', options=locals(), log_type='command', author=ctx.author)
-#     await search_command_def(ctx, glob, search_query)
+@bot.hybrid_command(name='search', with_app_command=True, description=text(0, glob, 'search'), help=text(0, glob, 'search'))
+@app_commands.describe(query=text(0, glob, 'search_query'), display_type=text(0, glob, 'display_type'), force=text(0, glob, 'force'), user_only=text(0, glob, 'ephemeral'))
+async def search_command(ctx: dc_commands.Context, query, display_type: Literal['short', 'long'] = None, force: bool = False, user_only: bool = False):
+    log(ctx, 'search', options=locals(), log_type='command', author=ctx.author)
+    await search_command_def(ctx, glob, query, display_type, force, user_only)
 
 # --------------------------------------- PLAYER --------------------------------------------------
 
-@bot.hybrid_command(name='play', with_app_command=True, description=text('play'), help=text('play'))
-@app_commands.describe(query=text('query'), force=text('force'))
-async def play(ctx: dc_commands.Context, query, force=False):
+@bot.hybrid_command(name='play', with_app_command=True, description=text(0, glob, 'play'), help=text(0, glob, 'play'))
+@app_commands.describe(query=text(0, glob, 'query'), force=text(0, glob, 'force'))
+async def play(ctx: dc_commands.Context, query=None, force=False):
     log(ctx, 'play', options=locals(), log_type='command', author=ctx.author)
     await play_def(ctx, glob, query, force)
 
-@bot.hybrid_command(name='radio', with_app_command=True, description=text('radio'), help=text('radio'))
-@app_commands.describe(radio_name=text('radio_name'))
+@bot.hybrid_command(name='radio', with_app_command=True, description=text(0, glob, 'radio'), help=text(0, glob, 'radio'))
+@app_commands.describe(radio_name=text(0, glob, 'radio_name'))
 async def radio(ctx: dc_commands.Context, radio_name: str):
     log(ctx, 'radio', options=locals(), log_type='command', author=ctx.author)
     await radio_def(ctx, glob, radio_name)
 
-@bot.hybrid_command(name='ps', with_app_command=True, description=text('ps'), help=text('ps'))
-@app_commands.describe(effect_number=text('effects_number'))
+@bot.hybrid_command(name='ps', with_app_command=True, description=text(0, glob, 'ps'), help=text(0, glob, 'ps'))
+@app_commands.describe(effect_number=text(0, glob, 'effects_number'))
 async def ps(ctx: dc_commands.Context, effect_number: app_commands.Range[int, 1, len(sound_effects)]):
     log(ctx, 'ps', options=locals(), log_type='command', author=ctx.author)
     await ps_def(ctx, glob, effect_number)
 
-@bot.hybrid_command(name='nowplaying', with_app_command=True, description=text('nowplaying'), help=text('nowplaying'))
-@app_commands.describe(user_only=text('ephemeral'))
+@bot.hybrid_command(name='nowplaying', with_app_command=True, description=text(0, glob, 'nowplaying'), help=text(0, glob, 'nowplaying'))
+@app_commands.describe(user_only=text(0, glob, 'ephemeral'))
 async def nowplaying(ctx: dc_commands.Context, user_only: bool = False):
     log(ctx, 'nowplaying', options=locals(), log_type='command', author=ctx.author)
     await now_def(ctx, glob, user_only)
 
-@bot.hybrid_command(name='last', with_app_command=True, description=text('last'), help=text('last'))
-@app_commands.describe(user_only=text('ephemeral'))
+@bot.hybrid_command(name='last', with_app_command=True, description=text(0, glob, 'last'), help=text(0, glob, 'last'))
+@app_commands.describe(user_only=text(0, glob, 'ephemeral'))
 async def last(ctx: dc_commands.Context, user_only: bool = False):
     log(ctx, 'last', options=locals(), log_type='command', author=ctx.author)
     await last_def(ctx, glob, user_only)
 
-@bot.hybrid_command(name='loop', with_app_command=True, description=text('loop'), help=text('loop'))
+@bot.hybrid_command(name='loop', with_app_command=True, description=text(0, glob, 'loop'), help=text(0, glob, 'loop'))
 async def loop_command(ctx: dc_commands.Context):
     log(ctx, 'loop', options=locals(), log_type='command', author=ctx.author)
     await loop_command_def(ctx, glob)
 
-@bot.hybrid_command(name='loop_this', with_app_command=True, description=text('loop_this'), help=text('loop_this'))
+@bot.hybrid_command(name='loop_this', with_app_command=True, description=text(0, glob, 'loop_this'), help=text(0, glob, 'loop_this'))
 async def loop_this(ctx: dc_commands.Context):
     log(ctx, 'loop_this', options=locals(), log_type='command', author=ctx.author)
     await loop_command_def(ctx, glob, clear_queue_opt=True)
@@ -440,19 +440,19 @@ async def resume(ctx: dc_commands.Context):
     log(ctx, 'resume', options=locals(), log_type='command', author=ctx.author)
     await resume_def(ctx, glob)
 
-@bot.hybrid_command(name='join', with_app_command=True, description=text('join'), help=text('join'))
-@app_commands.describe(channel=text('channel'))
+@bot.hybrid_command(name='join', with_app_command=True, description=text(0, glob, 'join'), help=text(0, glob, 'join'))
+@app_commands.describe(channel=text(0, glob, 'channel'))
 async def join(ctx: dc_commands.Context, channel: discord.VoiceChannel=None):
     log(ctx, 'join', options=locals(), log_type='command', author=ctx.author)
     await join_def(ctx, glob, channel_id=channel.id if channel else None)
 
-@bot.hybrid_command(name='disconnect', with_app_command=True, description=text('die'), help=text('die'))
+@bot.hybrid_command(name='disconnect', with_app_command=True, description=text(0, glob, 'die'), help=text(0, glob, 'die'))
 async def disconnect(ctx: dc_commands.Context):
     log(ctx, 'disconnect', options=locals(), log_type='command', author=ctx.author)
     await disconnect_def(ctx, glob)
 
-@bot.hybrid_command(name='volume', with_app_command=True, description=text('volume'), help=text('volume'))
-@app_commands.describe(volume=text('volume'), user_only=text('ephemeral'))
+@bot.hybrid_command(name='volume', with_app_command=True, description=text(0, glob, 'volume'), help=text(0, glob, 'volume'))
+@app_commands.describe(volume=text(0, glob, 'volume'), user_only=text(0, glob, 'ephemeral'))
 async def volume_command(ctx: dc_commands.Context, volume: int=None, user_only: bool = False):
     log(ctx, 'volume', options=locals(), log_type='command', author=ctx.author)
     await volume_command_def(ctx, glob, volume, user_only)
@@ -465,7 +465,7 @@ async def play_now(inter, message: discord.Message):
     log(ctx, 'play_now', options=locals(), log_type='command', author=ctx.author)
 
     if ctx.author.voice is None:
-        await inter.response.send_message(content=tg(ctx.guild.id, 'You are **not connected** to a voice channel'),
+        await inter.response.send_message(content=text(ctx.guild.id, glob, 'You are **not connected** to a voice channel'),
                                           ephemeral=True)
         return
 
@@ -493,7 +493,7 @@ async def add_to_queue(inter, message: discord.Message):
 
 # @bot.tree.context_menu(name='Show Profile')
 # async def show_profile(inter, member: discord.Member):
-#     ctx = await bot.get_context(inter)
+#     ctx = await bot.get_context(0, glob, inter)
 #     log(ctx, 'show_profile', [member), log_type='command', author=ctx.author)
 #
 #     embed = discord.Embed(title=f"{member.name}#{member.discriminator}",
@@ -539,41 +539,41 @@ async def add_to_queue(inter, message: discord.Message):
 
 # --------------------------------------- GENERAL --------------------------------------------------
 
-@bot.hybrid_command(name='ping', with_app_command=True, description=text('ping'), help=text('ping'))
+@bot.hybrid_command(name='ping', with_app_command=True, description=text(0, glob, 'ping'), help=text(0, glob, 'ping'))
 async def ping_command(ctx: dc_commands.Context):
     log(ctx, 'ping', options=locals(), log_type='command', author=ctx.author)
     await ping_def(ctx, glob)
 
 # noinspection PyTypeHints
-@bot.hybrid_command(name='language', with_app_command=True, description=text('language'), help=text('language'))
-@app_commands.describe(country_code=text('country_code'))
+@bot.hybrid_command(name='language', with_app_command=True, description=text(0, glob, 'language'), help=text(0, glob, 'language'))
+@app_commands.describe(country_code=text(0, glob, 'country_code'))
 async def language_command(ctx: dc_commands.Context, country_code: Literal[tuple(languages_dict.keys())]):
     log(ctx, 'language', options=locals(), log_type='command', author=ctx.author)
 
     await language_command_def(ctx, glob, country_code)
 
-@bot.hybrid_command(name='sound_effects', with_app_command=True, description=text('sound'), help=text('sound'))
-@app_commands.describe(user_only=text('ephemeral'))
+@bot.hybrid_command(name='sound_effects', with_app_command=True, description=text(0, glob, 'sound'), help=text(0, glob, 'sound'))
+@app_commands.describe(user_only=text(0, glob, 'ephemeral'))
 async def sound_effects(ctx: dc_commands.Context, user_only: bool = True):
     log(ctx, 'sound_effects', options=locals(), log_type='command', author=ctx.author)
 
     await sound_effects_def(ctx, glob, user_only)
 
-@bot.hybrid_command(name='list_radios', with_app_command=True, description=text('list_radios'), help=text('list_radios'))
-@app_commands.describe(user_only=text('ephemeral'))
+@bot.hybrid_command(name='list_radios', with_app_command=True, description=text(0, glob, 'list_radios'), help=text(0, glob, 'list_radios'))
+@app_commands.describe(user_only=text(0, glob, 'ephemeral'))
 async def list_radios(ctx: dc_commands.Context, user_only: bool = True):
     log(ctx, 'list_radios', options=locals(), log_type='command', author=ctx.author)
 
     await list_radios_def(ctx, glob, user_only)
 
-@bot.hybrid_command(name='key', with_app_command=True, description=text('key'), help=text('key'))
+@bot.hybrid_command(name='key', with_app_command=True, description=text(0, glob, 'key'), help=text(0, glob, 'key'))
 async def key_command(ctx: dc_commands.Context):
     log(ctx, 'key', options=locals(), log_type='command', author=ctx.author)
 
     await key_def(ctx, glob)
 
 # noinspection PyTypeHints
-@bot.hybrid_command(name='options', with_app_command=True, description=text('options'), help=text('options'))
+@bot.hybrid_command(name='options', with_app_command=True, description=text(0, glob, 'options'), help=text(0, glob, 'options'))
 @app_commands.describe(volume='In percentage (200 max)',
                        buffer='In seconds (what time to wait after no music is playing to disconnect)',
                        language='Language code', response_type='short/long -> embeds/plain text',
@@ -775,167 +775,167 @@ async def help_command(ctx: dc_commands.Context,
 
     embed = discord.Embed(title="Help",
                           description=f"Use `/help <command>` to get help on a command | Prefix: `{prefix}`")
-    embed.add_field(name="General", value=f"`/help` - {tg(gi, 'help')}\n"
-                                          f"`/ping` - {tg(gi, 'ping')}\n"
-                                          f"`/language` - {tg(gi, 'language')}\n"
-                                          f"`/sound_ effects` - {tg(gi, 'sound')}\n"
-                                          f"`/list_radios` - {tg(gi, 'list_radios')}\n"
-                                          f"`/key` - {tg(gi, 'key')}\n",
+    embed.add_field(name="General", value=f"`/help` - {text(gi, glob, 'help')}\n"
+                                          f"`/ping` - {text(gi, glob, 'ping')}\n"
+                                          f"`/language` - {text(gi, glob, 'language')}\n"
+                                          f"`/sound_ effects` - {text(gi, glob, 'sound')}\n"
+                                          f"`/list_radios` - {text(gi, glob, 'list_radios')}\n"
+                                          f"`/key` - {text(gi, glob, 'key')}\n",
                     inline=False)
-    embed.add_field(name="Player", value=f"`/play` - {tg(gi, 'play')}\n"
-                                         f"`/radio` - {tg(gi, 'radio')}\n"
-                                         f"`/ps` - {tg(gi, 'ps')}\n"
-                                         f"`/skip` - {tg(gi, 'skip')}\n"
-                                         f"`/nowplaying` - {tg(gi, 'nowplaying')}\n"
-                                         f"`/last` - {tg(gi, 'last')}\n"
-                                         f"`/loop` - {tg(gi, 'loop')}\n"
-                                         f"`/loop_this` - {tg(gi, 'loop_this')}\n",
+    embed.add_field(name="Player", value=f"`/play` - {text(gi, glob, 'play')}\n"
+                                         f"`/radio` - {text(gi, glob, 'radio')}\n"
+                                         f"`/ps` - {text(gi, glob, 'ps')}\n"
+                                         f"`/skip` - {text(gi, glob, 'skip')}\n"
+                                         f"`/nowplaying` - {text(gi, glob, 'nowplaying')}\n"
+                                         f"`/last` - {text(gi, glob, 'last')}\n"
+                                         f"`/loop` - {text(gi, glob, 'loop')}\n"
+                                         f"`/loop_this` - {text(gi, glob, 'loop_this')}\n",
                     inline=False)
-    embed.add_field(name="Queue", value=f"`/queue` - {tg(gi, 'queue_add')}\n"
-                                        # f"`/queue_import` - {tg(gi, 'queue_import')}\n"
-                                        # f"`/queue_export` - {tg(gi, 'queue_export')}\n"
-                                        f"`/remove` - {tg(gi, 'queue_remove')}\n"
-                                        f"`/clear` - {tg(gi, 'clear')}\n"
-                                        f"`/shuffle` - {tg(gi, 'shuffle')}\n"
-                                        f"`/show` - {tg(gi, 'queue_show')}\n"
-                                        f"`/search` - {tg(gi, 'search')}",
+    embed.add_field(name="Queue", value=f"`/queue` - {text(gi, glob, 'queue_add')}\n"
+                                        # f"`/queue_import` - {text(gi, glob, 'queue_import')}\n"
+                                        # f"`/queue_export` - {text(gi, glob, 'queue_export')}\n"
+                                        f"`/remove` - {text(gi, glob, 'queue_remove')}\n"
+                                        f"`/clear` - {text(gi, glob, 'clear')}\n"
+                                        f"`/shuffle` - {text(gi, glob, 'shuffle')}\n"
+                                        f"`/show` - {text(gi, glob, 'queue_show')}\n"
+                                        f"`/search` - {text(gi, glob, 'search')}",
                     inline=False)
-    embed.add_field(name="Voice", value=f"`/stop` - {tg(gi, 'stop')}\n"
-                                        f"`/pause` - {tg(gi, 'pause')}\n"
-                                        f"`/resume` - {tg(gi, 'resume')}\n"
-                                        f"`/join` - {tg(gi, 'join')}\n"
-                                        f"`/disconnect` - {tg(gi, 'die')}\n"
-                                        f"`/volume` - {tg(gi, 'volume')}",
+    embed.add_field(name="Voice", value=f"`/stop` - {text(gi, glob, 'stop')}\n"
+                                        f"`/pause` - {text(gi, glob, 'pause')}\n"
+                                        f"`/resume` - {text(gi, glob, 'resume')}\n"
+                                        f"`/join` - {text(gi, glob, 'join')}\n"
+                                        f"`/disconnect` - {text(gi, glob, 'die')}\n"
+                                        f"`/volume` - {text(gi, glob, 'volume')}",
                     inline=False)
-    embed.add_field(name="Context Menu", value=f"`Add to queue` - {tg(gi, 'queue_add')}\n"
-                                               # f"`Show Profile` - {tg(gi, 'profile')}\n"
-                                               f"`Play now` - {tg(gi, 'play')}")
+    embed.add_field(name="Context Menu", value=f"`Add to queue` - {text(gi, glob, 'queue_add')}\n"
+                                               # f"`Show Profile` - {text(gi, glob, 'profile')}\n"
+                                               f"`Play now` - {text(gi, glob, 'play')}")
 
     if command == 'help':
-        embed = discord.Embed(title="Help", description=f"`/help` - {tg(gi, 'help')}")
-        embed.add_field(name=f"{tg(gi, 'Arguments')}", value=f"`general` - {tg(gi, 'The commands from')} General\n"
-                                                             f"`player` - {tg(gi, 'The commands from')} Player\n"
-                                                             f"`queue` - {tg(gi, 'The commands from')} Queue\n"
-                                                             f"`voice` - {tg(gi, 'The commands from')} Voice",
+        embed = discord.Embed(title="Help", description=f"`/help` - {text(gi, glob, 'help')}")
+        embed.add_field(name=f"{text(gi, glob, 'Arguments')}", value=f"`general` - {text(gi, glob, 'The commands from')} General\n"
+                                                             f"`player` - {text(gi, glob, 'The commands from')} Player\n"
+                                                             f"`queue` - {text(gi, glob, 'The commands from')} Queue\n"
+                                                             f"`voice` - {text(gi, glob, 'The commands from')} Voice",
                         inline=False)
 
     elif command == 'ping':
-        embed = discord.Embed(title="Help", description=f"`/ping` - {tg(gi, 'ping')}")
+        embed = discord.Embed(title="Help", description=f"`/ping` - {text(gi, glob, 'ping')}")
 
     elif command == 'language':
-        embed = discord.Embed(title="Help", description=f"`/language` - {tg(gi, 'language')}")
-        embed.add_field(name=f"{tg(gi, 'Arguments')}", value=f"`country_code` - {tg(gi, 'country_code')}", inline=False)
+        embed = discord.Embed(title="Help", description=f"`/language` - {text(gi, glob, 'language')}")
+        embed.add_field(name=f"{text(gi, glob, 'Arguments')}", value=f"`country_code` - {text(gi, glob, 'country_code')}", inline=False)
 
     elif command == 'sound_effects':
-        embed = discord.Embed(title="Help", description=f"`/sound_effects` - {tg(gi, 'sound')}")
-        embed.add_field(name=f"{tg(gi, 'Arguments')}", value=f"`user_only` - {tg(gi, 'ephemeral')}", inline=False)
+        embed = discord.Embed(title="Help", description=f"`/sound_effects` - {text(gi, glob, 'sound')}")
+        embed.add_field(name=f"{text(gi, glob, 'Arguments')}", value=f"`user_only` - {text(gi, glob, 'ephemeral')}", inline=False)
 
     elif command == 'list_radios':
-        embed = discord.Embed(title="Help", description=f"`/list_radios` - {tg(gi, 'list_radios')}")
-        embed.add_field(name=f"{tg(gi, 'Arguments')}", value=f"`user_only` - {tg(gi, 'ephemeral')}", inline=False)
+        embed = discord.Embed(title="Help", description=f"`/list_radios` - {text(gi, glob, 'list_radios')}")
+        embed.add_field(name=f"{text(gi, glob, 'Arguments')}", value=f"`user_only` - {text(gi, glob, 'ephemeral')}", inline=False)
 
     elif command == 'key':
-        embed = discord.Embed(title="Help", description=f"`/key` - {tg(gi, 'key')}")
+        embed = discord.Embed(title="Help", description=f"`/key` - {text(gi, glob, 'key')}")
 
     elif command == 'play':
-        embed = discord.Embed(title="Help", description=f"`/play` - {tg(gi, 'play')}")
-        embed.add_field(name=f"{tg(gi, 'Arguments')}", value=f"`url` - {tg(gi, 'url')}", inline=False)
-        embed.add_field(name="", value=f"`force` - {tg(gi, 'force')}", inline=False)
+        embed = discord.Embed(title="Help", description=f"`/play` - {text(gi, glob, 'play')}")
+        embed.add_field(name=f"{text(gi, glob, 'Arguments')}", value=f"`url` - {text(gi, glob, 'url')}", inline=False)
+        embed.add_field(name="", value=f"`force` - {text(gi, glob, 'force')}", inline=False)
 
     elif command == 'radio':
-        embed = discord.Embed(title="Help", description=f"`/radio` - {tg(gi, 'radio')}")
-        embed.add_field(name=f"{tg(gi, 'Arguments')}", value=f"`favourite_radio` - {tg(gi, 'favourite_radio')}",
+        embed = discord.Embed(title="Help", description=f"`/radio` - {text(gi, glob, 'radio')}")
+        embed.add_field(name=f"{text(gi, glob, 'Arguments')}", value=f"`favourite_radio` - {text(gi, glob, 'favourite_radio')}",
                         inline=False)
-        embed.add_field(name="", value=f"`radio_code` - {tg(gi, 'radio_code')}", inline=False)
+        embed.add_field(name="", value=f"`radio_code` - {text(gi, glob, 'radio_code')}", inline=False)
 
     elif command == 'ps':
-        embed = discord.Embed(title="Help", description=f"`/ps` - {tg(gi, 'ps')}")
-        embed.add_field(name=f"{tg(gi, 'Arguments')}", value=f"`effect_number` - {tg(gi, 'effects_number')}",
+        embed = discord.Embed(title="Help", description=f"`/ps` - {text(gi, glob, 'ps')}")
+        embed.add_field(name=f"{text(gi, glob, 'Arguments')}", value=f"`effect_number` - {text(gi, glob, 'effects_number')}",
                         inline=False)
 
     elif command == 'skip':
-        embed = discord.Embed(title="Help", description=f"`/skip` - {tg(gi, 'skip')}")
+        embed = discord.Embed(title="Help", description=f"`/skip` - {text(gi, glob, 'skip')}")
 
     elif command == 'nowplaying':
-        embed = discord.Embed(title="Help", description=f"`/nowplaying` - {tg(gi, 'nowplaying')}")
-        embed.add_field(name=f"{tg(gi, 'Arguments')}", value=f"`user_only` - {tg(gi, 'ephemeral')}", inline=False)
+        embed = discord.Embed(title="Help", description=f"`/nowplaying` - {text(gi, glob, 'nowplaying')}")
+        embed.add_field(name=f"{text(gi, glob, 'Arguments')}", value=f"`user_only` - {text(gi, glob, 'ephemeral')}", inline=False)
 
     elif command == 'last':
-        embed = discord.Embed(title="Help", description=f"`/last` - {tg(gi, 'last')}")
-        embed.add_field(name=f"{tg(gi, 'Arguments')}", value=f"`user_only` - {tg(gi, 'ephemeral')}", inline=False)
+        embed = discord.Embed(title="Help", description=f"`/last` - {text(gi, glob, 'last')}")
+        embed.add_field(name=f"{text(gi, glob, 'Arguments')}", value=f"`user_only` - {text(gi, glob, 'ephemeral')}", inline=False)
 
     elif command == 'loop':
-        embed = discord.Embed(title="Help", description=f"`/loop` - {tg(gi, 'loop')}")
+        embed = discord.Embed(title="Help", description=f"`/loop` - {text(gi, glob, 'loop')}")
 
     elif command == 'loop_this':
-        embed = discord.Embed(title="Help", description=f"`/loop_this` - {tg(gi, 'loop_this')}")
+        embed = discord.Embed(title="Help", description=f"`/loop_this` - {text(gi, glob, 'loop_this')}")
 
     elif command == 'queue':
-        embed = discord.Embed(title="Help", description=f"`/queue` - {tg(gi, 'queue_add')}")
-        embed.add_field(name=f"{tg(gi, 'Arguments')}", value=f"`url` - {tg(gi, 'url')}", inline=False)
-        embed.add_field(name="", value=f"`position` - {tg(gi, 'pos')}", inline=False)
-        embed.add_field(name="", value=f"`mute_response` - {tg(gi, 'mute_response')}", inline=False)
-        embed.add_field(name="", value=f"`force` - {tg(gi, 'force')}", inline=False)
+        embed = discord.Embed(title="Help", description=f"`/queue` - {text(gi, glob, 'queue_add')}")
+        embed.add_field(name=f"{text(gi, glob, 'Arguments')}", value=f"`url` - {text(gi, glob, 'url')}", inline=False)
+        embed.add_field(name="", value=f"`position` - {text(gi, glob, 'pos')}", inline=False)
+        embed.add_field(name="", value=f"`mute_response` - {text(gi, glob, 'mute_response')}", inline=False)
+        embed.add_field(name="", value=f"`force` - {text(gi, glob, 'force')}", inline=False)
 
     elif command == 'queue_import':
-        embed = discord.Embed(title="Help", description=f"`/queue_import` - {tg(gi, 'queue_import')}")
-        embed.add_field(name=f"{tg(gi, 'Arguments')}", value=f"`queue_string` - {tg(gi, 'queue_string')}", inline=False)
-        embed.add_field(name="", value=f"`guild_id` - {tg(gi, 'guild_id')}", inline=False)
-        embed.add_field(name="", value=f"`user_only` - {tg(gi, 'ephemeral')}", inline=False)
+        embed = discord.Embed(title="Help", description=f"`/queue_import` - {text(gi, glob, 'queue_import')}")
+        embed.add_field(name=f"{text(gi, glob, 'Arguments')}", value=f"`queue_string` - {text(gi, glob, 'queue_string')}", inline=False)
+        embed.add_field(name="", value=f"`guild_id` - {text(gi, glob, 'guild_id')}", inline=False)
+        embed.add_field(name="", value=f"`user_only` - {text(gi, glob, 'ephemeral')}", inline=False)
 
     elif command == 'queue_export':
-        embed = discord.Embed(title="Help", description=f"`/queue_export` - {tg(gi, 'queue_export')}")
-        embed.add_field(name=f"{tg(gi, 'Arguments')}", value=f"`guild_id` - {tg(gi, 'guild_id')}", inline=False)
-        embed.add_field(name="", value=f"`user_only` - {tg(gi, 'ephemeral')}", inline=False)
+        embed = discord.Embed(title="Help", description=f"`/queue_export` - {text(gi, glob, 'queue_export')}")
+        embed.add_field(name=f"{text(gi, glob, 'Arguments')}", value=f"`guild_id` - {text(gi, glob, 'guild_id')}", inline=False)
+        embed.add_field(name="", value=f"`user_only` - {text(gi, glob, 'ephemeral')}", inline=False)
 
     elif command == 'next_up':
-        embed = discord.Embed(title="Help", description=f"`/next_up` - {tg(gi, 'next_up')}")
-        embed.add_field(name=f"{tg(gi, 'Arguments')}", value=f"`url` - {tg(gi, 'url')}", inline=False)
-        embed.add_field(name="", value=f"`user_only` - {tg(gi, 'ephemeral')}", inline=False)
+        embed = discord.Embed(title="Help", description=f"`/next_up` - {text(gi, glob, 'next_up')}")
+        embed.add_field(name=f"{text(gi, glob, 'Arguments')}", value=f"`url` - {text(gi, glob, 'url')}", inline=False)
+        embed.add_field(name="", value=f"`user_only` - {text(gi, glob, 'ephemeral')}", inline=False)
 
     elif command == 'remove':
-        embed = discord.Embed(title="Help", description=f"`/remove` - {tg(gi, 'remove')}")
-        embed.add_field(name=f"{tg(gi, 'Arguments')}", value=f"`number` - {tg(gi, 'number')}", inline=False)
-        embed.add_field(name="", value=f"`user_only` - {tg(gi, 'ephemeral')}", inline=False)
+        embed = discord.Embed(title="Help", description=f"`/remove` - {text(gi, glob, 'remove')}")
+        embed.add_field(name=f"{text(gi, glob, 'Arguments')}", value=f"`number` - {text(gi, glob, 'number')}", inline=False)
+        embed.add_field(name="", value=f"`user_only` - {text(gi, glob, 'ephemeral')}", inline=False)
 
     elif command == 'clear':
-        embed = discord.Embed(title="Help", description=f"`/clear` - {tg(gi, 'clear')}")
-        embed.add_field(name=f"{tg(gi, 'Arguments')}", value=f"`user_only` - {tg(gi, 'ephemeral')}", inline=False)
+        embed = discord.Embed(title="Help", description=f"`/clear` - {text(gi, glob, 'clear')}")
+        embed.add_field(name=f"{text(gi, glob, 'Arguments')}", value=f"`user_only` - {text(gi, glob, 'ephemeral')}", inline=False)
 
     elif command == 'shuffle':
-        embed = discord.Embed(title="Help", description=f"`/shuffle` - {tg(gi, 'shuffle')}")
-        embed.add_field(name=f"{tg(gi, 'Arguments')}", value=f"`user_only` - {tg(gi, 'ephemeral')}", inline=False)
+        embed = discord.Embed(title="Help", description=f"`/shuffle` - {text(gi, glob, 'shuffle')}")
+        embed.add_field(name=f"{text(gi, glob, 'Arguments')}", value=f"`user_only` - {text(gi, glob, 'ephemeral')}", inline=False)
 
     elif command == 'show':
-        embed = discord.Embed(title="Help", description=f"`/show` - {tg(gi, 'show')}")
-        embed.add_field(name=f"{tg(gi, 'Arguments')}", value=f"`display_type` - {tg(gi, 'display_type')}", inline=False)
-        embed.add_field(name="", value=f"`user_only` - {tg(gi, 'ephemeral')}", inline=False)
+        embed = discord.Embed(title="Help", description=f"`/show` - {text(gi, glob, 'show')}")
+        embed.add_field(name=f"{text(gi, glob, 'Arguments')}", value=f"`display_type` - {text(gi, glob, 'display_type')}", inline=False)
+        embed.add_field(name="", value=f"`user_only` - {text(gi, glob, 'ephemeral')}", inline=False)
 
     elif command == 'search':
-        embed = discord.Embed(title="Help", description=f"`/search` - {tg(gi, 'search')}")
-        embed.add_field(name=f"{tg(gi, 'Arguments')}", value=f"`search_query` - {tg(gi, 'search_query')}", inline=False)
-        embed.add_field(name="", value=f"`user_only` - {tg(gi, 'ephemeral')}", inline=False)
+        embed = discord.Embed(title="Help", description=f"`/search` - {text(gi, glob, 'search')}")
+        embed.add_field(name=f"{text(gi, glob, 'Arguments')}", value=f"`search_query` - {text(gi, glob, 'search_query')}", inline=False)
+        embed.add_field(name="", value=f"`user_only` - {text(gi, glob, 'ephemeral')}", inline=False)
 
     elif command == 'stop':
-        embed = discord.Embed(title="Help", description=f"`/stop` - {tg(gi, 'stop')}")
+        embed = discord.Embed(title="Help", description=f"`/stop` - {text(gi, glob, 'stop')}")
 
     elif command == 'pause':
-        embed = discord.Embed(title="Help", description=f"`/pause` - {tg(gi, 'pause')}")
+        embed = discord.Embed(title="Help", description=f"`/pause` - {text(gi, glob, 'pause')}")
 
     elif command == 'resume':
-        embed = discord.Embed(title="Help", description=f"`/resume` - {tg(gi, 'resume')}")
+        embed = discord.Embed(title="Help", description=f"`/resume` - {text(gi, glob, 'resume')}")
 
     elif command == 'join':
-        embed = discord.Embed(title="Help", description=f"`/join` - {tg(gi, 'join')}")
-        embed.add_field(name=f"{tg(gi, 'Arguments')}", value=f"`channel_id` - {tg(gi, 'channel_id')}", inline=False)
+        embed = discord.Embed(title="Help", description=f"`/join` - {text(gi, glob, 'join')}")
+        embed.add_field(name=f"{text(gi, glob, 'Arguments')}", value=f"`channel_id` - {text(gi, glob, 'channel_id')}", inline=False)
 
     elif command == 'disconnect':
-        embed = discord.Embed(title="Help", description=f"`/disconnect` - {tg(gi, 'die')}")
+        embed = discord.Embed(title="Help", description=f"`/disconnect` - {text(gi, glob, 'die')}")
 
     elif command == 'volume':
-        embed = discord.Embed(title="Help", description=f"`/volume` - {tg(gi, 'volume')}")
-        embed.add_field(name=f"{tg(gi, 'Arguments')}", value=f"`volume` - {tg(gi, 'volume')}", inline=False)
-        embed.add_field(name="", value=f"`user_only` - {tg(gi, 'ephemeral')}", inline=False)
+        embed = discord.Embed(title="Help", description=f"`/volume` - {text(gi, glob, 'volume')}")
+        embed.add_field(name=f"{text(gi, glob, 'Arguments')}", value=f"`volume` - {text(gi, glob, 'volume')}", inline=False)
+        embed.add_field(name="", value=f"`user_only` - {text(gi, glob, 'ephemeral')}", inline=False)
 
     await ctx.reply(embed=embed, ephemeral=True)
 

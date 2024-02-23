@@ -27,21 +27,21 @@
         <button class="btn btn-outline btn-primary btn-sm btn-m" type="button" data-bs-toggle="modal"
                 data-bs-target=#videoEditModal_{{ guild.queue.index(track) }}
                 hx-target="#videoEditModal_{{ guild.queue.index(track) }}_content"
-                hx-get="/guild/{{gi}}/modals?type=queue_edit&var={{ guild.queue.index(track) }}&key={{key}}">{{ tg(gi, 'Edit') }}</button>
+                hx-get="/guild/{{gi}}/modals?type=queue_edit&var={{ guild.queue.index(track) }}&key={{key}}">{{ text(gi, glob, 'Edit') }}</button>
       {% endif %}
-      <button type="button" class="btn btn-secondary btn-sm dropdown-toggle btn-m" data-bs-toggle="dropdown" aria-expanded="false">{{ tg(gi, 'More') }}</button>
+      <button type="button" class="btn btn-secondary btn-sm dropdown-toggle btn-m" data-bs-toggle="dropdown" aria-expanded="false">{{ text(gi, glob, 'More') }}</button>
       <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
         <li>
           <button class="dropdown-item"
                   hx-get="/guild/{{gi}}/queue?act=top_btn&var={{ guild.queue.index(track) }}&key={{key}}"
                   hx-swap="outerHTML" hx-target="#q-main" hx-trigger="click throttle:500ms"
-          >{{ tg(gi, 'Move to Top') }}</button>
+          >{{ text(gi, glob, 'Move to Top') }}</button>
         </li>
         <li>
           <button class="dropdown-item"
                   hx-get="/guild/{{gi}}/queue?act=bottom_btn&var={{ guild.queue.index(track) }}&key={{key}}"
                   hx-swap="outerHTML" hx-target="#q-main" hx-trigger="click throttle:500ms"
-          >{{ tg(gi, 'Move to Bottom') }}</button>
+          >{{ text(gi, glob, 'Move to Bottom') }}</button>
         </li>
         <li>
           <hr class="dropdown-divider">
@@ -50,7 +50,7 @@
           <button class="dropdown-item"
                   hx-get="/guild/{{gi}}/queue?act=duplicate_btn&var={{ guild.queue.index(track) }}&key={{key}}"
                   hx-swap="outerHTML" hx-target="#q-main" hx-trigger="click throttle:500ms"
-          >{{ tg(gi, 'Duplicate') }}</button>
+          >{{ text(gi, glob, 'Duplicate') }}</button>
         </li>
         <li>
           <hr class="dropdown-divider">
@@ -61,13 +61,13 @@
                   hx-target="#videoModal_{{ guild.queue.index(track) }}_content"
                   hx-get="/guild/{{gi}}/modals?type=queue&var={{ guild.queue.index(track) }}&key={{key}}"
                   hx-trigger="click throttle:500ms" hx-swap="outerHTML"
-          >{{ tg(gi, 'Info') }}</button>
+          >{{ text(gi, glob, 'Info') }}</button>
         </li>
       </ul>
       <button class="btn btn-outline btn-danger btn-sm btn-m"
               hx-get="/guild/{{gi}}/queue?act=del_btn&var={{ guild.queue.index(track) }}&key={{key}}"
               hx-swap="outerHTML" hx-target="#q-main" hx-trigger="click throttle:500ms"
-          >{{ tg(gi, 'Remove') }}</button>
+          >{{ text(gi, glob, 'Remove') }}</button>
     </div>
   </div>
   <div class="q-item0 q-wa q-self-center q-items-center">
