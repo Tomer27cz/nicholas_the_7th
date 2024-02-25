@@ -1,5 +1,4 @@
-from utils.global_vars import GlobalVars
-
+from youtubesearchpython.__future__ import Playlist, VideosSearch
 from classes.data_classes import ReturnData
 from classes.video_class import Queue
 from classes.typed_dictionaries import VideoInfo
@@ -13,6 +12,7 @@ from utils.discord import to_queue, create_embed, create_search_embed
 from utils.spotify import spotify_album_to_yt_video_list, spotify_playlist_to_yt_video_list, spotify_to_yt_video
 from utils.save import update, push_update
 from utils.convert import convert_duration
+from utils.global_vars import GlobalVars
 
 from database.guild import guild, clear_queue, guild_queue, guild_history, guild_data_key, guild_options_loop
 
@@ -21,7 +21,6 @@ import commands.voice
 from commands.utils import ctx_check
 
 from typing import Literal
-import youtubesearchpython
 import discord
 import asyncio
 import random
@@ -100,7 +99,8 @@ async def queue_command_def(ctx,
                 await ctx.defer(ephemeral=ephemeral)
 
         try:
-            playlist_videos: list = youtubesearchpython.Playlist.getVideos(url)['videos']
+            playlist = await Playlist.getVideos(url)
+            playlist_videos: list = playlist['videos']
         except KeyError:
             message = f'This playlist is not viewable: `{url}`'
             if not mute_response:
@@ -137,9 +137,9 @@ async def queue_command_def(ctx,
                                              ephemeral=ephemeral)
 
         if url_type == 'Spotify Playlist':
-            video_list = spotify_playlist_to_yt_video_list(glob, url, author_id, guild_id)
+            video_list = await spotify_playlist_to_yt_video_list(glob, url, author_id, guild_id)
         else:
-            video_list = spotify_album_to_yt_video_list(glob, url, author_id, guild_id)
+            video_list = await spotify_album_to_yt_video_list(glob, url, author_id, guild_id)
 
         if position is not None:
             video_list = list(reversed(video_list))
@@ -154,7 +154,7 @@ async def queue_command_def(ctx,
         return ReturnData(True, message)
 
     if url_type in ['Spotify Track', 'Spotify URL']:
-        video = spotify_to_yt_video(glob, url, author_id, guild_id)
+        video = await spotify_to_yt_video(glob, url, author_id, guild_id)
         if video is None:
             message = f'{text(guild_id, glob, "Invalid spotify url")}: `{url}`'
             if not mute_response:
@@ -581,7 +581,9 @@ async def search_command_def(ctx, glob: GlobalVars, search_query, display_type: 
     if display_type == 'long':
         await ctx.reply(text(guild_id, glob, 'Searching...'), ephemeral=ephemeral)
 
-    custom_search: list[VideoInfo] = youtubesearchpython.VideosSearch(search_query, limit=5).result()['result']
+    cs = VideosSearch(search_query, limit=5)
+    csr = await cs.next()
+    custom_search: list[VideoInfo] = csr['result']
 
     if not custom_search:
         message = text(guild_id, glob, 'No results found!')

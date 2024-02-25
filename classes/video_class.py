@@ -1,4 +1,5 @@
 from __future__ import annotations
+# from youtubesearchpython.__future__ import Video
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -9,14 +10,17 @@ from database.main import *
 
 from utils.convert import convert_duration
 from utils.global_vars import radio_dict
+
 import utils.video_time
 import utils.save
 
 from sclib import Track
 from time import time
 from bs4 import BeautifulSoup
+from youtubesearchpython import Video
+
+# import aiohttp
 import requests
-import youtubesearchpython
 
 import config
 
@@ -27,7 +31,7 @@ def get_video_data(url: str) -> (dict, str) or (None, str):
     :return: dict - video info
     """
     try:
-        video: VideoInfo = youtubesearchpython.Video.getInfo(url)  # mode=ResultMode.json
+        video: VideoInfo = Video.getInfo(url)  # mode=ResultMode.json
         if not video:
             return None, 'not video'
     except Exception as e:
@@ -235,7 +239,31 @@ class RadioInfo(Base):
         self.name: str = [radio['name'] for radio in radio_dict.values() if radio['id'] == radio_id][0]
         self.last_update: int = int(time())
 
-    def update(self):
+    def update(self) -> None:
+        # unfortunately cannot use aiohttp here
+        # async with aiohttp.ClientSession() as session:
+        #     async with session.get(self.url) as response:
+        #         if self.website == 'radia_cz':
+        #             html = await response.text()
+        #             soup = BeautifulSoup(html, features="lxml")
+        #             data1 = soup.find('div', attrs={'class': 'interpret-image'})
+        #             data2 = soup.find('div', attrs={'class': 'interpret-info'})
+        #             # if data1 is None or data2 is None:
+        #             #     return None
+        #
+        #             self.picture = data1.find('img')['src']
+        #             self.channel_name = data2.find('div', attrs={'class': 'nazev'}).text.lstrip().rstrip()
+        #             self.title = data2.find('div', attrs={'class': 'song'}).text.lstrip().rstrip()
+        #
+        #         elif self.website == 'actve':
+        #             r = await response.json()
+        #             self.picture = r['coverBase']
+        #             self.channel_name = r['artist']
+        #             self.title = r['title']
+        #
+        #         else:
+        #             raise ValueError("Invalid radio website")
+
         if self.website == 'radia_cz':
             html = requests.get(self.url).text
             soup = BeautifulSoup(html, features="lxml")
@@ -400,8 +428,8 @@ class Queue(Base):
                          stream_url=stream_url,
                          discord_channel=discord_channel)
 
-    def renew(self, glob: GlobalVars):
-        video_class_renew(self, glob)
+    def renew(self, glob: GlobalVars, force: bool = False):
+        video_class_renew(self, glob, from_init=force)
 
     def current_chapter(self, glob: GlobalVars):
         return video_class_current_chapter(self, glob)
@@ -475,8 +503,8 @@ class NowPlaying(Base):
                          stream_url=stream_url,
                          discord_channel=discord_channel)
 
-    def renew(self, glob: GlobalVars):
-        video_class_renew(self, glob)
+    def renew(self, glob: GlobalVars, force: bool = False):
+        video_class_renew(self, glob, from_init=force)
 
     def current_chapter(self, glob: GlobalVars):
         return video_class_current_chapter(self, glob)
@@ -550,8 +578,8 @@ class History(Base):
                          stream_url=stream_url,
                          discord_channel=discord_channel)
 
-    def renew(self, glob: GlobalVars):
-        video_class_renew(self, glob)
+    def renew(self, glob: GlobalVars, force: bool = False):
+        video_class_renew(self, glob, from_init=force)
 
     def current_chapter(self, glob: GlobalVars):
         return video_class_current_chapter(self, glob)
@@ -629,8 +657,8 @@ class SaveVideo(Base):
                          stream_url=stream_url,
                          discord_channel=discord_channel)
 
-    def renew(self, glob: GlobalVars):
-        video_class_renew(self, glob)
+    def renew(self, glob: GlobalVars, force: bool = False):
+        video_class_renew(self, glob, from_init=force)
 
     def current_chapter(self, glob: GlobalVars):
         return video_class_current_chapter(self, glob)
@@ -640,7 +668,7 @@ class SaveVideo(Base):
 
 # Transforms
 
-def to_queue_class(glob, _video_class):
+def to_queue_class(glob, _video_class) -> Queue:
     if _video_class.__class__.__name__ == 'Queue':
         return _video_class
 
@@ -664,7 +692,7 @@ def to_queue_class(glob, _video_class):
         discord_channel=_video_class.discord_channel
     )
 
-def to_now_playing_class(glob, _video_class):
+def to_now_playing_class(glob, _video_class) -> NowPlaying:
     if _video_class.__class__.__name__ == 'NowPlaying':
         return _video_class
 
@@ -688,7 +716,7 @@ def to_now_playing_class(glob, _video_class):
         discord_channel=_video_class.discord_channel
     )
 
-def to_history_class(glob, _video_class):
+def to_history_class(glob, _video_class) -> History:
     if _video_class.__class__.__name__ == 'History':
         return _video_class
 
@@ -712,7 +740,7 @@ def to_history_class(glob, _video_class):
         discord_channel=_video_class.discord_channel
     )
 
-def to_save_video_class(glob, _video_class, save_id):
+def to_save_video_class(glob, _video_class, save_id) -> SaveVideo:
     if _video_class.__class__.__name__ == 'SaveVideo':
         return _video_class
 

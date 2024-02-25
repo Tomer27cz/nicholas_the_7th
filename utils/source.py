@@ -1,13 +1,14 @@
 from __future__ import annotations
-from utils.global_vars import GlobalVars
+
+from database.guild import guild
 
 from utils.log import log
-from database.guild import guild
+from utils.global_vars import GlobalVars
 
 import discord
 import asyncio
 import yt_dlp
-import urllib.request
+import aiohttp
 
 YTDL_OPTIONS = {
     'format': 'bestaudio/best',
@@ -30,12 +31,13 @@ FFMPEG_OPTIONS = {
     'options': '-vn',
 }
 
-def url_checker(url):
+async def url_checker(url):
     try:
-        code = urllib.request.urlopen(url).getcode()
-        if code == 200:
-            return True, code
-        return False, code
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url) as response:
+                if response.status == 200:
+                    return True, response.status
+                return False, response.status
     except Exception as e:
         return False, e
 
@@ -82,7 +84,7 @@ class GetSource(discord.PCMVolumeTransformer):
                 data = data['entries'][0]
 
             url = data['url']
-            response, code = url_checker(url)
+            response, code = await url_checker(url)
             if not response:
                 log(guild_id, f'Failed to get source', options={'attempt': attempt, 'org_url': org_url, 'code': code, 'url': url},  log_type='error')
                 if attempt > 9:

@@ -5,16 +5,16 @@ if TYPE_CHECKING:
     from utils.global_vars import GlobalVars
 
 from utils.convert import struct_to_time
-from config import PARENT_DIR, OWNER_ID
 
 from time import time
 from io import BytesIO
 from typing import Literal
+from discord.ext import commands as dc_commands
+import discord
 import logging
 import sys
 
-import discord
-from discord.ext import commands as dc_commands
+from config import OWNER_ID
 
 # ---------------- Create Loggers ------------
 
@@ -125,18 +125,19 @@ def collect_data(data) -> None:
     with open(f'db/log/data.log', "a", encoding="utf-8") as f:
         f.write(message)
 
-async def send_to_admin(glob: GlobalVars, data):
+async def send_to_admin(glob: GlobalVars, data, file=False) -> None:
     """
     Sends data to admin
     :param glob: GlobalVars object
     :param data: str - data to send
+    :param file: bool - if data should be sent as a file
     :return: None
     """
     admin = glob.bot.get_user(OWNER_ID)
     developer = glob.bot.get_user(349164237605568513)
 
     # if length of data is more than 2000 symbols send a file
-    if len(data) > 2000:
+    if len(data) > 2000 or file:
         file_to_send = discord.File(BytesIO(data.encode()), filename='data.txt')
         await admin.send(file=file_to_send)
 

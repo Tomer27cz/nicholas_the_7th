@@ -1,20 +1,12 @@
-import datetime
-import threading
-
-import discord.ext.commands
-import spotipy
-from sclib import SoundcloudAPI
-from spotipy.oauth2 import SpotifyClientCredentials
-
 from classes.data_classes import WebData
 
 from commands.autocomplete import *
 
 from utils.discord import get_content_of_message
 from utils.log import send_to_admin
-# from utils.save import update
 from utils.json import *
-from utils.translate import text
+
+from ipc.server import ipc_run
 
 from commands.admin import *
 from commands.chat_export import *
@@ -23,9 +15,15 @@ from commands.player import *
 from commands.queue import *
 from commands.voice import *
 
+from sclib import SoundcloudAPI
+from spotipy.oauth2 import SpotifyClientCredentials
 from discord.ext import commands as dc_commands
 
-from ipc.server import ipc_run
+import discord.ext.commands
+import spotipy
+import datetime
+import threading
+
 import config
 
 authorized_users = config.AUTHORIZED_USERS
@@ -191,7 +189,7 @@ class Bot(dc_commands.Bot):
         elif isinstance(error, dc_commands.CheckFailure):
             err_msg = f'Error for ({ctx.author}) -> ({ctx.command}) with error ({error})'
             log(ctx, err_msg, log_type='error', author=ctx.author)
-            await send_to_admin(glob, err_msg)
+            await send_to_admin(glob, err_msg, file=True)
             await ctx.reply(f"（ ͡° ͜ʖ ͡°)つ━☆・。\n"
                             f"⊂　　 ノ 　　　・゜+.\n"
                             f"　しーＪ　　　°。+ ´¨)\n"
@@ -204,32 +202,32 @@ class Bot(dc_commands.Bot):
             log(ctx, err_msg, log_type='error', author=ctx.author)
             await ctx.reply(text(ctx.guild.id, glob, 'Bot does not have permissions to execute this command correctly') + f" - {error}")
 
-        elif isinstance(error, PendingRollbackError):
+        # error.__cause__.__cause__ = HybridCommandError -> CommandInvokeError -> {Exception}
+        elif isinstance(error.__cause__.__cause__, PendingRollbackError):
             err_msg = f'Error for ({ctx.author}) -> ({ctx.command}) with error ({error})'
             log(ctx, err_msg, log_type='error', author=ctx.author)
-            await send_to_admin(glob, err_msg)
+            err_msg += "\n" + "-"*50
 
             try:
                 glob.ses.rollback()  # Rollback the session
+                err_msg += "\nRollback Successful"
             except Exception as rollback_error:
-                error_traceback = traceback.format_exception(type(error), error, error.__traceback__)
-                error_traceback = ''.join(error_traceback)
+                rollback_traceback = traceback.format_exception(type(rollback_error), rollback_error, rollback_error.__traceback__)
+                rollback_traceback = ''.join(rollback_traceback)
 
-                err_msg = f'Error for ({ctx.author}) -> Failed Rollback ({ctx.command}) with error ({rollback_error})({error_traceback})'
+                err_msg = f'\nFailed Rollback with error ({rollback_error})({rollback_traceback})'
                 log(ctx, err_msg, log_type='error', author=ctx.author)
-                await send_to_admin(glob, err_msg)
+
+            err_msg += "\n" + "-"*50 + "\nOriginal Traceback" + f"\n{error_traceback}"
+            await send_to_admin(glob, err_msg, file=True)
 
             await ctx.reply(f"Database error -> Attempted rollback (try again one time - if it doesn't work tell developer to restart bot)")
+
         else:
             message = f"Error for ({ctx.author}) -> ({ctx.command}) with error ({error})\n{error_traceback}"
-
-            # log
             log(ctx, message, log_type='error', author=ctx.author)
 
-            # send log to admin
-            await send_to_admin(glob, message)
-
-            # send to user
+            await send_to_admin(glob, message, file=True)
             await ctx.reply(f"{error}   {bot.get_user(config.DEVELOPER_ID).mention}", ephemeral=True)
 
     async def on_message(self, message):
@@ -601,12 +599,11 @@ async def radio_autocomplete(ctx: discord.Interaction, current: str):
 async def song_autocomplete(ctx: discord.Interaction, current: str):
     return await song_autocomplete_def(ctx, current, glob)
 
-# @queue_command.autocomplete('query')
-# @next_up.autocomplete('query')
-# @play.autocomplete('query')
-# async def query_autocomplete(ctx: discord.Interaction, query: str):
-#     print(f"query_autocomplete: {query}")
-#     return await query_autocomplete_def(ctx, query)
+@queue_command.autocomplete('query')
+@next_up.autocomplete('query')
+@play.autocomplete('query')
+async def query_autocomplete(ctx: discord.Interaction, query: str):
+    return await query_autocomplete_def(ctx, query)
 
 
 
@@ -814,9 +811,9 @@ async def help_command(ctx: dc_commands.Context,
     if command == 'help':
         embed = discord.Embed(title="Help", description=f"`/help` - {text(gi, glob, 'help')}")
         embed.add_field(name=f"{text(gi, glob, 'Arguments')}", value=f"`general` - {text(gi, glob, 'The commands from')} General\n"
-                                                             f"`player` - {text(gi, glob, 'The commands from')} Player\n"
-                                                             f"`queue` - {text(gi, glob, 'The commands from')} Queue\n"
-                                                             f"`voice` - {text(gi, glob, 'The commands from')} Voice",
+                                                                     f"`player` - {text(gi, glob, 'The commands from')} Player\n"
+                                                                     f"`queue` - {text(gi, glob, 'The commands from')} Queue\n"
+                                                                     f"`voice` - {text(gi, glob, 'The commands from')} Voice",
                         inline=False)
 
     elif command == 'ping':

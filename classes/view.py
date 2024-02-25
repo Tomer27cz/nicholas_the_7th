@@ -6,19 +6,19 @@ if TYPE_CHECKING:
     from utils.global_vars import GlobalVars
     from classes.typed_dictionaries import VideoInfo
 
-import commands.player
-import commands.queue
+from database.guild import guild
 
 from utils.save import update
 from utils.translate import text
 from utils.discord import get_voice_client
 from utils.url import get_playlist_from_url
 
-from database.guild import guild
+import commands.player
+import commands.queue
 
-import discord
 from discord.ui import View
 from discord.ext import commands as dc_commands
+import discord
 
 react_dict = {
     "ABCD": "\ud83d\udd20",

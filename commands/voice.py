@@ -1,20 +1,21 @@
-from utils.global_vars import GlobalVars
-
 from classes.data_classes import ReturnData
+
+from commands.utils import ctx_check
+
+from database.guild import guild, clear_queue
 
 from utils.log import log
 from utils.translate import text
 from utils.save import update, push_update
 from utils.discord import now_to_history, get_voice_client
 from utils.video_time import set_stopped, set_resumed
+from utils.global_vars import GlobalVars
 
-from database.guild import guild, clear_queue
-from commands.utils import ctx_check
-
-import discord
 from discord.ext import commands as dc_commands
-import traceback
 from typing import Union
+import discord
+import traceback
+
 
 async def stop_def(ctx, glob: GlobalVars, mute_response: bool = False, keep_loop: bool = False) -> ReturnData:
     """

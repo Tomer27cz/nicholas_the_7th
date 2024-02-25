@@ -1,12 +1,13 @@
-from utils.global_vars import GlobalVars, radio_dict
+from youtubesearchpython.__future__ import VideosSearch
+
 from classes.video_class import Queue
+
+from utils.global_vars import GlobalVars, radio_dict
 from utils.url import get_url_type
 from utils.convert import czech_to_ascii
 
 from typing import List
-import youtubesearchpython
 import discord
-
 
 async def query_autocomplete_def(ctx: discord.Interaction, query: str) -> List[discord.app_commands.Choice]:
     """
@@ -15,24 +16,19 @@ async def query_autocomplete_def(ctx: discord.Interaction, query: str) -> List[d
     :param query: String to be autocompleted
     :return: List[discord.app_commands.Choice]
     """
-
-    print(f'query_autocompletion_def: {query}')
-
-    import time
-    start_time = time.time()
-
     if not query:
         return []
 
     url_type = get_url_type(query)
     if url_type[0] == "String":
-        custom_search = youtubesearchpython.VideosSearch(query, limit=5)
-        print(f"took {time.time() - start_time} seconds to search for {query}")
-        if not custom_search.result()['result']:
+        custom_search = VideosSearch(query, limit=5)
+        custom_search_result = await custom_search.next()
+
+        if not custom_search_result['result']:
             return []
 
         # noinspection PyTypeChecker
-        return [discord.app_commands.Choice(name=custom_search.result()['result'][i]['title'], value=custom_search.result()['result'][i]['link']) for i in range(5)]
+        return [discord.app_commands.Choice(name=custom_search_result['result'][i]['title'], value=custom_search_result['result'][i]['link']) for i in range(5)]
 
     return []
 
@@ -80,4 +76,3 @@ async def radio_autocomplete_def(ctx: discord.Interaction, query: str) -> List[d
         return data[:25]
 
     return data
-

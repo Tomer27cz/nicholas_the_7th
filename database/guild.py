@@ -1,9 +1,9 @@
+from utils.global_vars import radio_dict
+from utils.convert import struct_to_time
 from utils.global_vars import GlobalVars
 
 import classes.data_classes as data_classes
 import classes.video_class as video_class
-from utils.global_vars import radio_dict
-from utils.convert import struct_to_time
 
 def guild(glob: GlobalVars, guild_id: int):
     """
@@ -169,6 +169,30 @@ def guild_options_language(glob: GlobalVars, guild_id: int):
     :return: str
     """
     return glob.ses.query(data_classes.Options).filter_by(id=guild_id).with_entities(data_classes.Options.language)[0][0]
+def guild_options_is_radio(glob: GlobalVars, guild_id: int):
+    """
+    Returns whether or not the guild is a radio
+    :param glob: GlobalVars
+    :param guild_id: ID of the guild
+    :return: bool
+    """
+    return glob.ses.query(data_classes.Options).filter_by(id=guild_id).with_entities(data_classes.Options.is_radio)[0][0]
+def guild_options_volume(glob: GlobalVars, guild_id: int):
+    """
+    Returns the volume of the guild
+    :param glob: GlobalVars
+    :param guild_id: ID of the guild
+    :return: float
+    """
+    return glob.ses.query(data_classes.Options).filter_by(id=guild_id).with_entities(data_classes.Options.volume)[0][0]
+def guild_options_buttons(glob: GlobalVars, guild_id: int):
+    """
+    Returns the buttons of the guild
+    :param glob: GlobalVars
+    :param guild_id: ID of the guild
+    :return: bool
+    """
+    return glob.ses.query(data_classes.Options).filter_by(id=guild_id).with_entities(data_classes.Options.buttons)[0][0]
 
 # Guild Save
 def guild_save_count(glob: GlobalVars, guild_id: int):

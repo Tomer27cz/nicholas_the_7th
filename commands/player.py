@@ -1,26 +1,26 @@
-from utils.global_vars import GlobalVars
-
 from classes.video_class import NowPlaying, Queue, to_now_playing_class
-from classes.data_classes import ReturnData
-import classes.view
+from classes.data_classes import ReturnData, Options
+
+from commands.utils import ctx_check
+
+from database.guild import guild, clear_queue
 
 from utils.source import GetSource
 from utils.log import log
 from utils.translate import text
 from utils.save import update, push_update
 from utils.discord import now_to_history, create_embed, to_queue
+from utils.source import url_checker
 from utils.video_time import set_started, set_new_time
-from utils.global_vars import sound_effects, radio_dict
+from utils.global_vars import sound_effects, radio_dict, GlobalVars
 
-from database.guild import guild, clear_queue
-
+import classes.view
 import commands.voice
 import commands.queue
-from commands.utils import ctx_check
 
-import discord
 from discord import app_commands
 from os import path
+import discord
 import asyncio
 import sys
 import traceback
@@ -35,9 +35,9 @@ async def play_def(ctx, glob: GlobalVars, url=None, force=False, mute_response=F
 
     notif = f' -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={db_guild.data.key})'
 
-    if after and guild(glob, guild_id).options.stopped:
+    if after and db_guild.options.stopped:
         log(ctx, "play_def -> stopped play next loop")
-        if not guild(glob, guild_id).options.is_radio:
+        if not db_guild.options.is_radio:
             now_to_history(glob, guild_id)
         return ReturnData(False, text(guild_id, glob, "Stopped play next loop"))
 
@@ -88,7 +88,7 @@ async def play_def(ctx, glob: GlobalVars, url=None, force=False, mute_response=F
             return join_response
 
     if voice.is_playing():
-        if not guild(glob, guild_id).options.is_radio and not force:
+        if not db_guild.options.is_radio and not force:
             if url:
                 if response.video is not None:
                     message = f'{text(guild_id, glob, "**Already playing**, added to queue")}: [`{response.video.title}`](<{response.video.url}>) {notif}'
@@ -209,12 +209,22 @@ async def radio_def(ctx, glob: GlobalVars, radio_name: str, video_from_queue=Non
     """
     log(ctx, 'radio_def', options=locals(), log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
-    db_guild = guild(glob, guild_id)
+    # db_guild = guild(glob, guild_id)
+
+    buttons, volume = glob.ses.query(Options).filter_by(id=guild_id).with_entities(Options.buttons, Options.volume)[0]
 
     # noinspection PyUnresolvedReferences
     if is_ctx:
         if not ctx.interaction.response.is_done():
             await ctx.defer()
+
+    # Check if radio still exists
+    response, code = await url_checker(radio_dict[radio_name]['stream'])
+    if not response:
+        message = text(guild_id, glob, "Radio **not available**")
+        await ctx.reply(message)
+        return ReturnData(False, message)
+
 
     # Connect to voice channel
     if not guild_object.voice_client:
@@ -253,11 +263,11 @@ async def radio_def(ctx, glob: GlobalVars, radio_name: str, video_from_queue=Non
     guild_object.voice_client.play(source)
 
     # Set volume
-    await commands.voice.volume_command_def(ctx, glob, db_guild.options.volume * 100, False, True)
+    await commands.voice.volume_command_def(ctx, glob, volume * 100, False, True)
 
     # Response
     embed = create_embed(glob, video, text(guild_id, glob, "Now playing"), guild_id)
-    if db_guild.options.buttons:
+    if buttons:
         view = classes.view.PlayerControlView(ctx, glob)
         view.message = await ctx.reply(embed=embed, view=view)
     else:
@@ -339,7 +349,7 @@ async def now_def(ctx, glob: GlobalVars, ephemeral: bool = False) -> ReturnData:
 
     if ctx.voice_client:
         if ctx.voice_client.is_playing():
-            db_guild.now_playing.renew(glob)
+            db_guild.now_playing.renew(glob, force=True)
             embed = create_embed(glob, db_guild.now_playing, text(guild_id, glob, "Now playing"), guild_id)
 
             view = classes.view.PlayerControlView(ctx, glob)
@@ -499,7 +509,6 @@ async def set_video_time(ctx, glob: GlobalVars, time_stamp: int, mute_response: 
     if not mute_response:
         await ctx.reply(message, ephemeral=ephemeral)
     return ReturnData(True, message)
-
 
 async def earrape_command_def(ctx, glob: GlobalVars):
     log(ctx, 'ear_rape_command_def', options=locals(), log_type='function', author=ctx.author)

@@ -1,9 +1,9 @@
-from utils.global_vars import GlobalVars
-
 from database.main import *
 
-import random
+from utils.global_vars import GlobalVars
+
 from time import time
+import random
 
 class Guild(Base):
     """

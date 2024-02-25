@@ -1,10 +1,10 @@
+from utils.save import update
 from utils.global_vars import GlobalVars
 
 import classes.data_classes
-from utils.save import update
 
-import discord
 from discord.ext import commands as dc_commands
+import discord
 
 def ctx_check(ctx: dc_commands.Context or classes.data_classes.WebData, glob: GlobalVars) -> (bool, int, int, discord.Guild):
     """

@@ -1,10 +1,11 @@
-from utils.global_vars import GlobalVars
+from youtubesearchpython.__future__ import VideosSearch
 
 from classes.video_class import Queue
+from classes.typed_dictionaries import VideoInfo
 
-import youtubesearchpython
+from utils.global_vars import GlobalVars
 
-def spotify_to_yt_video(glob: GlobalVars, spotify_url: str, author, guild_id: int):
+async def spotify_to_yt_video(glob: GlobalVars, spotify_url: str, author, guild_id: int):
     """
     Converts spotify url to youtube video
     :param glob: GlobalVars
@@ -26,13 +27,14 @@ def spotify_to_yt_video(glob: GlobalVars, spotify_url: str, author, guild_id: in
     artist = spotify_track['artists'][0]['name']
     search_query = f"{title} {artist}"
 
-    custom_search = youtubesearchpython.VideosSearch(search_query, limit=1)
+    cs = VideosSearch(search_query, limit=1)
+    csr = await cs.next()
+    custom_search = csr['result']
 
-    if not custom_search.result()['result']:
+    if not custom_search:
         return None
 
-    custom_result: dict = custom_search.result()
-    video: dict = custom_result['result'][0]
+    video: VideoInfo = custom_search[0]
 
     yt_url = video['link']
     yt_title = video['title']
@@ -46,7 +48,7 @@ def spotify_to_yt_video(glob: GlobalVars, spotify_url: str, author, guild_id: in
 
     return video_class
 
-def spotify_playlist_to_yt_video_list(glob: GlobalVars, spotify_playlist_url: str, author, guild_id: int) -> list or None:
+async def spotify_playlist_to_yt_video_list(glob: GlobalVars, spotify_playlist_url: str, author, guild_id: int) -> list or None:
     """
     Converts spotify playlist url to list of youtube videos
     :param glob: GlobalVars
@@ -73,13 +75,14 @@ def spotify_playlist_to_yt_video_list(glob: GlobalVars, spotify_playlist_url: st
         artist = spotify_track['artists'][0]['name']
         search_query = f"{title} {artist}"
 
-        custom_search = youtubesearchpython.VideosSearch(search_query, limit=1)
+        cs = VideosSearch(search_query, limit=1)
+        csr = await cs.next()
+        custom_search = csr['result']
 
-        if not custom_search.result()['result']:
-            continue
+        if not custom_search:
+            return None
 
-        custom_result: dict = custom_search.result()
-        video: dict = custom_result['result'][0]
+        video: VideoInfo = custom_search[0]
 
         yt_url = video['link']
         yt_title = video['title']
@@ -95,7 +98,7 @@ def spotify_playlist_to_yt_video_list(glob: GlobalVars, spotify_playlist_url: st
 
     return video_list
 
-def spotify_album_to_yt_video_list(glob: GlobalVars, spotify_album_url: str, author, guild_id: int) -> list or None:
+async def spotify_album_to_yt_video_list(glob: GlobalVars, spotify_album_url: str, author, guild_id: int) -> list or None:
     """
     Converts spotify album url to list of youtube videos
     :param glob: GlobalVars
@@ -120,13 +123,14 @@ def spotify_album_to_yt_video_list(glob: GlobalVars, spotify_album_url: str, aut
         artist = spotify_track['artists'][0]['name']
         search_query = f"{title} {artist}"
 
-        custom_search = youtubesearchpython.VideosSearch(search_query, limit=1)
+        cs = VideosSearch(search_query, limit=1)
+        csr = await cs.next()
+        custom_search = csr['result']
 
-        if not custom_search.result()['result']:
-            continue
+        if not custom_search:
+            return None
 
-        custom_result: dict = custom_search.result()
-        video: dict = custom_result['result'][0]
+        video: VideoInfo = custom_search[0]
 
         yt_url = video['link']
         yt_title = video['title']

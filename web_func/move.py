@@ -1,15 +1,15 @@
-from utils.global_vars import GlobalVars
-
 from classes.data_classes import ReturnData
 from classes.video_class import Queue
+
+from commands.utils import ctx_check
+
+from database.guild import guild
 
 from utils.log import log
 from utils.translate import text
 from utils.save import update, push_update
 from utils.discord import to_queue
-from database.guild import guild
-
-from commands.utils import ctx_check
+from utils.global_vars import GlobalVars
 
 async def move_def(ctx, glob: GlobalVars, org_number, destination_number, ephemeral=True) -> ReturnData:
     log(ctx, 'web_move', options=locals(), log_type='function', author=ctx.author)

@@ -2,8 +2,8 @@ import classes.video_class
 import classes.data_classes
 import classes.discord_classes
 
-import pickle
 from io import BytesIO
+import pickle
 
 class CustomUnpickler(pickle.Unpickler):
     def find_class(self, module, name):

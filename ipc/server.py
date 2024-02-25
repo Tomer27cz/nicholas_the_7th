@@ -1,14 +1,15 @@
-from utils.global_vars import GlobalVars
-
 from classes.data_classes import ReturnData, GuildData
 from classes.discord_classes import DiscordChannel, DiscordRole, DiscordUser, DiscordInvite, DiscordMember
+
+from database.guild import guild, guild_ids
 
 from utils.log import log
 from utils.discord import get_username
 from utils.save import update
 from utils.saves import new_queue_save, delete_queue_save, rename_queue_save, load_queue_save
+from utils.global_vars import GlobalVars
 
-from database.guild import guild, guild_ids
+from ipc.main import send_msg, recv_msg
 
 import commands.player
 import commands.voice
@@ -21,8 +22,6 @@ import web_func.queue
 import web_func.voice
 import web_func.options
 import web_func.admin
-
-from ipc.main import send_msg, recv_msg
 
 import asyncio
 import pickle

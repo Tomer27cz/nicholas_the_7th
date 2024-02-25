@@ -1,16 +1,7 @@
-import json
-import math
-from time import time, sleep
-from pathlib import Path
-
-from flask import Flask, render_template, request, url_for, redirect, send_file, abort, Response, send_from_directory
-from flask import session as flask_session
-from werkzeug.utils import safe_join
-
 from classes.data_classes import WebData
 from classes.discord_classes import DiscordUser
 
-from utils.convert import struct_to_time, convert_duration
+from utils.convert import convert_duration
 from utils.log import log, collect_data
 from utils.files import get_readable_byte_size, get_icon_class_for_filename, get_log_files
 from utils.translate import text
@@ -18,8 +9,18 @@ from utils.video_time import video_time_from_start
 from utils.checks import check_isdigit
 from utils.web import *
 
-import config
+from flask import Flask, render_template, request, url_for, redirect, send_file, abort, Response, send_from_directory
+from flask import session as flask_session
+from werkzeug.utils import safe_join
+
+from time import time, sleep
+from pathlib import Path
+import json
+import math
+
 from oauth import Oauth
+
+import config
 
 authorized_users = config.AUTHORIZED_USERS
 my_id = config.OWNER_ID

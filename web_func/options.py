@@ -1,14 +1,13 @@
-from utils.global_vars import GlobalVars
-
 from classes.data_classes import ReturnData
+
+from commands.utils import ctx_check
+
+from database.guild import guild
 
 from utils.log import log
 from utils.translate import text
 from utils.convert import to_bool
-from utils.global_vars import languages_dict
-from database.guild import guild
-
-from commands.utils import ctx_check
+from utils.global_vars import languages_dict, GlobalVars
 
 async def web_user_options_edit(web_data, glob: GlobalVars, form) -> ReturnData:
     log(web_data, 'web_user_options_edit', options=locals(), log_type='function', author=web_data.author)

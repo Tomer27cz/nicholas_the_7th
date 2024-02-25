@@ -1,16 +1,15 @@
-from utils.global_vars import GlobalVars
-
 from classes.video_class import Queue
 from classes.data_classes import ReturnData
+
+from commands.utils import ctx_check
+
+from database.guild import guild
 
 from utils.log import log
 from utils.translate import text
 from utils.save import update
 from utils.discord import to_queue
-from utils.global_vars import radio_dict
-from database.guild import guild
-
-from commands.utils import ctx_check
+from utils.global_vars import radio_dict, GlobalVars
 
 async def web_queue(web_data, glob: GlobalVars, video_type, position=None) -> ReturnData:
     log(web_data, 'web_queue', options=locals(), log_type='function', author=web_data.author)

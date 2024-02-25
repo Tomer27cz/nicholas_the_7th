@@ -1,9 +1,10 @@
-from utils.global_vars import GlobalVars
+from classes.data_classes import Guild, GuildData
 
-from utils.log import log
 import database.guild as guild
 
-from classes.data_classes import Guild, GuildData
+from utils.log import log
+from utils.global_vars import GlobalVars
+
 from time import time
 
 def update(glob: GlobalVars):

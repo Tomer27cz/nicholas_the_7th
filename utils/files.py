@@ -2,8 +2,8 @@ from utils.global_vars import GlobalVars
 
 import classes.discord_classes
 
-import os
 from pathlib import Path
+import os
 import json
 
 from config import PARENT_DIR

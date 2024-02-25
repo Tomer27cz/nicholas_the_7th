@@ -1,20 +1,19 @@
-from utils.global_vars import GlobalVars
-
 from classes.data_classes import ReturnData
+
+from commands.utils import ctx_check
+
+from database.guild import guild, guild_data_key
 
 from utils.log import log
 from utils.translate import text
 from utils.save import update
-from utils.global_vars import radio_dict, sound_effects
-from database.guild import guild
-from utils.global_vars import languages_dict
+from utils.global_vars import radio_dict, sound_effects, languages_dict, GlobalVars
 
 import commands.admin
-from commands.utils import ctx_check
 
-import discord
 from discord.ext import commands as dc_commands
 from typing import Literal
+import discord
 
 import config
 
@@ -122,10 +121,10 @@ async def key_def(ctx: dc_commands.Context, glob: GlobalVars) -> ReturnData:
     :return: ReturnData
     """
     log(ctx, 'key_def', options=locals(), log_type='function', author=ctx.author)
-    db_guild = guild(glob, ctx.guild.id)
+    guild_key = guild_data_key(glob, ctx.guild.id)
     update(glob)
 
-    message = f'Key: `{db_guild.data.key}` -> [Control Panel]({config.WEB_URL}/guild/{ctx.guild.id}&key={db_guild.data.key})'
+    message = f'Key: `{guild_key}` -> [Control Panel]({config.WEB_URL}/guild/{ctx.guild.id}&key={guild_key})'
     await ctx.reply(message)
     return ReturnData(True, message)
 

@@ -1,5 +1,5 @@
-import json
 from os import listdir
+import json
 
 import config
 

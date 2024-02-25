@@ -1,8 +1,9 @@
-import typing
+from database.guild import guild_options_language
 
 from utils.log import log
 from utils.global_vars import languages_dict, GlobalVars
-from database.guild import guild_options_language
+
+import typing
 
 # noinspection PyTypeHints
 def text(guild_id: int, glob: GlobalVars, content: str, lang: typing.Literal[tuple(languages_dict.keys())]=None) -> str:

@@ -1,19 +1,18 @@
-from utils.global_vars import GlobalVars
-
 from classes.data_classes import ReturnData
 from classes.discord_classes import DiscordChannel
+
+from commands.utils import ctx_check
 
 from utils.log import log
 from utils.translate import text
 from utils.cli import execute
+from utils.global_vars import GlobalVars
 
-from commands.utils import ctx_check
-
+from os import path, makedirs, listdir
 import asyncio
 import subprocess
 import discord
 import json
-from os import path, makedirs, listdir
 
 import config
 

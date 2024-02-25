@@ -1,11 +1,15 @@
+from database.guild import guild, guild_dict
+
 from utils.global_vars import GlobalVars
 
 from ipc.flaskapp import send_arg
-from config import PARENT_DIR
-import utils.files
+
 import classes.data_classes
+import utils.files
+
 import os
-from database.guild import guild, guild_dict
+
+from config import PARENT_DIR
 
 def execute_function(function_name: str, web_data: classes.data_classes.WebData, **kwargs) -> classes.data_classes.ReturnData:
     # create argument dictionary

@@ -13,8 +13,8 @@ from utils.video_time import set_stopped
 from utils.save import update, push_update
 from database.guild import guild, get_radio_info
 
-import discord
 from time import time
+import discord
 
 from config import WEB_URL
 

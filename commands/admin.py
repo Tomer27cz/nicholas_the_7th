@@ -1,25 +1,24 @@
-from utils.global_vars import GlobalVars
-
-import discord
-
 from classes.data_classes import ReturnData, SlowedUser, TorturedUser
+
+from commands.utils import ctx_check
+
+from database.guild import guild, is_user_tortured, delete_tortured_user
 
 from utils.log import log
 from utils.translate import text
 from utils.save import update
 from utils.checks import is_float
 from utils.convert import to_bool
-from utils.global_vars import languages_dict
+from utils.global_vars import languages_dict, GlobalVars
 
-from database.guild import guild, is_user_tortured, delete_tortured_user
-
-from commands.utils import ctx_check
+from discord.ext import commands as dc_commands
+from typing import Union
 
 import sys
 import asyncio
 import random
-from discord.ext import commands as dc_commands
-from typing import Union
+import discord
+
 
 async def announce_command_def(ctx, glob: GlobalVars, message: str, ephemeral: bool = False) -> ReturnData:
     """
@@ -58,7 +57,7 @@ async def options_def(ctx: dc_commands.Context, glob: GlobalVars, server: Union[
     db_guild = guild(glob, guild_id)
 
     if not server:
-        options = guild(glob, guild_id).options
+        options = db_guild.options
 
         message = f"""
         **Options:**
