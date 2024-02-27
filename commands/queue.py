@@ -1,11 +1,11 @@
 from youtubesearchpython.__future__ import Playlist, VideosSearch
 from classes.data_classes import ReturnData
 from classes.video_class import Queue
-from classes.typed_dictionaries import VideoInfo
+from classes.typed_dictionaries import VideoInfo, RadioGardenInfo
 import classes.view
 
 from utils.log import log
-from utils.translate import text
+from utils.translate import txt
 from utils.url import get_url_type, extract_yt_id
 from utils.cli import get_url_probe_data
 from utils.discord import to_queue, create_embed, create_search_embed
@@ -13,6 +13,7 @@ from utils.spotify import spotify_album_to_yt_video_list, spotify_playlist_to_yt
 from utils.save import update, push_update
 from utils.convert import convert_duration
 from utils.global_vars import GlobalVars
+from utils.radio_garden import get_radio_garden_info
 
 from database.guild import guild, clear_queue, guild_queue, guild_history, guild_data_key, guild_options_loop
 
@@ -59,7 +60,7 @@ async def queue_command_def(ctx,
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
 
     if not url:
-        message = text(guild_id, glob, "`url` is **required**")
+        message = txt(guild_id, glob, "`url` is **required**")
         if not mute_response:
             await ctx.reply(message, ephemeral=True)
         return ReturnData(False, message)
@@ -72,7 +73,7 @@ async def queue_command_def(ctx,
 
     if url_type in ['Spotify Playlist', 'Spotify Album', 'Spotify Track', 'Spotify URL']:
         if not glob.sp:
-            message = text(guild_id, glob, 'Spotify API is not initialized')
+            message = txt(guild_id, glob, 'Spotify API is not initialized')
             if not mute_response:
                 await ctx.reply(message, ephemeral=ephemeral)
             return ReturnData(False, message)
@@ -81,7 +82,7 @@ async def queue_command_def(ctx,
 
     if url_type == 'YouTube Playlist Video' and is_ctx:
         view = classes.view.PlaylistOptionView(ctx, glob, url, force, from_play)
-        message = text(guild_id, glob, 'This video is from a **playlist**, do you want to add the playlist to **queue?**')
+        message = txt(guild_id, glob, 'This video is from a **playlist**, do you want to add the playlist to **queue?**')
         view.message = await ctx.reply(message, view=view, ephemeral=ephemeral)
         return ReturnData(False, message, terminate=True)
 
@@ -123,7 +124,7 @@ async def queue_command_def(ctx,
 
         push_update(glob, guild_id)
 
-        message = f"`{len(playlist_videos)}` {text(guild_id, glob, 'songs from playlist added to queue!')} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={_guild_key})"
+        message = f"`{len(playlist_videos)}` {txt(guild_id, glob, 'songs from playlist added to queue!')} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={_guild_key})"
         if not mute_response:
             await ctx.reply(message, ephemeral=ephemeral)
         return ReturnData(True, message)
@@ -133,7 +134,7 @@ async def queue_command_def(ctx,
     if url_type == 'Spotify Playlist' or url_type == 'Spotify Album':
         adding_message = None  # here to shut up the IDE
         if is_ctx:
-            adding_message = await ctx.reply(text(guild_id, glob, 'Adding songs to queue... (might take a while)'),
+            adding_message = await ctx.reply(txt(guild_id, glob, 'Adding songs to queue... (might take a while)'),
                                              ephemeral=ephemeral)
 
         if url_type == 'Spotify Playlist':
@@ -148,7 +149,7 @@ async def queue_command_def(ctx,
             to_queue(glob, guild_id, video, position=position, copy_video=False, no_push=True)
         push_update(glob, guild_id)
 
-        message = f'`{len(video_list)}` {text(guild_id, glob, "songs from playlist added to queue!")} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={_guild_key})'
+        message = f'`{len(video_list)}` {txt(guild_id, glob, "songs from playlist added to queue!")} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={_guild_key})'
         if is_ctx and adding_message:
             await adding_message.edit(content=message)
         return ReturnData(True, message)
@@ -156,7 +157,7 @@ async def queue_command_def(ctx,
     if url_type in ['Spotify Track', 'Spotify URL']:
         video = await spotify_to_yt_video(glob, url, author_id, guild_id)
         if video is None:
-            message = f'{text(guild_id, glob, "Invalid spotify url")}: `{url}`'
+            message = f'{txt(guild_id, glob, "Invalid spotify url")}: `{url}`'
             if not mute_response:
                 await ctx.reply(message, ephemeral=ephemeral)
             return ReturnData(False, message)
@@ -172,13 +173,13 @@ async def queue_command_def(ctx,
         try:
             soundcloud_api = glob.sc
             if soundcloud_api is None:
-                message = text(guild_id, glob, 'SoundCloud API is not initialized')
+                message = txt(guild_id, glob, 'SoundCloud API is not initialized')
                 if not mute_response:
                     await ctx.reply(message, ephemeral=ephemeral)
                 return ReturnData(False, message)
             track = soundcloud_api.resolve(url)
         except Exception as e:
-            message = f'{text(guild_id, glob, "Invalid SoundCloud url")}: {url} -> {e}'
+            message = f'{txt(guild_id, glob, "Invalid SoundCloud url")}: {url} -> {e}'
             if not mute_response:
                 await ctx.reply(message, ephemeral=ephemeral)
             return ReturnData(False, message)
@@ -212,10 +213,30 @@ async def queue_command_def(ctx,
                 to_queue(glob, guild_id, video, position=position, copy_video=False, no_push=True)
             push_update(glob, guild_id)
 
-            message = f"`{len(tracks)}` {text(guild_id, glob, 'songs from playlist added to queue!')} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={_guild_key})"
+            message = f"`{len(tracks)}` {txt(guild_id, glob, 'songs from playlist added to queue!')} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={_guild_key})"
             if not mute_response:
                 await ctx.reply(message, ephemeral=ephemeral)
             return ReturnData(True, message)
+
+    # RADIO GARDEN -----------------------------------------------------------------------------------------------------
+
+    if url_type == 'RadioGarden':
+        resp = await get_radio_garden_info(url)
+        radio_info: RadioGardenInfo = resp[1]
+        if not resp[0]:
+            message = f'Failed to get radio.garden info: `{url}`'
+            if not mute_response:
+                await ctx.reply(message, ephemeral=ephemeral)
+            return ReturnData(False, message)
+
+        video = Queue(glob, 'RadioGarden', author_id, guild_id, url=f"https://radio.garden{radio_info['url']}",
+                      title=radio_info['title'], channel_name=radio_info['title'], channel_link=radio_info['website'],
+                      stream_url=radio_info['stream'])
+
+        message = to_queue(glob, guild_id, video, position=position, copy_video=False, stream_strip=False)
+        if not mute_response:
+            await ctx.reply(message, ephemeral=ephemeral)
+        return ReturnData(True, message, video)
 
     # URL --------------------------------------------------------------------------------------------------------------
 
@@ -238,7 +259,7 @@ async def queue_command_def(ctx,
     if is_ctx and not no_search:
         return await search_command_def(ctx, glob, url, display_type='short', force=force, from_play=from_play, ephemeral=ephemeral)
 
-    message = f'`{url}` {text(guild_id, glob, "is not supported!")} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={_guild_key})'
+    message = f'`{url}` {txt(guild_id, glob, "is not supported!")} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={_guild_key})'
     if not mute_response:
         await ctx.reply(message, ephemeral=ephemeral)
     return ReturnData(False, message)
@@ -296,7 +317,7 @@ async def skip_def(ctx, glob: GlobalVars) -> ReturnData:
 
             return ReturnData(True, 'Skipped!')
 
-    message = text(guild_id, glob, "There is **nothing to skip!**")
+    message = txt(guild_id, glob, "There is **nothing to skip!**")
     await ctx.reply(message, ephemeral=True)
     return ReturnData(False, message)
 
@@ -318,7 +339,7 @@ async def remove_def(ctx, glob: GlobalVars, number, display_type: Literal['short
     try:
         number = int(number)
     except ValueError:
-        message = text(guild_id, glob, 'Invalid number!')
+        message = txt(guild_id, glob, 'Invalid number!')
         await ctx.reply(message, ephemeral=True)
         return ReturnData(False, message)
 
@@ -331,10 +352,10 @@ async def remove_def(ctx, glob: GlobalVars, number, display_type: Literal['short
         if number or number == 0 or number == '0':
             if number > len(db_guild.queue):
                 if not db_guild.queue:
-                    message = text(guild_id, glob, "Nothing to **remove**, queue is **empty!**")
+                    message = txt(guild_id, glob, "Nothing to **remove**, queue is **empty!**")
                     await ctx.reply(message, ephemeral=True)
                     return ReturnData(False, message)
-                message = text(guild_id, glob, "Index out of range!")
+                message = txt(guild_id, glob, "Index out of range!")
                 await ctx.reply(message, ephemeral=True)
                 return ReturnData(False, message)
 
@@ -343,7 +364,7 @@ async def remove_def(ctx, glob: GlobalVars, number, display_type: Literal['short
             message = f'REMOVED #{number} : [`{video.title}`](<{video.url}>)'
 
             if display_type == 'long':
-                embed = create_embed(glob, video, f'{text(guild_id, glob, "REMOVED #")}{number}', guild_id)
+                embed = create_embed(glob, video, f'{txt(guild_id, glob, "REMOVED #")}{number}', guild_id)
                 await ctx.reply(embed=embed, ephemeral=ephemeral)
             if display_type == 'short':
                 await ctx.reply(message, ephemeral=ephemeral)
@@ -359,10 +380,10 @@ async def remove_def(ctx, glob: GlobalVars, number, display_type: Literal['short
         if number or number == 0 or number == '0':
             if number > len(db_guild.history):
                 if not db_guild.history:
-                    message = text(guild_id, glob, "Nothing to **remove**, history is **empty!**")
+                    message = txt(guild_id, glob, "Nothing to **remove**, history is **empty!**")
                     await ctx.reply(message, ephemeral=True)
                     return ReturnData(False, message)
-                message = text(guild_id, glob, "Index out of range!")
+                message = txt(guild_id, glob, "Index out of range!")
                 await ctx.reply(message, ephemeral=True)
                 return ReturnData(False, message)
 
@@ -371,7 +392,7 @@ async def remove_def(ctx, glob: GlobalVars, number, display_type: Literal['short
             message = f'REMOVED #{number} : [`{video.title}`](<{video.url}>)'
 
             if display_type == 'long':
-                embed = create_embed(glob, video, f'{text(guild_id, glob, "REMOVED #")}{number}', guild_id)
+                embed = create_embed(glob, video, f'{txt(guild_id, glob, "REMOVED #")}{number}', guild_id)
                 await ctx.reply(embed=embed, ephemeral=ephemeral)
             if display_type == 'short':
                 await ctx.reply(message, ephemeral=ephemeral)
@@ -385,13 +406,13 @@ async def remove_def(ctx, glob: GlobalVars, number, display_type: Literal['short
 
     else:
         update(glob)
-        message = text(guild_id, glob, 'Invalid list type!')
+        message = txt(guild_id, glob, 'Invalid list type!')
         await ctx.reply(message, ephemeral=True)
         return ReturnData(False, message)
 
     update(glob)
 
-    return ReturnData(False, text(guild_id, glob, 'No number given!'))
+    return ReturnData(False, txt(guild_id, glob, 'No number given!'))
 
 async def clear_def(ctx, glob: GlobalVars, ephemeral: bool = False) -> ReturnData:
     """
@@ -408,7 +429,7 @@ async def clear_def(ctx, glob: GlobalVars, ephemeral: bool = False) -> ReturnDat
     push_update(glob, guild_id)
     update(glob)
 
-    message = text(guild_id, glob, 'Removed **all** songs from queue') + ' -> ' + f'`{queue_count}` songs removed'
+    message = txt(guild_id, glob, 'Removed **all** songs from queue') + ' -> ' + f'`{queue_count}` songs removed'
     await ctx.reply(message, ephemeral=ephemeral)
     return ReturnData(True, message)
 
@@ -436,7 +457,7 @@ async def shuffle_def(ctx, glob: GlobalVars, ephemeral: bool = False) -> ReturnD
     push_update(glob, guild_id)
     update(glob)
 
-    message = text(guild_id, glob, 'Songs in queue shuffled')
+    message = txt(guild_id, glob, 'Songs in queue shuffled')
     await ctx.reply(message, ephemeral=ephemeral)
     return ReturnData(True, message)
 
@@ -455,7 +476,7 @@ async def show_def(ctx, glob: GlobalVars, display_type: Literal['short', 'medium
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
 
     if not is_ctx:
-        return ReturnData(False, text(guild_id, glob, 'Cannot use this command in WEB'))
+        return ReturnData(False, txt(guild_id, glob, 'Cannot use this command in WEB'))
 
     # db_guild = guild(glob, guild_id)
 
@@ -464,11 +485,11 @@ async def show_def(ctx, glob: GlobalVars, display_type: Literal['short', 'medium
     elif list_type == 'history':
         show_list = list(reversed(guild_history(glob, guild_id)))
     else:
-        return ReturnData(False, text(guild_id, glob, 'Bad list_type'))
+        return ReturnData(False, txt(guild_id, glob, 'Bad list_type'))
 
     max_embed = 5
     if not show_list:
-        message = text(guild_id, glob, "Nothing to **show**, queue is **empty!**")
+        message = txt(guild_id, glob, "Nothing to **show**, queue is **empty!**")
         await ctx.reply(message, ephemeral=ephemeral)
         return ReturnData(True, message)
 
@@ -486,7 +507,7 @@ async def show_def(ctx, glob: GlobalVars, display_type: Literal['short', 'medium
         await ctx.send(message, ephemeral=ephemeral, mention_author=False)
 
         for index, val in enumerate(show_list):
-            embed = create_embed(glob, val, f'{text(guild_id, glob, f"{list_type.upper()} #")}{index}', guild_id)
+            embed = create_embed(glob, val, f'{txt(guild_id, glob, f"{list_type.upper()} #")}{index}', guild_id)
 
             await ctx.send(embed=embed, ephemeral=ephemeral, mention_author=False)
 
@@ -524,7 +545,7 @@ async def show_def(ctx, glob: GlobalVars, display_type: Literal['short', 'medium
 
         message = ''
         for index, val in enumerate(show_list):
-            add = f'**{text(guild_id, glob, f"{list_type.upper()} #")}{index}**  `{convert_duration(val.duration)}`  [`{val.title}`](<{val.url}>) \n'
+            add = f'**{txt(guild_id, glob, f"{list_type.upper()} #")}{index}**  `{convert_duration(val.duration)}`  [`{val.title}`](<{val.url}>) \n'
             if len(message) + len(add) > 2000:
                 if ephemeral:
                     await ctx.send(message, ephemeral=ephemeral, mention_author=False)
@@ -559,10 +580,10 @@ async def search_command_def(ctx, glob: GlobalVars, search_query, display_type: 
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
 
     if not is_ctx:
-        return ReturnData(False, text(guild_id, glob, 'Search command cannot be used in WEB'))
+        return ReturnData(False, txt(guild_id, glob, 'Search command cannot be used in WEB'))
 
     if display_type == 'long' and ephemeral:
-        message = text(guild_id, glob, 'Cannot use display type `long` user-only')
+        message = txt(guild_id, glob, 'Cannot use display type `long` user-only')
         await ctx.reply(message, ephemeral=ephemeral)
         return ReturnData(False, message)
 
@@ -579,20 +600,20 @@ async def search_command_def(ctx, glob: GlobalVars, search_query, display_type: 
 
     message = f'**Search query:** `{search_query}`\n'
     if display_type == 'long':
-        await ctx.reply(text(guild_id, glob, 'Searching...'), ephemeral=ephemeral)
+        await ctx.reply(txt(guild_id, glob, 'Searching...'), ephemeral=ephemeral)
 
     cs = VideosSearch(search_query, limit=5)
     csr = await cs.next()
     custom_search: list[VideoInfo] = csr['result']
 
     if not custom_search:
-        message = text(guild_id, glob, 'No results found!')
+        message = txt(guild_id, glob, 'No results found!')
         await ctx.reply(message, ephemeral=ephemeral)
         return ReturnData(False, message)
 
     for i in range(5):
         if display_type == 'long':
-            embed = create_search_embed(glob, custom_search[i], f'{text(guild_id, glob, "Result #")}{i + 1}', guild_id)
+            embed = create_search_embed(glob, custom_search[i], f'{txt(guild_id, glob, "Result #")}{i + 1}', guild_id)
             await ctx.message.channel.send(embed=embed)
         if display_type == 'short':
             message += f'**#{i + 1}** [`{custom_search[i]["title"]}`](<{custom_search[i]["link"]}>) by [`{custom_search[i]["channel"]["name"]}`](<{custom_search[i]["channel"]["link"]}>)\n'
@@ -623,7 +644,7 @@ async def search_command_def(ctx, glob: GlobalVars, search_query, display_type: 
 #     try:
 #         guild_id = int(guild_id)
 #     except (ValueError, TypeError):
-#         message = f'({guild_id}) ' + text(ctx_guild_id, glob, 'is not an id')
+#         message = f'({guild_id}) ' + txt(ctx_guild_id, glob, 'is not an id')
 #         await ctx.reply(message, ephemeral=ephemeral)
 #         return ReturnData(False, message)
 #
@@ -635,7 +656,7 @@ async def search_command_def(ctx, glob: GlobalVars, search_query, display_type: 
 #         return ReturnData(False, message)
 #
 #     if not queue_dict:
-#         message = text(ctx_guild_id, glob, f"Queue is empty")
+#         message = txt(ctx_guild_id, glob, f"Queue is empty")
 #         await ctx.reply(message, ephemeral=ephemeral)
 #         return ReturnData(False, message)
 #
@@ -685,7 +706,7 @@ async def search_command_def(ctx, glob: GlobalVars, search_query, display_type: 
 #     try:
 #         guild_id = int(guild_id)
 #     except (ValueError, TypeError):
-#         message = f'({guild_id}) ' + text(ctx_guild_id, glob, 'is not an id')
+#         message = f'({guild_id}) ' + txt(ctx_guild_id, glob, 'is not an id')
 #         await ctx.reply(message, ephemeral=ephemeral)
 #         return ReturnData(False, message)
 #

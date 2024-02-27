@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 from database.guild import guild
 
 from utils.save import update
-from utils.translate import text
+from utils.translate import txt
 from utils.discord import get_voice_client
 from utils.url import get_playlist_from_url
 
@@ -74,12 +74,12 @@ class PlayerControlView(View):
                 button.style = discord.ButtonStyle.grey
                 await interaction.response.edit_message(view=self)
             elif voice.is_playing():
-                await interaction.response.send_message(text(self.guild_id, self.glob, "Player **already resumed!**"),
+                await interaction.response.send_message(txt(self.guild_id, self.glob, "Player **already resumed!**"),
                                                         ephemeral=True)
             else:
-                await interaction.response.send_message(text(self.guild_id, self.glob, "No audio playing"), ephemeral=True)
+                await interaction.response.send_message(txt(self.guild_id, self.glob, "No audio playing"), ephemeral=True)
         else:
-            await interaction.response.send_message(text(self.guild_id, self.glob, "No audio"), ephemeral=True)
+            await interaction.response.send_message(txt(self.guild_id, self.glob, "No audio"), ephemeral=True)
 
     @discord.ui.button(emoji=react_dict['pause'], style=discord.ButtonStyle.blurple, custom_id='pause')
     async def pause_callback(self, interaction, button):
@@ -93,12 +93,12 @@ class PlayerControlView(View):
                 button.style = discord.ButtonStyle.grey
                 await interaction.response.edit_message(view=self)
             elif voice.is_paused():
-                await interaction.response.send_message(text(self.guild_id, self.glob, "Player **already paused!**"),
+                await interaction.response.send_message(txt(self.guild_id, self.glob, "Player **already paused!**"),
                                                         ephemeral=True)
             else:
-                await interaction.response.send_message(text(self.guild_id, self.glob, "No audio playing"), ephemeral=True)
+                await interaction.response.send_message(txt(self.guild_id, self.glob, "No audio playing"), ephemeral=True)
         else:
-            await interaction.response.send_message(text(self.guild_id, self.glob, "No audio"), ephemeral=True)
+            await interaction.response.send_message(txt(self.guild_id, self.glob, "No audio"), ephemeral=True)
 
     # noinspection PyUnusedLocal
     @discord.ui.button(emoji=react_dict['stop'], style=discord.ButtonStyle.red, custom_id='stop')
@@ -111,9 +111,9 @@ class PlayerControlView(View):
                 self.glob.ses.commit()
                 await interaction.response.edit_message(view=None)
             else:
-                await interaction.response.send_message(text(self.guild_id, self.glob, "No audio playing"), ephemeral=True)
+                await interaction.response.send_message(txt(self.guild_id, self.glob, "No audio playing"), ephemeral=True)
         else:
-            await interaction.response.send_message(text(self.guild_id, self.glob, "No audio"), ephemeral=True)
+            await interaction.response.send_message(txt(self.guild_id, self.glob, "No audio"), ephemeral=True)
 
 class SearchOptionView(View):
     def __init__(self, ctx, glob: GlobalVars, search_data: list[VideoInfo], force=False, from_play=False):
@@ -199,7 +199,7 @@ class PlaylistOptionView(View):
     @discord.ui.button(label='Yes', style=discord.ButtonStyle.blurple)
     async def callback_1(self, interaction, button):
         playlist_url = get_playlist_from_url(self.url)
-        await interaction.response.edit_message(content=text(self.guild_id, self.glob, "Adding playlist to queue..."), view=None)
+        await interaction.response.edit_message(content=txt(self.guild_id, self.glob, "Adding playlist to queue..."), view=None)
 
         position = 0 if self.force else None
         response: ReturnData = await commands.queue.queue_command_def(self.ctx, self.glob, playlist_url,

@@ -6,7 +6,7 @@ from commands.utils import ctx_check
 from database.guild import guild, delete_guild
 
 from utils.log import log, send_to_admin
-from utils.translate import text
+from utils.translate import txt
 from utils.save import update, push_update
 from utils.global_vars import GlobalVars
 
@@ -33,18 +33,18 @@ async def web_video_edit(web_data, glob: GlobalVars, form) -> ReturnData:
         try:
             index = int(index[1:])
             if index < 0 or index >= len(db_guild.history):
-                return ReturnData(False, text(ctx_guild_id, glob, 'Invalid index (out of range)'))
+                return ReturnData(False, txt(ctx_guild_id, glob, 'Invalid index (out of range)'))
         except (TypeError, ValueError, IndexError):
-            return ReturnData(False, text(ctx_guild_id, glob, 'Invalid index (not a number)'))
+            return ReturnData(False, txt(ctx_guild_id, glob, 'Invalid index (not a number)'))
 
     elif index.isdigit():
         is_queue = True
         index = int(index)
         if index < 0 or index >= len(db_guild.queue):
-            return ReturnData(False, text(ctx_guild_id, glob, 'Invalid index (out of range)'))
+            return ReturnData(False, txt(ctx_guild_id, glob, 'Invalid index (out of range)'))
 
     else:
-        return ReturnData(False, text(ctx_guild_id, glob, 'Invalid index (not a number)'))
+        return ReturnData(False, txt(ctx_guild_id, glob, 'Invalid index (not a number)'))
 
     class_type = form['class_type']
     author = form['author']
@@ -157,7 +157,7 @@ async def web_video_edit(web_data, glob: GlobalVars, form) -> ReturnData:
     update(glob)
 
     return ReturnData(True,
-                      text(ctx_guild_id, glob, 'Edited item') + f' {"h" if not is_queue else ""}{index} ' + text(ctx_guild_id, glob,
+                      txt(ctx_guild_id, glob, 'Edited item') + f' {"h" if not is_queue else ""}{index} ' + txt(ctx_guild_id, glob,
                                                                                                        'successfully!'))
 
 async def web_options_edit(web_data, glob: GlobalVars, form) -> ReturnData:
@@ -177,7 +177,7 @@ async def web_options_edit(web_data, glob: GlobalVars, form) -> ReturnData:
         history_length = form['history_length']
         last_updated = form['last_updated']
     except KeyError:
-        return ReturnData(False, text(ctx_guild_id, glob,
+        return ReturnData(False, txt(ctx_guild_id, glob,
                                     'Missing form data - please contact the developer (he fucked up when doing an update)'))
 
     return await commands.admin.options_def(web_data, glob, server='this', stopped=stopped, loop=loop,
@@ -196,16 +196,16 @@ async def web_delete_guild(web_data, glob: GlobalVars, guild_id) -> ReturnData:
     try:
         guild_id = int(guild_id)
     except (TypeError, ValueError):
-        return ReturnData(False, text(ctx_guild_id, glob, 'Invalid guild id') + f': {guild_id}')
+        return ReturnData(False, txt(ctx_guild_id, glob, 'Invalid guild id') + f': {guild_id}')
 
     if guild_id not in db_guilds:
-        return ReturnData(False, text(ctx_guild_id, glob, 'Guild not found') + f': {guild_id}')
+        return ReturnData(False, txt(ctx_guild_id, glob, 'Guild not found') + f': {guild_id}')
 
     delete_guild(glob, int(guild_id))
 
     update(glob)
 
-    return ReturnData(True, text(ctx_guild_id, glob, 'Deleted guild') + f' {guild_id} ' + text(ctx_guild_id, glob, 'successfully!'))
+    return ReturnData(True, txt(ctx_guild_id, glob, 'Deleted guild') + f' {guild_id} ' + txt(ctx_guild_id, glob, 'successfully!'))
 
 async def web_disconnect_guild(web_data, glob: GlobalVars, guild_id) -> ReturnData:
     log(web_data, 'web_disconnect_guild', options=locals(), log_type='function', author=web_data.author)
@@ -213,12 +213,12 @@ async def web_disconnect_guild(web_data, glob: GlobalVars, guild_id) -> ReturnDa
     try:
         guild_id = int(guild_id)
     except (TypeError, ValueError):
-        return ReturnData(False, text(ctx_guild_id, glob, 'Invalid guild id') + f': {guild_id}')
+        return ReturnData(False, txt(ctx_guild_id, glob, 'Invalid guild id') + f': {guild_id}')
 
     bot_guild_ids = [guild_object.id for guild_object in glob.bot.guilds]
 
     if guild_id not in bot_guild_ids:
-        return ReturnData(False, text(ctx_guild_id, glob, 'Guild not found in bot.guilds') + f': {guild_id}')
+        return ReturnData(False, txt(ctx_guild_id, glob, 'Guild not found in bot.guilds') + f': {guild_id}')
 
     guild_to_disconnect = glob.bot.get_guild(guild_id)
 
@@ -229,7 +229,7 @@ async def web_disconnect_guild(web_data, glob: GlobalVars, guild_id) -> ReturnDa
 
     update(glob)
 
-    return ReturnData(True, text(ctx_guild_id, glob, 'Left guild') + f' {guild_id} ' + text(ctx_guild_id, glob, 'successfully!'))
+    return ReturnData(True, txt(ctx_guild_id, glob, 'Left guild') + f' {guild_id} ' + txt(ctx_guild_id, glob, 'successfully!'))
 
 async def web_create_invite(web_data, glob: GlobalVars, guild_id):
     log(web_data, 'web_create_invite', options=locals(), log_type='function', author=web_data.author)
@@ -237,15 +237,15 @@ async def web_create_invite(web_data, glob: GlobalVars, guild_id):
     try:
         guild_object = glob.bot.get_guild(int(guild_id))
     except (TypeError, ValueError):
-        return ReturnData(False, text(ctx_guild_id, glob, 'Invalid guild id') + f': {guild_id}')
+        return ReturnData(False, txt(ctx_guild_id, glob, 'Invalid guild id') + f': {guild_id}')
 
     if not guild_object:
-        return ReturnData(False, text(ctx_guild_id, glob, 'Guild not found:') + f' {guild_id}')
+        return ReturnData(False, txt(ctx_guild_id, glob, 'Guild not found:') + f' {guild_id}')
 
     try:
         guild_object_invites = await guild_object.invites()
     except discord.HTTPException as e:
-        return ReturnData(False, text(ctx_guild_id, glob, "Something Failed -> HTTPException") + f": {e}")
+        return ReturnData(False, txt(ctx_guild_id, glob, "Something Failed -> HTTPException") + f": {e}")
 
     if guild_object_invites:
         message = f'Guild ({guild_object.id}) invites -> {guild_object_invites}'
@@ -257,9 +257,9 @@ async def web_create_invite(web_data, glob: GlobalVars, guild_id):
         try:
             channel = guild_object.text_channels[0]
             invite = await channel.create_invite()
-            message = text(ctx_guild_id, glob, 'Invite for guild') + f' ({guild_object.id}) -> {invite}'
+            message = txt(ctx_guild_id, glob, 'Invite for guild') + f' ({guild_object.id}) -> {invite}'
             log(None, message)
             await send_to_admin(glob, message)
             return ReturnData(True, message)
         except discord.HTTPException as e:
-            return ReturnData(False, text(ctx_guild_id, glob, "Something Failed -> HTTPException") + f": {e}")
+            return ReturnData(False, txt(ctx_guild_id, glob, "Something Failed -> HTTPException") + f": {e}")

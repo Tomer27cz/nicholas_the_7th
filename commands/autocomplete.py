@@ -76,3 +76,37 @@ async def radio_autocomplete_def(ctx: discord.Interaction, query: str) -> List[d
         return data[:25]
 
     return data
+
+
+async def help_autocomplete_def(ctx: discord.Interaction, query: str, glob: GlobalVars) -> List[discord.app_commands.Choice]:
+    """
+    Autocomplete for the help command
+    :param ctx: Interaction
+    :param query: String to be autocompleted
+    :param glob: GlobalVars
+    :return: List[discord.app_commands.Choice]
+    """
+
+    list_of_commands = [command.name for command in glob.bot.commands if not command.hidden]
+    list_of_commands.sort()
+
+    if not query:
+        return [discord.app_commands.Choice(name=command, value=command) for command in list_of_commands[:25]]
+
+    data = []
+    for command in list_of_commands:
+        if query.lower() in command.lower():
+            data.append(discord.app_commands.Choice(name=command, value=command))
+
+    if len(data) > 25:
+        return data[:25]
+
+    return data
+
+
+
+
+
+
+
+

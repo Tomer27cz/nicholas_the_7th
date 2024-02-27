@@ -5,7 +5,7 @@ from commands.utils import ctx_check
 from database.guild import guild, clear_queue
 
 from utils.log import log
-from utils.translate import text
+from utils.translate import txt
 from utils.save import update, push_update
 from utils.discord import now_to_history, get_voice_client
 from utils.video_time import set_stopped, set_resumed
@@ -33,7 +33,7 @@ async def stop_def(ctx, glob: GlobalVars, mute_response: bool = False, keep_loop
     voice: discord.voice_client.VoiceClient = get_voice_client(glob.bot.voice_clients, guild=guild_object)
 
     if not voice:
-        message = text(guild_id, glob, "Bot is not connected to a voice channel")
+        message = txt(guild_id, glob, "Bot is not connected to a voice channel")
         if not mute_response:
             await ctx.reply(message, ephemeral=True)
         return ReturnData(False, message)
@@ -48,7 +48,7 @@ async def stop_def(ctx, glob: GlobalVars, mute_response: bool = False, keep_loop
 
     now_to_history(glob, guild_id)
 
-    message = text(guild_id, glob, "Player **stopped!**")
+    message = txt(guild_id, glob, "Player **stopped!**")
     if not mute_response:
         await ctx.reply(message, ephemeral=True)
     return ReturnData(True, message)
@@ -72,16 +72,16 @@ async def pause_def(ctx, glob, mute_response: bool = False) -> ReturnData:
             voice.pause()
             if db_guild.now_playing:
                 set_stopped(glob, db_guild.now_playing)
-            message = text(guild_id, glob, "Player **paused!**")
+            message = txt(guild_id, glob, "Player **paused!**")
             resp = True
         elif voice.is_paused():
-            message = text(guild_id, glob, "Player **already paused!**")
+            message = txt(guild_id, glob, "Player **already paused!**")
             resp = False
         else:
-            message = text(guild_id, glob, 'No audio playing')
+            message = txt(guild_id, glob, 'No audio playing')
             resp = False
     else:
-        message = text(guild_id, glob, "Bot is not connected to a voice channel")
+        message = txt(guild_id, glob, "Bot is not connected to a voice channel")
         resp = False
 
     update(glob)
@@ -110,16 +110,16 @@ async def resume_def(ctx, glob: GlobalVars, mute_response: bool = False) -> Retu
             voice.resume()
             if db_guild.now_playing:
                 set_resumed(glob, db_guild.now_playing)
-            message = text(guild_id, glob, "Player **resumed!**")
+            message = txt(guild_id, glob, "Player **resumed!**")
             resp = True
         elif voice.is_playing():
-            message = text(guild_id, glob, "Player **already resumed!**")
+            message = txt(guild_id, glob, "Player **already resumed!**")
             resp = False
         else:
-            message = text(guild_id, glob, 'No audio playing')
+            message = txt(guild_id, glob, 'No audio playing')
             resp = False
     else:
-        message = text(guild_id, glob, "Bot is not connected to a voice channel")
+        message = txt(guild_id, glob, "Bot is not connected to a voice channel")
         resp = False
 
     update(glob)
@@ -150,7 +150,7 @@ async def join_def(ctx, glob: GlobalVars, channel_id=None, mute_response: bool =
     if not channel_id:
         # if not from ctx and no channel_id provided return False
         if not is_ctx:
-            return ReturnData(False, text(guild_id, glob, 'No channel_id provided'))
+            return ReturnData(False, txt(guild_id, glob, 'No channel_id provided'))
 
         if ctx.author.voice:
             # get author voice channel
@@ -159,13 +159,13 @@ async def join_def(ctx, glob: GlobalVars, channel_id=None, mute_response: bool =
             if ctx.voice_client:
                 # if bot is already connected to author channel return True
                 if ctx.voice_client.channel == author_channel:
-                    message = text(guild_id, glob, "I'm already in this channel")
+                    message = txt(guild_id, glob, "I'm already in this channel")
                     if not mute_response:
                         await ctx.reply(message, ephemeral=True)
                     return ReturnData(True, message)
         else:
             # if author is not connected to a voice channel return False
-            message = text(guild_id, glob, "You are **not connected** to a voice channel")
+            message = txt(guild_id, glob, "You are **not connected** to a voice channel")
             await ctx.reply(message, ephemeral=True)
             return ReturnData(False, message)
 
@@ -178,19 +178,19 @@ async def join_def(ctx, glob: GlobalVars, channel_id=None, mute_response: bool =
 
         # check if bot has permission to join channel
         if not voice_channel.permissions_for(guild_object.me).connect:
-            message = text(guild_id, glob, "I don't have permission to join this channel")
+            message = txt(guild_id, glob, "I don't have permission to join this channel")
             await ctx.reply(message, ephemeral=True)
             return ReturnData(False, message)
 
         # check if bot has permission to speak in channel
         if not voice_channel.permissions_for(guild_object.me).speak:
-            message = text(guild_id, glob, "I don't have permission to speak in this channel")
+            message = txt(guild_id, glob, "I don't have permission to speak in this channel")
             await ctx.reply(message, ephemeral=True)
             return ReturnData(False, message)
 
         # check if the channel is empty
         if not len(voice_channel.members) > 0:
-            message = text(guild_id, glob, "The channel is empty")
+            message = txt(guild_id, glob, "The channel is empty")
             await ctx.reply(message, ephemeral=True)
             return ReturnData(False, message)
 
@@ -204,7 +204,7 @@ async def join_def(ctx, glob: GlobalVars, channel_id=None, mute_response: bool =
 
         push_update(glob, guild_id)
 
-        message = f"{text(guild_id, glob, 'Joined voice channel:')}  `{voice_channel.name}`"
+        message = f"{txt(guild_id, glob, 'Joined voice channel:')}  `{voice_channel.name}`"
         if not mute_response:
             await ctx.reply(message, ephemeral=True)
         return ReturnData(True, message)
@@ -216,7 +216,7 @@ async def join_def(ctx, glob: GlobalVars, channel_id=None, mute_response: bool =
         log(ctx, tb)
         log(ctx, "--------------------------------------------------------------")
 
-        message = text(guild_id, glob, "Channel **doesn't exist** or bot doesn't have **sufficient permission** to join")
+        message = txt(guild_id, glob, "Channel **doesn't exist** or bot doesn't have **sufficient permission** to join")
         await ctx.reply(message, ephemeral=True)
         return ReturnData(False, message)
 
@@ -240,13 +240,13 @@ async def disconnect_def(ctx, glob: GlobalVars, mute_response: bool = False) -> 
 
         push_update(glob, guild_id)
         now_to_history(glob, guild_id)
-        message = f"{text(guild_id, glob, 'Left voice channel:')} `{channel}`"
+        message = f"{txt(guild_id, glob, 'Left voice channel:')} `{channel}`"
         if not mute_response:
             await ctx.reply(message, ephemeral=True)
         return ReturnData(True, message)
     else:
         now_to_history(glob, guild_id)
-        message = text(guild_id, glob, "Bot is **not** in a voice channel")
+        message = txt(guild_id, glob, "Bot is **not** in a voice channel")
         if not mute_response:
             await ctx.reply(message, ephemeral=True)
         return ReturnData(False, message)
@@ -269,7 +269,7 @@ async def volume_command_def(ctx, glob: GlobalVars, volume: Union[float, int] = 
         try:
             volume = int(volume)
         except (ValueError, TypeError):
-            message = text(guild_id, glob, f'Invalid volume')
+            message = txt(guild_id, glob, f'Invalid volume')
             if not mute_response:
                 await ctx.reply(message, ephemeral=ephemeral)
             return ReturnData(False, message)
@@ -287,9 +287,9 @@ async def volume_command_def(ctx, glob: GlobalVars, volume: Union[float, int] = 
             except AttributeError:
                 pass
 
-        message = f'{text(guild_id, glob, "Changed the volume for this server to:")} `{int(db_guild.options.volume * 100)}%`'
+        message = f'{txt(guild_id, glob, "Changed the volume for this server to:")} `{int(db_guild.options.volume * 100)}%`'
     else:
-        message = f'{text(guild_id, glob, "The volume for this server is:")} `{int(db_guild.options.volume * 100)}%`'
+        message = f'{txt(guild_id, glob, "The volume for this server is:")} `{int(db_guild.options.volume * 100)}%`'
 
     update(glob)
 

@@ -5,7 +5,7 @@ from commands.utils import ctx_check
 from database.guild import guild, is_user_tortured, delete_tortured_user
 
 from utils.log import log
-from utils.translate import text
+from utils.translate import txt
 from utils.save import update
 from utils.checks import is_float
 from utils.convert import to_bool
@@ -43,7 +43,7 @@ async def announce_command_def(ctx, glob: GlobalVars, message: str, ephemeral: b
 async def kys_def(ctx: dc_commands.Context, glob: GlobalVars):
     log(ctx, 'kys_def', options=locals(), log_type='function', author=ctx.author)
     guild_id = ctx.guild.id
-    await ctx.reply(text(guild_id, glob, "Committing seppuku..."))
+    await ctx.reply(txt(guild_id, glob, "Committing seppuku..."))
     sys.exit(3)
 
 # noinspection DuplicatedCode
@@ -90,12 +90,12 @@ async def options_def(ctx: dc_commands.Context, glob: GlobalVars, server: Union[
         try:
             server = int(server)
         except (ValueError, TypeError):
-            message = text(guild_id, glob, "That is not a **guild id!**")
+            message = txt(guild_id, glob, "That is not a **guild id!**")
             await ctx.reply(message, ephemeral=ephemeral)
             return ReturnData(False, message)
 
         if server not in db_guild.keys():
-            message = text(guild_id, glob, "That guild doesn't exist or the bot is not in it")
+            message = txt(guild_id, glob, "That guild doesn't exist or the bot is not in it")
             await ctx.reply(message, ephemeral=ephemeral)
             return ReturnData(False, message)
 
@@ -180,7 +180,7 @@ async def options_def(ctx: dc_commands.Context, glob: GlobalVars, server: Union[
 
         update(glob)
 
-    message = text(guild_id, glob, f'Edited options successfully!')
+    message = txt(guild_id, glob, f'Edited options successfully!')
     await ctx.reply(message, ephemeral=ephemeral)
     return ReturnData(True, message)
 
@@ -201,7 +201,7 @@ async def slowed_users_command_def(ctx: dc_commands.Context, glob: GlobalVars, g
     if list_all:
         slowed_users = glob.ses.query(SlowedUser).all()
         if slowed_users is None:
-            message = text(guild_id, glob, "There are no slowed users!")
+            message = txt(guild_id, glob, "There are no slowed users!")
             await ctx.reply(message, ephemeral=ephemeral)
             return ReturnData(False, message)
 
@@ -235,7 +235,7 @@ async def slowed_users_add_command_def(ctx: dc_commands.Context, glob: GlobalVar
     guild_id = ctx.guild.id if guild_id == 0 else guild_id
 
     if slowed_for < 0:
-        message = text(guild_id, glob, "Slowed time cannot be negative!")
+        message = txt(guild_id, glob, "Slowed time cannot be negative!")
         await ctx.reply(message, ephemeral=ephemeral)
         return ReturnData(False, message)
 
@@ -244,7 +244,7 @@ async def slowed_users_add_command_def(ctx: dc_commands.Context, glob: GlobalVar
         glob.ses.add(slowed_user)
         glob.ses.commit()
 
-    message = f"{text(guild_id, glob, 'Added slowed user:')} <@{member.id}> -> {slowed_for}"
+    message = f"{txt(guild_id, glob, 'Added slowed user:')} <@{member.id}> -> {slowed_for}"
     await ctx.reply(message, ephemeral=ephemeral)
     return ReturnData(True, message)
 
@@ -264,7 +264,7 @@ async def slowed_users_add_all_command_def(ctx: dc_commands.Context, glob: Globa
     guild_id = ctx.guild.id if guild_id == 0 else guild_id
 
     if slowed_for < 0:
-        message = text(guild_id, glob, "Slowed time cannot be negative!")
+        message = txt(guild_id, glob, "Slowed time cannot be negative!")
         await ctx.reply(message, ephemeral=ephemeral)
         return ReturnData(False, message)
 
@@ -277,7 +277,7 @@ async def slowed_users_add_all_command_def(ctx: dc_commands.Context, glob: Globa
         glob.ses.add_all(slowed_users)
         glob.ses.commit()
 
-    message = f"{text(guild_id, glob, 'Added slowed users:')} {len(slowed_users)}"
+    message = f"{txt(guild_id, glob, 'Added slowed users:')} {len(slowed_users)}"
     await ctx.reply(message, ephemeral=ephemeral)
     return ReturnData(True, message)
 
@@ -295,7 +295,7 @@ async def slowed_users_remove_command_def(ctx: dc_commands.Context, glob: Global
 
     slowed_user = glob.ses.query(SlowedUser).filter_by(user_id=member.id, guild_id=guild_id).first()
     if slowed_user is None:
-        message = text(guild_id, glob, "That user is not slowed!")
+        message = txt(guild_id, glob, "That user is not slowed!")
         await ctx.reply(message, ephemeral=ephemeral)
         return ReturnData(False, message)
 
@@ -303,7 +303,7 @@ async def slowed_users_remove_command_def(ctx: dc_commands.Context, glob: Global
         glob.ses.delete(slowed_user)
         glob.ses.commit()
 
-    message = f"{text(guild_id, glob, 'Removed slowed user:')} <@{member.id}>"
+    message = f"{txt(guild_id, glob, 'Removed slowed user:')} <@{member.id}>"
     await ctx.reply(message, ephemeral=ephemeral)
     return ReturnData(True, message)
 
@@ -321,7 +321,7 @@ async def slowed_users_remove_all_command_def(ctx: dc_commands.Context, glob: Gl
 
     slowed_users = glob.ses.query(SlowedUser).filter_by(guild_id=guild_obj.id).all()
     if slowed_users is None:
-        message = text(guild_id, glob, "There are no slowed users!")
+        message = txt(guild_id, glob, "There are no slowed users!")
         await ctx.reply(message, ephemeral=ephemeral)
         return ReturnData(False, message)
 
@@ -330,7 +330,7 @@ async def slowed_users_remove_all_command_def(ctx: dc_commands.Context, glob: Gl
             glob.ses.delete(slowed_user)
         glob.ses.commit()
 
-    message = f"{text(guild_id, glob, 'Removed slowed users:')} {len(slowed_users)}"
+    message = f"{txt(guild_id, glob, 'Removed slowed users:')} {len(slowed_users)}"
     await ctx.reply(message, ephemeral=ephemeral)
     return ReturnData(True, message)
 
@@ -350,18 +350,18 @@ async def voice_torture_command_def(ctx: dc_commands.Context, glob: GlobalVars, 
     guild_id = ctx.guild.id if guild_id == 0 else guild_id
 
     if delay < 0:
-        message = text(guild_id, glob, "Time cannot be negative!")
+        message = txt(guild_id, glob, "Time cannot be negative!")
         await ctx.reply(message, ephemeral=ephemeral)
         return ReturnData(False, message)
 
     if member.voice is None:
-        message = text(guild_id, glob, "That user is not in a voice channel!")
+        message = txt(guild_id, glob, "That user is not in a voice channel!")
         await ctx.reply(message, ephemeral=ephemeral)
         return ReturnData(False, message)
 
     voice_channels = ctx.guild.voice_channels
     if len(voice_channels) < 2:
-        message = text(guild_id, glob, "There are not enough voice channels to torture!")
+        message = txt(guild_id, glob, "There are not enough voice channels to torture!")
         await ctx.reply(message, ephemeral=ephemeral)
         return ReturnData(False, message)
 
@@ -369,13 +369,13 @@ async def voice_torture_command_def(ctx: dc_commands.Context, glob: GlobalVars, 
     if tu is not None:
         tu.torture_delay = delay
         glob.ses.commit()
-        message = f"{text(guild_id, glob, 'Updated torture delay for user:')} <@{member.id}> -> {delay}"
+        message = f"{txt(guild_id, glob, 'Updated torture delay for user:')} <@{member.id}> -> {delay}"
         await ctx.reply(message, ephemeral=ephemeral)
         return ReturnData(True, message)
     glob.ses.add(TorturedUser(guild_id=guild_id, user_id=member.id, torture_delay=delay))
     glob.ses.commit()
 
-    message = f"{text(guild_id, glob, 'Torturing user:')} <@{member.id}> -> {delay}"
+    message = f"{txt(guild_id, glob, 'Torturing user:')} <@{member.id}> -> {delay}"
     await ctx.reply(message, ephemeral=ephemeral)
 
     while True:
@@ -383,7 +383,7 @@ async def voice_torture_command_def(ctx: dc_commands.Context, glob: GlobalVars, 
         if not is_tortured:
             delete_tortured_user(glob, member.id, guild_id)
 
-            message = text(guild_id, glob, "That user is not being tortured!")
+            message = txt(guild_id, glob, "That user is not being tortured!")
             await ctx.reply(message, ephemeral=ephemeral)
             return ReturnData(False, message)
 
@@ -392,19 +392,19 @@ async def voice_torture_command_def(ctx: dc_commands.Context, glob: GlobalVars, 
         if member.voice is None:
             delete_tortured_user(glob, member.id, guild_id)
 
-            message = text(guild_id, glob, "That user is not in a voice channel!")
+            message = txt(guild_id, glob, "That user is not in a voice channel!")
             await ctx.reply(message, ephemeral=ephemeral)
             return ReturnData(False, message)
         if member.voice.channel is None:
             delete_tortured_user(glob, member.id, guild_id)
 
-            message = text(guild_id, glob, "That user is not in a voice channel!")
+            message = txt(guild_id, glob, "That user is not in a voice channel!")
             await ctx.reply(message, ephemeral=ephemeral)
             return ReturnData(False, message)
         if member.voice.channel == ctx.guild.afk_channel:
             delete_tortured_user(glob, member.id, guild_id)
 
-            message = text(guild_id, glob, "That user is in the AFK channel!")
+            message = txt(guild_id, glob, "That user is in the AFK channel!")
             await ctx.reply(message, ephemeral=ephemeral)
             return ReturnData(False, message)
 
@@ -412,7 +412,7 @@ async def voice_torture_command_def(ctx: dc_commands.Context, glob: GlobalVars, 
         try:
             await member.move_to(random_channel)
         except discord.Forbidden:
-            message = text(guild_id, glob, "I don't have permission to move that user!")
+            message = txt(guild_id, glob, "I don't have permission to move that user!")
             await ctx.reply(message, ephemeral=ephemeral)
             return ReturnData(False, message)
 
@@ -430,7 +430,7 @@ async def voice_torture_stop_command_def(ctx: dc_commands.Context, glob: GlobalV
 
     tortured_user = glob.ses.query(TorturedUser).filter_by(user_id=member.id, guild_id=guild_id).first()
     if tortured_user is None:
-        message = text(guild_id, glob, "That user is not being tortured!")
+        message = txt(guild_id, glob, "That user is not being tortured!")
         await ctx.reply(message, ephemeral=ephemeral)
         return ReturnData(False, message)
 
@@ -438,6 +438,6 @@ async def voice_torture_stop_command_def(ctx: dc_commands.Context, glob: GlobalV
         glob.ses.delete(tortured_user)
         glob.ses.commit()
 
-    message = f"{text(guild_id, glob, 'Stopped torturing user:')} <@{member.id}>"
+    message = f"{txt(guild_id, glob, 'Stopped torturing user:')} <@{member.id}>"
     await ctx.reply(message, ephemeral=ephemeral)
     return ReturnData(True, message)

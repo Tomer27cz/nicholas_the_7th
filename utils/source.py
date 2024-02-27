@@ -103,6 +103,11 @@ class GetSource(discord.PCMVolumeTransformer):
                 'options': '-vn'
             }
 
+        if source_type == 'RadioGarden':
+            if not video_class:
+                raise ValueError('video_class is required for RadioGarden source')
+            url = video_class.stream_url
+
         if video_class:
             video_class.stream_url = url
 

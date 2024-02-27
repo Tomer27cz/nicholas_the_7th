@@ -120,6 +120,21 @@ def video_class_init(self,
 
         video_class_renew(self, glob, from_init=True)
 
+    elif self.class_type == 'RadioGarden':
+        if url is None:
+            raise ValueError("URL is required")
+        if title is None:
+            raise ValueError("Title is required")
+        if channel_name is None:
+            raise ValueError("Channel name is required")
+        if channel_link is None:
+            raise ValueError("Channel link is required")
+        if stream_url is None:
+            raise ValueError("Stream URL is required")
+
+        self.picture = 'https://radio.garden/icons/favicon.png'
+        self.duration = 'Stream'
+
     elif self.class_type == 'Local':
         if local_number is None:
             raise ValueError("Local number required")
@@ -244,7 +259,7 @@ class RadioInfo(Base):
         # async with aiohttp.ClientSession() as session:
         #     async with session.get(self.url) as response:
         #         if self.website == 'radia_cz':
-        #             html = await response.text()
+        #             html = await response.txt()
         #             soup = BeautifulSoup(html, features="lxml")
         #             data1 = soup.find('div', attrs={'class': 'interpret-image'})
         #             data2 = soup.find('div', attrs={'class': 'interpret-info'})

@@ -24,6 +24,9 @@ with open(f'db/radio.json', 'r', encoding='utf-8') as file:
 with open(f'db/languages.json', 'r', encoding='utf-8') as file:
     languages_dict = json.load(file)
 
+with open(f'db/languages_shortcuts.json', 'r', encoding='utf-8') as file:
+    languages_shortcuts_dict = json.load(file)
+
 def load_sound_effects():
     """
     Loads all sound effects from the sound_effects folder

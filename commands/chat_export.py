@@ -4,7 +4,7 @@ from classes.discord_classes import DiscordChannel
 from commands.utils import ctx_check
 
 from utils.log import log
-from utils.translate import text
+from utils.translate import txt
 from utils.cli import execute
 from utils.global_vars import GlobalVars
 
@@ -49,7 +49,7 @@ async def download_guild_channel(ctx, glob, channel_id: int, mute_response: bool
     try:
         channel_id = int(channel_id)
     except (ValueError, TypeError):
-        message = f'({channel_id}) ' + text(ctx_guild_id, glob, 'is not an id')
+        message = f'({channel_id}) ' + txt(ctx_guild_id, glob, 'is not an id')
         if not mute_response:
             await ctx.reply(message, ephemeral=ephemeral)
         return ReturnData(False, message)
@@ -64,7 +64,7 @@ async def download_guild_channel(ctx, glob, channel_id: int, mute_response: bool
     guild_id = channel_object.guild.id
     response = await save_channel_info_to_file(glob, guild_id, f'{config.PARENT_DIR}db/guilds/{guild_id}')
     if not response.response:
-        message = text(ctx_guild_id, glob, f'Error while saving channel info to file') + ': {response.message}'
+        message = txt(ctx_guild_id, glob, f'Error while saving channel info to file') + ': {response.message}'
         if not mute_response:
             await ctx.reply(message, ephemeral=ephemeral)
         return ReturnData(False, message)
@@ -82,7 +82,7 @@ async def download_guild_channel(ctx, glob, channel_id: int, mute_response: bool
         # for path_output in execute(command):
         #     print(path_output)
     except subprocess.CalledProcessError as e:
-        message = text(ctx_guild_id, glob, f'Command raised an error') + ": " + str(e)
+        message = txt(ctx_guild_id, glob, f'Command raised an error') + ": " + str(e)
         if not mute_response and is_ctx:
             await org_msg.edit(content=message)
         return ReturnData(False, message)
@@ -95,14 +95,14 @@ async def download_guild(ctx, glob: GlobalVars, guild_id: int, mute_response: bo
     try:
         guild_id = int(guild_id)
     except (ValueError, TypeError):
-        message = f'({guild_id}) ' + text(ctx_guild_id, glob, 'is not an id')
+        message = f'({guild_id}) ' + txt(ctx_guild_id, glob, 'is not an id')
         if not mute_response:
             await ctx.reply(message, ephemeral=ephemeral)
         return ReturnData(False, message)
 
     guild_object = glob.bot.get_guild(guild_id)
     if not guild_object:
-        message = f'Guild ({guild_id}) ' + text(ctx_guild_id, glob, 'is not accessible')
+        message = f'Guild ({guild_id}) ' + txt(ctx_guild_id, glob, 'is not accessible')
         if not mute_response:
             await ctx.reply(message, ephemeral=ephemeral)
         return ReturnData(False, message)
@@ -110,7 +110,7 @@ async def download_guild(ctx, glob: GlobalVars, guild_id: int, mute_response: bo
     guild_id = guild_object.id
     response = await save_channel_info_to_file(glob, guild_id, f'{config.PARENT_DIR}db/guilds/{guild_id}')
     if not response.response:
-        message = text(ctx_guild_id, glob, f'Error while saving channel info to file') + ":" + response.message
+        message = txt(ctx_guild_id, glob, f'Error while saving channel info to file') + ":" + response.message
         if not mute_response:
             await ctx.reply(message, ephemeral=ephemeral)
         return ReturnData(False, message)
@@ -129,7 +129,7 @@ async def download_guild(ctx, glob: GlobalVars, guild_id: int, mute_response: bo
         #     print(path_output)
     except subprocess.CalledProcessError as e:
         log(ctx, f'download_guild_channel -> error: {e}')
-        message = text(ctx_guild_id, glob, f'Command raised an error')
+        message = txt(ctx_guild_id, glob, f'Command raised an error')
         if not mute_response and is_ctx:
             await org_msg.edit(content=message)
         return ReturnData(False, message)
@@ -143,7 +143,7 @@ async def get_guild_channel(ctx, glob: GlobalVars, channel_id: int, mute_respons
     try:
         channel_id = int(channel_id)
     except (ValueError, TypeError):
-        message = f'({channel_id}) ' + text(ctx_guild_id, glob, 'is not an id')
+        message = f'({channel_id}) ' + txt(ctx_guild_id, glob, 'is not an id')
         if not mute_response:
             await ctx.reply(message, ephemeral=ephemeral)
         return ReturnData(False, message)
@@ -187,7 +187,7 @@ async def get_guild(ctx, glob: GlobalVars, guild_id: int, mute_response: bool=Fa
     try:
         guild_id = int(guild_id)
     except (ValueError, TypeError):
-        message = f'({guild_id}) ' + text(ctx_guild_id, glob, 'is not an id')
+        message = f'({guild_id}) ' + txt(ctx_guild_id, glob, 'is not an id')
         if not mute_response:
             await ctx.reply(message, ephemeral=ephemeral)
         return ReturnData(False, message)

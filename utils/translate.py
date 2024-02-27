@@ -1,12 +1,12 @@
 from database.guild import guild_options_language
 
 from utils.log import log
-from utils.global_vars import languages_dict, GlobalVars
+from utils.global_vars import languages_dict, GlobalVars, languages_shortcuts_dict
 
 import typing
 
 # noinspection PyTypeHints
-def text(guild_id: int, glob: GlobalVars, content: str, lang: typing.Literal[tuple(languages_dict.keys())]=None) -> str:
+def txt(guild_id: int, glob: GlobalVars, content: str, lang: typing.Literal[tuple(languages_dict.keys())]=None) -> str:
     """
     Translates text to english
     Gets text from languages.json
@@ -21,16 +21,19 @@ def text(guild_id: int, glob: GlobalVars, content: str, lang: typing.Literal[tup
         if guild_id != 0:
             lang = guild_options_language(glob, guild_id)
 
-    if content not in languages_dict[lang].keys():
-        with open('db/missing.txt', 'ar', encoding='utf-8') as file:
-            lines = file.readlines()
-            if content not in lines:
-                file.write(f'{lang},{content}\n')
-                log(None, f'KeyError: {content} in {lang} - added to missing.txt')
+    if content in languages_shortcuts_dict.keys():
+        content = str(languages_shortcuts_dict[content])
+
+    if str(content) not in languages_dict[lang].keys():
+        with open('db/missing.txt', 'a', encoding='utf-8') as file:
+            # lines = file.readlines()
+            # if content not in lines:
+            file.write(f'{lang},{content}\n')
+            log(None, f'KeyError: {content} in {lang} - added to missing.txt')
         return content
 
     try:
-        return languages_dict[lang][content]
+        return languages_dict[lang][str(content)]
     except KeyError:
         log(None, f'KeyError: {content} in {lang} - Should not happen!')
         return content

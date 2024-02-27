@@ -4,7 +4,7 @@ from classes.discord_classes import DiscordUser
 from utils.convert import convert_duration
 from utils.log import log, collect_data
 from utils.files import get_readable_byte_size, get_icon_class_for_filename, get_log_files
-from utils.translate import text
+from utils.translate import txt
 from utils.video_time import video_time_from_start
 from utils.checks import check_isdigit
 from utils.web import *
@@ -163,7 +163,7 @@ def inject_data():
                 len=len,
                 vars=vars,
                 dict=dict,
-                text=text,
+                txt=txt,
                 get_radio_info=get_radio_info,
                 get_username=get_username,
                 struct_to_time=struct_to_time,

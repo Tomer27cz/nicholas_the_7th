@@ -8,7 +8,7 @@ def extract_yt_id(url_string: str) -> str or None:
     :param url_string: str - url
     :return: str - youtube video id
     """
-    magic_regex = "^(?:https?://|//)?(?:www\.|m\.|.+\.)?(?:youtu\.be/|youtube\.com/(?:embed/|v/|shorts/|feeds/api/videos/|watch\?v=|watch\?.+&v=))([\w-]{11})(?![\w-])"
+    magic_regex = r"^(?:https?://|//)?(?:www\.|m\.|.+\.)?(?:youtu\.be/|youtube\.com/(?:embed/|v/|shorts/|feeds/api/videos/|watch\?v=|watch\?.+&v=))([\w-]{11})(?![\w-])"
     regex = re.compile(magic_regex)
     results = regex.search(url_string)
 
@@ -62,7 +62,7 @@ def get_url_type(string: str):
     Returns type of url
 
     :param string: str - string to search in
-    :return: ('YouTube Playlist', 'YouTube Playlist Video', 'YouTube Video', 'Spotify Playlist', 'Spotify Album', 'Spotify Track', 'String'), url: str
+    :return: ('YouTube Playlist', 'YouTube Playlist Video', 'YouTube Video', 'Spotify Playlist', 'Spotify Album', 'Spotify Track', 'RadioGarden', 'String'), url: str
     """
     first_url = get_first_url(string)
     yt_id = extract_yt_id(string)
@@ -113,6 +113,12 @@ def get_url_type(string: str):
         if extracted_url is None:
             return 'String', string
         return 'SoundCloud URL', extracted_url
+
+    if 'radio.garden/' in string:
+        extracted_url = get_url_of(string, 'radio.garden/')
+        if extracted_url is None:
+            return 'String', string
+        return 'RadioGarden', extracted_url
 
     if first_url is not None:
         return 'String with URL', first_url

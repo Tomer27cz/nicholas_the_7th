@@ -8,7 +8,7 @@ from classes.video_class import *
 from classes.data_classes import *
 
 from utils.convert import struct_to_time
-from utils.translate import text
+from utils.translate import txt
 from utils.video_time import set_stopped
 from utils.save import update, push_update
 from database.guild import guild, get_radio_info
@@ -108,17 +108,17 @@ def create_embed(glob: GlobalVars, video, name: str, guild_id: int, embed_colour
     # Create embed
     embed = (discord.Embed(title=name, description=f'```\n{title}\n```', color=discord.Color.from_rgb(*embed_colour)))
 
-    embed.add_field(name=text(guild_id, glob, 'Duration'), value=time_played)
-    embed.add_field(name=text(guild_id, glob, 'Requested by'), value=f"<@{requested_by}>")
-    embed.add_field(name=text(guild_id, glob, 'Author'), value=author)
+    embed.add_field(name=txt(guild_id, glob, 'Duration'), value=time_played)
+    embed.add_field(name=txt(guild_id, glob, 'Requested by'), value=f"<@{requested_by}>")
+    embed.add_field(name=txt(guild_id, glob, 'Author'), value=author)
 
     if current_chapter is not None:
-        embed.add_field(name=text(guild_id, glob, 'Chapter'), value=current_chapter)
+        embed.add_field(name=txt(guild_id, glob, 'Chapter'), value=current_chapter)
 
-    embed.add_field(name=text(guild_id, glob, 'URL'), value=url, inline=False)
+    embed.add_field(name=txt(guild_id, glob, 'URL'), value=url, inline=False)
 
     embed.set_thumbnail(url=thumbnail)
-    embed.set_footer(text=f'{text(guild_id, glob, "Requested at")} {requested_at} | {text(guild_id, glob, "Started playing at")} {started_at}')
+    embed.set_footer(text=f'{txt(guild_id, glob, "Requested at")} {requested_at} | {txt(guild_id, glob, "Started playing at")} {started_at}')
 
     return embed
 
@@ -134,10 +134,10 @@ def create_search_embed(glob: GlobalVars, video_info: VideoInfo, name: str, guil
     """
     embed = discord.Embed(title=name, description=f'```\n{video_info["title"]}\n```', color=discord.Color.from_rgb(*embed_colour))
 
-    embed.add_field(name=text(guild_id, glob, 'Duration'), value=video_info['duration'])
-    embed.add_field(name=text(guild_id, glob, 'Author'), value=f"[{video_info['channel']['name']}]({video_info['channel']['link']})")
+    embed.add_field(name=txt(guild_id, glob, 'Duration'), value=video_info['duration'])
+    embed.add_field(name=txt(guild_id, glob, 'Author'), value=f"[{video_info['channel']['name']}]({video_info['channel']['link']})")
 
-    embed.add_field(name=text(guild_id, glob, 'URL'), value=video_info['link'])
+    embed.add_field(name=txt(guild_id, glob, 'URL'), value=video_info['link'])
 
     embed.set_thumbnail(url=video_info['thumbnails'][0]['url'])
 
@@ -185,7 +185,7 @@ def now_to_history(glob: GlobalVars, guild_id: int):
         update(glob)
         push_update(glob, guild_id)
 
-def to_queue(glob: GlobalVars, guild_id: int, video, position: int = None, copy_video: bool=True, no_push: bool=False) -> ReturnData or None:
+def to_queue(glob: GlobalVars, guild_id: int, video, position: int = None, copy_video: bool=True, no_push: bool=False, stream_strip: bool = True) -> ReturnData or None:
     """
     Adds video to queue
 
@@ -197,6 +197,7 @@ def to_queue(glob: GlobalVars, guild_id: int, video, position: int = None, copy_
     :param position: int - position in queue to add video
     :param copy_video: bool - if True copies video
     :param no_push: bool - if True doesn't push update
+    :param stream_strip: bool - if True strips video of stream_url
     :return: ReturnData or None
     """
     guild_object = guild(glob, guild_id)
@@ -208,10 +209,11 @@ def to_queue(glob: GlobalVars, guild_id: int, video, position: int = None, copy_
     video.played_duration = [{'start': {'epoch': None, 'time_stamp': None}, 'end': {'epoch': None, 'time_stamp': None}}]
     # strip video of discord channel data
     video.discord_channel = {"id": None, "name": None}
-    # strip video of stream url
-    video.stream_url = None
     # set new creation date
     video.created_at = int(time())
+
+    if stream_strip:
+        video.stream_url = None
 
     if position is None:
         guild_object.queue.append(to_queue_class(glob, video))
@@ -222,7 +224,7 @@ def to_queue(glob: GlobalVars, guild_id: int, video, position: int = None, copy_
         push_update(glob, guild_id)
     update(glob)
 
-    return f'[`{video.title}`](<{video.url}>) {text(guild_id, glob, "added to queue!")} -> [Control Panel]({WEB_URL}/guild/{guild_id}&key={guild_object.data.key})'
+    return f'[`{video.title}`](<{video.url}>) {txt(guild_id, glob, "added to queue!")} -> [Control Panel]({WEB_URL}/guild/{guild_id}&key={guild_object.data.key})'
 
 def get_content_of_message(glob: GlobalVars, message: discord.Message) -> (str, list or None):
     """

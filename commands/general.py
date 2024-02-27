@@ -5,7 +5,7 @@ from commands.utils import ctx_check
 from database.guild import guild, guild_data_key
 
 from utils.log import log
-from utils.translate import text
+from utils.translate import txt
 from utils.save import update
 from utils.global_vars import radio_dict, sound_effects, languages_dict, GlobalVars
 
@@ -47,7 +47,7 @@ async def language_command_def(ctx, glob: GlobalVars, country_code: Literal[tupl
     db_guild.options.language = country_code
     update(glob)
 
-    message = f'{text(guild_id, glob, "Changed the language for this server to: ")} `{db_guild.options.language}`'
+    message = f'{txt(guild_id, glob, "Changed the language for this server to: ")} `{db_guild.options.language}`'
     await ctx.reply(message)
     return ReturnData(True, message)
 
@@ -63,7 +63,7 @@ async def sound_effects_def(ctx, glob: GlobalVars, ephemeral: bool = True) -> Re
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
 
     if not is_ctx:
-        return ReturnData(False, text(guild_id, glob, 'Command cannot be used in WEB'))
+        return ReturnData(False, txt(guild_id, glob, 'Command cannot be used in WEB'))
 
     embed = discord.Embed(title="Sound Effects", colour=discord.Colour.from_rgb(241, 196, 15))
     message = ''
@@ -80,7 +80,7 @@ async def sound_effects_def(ctx, glob: GlobalVars, ephemeral: bool = True) -> Re
 
     update(glob)
     await ctx.send(embed=embed, ephemeral=ephemeral)
-    return ReturnData(True, text(guild_id, glob, 'Sound effects'))
+    return ReturnData(True, txt(guild_id, glob, 'Sound effects'))
 
 async def list_radios_def(ctx, glob: GlobalVars, ephemeral: bool = True) -> ReturnData:
     """
@@ -94,7 +94,7 @@ async def list_radios_def(ctx, glob: GlobalVars, ephemeral: bool = True) -> Retu
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
 
     if not is_ctx:
-        return ReturnData(False, text(guild_id, glob, 'Command cannot be used in WEB'))
+        return ReturnData(False, txt(guild_id, glob, 'Command cannot be used in WEB'))
 
     embed = discord.Embed(title="Radio List")
     message = ''
@@ -111,7 +111,7 @@ async def list_radios_def(ctx, glob: GlobalVars, ephemeral: bool = True) -> Retu
 
     update(glob)
     await ctx.send(embed=embed, ephemeral=ephemeral)
-    return ReturnData(True, text(guild_id, glob, 'Radio list'))
+    return ReturnData(True, txt(guild_id, glob, 'Radio list'))
 
 async def key_def(ctx: dc_commands.Context, glob: GlobalVars) -> ReturnData:
     """
@@ -133,7 +133,7 @@ async def options_command_def(ctx, glob: GlobalVars, loop=None, language=None, r
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
 
     if not is_ctx:
-        return ReturnData(False, text(guild_id, glob, 'Command cannot be used in WEB'))
+        return ReturnData(False, txt(guild_id, glob, 'Command cannot be used in WEB'))
 
     if all(v is None for v in [loop, language, response_type, buttons, volume, buffer, history_length]):
         return await commands.admin.options_def(ctx, glob, server=None, ephemeral=False)

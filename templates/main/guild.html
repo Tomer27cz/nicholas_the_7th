@@ -10,7 +10,7 @@
 
   {% if not guild.connected %}
     <div class="alert alert-warning div-align fade show sticky-top" role="alert">
-      {{ text(gi, glob, 'Bot is not connected to this guild -> Disabled') }}
+      {{ txt(gi, glob, 'Bot is not connected to this guild -> Disabled') }}
     </div>
   {% endif %}
 
@@ -42,7 +42,7 @@
         <div class="accordion-item">
           <div class="accordion-header div-options">
             <button class="btn btn-dark btn-options" data-bs-toggle="modal" data-bs-target="#optionsModal"
-                    title="{{ text(gi, glob, 'Server Options') }}" hx-target="#optionsModal_content" hx-swap="outerHTML" hx-trigger="click once"
+                    title="{{ txt(gi, glob, 'Server Options') }}" hx-target="#optionsModal_content" hx-swap="outerHTML" hx-trigger="click once"
             hx-get="/guild/{{ gi }}/modals?type=optionsModal&key={{ key }}" hx-indicator="#optionsModal_spinner">
               <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16">
                 <path
@@ -65,7 +65,7 @@
                   None
                 {% endif %}
                 <div class="q-item1 q-wa">
-                  <p class="q-text q-1">{{ text(gi, glob, 'Member Count') }}</p>
+                  <p class="q-text q-1">{{ txt(gi, glob, 'Member Count') }}</p>
                   <p class="q-text q-2">{{ guild.data.member_count }}</p>
                 </div>
                 <div class="q-item1 q-wa">
@@ -73,18 +73,18 @@
                   <p class="q-text q-2">{{ guild.data.id }}</p>
                 </div>
                 <div class="q-item1 q-items-center">
-                  <p class="q-text q-1">{{ text(gi, glob, 'Server Owner') }}</p>
+                  <p class="q-text q-1">{{ txt(gi, glob, 'Server Owner') }}</p>
                   <p class="q-text q-2"><a class="q-2" target="_blank" rel="noopener noreferrer"
                                            href="https://discordapp.com/users/{{ guild.data.owner_id }}">{{ guild.data.owner_name }}</a>
                   </p>
                   <p class="q-text q-3">{{ guild.data.owner_id }}</p>
                 </div>
                 <div class="q-item1 q-wa">
-                  <p class="q-text q-1">{{ text(gi, glob, 'Created at') }}</p>
+                  <p class="q-text q-1">{{ txt(gi, glob, 'Created at') }}</p>
                   <p class="q-text q-2">{{ struct_to_time(guild.data.created_at) }}</p>
                 </div>
                 <div class="q-item1 q-wa">
-                  <p class="q-text q-1">{{ text(gi, glob, 'Description') }}</p>
+                  <p class="q-text q-1">{{ txt(gi, glob, 'Description') }}</p>
                   <p class="q-text q-2">{{ guild.data.description }}</p>
                 </div>
               </div>
@@ -105,7 +105,7 @@
              aria-controls="panelsStayOpen-collapseOne"
               hx-target="#h-main" hx-swap="outerHTML" hx-trigger="click once"
               hx-get="/guild/{{gi}}/history?key={{key}}">
-            <h3>{{ text(gi, glob, 'History') }}</h3>
+            <h3>{{ txt(gi, glob, 'History') }}</h3>
             <div class="q-item1 text-center">
               <div class="spinner-border text-primary htmx-indicator" role="status" style="width: 2rem; height: 2rem;"></div>
             </div>
@@ -135,28 +135,28 @@
       </div>
       <div class="q-item1">
         <div class="e-div">
-          <button class="btn btn-dark e-item1" type="submit" name="play_btn" title="{{ text(gi, glob, 'Play') }}"
+          <button class="btn btn-dark e-item1" type="submit" name="play_btn" title="{{ txt(gi, glob, 'Play') }}"
                   {% if not guild.connected %}disabled{% endif %}>
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#0d6efd" viewBox="0 0 384 512">
               <path
                   d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"></path>
             </svg>
           </button>
-          <button class="btn btn-dark e-item1" type="submit" name="skip_btn" title="{{ text(gi, glob, 'Skip') }}"
+          <button class="btn btn-dark e-item1" type="submit" name="skip_btn" title="{{ txt(gi, glob, 'Skip') }}"
                   {% if not guild.connected %}disabled{% endif %}>
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 512 512">
               <path
                   d="M52.5 440.6c-9.5 7.9-22.8 9.7-34.1 4.4S0 428.4 0 416V96C0 83.6 7.2 72.3 18.4 67s24.5-3.6 34.1 4.4L224 214.3V256v41.7L52.5 440.6zM256 352V256 128 96c0-12.4 7.2-23.7 18.4-29s24.5-3.6 34.1 4.4l192 160c7.3 6.1 11.5 15.1 11.5 24.6s-4.2 18.5-11.5 24.6l-192 160c-9.5 7.9-22.8 9.7-34.1 4.4s-18.4-16.6-18.4-29V352z"></path>
             </svg>
           </button>
-          <button class="btn btn-dark e-item1" type="submit" name="pause_btn" title="{{ text(gi, glob, 'Pause') }}"
+          <button class="btn btn-dark e-item1" type="submit" name="pause_btn" title="{{ txt(gi, glob, 'Pause') }}"
                   {% if not guild.connected %}disabled{% endif %}>
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 320 512">
               <path
                   d="M48 64C21.5 64 0 85.5 0 112V400c0 26.5 21.5 48 48 48H80c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48H48zm192 0c-26.5 0-48 21.5-48 48V400c0 26.5 21.5 48 48 48h32c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48H240z"></path>
             </svg>
           </button>
-          <button class="btn btn-dark e-item1" type="submit" name="stop_btn" title="{{ text(gi, glob, 'Stop') }}"
+          <button class="btn btn-dark e-item1" type="submit" name="stop_btn" title="{{ txt(gi, glob, 'Stop') }}"
                   {% if not guild.connected %}disabled{% endif %}>
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#dc3545" viewBox="0 0 384 512">
               <path
@@ -165,11 +165,11 @@
           </button>
         </div>
       </div>
-      <div class="q-item1 d-control"><p class="{{ 'd-g' if bot_status in ['Connected', 'Playing'] }}{{ 'd-r' if bot_status in ['Not connected'] }}{{ 'd-y' if bot_status in ['Unknown', 'Paused'] }} d-status">{{ text(gi, glob, bot_status) }}</p></div>
+      <div class="q-item1 d-control"><p class="{{ 'd-g' if bot_status in ['Connected', 'Playing'] }}{{ 'd-r' if bot_status in ['Not connected'] }}{{ 'd-y' if bot_status in ['Unknown', 'Paused'] }} d-status">{{ txt(gi, glob, bot_status) }}</p></div>
       <div class="q-item1">
         <div class="e-div">
           <button class="btn btn-dark e-item1" type="button" data-bs-toggle="modal" data-bs-target="#joinModal"
-                  title="{{ text(gi, glob, 'Join Channel') }}" {% if not guild.connected %}disabled{% endif %}
+                  title="{{ txt(gi, glob, 'Join Channel') }}" {% if not guild.connected %}disabled{% endif %}
                   hx-trigger="click once" hx-target="#joinModal_content" hx-swap="outerHTML"
                   hx-get="/guild/{{ gi }}/modals?type=joinModal&key={{ key }}" hx-indicator="#joinModal_spinner">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#198754" viewBox="0 0 16 16">
@@ -179,7 +179,7 @@
               <path d="M6.5 8.34C3.26 8.34 1 9.98666 1 12.34V13.0067H12V12.34C12 9.98 9.74 8.34 6.5 8.34Z"></path>
             </svg>
           </button>
-          <button class="btn btn-dark e-item1" type="submit" name="disconnect_btn" title="{{ text(gi, glob, 'Disconnect') }}"
+          <button class="btn btn-dark e-item1" type="submit" name="disconnect_btn" title="{{ txt(gi, glob, 'Disconnect') }}"
                   {% if not guild.connected %}disabled{% endif %}>
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#dc3545" viewBox="0 0 24 24">
               <path
@@ -193,7 +193,7 @@
           <div class="btn-m">
             <input style="width: 5rem" type="number" class="form-c form-control btn-m" name="timeInput" min="0" max="{{ guild.now_playing.duration }}" value="0" {% if not guild.connected %}disabled{% endif %}>
           </div>
-          <button class="btn btn-outline btn-primary btn-sm btn-m" type="submit" name="time_btn" title="{{ text(gi, glob, 'Set Time') }}" {% if not guild.connected %}disabled{% endif %}>Set</button>
+          <button class="btn btn-outline btn-primary btn-sm btn-m" type="submit" name="time_btn" title="{{ txt(gi, glob, 'Set Time') }}" {% if not guild.connected %}disabled{% endif %}>Set</button>
 
         </div>
         <div class="vr btm-m"></div>
@@ -208,7 +208,7 @@
           <input type="range" class="form-r form-range btn-m" name="volumeRange" min="0" max="200" value="{{ int(guild.options.volume*100) }}"
                  oninput="this.form.volumeInput.value=this.value" {% if not guild.connected %}disabled{% endif %}>
           <button class="btn btn-outline btn-primary btn-sm btn-m flex-fill" type="submit" name="volume_btn"
-                  title="{{ text(gi, glob, 'Set Volume') }}" {% if not guild.connected %}disabled{% endif %}>Set
+                  title="{{ txt(gi, glob, 'Set Volume') }}" {% if not guild.connected %}disabled{% endif %}>Set
           </button>
         </div>
       </div>
@@ -218,8 +218,8 @@
   <!-- Queue -->
   <div class="q-top">
     <div class="q-item1 l-div gap1">
-      <h3>{{ text(gi, glob, 'Queue') }}</h3>
-      <a class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#saveModal" title="{{ text(gi, glob, 'Save Queue') }}"
+      <h3>{{ txt(gi, glob, 'Queue') }}</h3>
+      <a class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#saveModal" title="{{ txt(gi, glob, 'Save Queue') }}"
          hx-target="#saveModal_content" hx-swap="outerHTML" hx-trigger="click once"
          hx-get="/guild/{{gi}}/modals?type=saveModal&key={{ key }}" hx-indicator="#saveModal_spinner">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
@@ -227,7 +227,7 @@
           <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"></path>
         </svg>
       </a>
-      <a class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#loadModal" title="{{ text(gi, glob, 'Load Queue') }}"
+      <a class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#loadModal" title="{{ txt(gi, glob, 'Load Queue') }}"
          hx-target="#loadModal_content" hx-swap="outerHTML" hx-trigger="click once"
          hx-get="/guild/{{gi}}/modals?type=loadModal&key={{ key }}" hx-indicator="#loadModal_spinner">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-upload" viewBox="0 0 16 16">
@@ -236,13 +236,13 @@
         </svg>
       </a>
       {% if admin %}
-        <a class="btn btn-primary" href="/admin/guild/{{ gi }}/saves">{{ text(gi, glob, 'Edit') }}</a>
+        <a class="btn btn-primary" href="/admin/guild/{{ gi }}/saves">{{ txt(gi, glob, 'Edit') }}</a>
       {% endif %}
     </div>
     <a class="q-top-add btn btn-dark" data-bs-toggle="modal" data-bs-target="#addToModal"
        hx-get="/guild/{{ gi }}/modals?type=addToModal&key={{ key }}"
        hx-trigger="click once" hx-target="#addToModal_content" hx-swap="outerHTML"
-       title="{{ text(gi, glob, 'Add to queue') }}" hx-indicator="#addToModal_spinner">
+       title="{{ txt(gi, glob, 'Add to queue') }}" hx-indicator="#addToModal_spinner">
       <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-plus-lg"
            viewBox="0 0 16 16">
         <path fill-rule="evenodd"
@@ -250,7 +250,7 @@
       </svg>
     </a>
     {% include 'main/htmx/single/loop.html' %}
-    <button class="btn btn-dark" title="{{ text(gi, glob, 'Shuffle') }}" hx-target="#q-main" hx-swap="outerHTML"
+    <button class="btn btn-dark" title="{{ txt(gi, glob, 'Shuffle') }}" hx-target="#q-main" hx-swap="outerHTML"
             hx-trigger="click throttle:500ms" hx-get="/guild/{{gi}}/queue?act=shuffle_btn&key={{key}}">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-shuffle"
            viewBox="0 0 16 16">
@@ -260,8 +260,8 @@
             d="M13 5.466V1.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384l-2.36 1.966a.25.25 0 0 1-.41-.192zm0 9v-3.932a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384l-2.36 1.966a.25.25 0 0 1-.41-.192z"></path>
       </svg>
     </button>
-    <button class="btn btn-dark" title="{{ text(gi, glob, 'Clear') }}" hx-target="#q-main" hx-swap="outerHTML"
-            hx-trigger="click throttle:500ms" hx-get="/guild/{{gi}}/queue?act=clear_btn&key={{key}}" hx-confirm="{{ text(gi, glob, 'Are you sure?') }}">
+    <button class="btn btn-dark" title="{{ txt(gi, glob, 'Clear') }}" hx-target="#q-main" hx-swap="outerHTML"
+            hx-trigger="click throttle:500ms" hx-get="/guild/{{gi}}/queue?act=clear_btn&key={{key}}" hx-confirm="{{ txt(gi, glob, 'Are you sure?') }}">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#dc3545" class="bi bi-trash"
            viewBox="0 0 16 16">
         <path
