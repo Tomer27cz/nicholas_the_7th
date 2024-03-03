@@ -1,11 +1,10 @@
-from utils.global_vars import radio_dict
 from utils.convert import struct_to_time
 from utils.global_vars import GlobalVars
 
 import classes.data_classes as data_classes
 import classes.video_class as video_class
 
-def guild(glob: GlobalVars, guild_id: int):
+def guild(glob: GlobalVars, guild_id: int) -> data_classes.Guild:
     """
     Returns a guild object
     :param glob: GlobalVars
@@ -15,7 +14,7 @@ def guild(glob: GlobalVars, guild_id: int):
     with glob.ses.no_autoflush:
         return glob.ses.query(data_classes.Guild).filter_by(id=int(guild_id)).first()
 
-def guilds(glob: GlobalVars):
+def guilds(glob: GlobalVars) -> list[data_classes.Guild]:
     """
     Returns a list of guild objects
     :param glob: GlobalVars
@@ -24,7 +23,7 @@ def guilds(glob: GlobalVars):
     with glob.ses.no_autoflush:
         return glob.ses.query(data_classes.Guild).all()
 
-def guilds_last_played(glob: GlobalVars):
+def guilds_last_played(glob: GlobalVars) -> dict[int, str]:
     """
     Returns a dictionary of guild ids and when was the last time they played a song
     if they never played a song, it will return "None"
@@ -67,7 +66,7 @@ def guilds_last_played(glob: GlobalVars):
 
         return guilds_dict
 
-def guild_data(glob: GlobalVars, guild_id: int):
+def guild_data(glob: GlobalVars, guild_id: int) -> data_classes.GuildData:
     """
     Returns a guild data object
     :param glob: GlobalVars
@@ -77,7 +76,7 @@ def guild_data(glob: GlobalVars, guild_id: int):
     with glob.ses.no_autoflush:
         return glob.ses.query(data_classes.GuildData).filter_by(id=int(guild_id)).first()
 
-def guild_exists(glob: GlobalVars, guild_id: int):
+def guild_exists(glob: GlobalVars, guild_id: int) -> bool:
     """
     Returns whether or not a guild exists
     :param glob: GlobalVars
@@ -87,7 +86,7 @@ def guild_exists(glob: GlobalVars, guild_id: int):
     with glob.ses.no_autoflush:
         return glob.ses.query(data_classes.Guild).filter_by(id=guild_id).first() is not None
 
-def guild_dict(glob: GlobalVars):
+def guild_dict(glob: GlobalVars) -> dict[int, data_classes.Guild]:
     """
     Returns a dictionary of guild objects
     :param glob: GlobalVars
@@ -99,7 +98,7 @@ def guild_dict(glob: GlobalVars):
             _guilds[guild_object.id] = guild_object
         return _guilds
 
-def guild_ids(glob: GlobalVars):
+def guild_ids(glob: GlobalVars) -> list[int]:
     """
     Returns a list of guild IDs
     :param glob: GlobalVars
@@ -121,81 +120,90 @@ def guild_bar(glob: GlobalVars, guild_id: int) -> (int, int):
     return guild(glob, guild_id).bar, guild(glob, guild_id).max_bar
 
 # Guild variables
-def guild_data_key(glob: GlobalVars, guild_id: int):
+def guild_data_key(glob: GlobalVars, guild_id: int) -> str:
     """
     Returns the key of the guild
     :param glob: GlobalVars
     :param guild_id: ID of the guild
     :return: str
     """
-    return glob.ses.query(data_classes.GuildData).filter_by(id=guild_id).with_entities(data_classes.GuildData.key)[0][0]
-def guild_options_loop(glob: GlobalVars, guild_id: int):
+    with glob.ses.no_autoflush:
+        return glob.ses.query(data_classes.GuildData).filter_by(id=guild_id).with_entities(data_classes.GuildData.key)[0][0]
+def guild_options_loop(glob: GlobalVars, guild_id: int) -> bool:
     """
     Returns the loop of the guild
     :param glob: GlobalVars
     :param guild_id: ID of the guild
     :return: bool
     """
-    return glob.ses.query(data_classes.Options).filter_by(id=guild_id).with_entities(data_classes.Options.loop)[0][0]
-def guild_options_buffer(glob: GlobalVars, guild_id: int):
+    with glob.ses.no_autoflush:
+        return glob.ses.query(data_classes.Options).filter_by(id=guild_id).with_entities(data_classes.Options.loop)[0][0]
+def guild_options_buffer(glob: GlobalVars, guild_id: int) -> int:
     """
     Returns the buffer of the guild
     :param glob: GlobalVars
     :param guild_id: ID of the guild
     :return: int
     """
-    return glob.ses.query(data_classes.Options).filter_by(id=guild_id).with_entities(data_classes.Options.buffer)[0][0]
-def guild_options_response_type(glob: GlobalVars, guild_id: int):
+    with glob.ses.no_autoflush:
+        return glob.ses.query(data_classes.Options).filter_by(id=guild_id).with_entities(data_classes.Options.buffer)[0][0]
+def guild_options_response_type(glob: GlobalVars, guild_id: int) -> str:
     """
     Returns the response type of the guild
     :param glob: GlobalVars
     :param guild_id: ID of the guild
     :return: str
     """
-    return glob.ses.query(data_classes.Options).filter_by(id=guild_id).with_entities(data_classes.Options.response_type)[0][0]
-def guild_options_search_query(glob: GlobalVars, guild_id: int):
+    with glob.ses.no_autoflush:
+        return glob.ses.query(data_classes.Options).filter_by(id=guild_id).with_entities(data_classes.Options.response_type)[0][0]
+def guild_options_search_query(glob: GlobalVars, guild_id: int) -> str:
     """
     Returns the search query of the guild
     :param glob: GlobalVars
     :param guild_id: ID of the guild
     :return: str
     """
-    return glob.ses.query(data_classes.Options).filter_by(id=guild_id).with_entities(data_classes.Options.search_query)[0][0]
-def guild_options_language(glob: GlobalVars, guild_id: int):
+    with glob.ses.no_autoflush:
+        return glob.ses.query(data_classes.Options).filter_by(id=guild_id).with_entities(data_classes.Options.search_query)[0][0]
+def guild_options_language(glob: GlobalVars, guild_id: int) -> str:
     """
     Returns the language of the guild
     :param glob: GlobalVars
     :param guild_id: ID of the guild
     :return: str
     """
-    return glob.ses.query(data_classes.Options).filter_by(id=guild_id).with_entities(data_classes.Options.language)[0][0]
-def guild_options_is_radio(glob: GlobalVars, guild_id: int):
+    with glob.ses.no_autoflush:
+        return glob.ses.query(data_classes.Options).filter_by(id=guild_id).with_entities(data_classes.Options.language)[0][0]
+def guild_options_is_radio(glob: GlobalVars, guild_id: int) -> bool:
     """
     Returns whether or not the guild is a radio
     :param glob: GlobalVars
     :param guild_id: ID of the guild
     :return: bool
     """
-    return glob.ses.query(data_classes.Options).filter_by(id=guild_id).with_entities(data_classes.Options.is_radio)[0][0]
-def guild_options_volume(glob: GlobalVars, guild_id: int):
+    with glob.ses.no_autoflush:
+        return glob.ses.query(data_classes.Options).filter_by(id=guild_id).with_entities(data_classes.Options.is_radio)[0][0]
+def guild_options_volume(glob: GlobalVars, guild_id: int) -> float:
     """
     Returns the volume of the guild
     :param glob: GlobalVars
     :param guild_id: ID of the guild
     :return: float
     """
-    return glob.ses.query(data_classes.Options).filter_by(id=guild_id).with_entities(data_classes.Options.volume)[0][0]
-def guild_options_buttons(glob: GlobalVars, guild_id: int):
+    with glob.ses.no_autoflush:
+        return glob.ses.query(data_classes.Options).filter_by(id=guild_id).with_entities(data_classes.Options.volume)[0][0]
+def guild_options_buttons(glob: GlobalVars, guild_id: int) -> bool:
     """
     Returns the buttons of the guild
     :param glob: GlobalVars
     :param guild_id: ID of the guild
     :return: bool
     """
-    return glob.ses.query(data_classes.Options).filter_by(id=guild_id).with_entities(data_classes.Options.buttons)[0][0]
+    with glob.ses.no_autoflush:
+        return glob.ses.query(data_classes.Options).filter_by(id=guild_id).with_entities(data_classes.Options.buttons)[0][0]
 
 # Guild Save
-def guild_save_count(glob: GlobalVars, guild_id: int):
+def guild_save_count(glob: GlobalVars, guild_id: int) -> int:
     """
     Returns the number of saves in a guild
     :param glob: GlobalVars
@@ -204,7 +212,7 @@ def guild_save_count(glob: GlobalVars, guild_id: int):
     """
     with glob.ses.no_autoflush:
         return glob.ses.query(data_classes.Save).filter_by(guild_id=int(guild_id)).count()
-def guild_save_queue_count(glob: GlobalVars, guild_id: int, save_id: int):
+def guild_save_queue_count(glob: GlobalVars, guild_id: int, save_id: int) -> int:
     """
     Returns the number of videos in a save
     :param glob: GlobalVars
@@ -214,7 +222,7 @@ def guild_save_queue_count(glob: GlobalVars, guild_id: int, save_id: int):
     """
     with glob.ses.no_autoflush:
         return glob.ses.query(video_class.SaveVideo).filter_by(guild_id=int(guild_id), save_id=save_id).count()
-def guild_save(glob: GlobalVars, guild_id: int, save_id: int):
+def guild_save(glob: GlobalVars, guild_id: int, save_id: int) -> data_classes.Save:
     """
     Returns a save object
     :param glob: GlobalVars
@@ -224,7 +232,7 @@ def guild_save(glob: GlobalVars, guild_id: int, save_id: int):
     """
     with glob.ses.no_autoflush:
         return glob.ses.query(data_classes.Save).filter_by(guild_id=int(guild_id), id=int(save_id)).first()
-def guild_save_names(glob: GlobalVars, guild_id: int):
+def guild_save_names(glob: GlobalVars, guild_id: int) -> list[str]:
     """
     Returns a list of save names
     :param glob: GlobalVars
@@ -238,7 +246,7 @@ def guild_save_names(glob: GlobalVars, guild_id: int):
         return names
 
 # Guild Commands
-def create_guild(glob: GlobalVars, guild_id: int):
+def create_guild(glob: GlobalVars, guild_id: int) -> None:
     """
     Creates a guild object
     :param glob: GlobalVars
@@ -249,7 +257,7 @@ def create_guild(glob: GlobalVars, guild_id: int):
         guild_object = data_classes.Guild(glob, guild_id, {})
         glob.ses.add(guild_object)
         glob.ses.commit()
-def delete_guild(glob: GlobalVars, guild_id: int):
+def delete_guild(glob: GlobalVars, guild_id: int) -> None:
     """
     Deletes a guild object
     :param glob: GlobalVars
@@ -303,25 +311,6 @@ def clear_queue(glob: GlobalVars, guild_id: int) -> int:
         glob.ses.commit()
         return query_count
 
-# Radio
-def get_radio_info(glob: GlobalVars, radio_name: str):
-    """
-    Returns a radio object
-    :param glob: GlobalVars
-    :param radio_name: Name of the radio
-    :return: Radio object
-    """
-    with glob.ses.no_autoflush:
-        radio_info_class = glob.ses.query(video_class.RadioInfo).filter_by(name=str(radio_name)).first()
-        if radio_info_class is None:
-            radio_dictionary = radio_dict
-            if radio_name not in radio_dictionary.keys():
-                raise ValueError("Radio name not found")
-            radio_info_class = video_class.RadioInfo(radio_id=radio_dict[radio_name]['id'])
-            glob.ses.add(radio_info_class)
-            glob.ses.commit()
-        return radio_info_class
-
 # Slowed Users
 def is_user_slowed(glob: GlobalVars, user_id: int, guild_id: int) -> (bool, int):
     """
@@ -351,7 +340,7 @@ def is_user_tortured(glob: GlobalVars, user_id: int, guild_id: int) -> (bool, in
         if tortured_user is None:
             return False, None
         return True, tortured_user.torture_delay
-def delete_tortured_user(glob: GlobalVars, user_id: int, guild_id: int):
+def delete_tortured_user(glob: GlobalVars, user_id: int, guild_id: int) -> None:
     """
     Deletes a tortured user
     :param glob: GlobalVars

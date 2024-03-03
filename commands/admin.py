@@ -19,6 +19,8 @@ import asyncio
 import random
 import discord
 
+from commands.voice import join_def
+from utils.source import GetSource
 
 async def announce_command_def(ctx, glob: GlobalVars, message: str, ephemeral: bool = False) -> ReturnData:
     """
@@ -441,3 +443,56 @@ async def voice_torture_stop_command_def(ctx: dc_commands.Context, glob: GlobalV
     message = f"{txt(guild_id, glob, 'Stopped torturing user:')} <@{member.id}>"
     await ctx.reply(message, ephemeral=ephemeral)
     return ReturnData(True, message)
+
+# Development
+async def dev_command_def(ctx: dc_commands.Context, glob: GlobalVars, command: str, ephemeral: bool=True):
+    """
+    Development command
+    :param glob: GlobalVars
+    :param ctx: Context
+    :param command: Command to run
+    :param ephemeral: Should bot response be ephemeral
+    """
+    log(ctx, 'dev', locals(), log_type='function', author=ctx.author)
+
+    import json
+    import aiohttp
+
+    # &render=json
+    base_url = 'https://opml.radiotime.com'
+
+    query = 'evropa 2'
+
+    #  limit search to 5
+    search_url = f'{base_url}/Search.ashx?query={query}&types=station&render=json&limit=5'
+
+
+    async with aiohttp.ClientSession() as session:
+        async with session.get(search_url) as response:
+            output = await response.json()
+            url = output['body'][0]['URL'] + '&render=json'
+
+    print(url)
+
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            stream_url = (await response.json())['body'][0]['url']
+
+    print(stream_url)
+
+    await join_def(ctx, glob)
+
+    source, chapters = await GetSource.create_source(glob, ctx.guild.id, stream_url, 'Probe')
+    ctx.guild.voice_client.play(source)
+
+    await ctx.reply(f'Playing: {url}', ephemeral=ephemeral)
+    return ReturnData(True, f'Playing: {url}')
+
+
+    # return await play_def(ctx, glob, url)
+
+
+
+
+
+

@@ -1,13 +1,12 @@
 <div class="q-container" id="queue_{{ guild.queue.index(track) }}">
   <div class="q-div">
     {% if track.radio_info is not none %}
-      {% set radio_info = get_radio_info(glob, track.radio_info['name']) %}
       {% set renew = track.renew(glob) %}
     <div class="q-item0 q-div div-radio2 r-w1">
-      <img loading="lazy" class="q-img" src="{{ radio_info.picture }}" alt="thumbnail">
+      <img loading="lazy" class="q-img" src="{{ track.radio_info['now_picture'] }}" alt="thumbnail">
       <div class="q-item1 q-wd">
-        <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="{{ track.url }}">{{ radio_info.title }}</a></p>
-        <p class="q-text"><a class="q-2" target="_blank" rel="noopener noreferrer" href="{{ track.channel_link }}">{{ radio_info.channel_name }}</a></p>
+        <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="{{ track.url }}">{{ track.radio_info['now_title'] }}</a></p>
+        <p class="q-text"><a class="q-2" target="_blank" rel="noopener noreferrer" href="{{ track.channel_link }}">{{ track.radio_info['now_artist'] }}</a></p>
       </div>
     </div>
     {% endif %}

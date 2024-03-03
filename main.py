@@ -13,6 +13,7 @@ from commands.chat_export import *
 from commands.general import *
 from commands.player import *
 from commands.queue import *
+from commands.radio import *
 from commands.voice import *
 
 from sclib import SoundcloudAPI
@@ -277,13 +278,13 @@ log(None, "--------------------------------------- NEW / REBOOTED --------------
 build_new_guilds = False
 build_old_guilds = False
 
-for radio_name_ in radio_dict:
-    radio_info_class = ses.query(video_class.RadioInfo).filter(video_class.RadioInfo.name == radio_name_).first()
-    if not radio_info_class:
-        radio_info_class = video_class.RadioInfo(radio_dict[radio_name_]['id'])
-        ses.add(radio_info_class)
-        ses.commit()
-        log(None, f'Added {radio_name_} to database')
+# for radio_name_ in radio_dict:
+#     radio_info_class = ses.query(video_class.RadioInfo).filter(video_class.RadioInfo.name == radio_name_).first()
+#     if not radio_info_class:
+#         radio_info_class = video_class.RadioInfo(radio_dict[radio_name_]['id'])
+#         ses.add(radio_info_class)
+#         ses.commit()
+#         log(None, f'Added {radio_name_} to database')
 log(None, 'Loaded radio.json')
 
 authorized_users += [my_id, d_id, config.DEVELOPER_ID, 349164237605568513]
@@ -335,12 +336,12 @@ async def queue_command(ctx: dc_commands.Context, query, position: int = None):
     log(ctx, 'queue', options=locals(), log_type='command', author=ctx.author)
     await queue_command_def(ctx, glob, query, position=position)
 
-@bot.hybrid_command(name='next_up', with_app_command=True, description=txt(0, glob, 'command_next_up'),
-                    help=txt(0, glob, 'command_next_up'), extras={'category': 'queue'})
+@bot.hybrid_command(name='nextup', with_app_command=True, description=txt(0, glob, 'command_nextup'),
+                    help=txt(0, glob, 'command_nextup'), extras={'category': 'queue'})
 @app_commands.describe(query=txt(0, glob, 'query'), user_only=txt(0, glob, 'ephemeral'))
-async def next_up(ctx: dc_commands.Context, query, user_only: bool = False):
-    log(ctx, 'next_up', options=locals(), log_type='command', author=ctx.author)
-    await next_up_def(ctx, glob, query, user_only)
+async def nextup(ctx: dc_commands.Context, query, user_only: bool = False):
+    log(ctx, 'nextup', options=locals(), log_type='command', author=ctx.author)
+    await nextup_def(ctx, glob, query, user_only)
 
 @bot.hybrid_command(name='skip', with_app_command=True, description=txt(0, glob, 'command_skip'), help=txt(0, glob, 'command_skip'), extras={'category': 'queue'})
 async def skip(ctx: dc_commands.Context):
@@ -368,13 +369,13 @@ async def shuffle(ctx: dc_commands.Context, user_only: bool = False):
     log(ctx, 'shuffle', options=locals(), log_type='command', author=ctx.author)
     await shuffle_def(ctx, glob, user_only)
 
-@bot.hybrid_command(name='show', with_app_command=True, description=txt(0, glob, 'command_show'),
-                    help=txt(0, glob, 'command_show'), extras={'category': 'queue'})
-@app_commands.describe(display_type=txt(0, glob, 'attr_show_display_type'), user_only=txt(0, glob, 'ephemeral'))
-async def show(ctx: dc_commands.Context, display_type: Literal['short', 'medium', 'long'] = None,
-               list_type: Literal['queue', 'history'] = 'queue', user_only: bool = False):
-    log(ctx, 'show', options=locals(), log_type='command', author=ctx.author)
-    await show_def(ctx, glob, display_type, list_type, user_only)
+# @bot.hybrid_command(name='show', with_app_command=True, description=txt(0, glob, 'command_show'),
+#                     help=txt(0, glob, 'command_show'), extras={'category': 'queue'})
+# @app_commands.describe(display_type=txt(0, glob, 'attr_show_display_type'), user_only=txt(0, glob, 'ephemeral'))
+# async def show(ctx: dc_commands.Context, display_type: Literal['short', 'medium', 'long'] = None,
+#                list_type: Literal['queue', 'history'] = 'queue', user_only: bool = False):
+#     log(ctx, 'show', options=locals(), log_type='command', author=ctx.author)
+#     await show_def(ctx, glob, display_type, list_type, user_only)
 
 @bot.hybrid_command(name='search', with_app_command=True, description=txt(0, glob, 'command_search'),
                     help=txt(0, glob, 'command_search'), extras={'category': 'queue'})
@@ -393,18 +394,11 @@ async def play(ctx: dc_commands.Context, query=None, force=False):
     log(ctx, 'play', options=locals(), log_type='command', author=ctx.author)
     await play_def(ctx, glob, query, force)
 
-@bot.hybrid_command(name='radio', with_app_command=True, description=txt(0, glob, 'command_radio'),
-                    help=txt(0, glob, 'command_radio'), extras={'category': 'player'})
-@app_commands.describe(radio=txt(0, glob, 'attr_radio_radio'))
-async def radio_command(ctx: dc_commands.Context, radio: str):
-    log(ctx, 'radio', options=locals(), log_type='command', author=ctx.author)
-    await radio_def(ctx, glob, radio)
-
 @bot.hybrid_command(name='ps', with_app_command=True, description=txt(0, glob, 'command_ps'), help=txt(0, glob, 'command_ps'), extras={'category': 'player'})
-@app_commands.describe(effect_number=txt(0, glob, 'attr_ps_effect_number'))
-async def ps(ctx: dc_commands.Context, effect_number: app_commands.Range[int, 1, len(sound_effects)]):
+@app_commands.describe(effect=txt(0, glob, 'attr_ps_effect'))
+async def ps(ctx: dc_commands.Context, effect: str):
     log(ctx, 'ps', options=locals(), log_type='command', author=ctx.author)
-    await ps_def(ctx, glob, effect_number)
+    await local_def(ctx, glob, effect)
 
 @bot.hybrid_command(name='nowplaying', with_app_command=True, description=txt(0, glob, 'command_nowplaying'),
                     help=txt(0, glob, 'command_nowplaying'), extras={'category': 'player'})
@@ -424,7 +418,7 @@ async def loop_command(ctx: dc_commands.Context):
     log(ctx, 'loop', options=locals(), log_type='command', author=ctx.author)
     await loop_command_def(ctx, glob)
 
-@bot.hybrid_command(name='loop_this', with_app_command=True, description=txt(0, glob, 'command_loop_this'),
+@bot.hybrid_command(name='loop-this', with_app_command=True, description=txt(0, glob, 'command_loop_this'),
                     help=txt(0, glob, 'command_loop_this'), extras={'category': 'player'})
 async def loop_this(ctx: dc_commands.Context):
     log(ctx, 'loop_this', options=locals(), log_type='command', author=ctx.author)
@@ -435,6 +429,26 @@ async def loop_this(ctx: dc_commands.Context):
 async def earrape_command(ctx: dc_commands.Context):
     log(ctx, 'earrape', options=locals(), log_type='command', author=ctx.author)
     await earrape_command_def(ctx, glob)
+
+# --------------------------------------- RADIO --------------------------------------------------
+
+@bot.hybrid_command(name='radio-cz', with_app_command=True, description=txt(0, glob, 'command_radio_cz'), help=txt(0, glob, 'command_radio_cz'), extras={'category': 'radio'})
+@app_commands.describe(radio=txt(0, glob, 'attr_radio_cz_radio'))
+async def radio_cz_command(ctx: dc_commands.Context, radio: str):
+    log(ctx, 'radio_cz', options=locals(), log_type='command', author=ctx.author)
+    await radio_cz_def(ctx, glob, radio)
+
+@bot.hybrid_command(name='radio-garden', with_app_command=True, description=txt(0, glob, 'command_radio_garden'), help=txt(0, glob, 'command_radio_garden'), extras={'category': 'radio'})
+@app_commands.describe(radio=txt(0, glob, 'attr_radio_garden_radio'))
+async def radio_garden_command(ctx: dc_commands.Context, radio: str):
+    log(ctx, 'radio_garden', options=locals(), log_type='command', author=ctx.author)
+    await radio_garden_def(ctx, glob, radio)
+
+@bot.hybrid_command(name='radio-tunein', with_app_command=True, description=txt(0, glob, 'command_radio_tunein'), help=txt(0, glob, 'command_radio_tunein'), extras={'category': 'radio'})
+@app_commands.describe(radio=txt(0, glob, 'attr_radio_tunein_radio'))
+async def radio_tunein_command(ctx: dc_commands.Context, radio: str):
+    log(ctx, 'radio_tunein', options=locals(), log_type='command', author=ctx.author)
+    await radio_tunein_def(ctx, glob, radio)
 
 # --------------------------------------- VOICE --------------------------------------------------
 
@@ -525,21 +539,28 @@ async def language_command(ctx: dc_commands.Context, country_code: Literal[tuple
 
     await language_command_def(ctx, glob, country_code)
 
-@bot.hybrid_command(name='sound_effects', with_app_command=True, description=txt(0, glob, 'command_sound_effects'),
-                    help=txt(0, glob, 'command_sound_effects'), extras={'category': 'general'})
-@app_commands.describe(user_only=txt(0, glob, 'ephemeral'))
-async def sound_effects(ctx: dc_commands.Context, user_only: bool = True):
-    log(ctx, 'sound_effects', options=locals(), log_type='command', author=ctx.author)
+@bot.hybrid_command(name='list', with_app_command=True, description=txt(0, glob, 'command_list'), help=txt(0, glob, 'command_list'), extras={'category': 'general'})
+@app_commands.describe(list_type=txt(0, glob, 'attr_list_list_type'), user_only=txt(0, glob, 'ephemeral'))
+async def list_command(ctx: dc_commands.Context, list_type: Literal['queue', 'history', 'radios', 'effects'], display_type: Literal['short', 'medium', 'long']=None, user_only: bool = False):
+    log(ctx, 'list', options=locals(), log_type='command', author=ctx.author)
 
-    await sound_effects_def(ctx, glob, user_only)
+    await list_command_def(ctx, glob, list_type, display_type, user_only)
 
-@bot.hybrid_command(name='list_radios', with_app_command=True, description=txt(0, glob, 'command_list_radios'),
-                    help=txt(0, glob, 'command_list_radios'), extras={'category': 'general'})
-@app_commands.describe(user_only=txt(0, glob, 'ephemeral'))
-async def list_radios(ctx: dc_commands.Context, user_only: bool = True):
-    log(ctx, 'list_radios', options=locals(), log_type='command', author=ctx.author)
-
-    await list_radios_def(ctx, glob, user_only)
+# @bot.hybrid_command(name='sound-effects', with_app_command=True, description=txt(0, glob, 'command_sound_effects'),
+#                     help=txt(0, glob, 'command_sound_effects'), extras={'category': 'general'})
+# @app_commands.describe(user_only=txt(0, glob, 'ephemeral'))
+# async def sound_effects(ctx: dc_commands.Context, user_only: bool = True):
+#     log(ctx, 'sound_effects', options=locals(), log_type='command', author=ctx.author)
+#
+#     await sound_effects_def(ctx, glob, user_only)
+#
+# @bot.hybrid_command(name='list-radios', with_app_command=True, description=txt(0, glob, 'command_list_radios'),
+#                     help=txt(0, glob, 'command_list_radios'), extras={'category': 'general'})
+# @app_commands.describe(user_only=txt(0, glob, 'ephemeral'))
+# async def list_radios(ctx: dc_commands.Context, user_only: bool = True):
+#     log(ctx, 'list_radios', options=locals(), log_type='command', author=ctx.author)
+#
+#     await list_radios_def(ctx, glob, user_only)
 
 @bot.hybrid_command(name='key', with_app_command=True, description=txt(0, glob, 'command_key'), help=txt(0, glob, 'command_key'), extras={'category': 'general'})
 async def key_command(ctx: dc_commands.Context):
@@ -693,6 +714,20 @@ async def slowed_users_remove_all_command(ctx: dc_commands.Context, guild_obj: d
     log(ctx, 'slowed_users_remove_all', options=locals(), log_type='command', author=ctx.author)
     await slowed_users_remove_all_command_def(ctx, glob, guild_obj)
 
+# ---------------------------------------------- DEVELOPMENT -----------------------------------------------------------
+
+@bot.hybrid_command(name='zz_dev', with_app_command=True, hidden=True)
+@dc_commands.check(is_authorised)
+async def dev_command(ctx: dc_commands.Context, message):
+    log(ctx, 'dev', options=locals(), log_type='command', author=ctx.author)
+
+    await ctx.defer()
+
+    resp = await query_autocomplete_def(None, 'song', include_youtube=True, include_tunein=True, include_radio=True)
+    # await ctx.send(resp)
+    #
+    # await dev_command_def(ctx, glob, message)
+
 # ------------------------------------------ SPECIFIC USER TORTURE -----------------------------------------------------
 
 @bot.hybrid_command(name='zz_voice_torture', with_app_command=True, hidden=True)
@@ -767,23 +802,43 @@ async def help_command(ctx: dc_commands.Context, command_name: str = None):
 
 # ---------------------------------------------- AUTOCOMPLETE ----------------------------------------------------------
 
+# Local autocomplete functions
 @help_command.autocomplete('command_name')
 async def help_autocomplete(ctx: discord.Interaction, current: str):
     return await help_autocomplete_def(ctx, current, glob)
-
-@radio_command.autocomplete('radio')
-async def radio_autocomplete(ctx: discord.Interaction, current: str):
-    return await radio_autocomplete_def(ctx, current)
 
 @remove.autocomplete('song')
 async def song_autocomplete(ctx: discord.Interaction, current: str):
     return await song_autocomplete_def(ctx, current, glob)
 
-@queue_command.autocomplete('query')
-@next_up.autocomplete('query')
+@radio_cz_command.autocomplete('radio')
+async def radio_autocomplete(ctx: discord.Interaction, current: str):
+    return await radio_autocomplete_def(ctx, current, limit=25)
+
+@ps.autocomplete('effect')
+async def effect_autocomplete(ctx: discord.Interaction, current: str):
+    return await local_autocomplete_def(ctx, current, limit=25)
+
+# API request autocomplete functions
 @play.autocomplete('query')
-async def query_autocomplete(ctx: discord.Interaction, query: str):
-    return await query_autocomplete_def(ctx, query)
+async def play_autocomplete(ctx: discord.Interaction, current: str):
+    return await query_autocomplete_def(ctx, current, include_youtube=True)
+
+@radio_tunein_command.autocomplete('radio')
+async def radio_tunein_autocomplete(ctx: discord.Interaction, current: str):
+    return await tunein_autocomplete_def(ctx, current)
+
+@radio_garden_command.autocomplete('radio')
+async def radio_garden_autocomplete(ctx: discord.Interaction, current: str):
+    return await garden_autocomplete_def(ctx, current)
+
+
+
+# @queue_command.autocomplete('query')
+# @next_up.autocomplete('query')
+# @play.autocomplete('query')
+# async def query_autocomplete(ctx: discord.Interaction, query: str):
+#     return await query_autocomplete_def(ctx, query)
 
 
 # --------------------------------------------------- APP --------------------------------------------------------------

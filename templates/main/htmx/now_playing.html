@@ -14,15 +14,14 @@
         {% set renew = guild.now_playing.renew(glob) %}
         <div class="q-div q-history">
           {% if guild.now_playing.radio_info is not none %}
-            {% set radio_info = get_radio_info(glob, guild.now_playing.radio_info['name']) %}
             <div class="q-item0 q-div div-radio3">
-              <img loading="lazy" class="q-img" src="{{ radio_info.picture }}" alt="thumbnail">
+              <img loading="lazy" class="q-img" src="{{ guild.now_playing.radio_info['now_picture'] }}" alt="thumbnail">
               <div class="q-item1 q-wd">
                 <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer"
-                                     href="{{ guild.now_playing.url }}">{{ radio_info.title }}</a>
+                                     href="{{ guild.now_playing.url }}">{{ guild.now_playing.radio_info['title'] }}</a>
                 </p>
                 <p class="q-text"><a class="q-2" target="_blank" rel="noopener noreferrer"
-                                     href="{{ guild.now_playing.channel_link }}">{{ radio_info.channel_name }}</a>
+                                     href="{{ guild.now_playing.channel_link }}">{{ guild.now_playing.radio_info['artist'] }}</a>
                 </p>
               </div>
             </div>

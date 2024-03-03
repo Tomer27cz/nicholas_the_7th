@@ -20,3 +20,4 @@ pytz
 uWSGI
 SQLAlchemy
 alembic
+xmltodict

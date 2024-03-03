@@ -93,6 +93,7 @@ class Options(Base):
     buffer = Column(Integer, default=600)
     history_length = Column(Integer, default=20)
     last_updated = Column(Integer, default=int(time()))
+    player_id = Column(Integer, default=0)
 
     def __init__(self, guild_id: int, json_data: dict):
         self.id: int = guild_id  # id of the guild
@@ -108,6 +109,7 @@ class Options(Base):
         self.buffer: int = json_data.get('buffer', 600)  # how many seconds of nothing playing before bot disconnects | 600 = 10min
         self.history_length: int = json_data.get('history_length', 20)  # how many songs are stored in the history
         self.last_updated: int = json_data.get('last_updated', int(time()))  # when was the last time any of the guilds data was updated
+        self.player_id: int = json_data.get('player_id', 0)  # ID of the player
 
 class GuildData(Base):
     """

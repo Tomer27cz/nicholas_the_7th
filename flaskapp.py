@@ -164,7 +164,6 @@ def inject_data():
                 vars=vars,
                 dict=dict,
                 txt=txt,
-                get_radio_info=get_radio_info,
                 get_username=get_username,
                 struct_to_time=struct_to_time,
                 convert_duration=convert_duration,
@@ -343,7 +342,7 @@ async def guild_page(guild_id, key):
                            npd=npd,
                            bot_status=get_guild_bot_status(int(guild_id)),
                            last_updated=int(time()),
-                           radios=list(radio_dict.values())
+                           radios=list(list(radio_dict.values())[:-1])
                            )
 
 # ---------------------------------------------------- HTMX ------------------------------------------------------------
@@ -437,7 +436,7 @@ async def htmx_queue(guild_id):
         if 'radio-checkbox' in keys:
             var = request.args.get('var')
             radio_name = None
-            for radio in radio_dict.values():
+            for radio in list(radio_dict.values())[:-1]:
                 if radio['id'] == str(var) or int(radio['id']) == int(var) or radio['name'] == var:
                     radio_name = radio['name']
                     break
@@ -511,7 +510,7 @@ async def htmx_modal(guild_id):
     if modal_type == 'addToModal':
         return render_template('main/htmx/modals/addToModal.html', gi=int(guild_id), key=key)
     if modal_type == 'addToModalRadio':
-        return render_template('main/htmx/modals/addToModalRadio.html', gi=int(guild_id), radios=list(radio_dict.values()), key=key)
+        return render_template('main/htmx/modals/addToModalRadio.html', gi=int(guild_id), radios=list(list(radio_dict.values())[:-1]), key=key)
     if modal_type == 'joinModal':
         return render_template('main/htmx/modals/joinModal.html', gi=int(guild_id), guild=guild_object, key=key)
     if modal_type == 'loadModal':

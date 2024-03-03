@@ -59,6 +59,8 @@ def log(ctx: Union[dc_commands.Context, WebData, None, int], text_data, options:
     :return: None
     """
     def readable_dict(_dict: dict) -> str:
+        if not _dict:
+            return ''
         ignored_keys = ['ctx', 'glob', 'web_data']
 
         out_str = ''

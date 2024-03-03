@@ -1,3 +1,5 @@
+from utils.log import log
+
 from os import listdir
 import json
 
@@ -18,8 +20,13 @@ class GlobalVars:
         self.sc = sc_var
 
 
-with open(f'db/radio.json', 'r', encoding='utf-8') as file:
-    radio_dict = json.load(file)
+try:
+    with open(f'db/radios.json', 'r', encoding='utf-8') as file:
+        radio_dict = json.load(file)
+except Exception as e:
+    log(None, f"Error loading radio_dict: {e}", log_type="error")
+    with open(f'db/radio.json', 'w', encoding='utf-8') as file:
+        radio_dict = json.load(file)
 
 with open(f'db/languages.json', 'r', encoding='utf-8') as file:
     languages_dict = json.load(file)
@@ -35,7 +42,7 @@ def load_sound_effects():
     try:
         se = listdir(f'{config.PARENT_DIR}sound_effects')
         for file_index, file_val in enumerate(se):
-            se[file_index] = se[file_index][:len(file_val) - 4]
+            se[file_index] = se[file_index]  # [:len(file_val) - 4]
     except FileNotFoundError:
         return ["No sound effects found"]
     return se

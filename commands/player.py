@@ -11,39 +11,52 @@ from utils.log import log
 from utils.translate import txt
 from utils.save import update, push_update
 from utils.discord import now_to_history, create_embed, to_queue
-from utils.source import url_checker
 from utils.video_time import set_started, set_new_time
-from utils.global_vars import sound_effects, radio_dict, GlobalVars
-from utils.radio_garden import get_radio_garden_info
+from utils.global_vars import sound_effects, GlobalVars
+from utils.url import get_url_type, command_for_type
 
 import classes.view
 import commands.voice
 import commands.queue
+import commands.autocomplete
 
 from discord import app_commands
 from os import path
 import discord
 import asyncio
+import random
 import sys
 import traceback
 import typing
 
 import config
 
-async def play_def(ctx, glob: GlobalVars, url=None, force=False, mute_response=False, after=False) -> ReturnData:
+async def play_def(ctx, glob: GlobalVars,
+                   url=None,
+                   force: bool=False,
+                   mute_response: bool=False,
+                   after: bool=False,
+                   no_search: bool=False,
+                   embed: bool=None,
+                   radio: bool=None,
+                   player_id: int=None,
+                   no_after: bool=None
+                   ) -> ReturnData:
     log(ctx, 'play_def', options=locals(), log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
     db_guild = guild(glob, guild_id)
-    response = ReturnData(False, txt(guild_id, glob, 'Unknown error'))
 
+    response = ReturnData(False, txt(guild_id, glob, 'Unknown error'))
     notif = f' -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={db_guild.data.key})'
 
-    if after and db_guild.options.stopped:
-        log(ctx, "play_def -> stopped play next loop")
-        if not db_guild.options.is_radio:
-            now_to_history(glob, guild_id)
+    if after and db_guild.options.stopped or after and player_id != db_guild.options.player_id or after and no_after is True:
+        log(ctx, f"play_def -> loop stopped (stopped: {db_guild.options.stopped}, id: {player_id}, db_id: {db_guild.options.player_id}, no_after: {no_after})", log_type='function')
+        # if not db_guild.options.is_radio:
+        #     now_to_history(glob, guild_id)
         return ReturnData(False, txt(guild_id, glob, "Stopped play next loop"))
 
+    p_id = player_id if player_id else random.choice([i for i in range(0, 9) if i not in [db_guild.options.player_id]])
+    db_guild.options.player_id = p_id
     voice = guild_object.voice_client
 
     if not voice:
@@ -66,7 +79,7 @@ async def play_def(ctx, glob: GlobalVars, url=None, force=False, mute_response=F
                 force = True
 
         position = 0 if force else None
-        response = await commands.queue.queue_command_def(ctx, glob, url=url, position=position, mute_response=True, force=force, from_play=True)
+        response = await commands.queue.queue_command_def(ctx, glob, url=url, position=position, mute_response=True, force=force, from_play=True, no_search=no_search)
 
         if not response or not response.response:
             if not mute_response:
@@ -80,9 +93,6 @@ async def play_def(ctx, glob: GlobalVars, url=None, force=False, mute_response=F
             return response
 
     if not guild_object.voice_client:
-        # if not is_ctx:
-        #     if not ctx.interaction.response.is_done():
-        #         await ctx.defer()
         join_response = await commands.voice.join_def(ctx, glob, None, True)
         voice = guild_object.voice_client
         if not join_response.response:
@@ -91,7 +101,7 @@ async def play_def(ctx, glob: GlobalVars, url=None, force=False, mute_response=F
             return join_response
 
     if voice.is_playing():
-        if not db_guild.options.is_radio and not force:
+        if not force:  # not db_guild.options.is_radio and
             if url:
                 if response.video is not None:
                     message = f'{txt(guild_id, glob, "**Already playing**, added to queue")}: [`{response.video.title}`](<{response.video.url}>) {notif}'
@@ -110,9 +120,9 @@ async def play_def(ctx, glob: GlobalVars, url=None, force=False, mute_response=F
             return ReturnData(False, message)
 
         voice.stop()
-        db_guild.options.stopped = True
-        db_guild.options.is_radio = False
-        glob.ses.commit()
+        # db_guild.options.stopped = True
+        # db_guild.options.is_radio = False if radio is False else True
+        # glob.ses.commit()
 
     if voice.is_paused():
         return await commands.voice.resume_def(ctx, glob)
@@ -124,19 +134,24 @@ async def play_def(ctx, glob: GlobalVars, url=None, force=False, mute_response=F
         now_to_history(glob, guild_id)
         return ReturnData(False, message)
 
+    db_guild = guild(glob, guild_id)
     video = db_guild.queue[0]
     now_to_history(glob, guild_id)
 
-    if video.class_type not in ['Video', 'Probe', 'SoundCloud']:
-        glob.ses.query(video.__class__).filter_by(id=video.id).delete()
-        glob.ses.commit()
-        if video.class_type == 'Radio':
-            return await radio_def(ctx, glob, video.title, video_from_queue=video, radio_type='czech')
-        if video.class_type == 'RadioGarden':
-            return await radio_def(ctx, glob, video.title, video_from_queue=video, radio_type='garden')
-        if video.class_type == 'Local':
-            return await ps_def(ctx, glob, video.local_number)
+    stream_url = video.url
+    if video.class_type in ['RadioCz', 'RadioGarden', 'RadioTuneIn']:
+        stream_url = video.radio_info['stream']
+        embed = True if embed is None else embed
 
+    # elif video.class_type == 'Local':
+    #     glob.ses.query(video.__class__).filter_by(id=video.id).delete()
+    #     glob.ses.commit()
+    #     return await ps_def(ctx, glob, video.local_number)
+
+    elif video.class_type in ['Video', 'Probe', 'SoundCloud', 'Local']:
+        pass
+
+    else:
         message = txt(guild_id, glob, "Unknown type")
         if not mute_response:
             await ctx.reply(message)
@@ -147,8 +162,8 @@ async def play_def(ctx, glob: GlobalVars, url=None, force=False, mute_response=F
         glob.ses.commit()
 
     try:
-        source, chapters = await GetSource.create_source(glob, guild_id, video.url, source_type=video.class_type, video_class=video)
-        voice.play(source, after=lambda e: asyncio.run_coroutine_threadsafe(play_def(ctx, glob, after=True), glob.bot.loop))
+        source, chapters = await GetSource.create_source(glob, guild_id, stream_url, source_type=video.class_type, video_class=video)
+        voice.play(source, after=lambda e: asyncio.run_coroutine_threadsafe(play_def(ctx, glob, after=True, player_id=p_id, no_after=no_after), glob.bot.loop))
 
         await commands.voice.volume_command_def(ctx, glob, db_guild.options.volume * 100, False, True)
 
@@ -173,7 +188,7 @@ async def play_def(ctx, glob: GlobalVars, url=None, force=False, mute_response=F
         message = f'{txt(guild_id, glob, "Now playing")} [`{video.title}`](<{video.url}>) {notif}'
         view = classes.view.PlayerControlView(ctx, glob)
 
-        if response_type == 'long':
+        if response_type == 'long' or embed:
             if not mute_response:
                 embed = create_embed(glob, video, txt(guild_id, glob, "Now playing"), guild_id)
                 if options.buttons:
@@ -203,159 +218,50 @@ async def play_def(ctx, glob: GlobalVars, url=None, force=False, mute_response=F
         await ctx.reply(message)
         return ReturnData(False, message)
 
-async def radio_def(ctx, glob: GlobalVars, query, video_from_queue=None, radio_type: typing.Literal['czech', 'garden']='czech') -> ReturnData:
-    """
-    Play radio from radio.garden
-    :param glob: GlobalVars
-    :param ctx: Context
-    :param query: str - czech radio id or radio.garden url
-    :param video_from_queue: VideoClass child
-    :param radio_type: 'czech' or 'garden'
-    :return: ReturnData
-    """
-    log(ctx, 'radio_def', options=locals(), log_type='function', author=ctx.author)
-    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
-
-    # noinspection PyUnresolvedReferences
-    if is_ctx:
-        if not ctx.interaction.response.is_done():
-            await ctx.defer()
-
-    # Check if radio_type is correct
-    if radio_type not in ['czech', 'garden']:
-        message = txt(guild_id, glob, "Unknown radio type")
-        await ctx.reply(message)
-        return ReturnData(False, message)
-
-    if radio_type == 'czech' and not video_from_queue:
-        if query not in radio_dict.keys():
-            return await radio_def(ctx, glob, query, radio_type='garden')
-
-        # Check if radio still exists
-        response, code = await url_checker(radio_dict[query]['stream'])
-        if not response:
-            message = txt(guild_id, glob, "Radio **not available**")
-            await ctx.reply(message)
-            return ReturnData(False, message)
-
-        url = radio_dict[query]['stream']
-        video = NowPlaying(glob, 'Radio', author_id, guild_id, radio_info=dict(name=query), stream_url=url)
-
-    elif radio_type == 'garden' and not video_from_queue:
-        resp = await get_radio_garden_info(query)
-        radio_info: RadioGardenInfo = resp[1]
-        if not resp[0]:
-            message = txt(guild_id, glob, "Radio **not available**")
-            await ctx.reply(message)
-            return ReturnData(False, message)
-
-        url = radio_info['stream']
-        video = NowPlaying(glob, 'RadioGarden', author_id, guild_id, url=f"https://radio.garden{radio_info['url']}",
-                           title=radio_info['title'], channel_name=radio_info['title'], channel_link=radio_info['website'],
-                           stream_url=radio_info['stream'])
-
-    elif video_from_queue:
-        # Translate video to NowPlaying class
-        video = to_now_playing_class(glob, video_from_queue)
-        url = video.stream_url
-
-    else:
-        message = txt(guild_id, glob, "Unknown radio type")
-        await ctx.reply(message)
-        return ReturnData(False, message)
-
-    # Connect to voice channel
-    if not guild_object.voice_client:
-        response = await commands.voice.join_def(ctx, glob, None, True)
-        if not response.response:
-            return response
-
-    db_guild = guild(glob, guild_id)
-
-    # Set is_radio to True
-    db_guild.options.is_radio = True
-    glob.ses.commit()
-
-    # Check if something is playing and stop it
-    if guild_object.voice_client.is_playing():
-        await commands.voice.stop_def(ctx, glob, mute_response=True)
-
-    # Get source
-    source, chapters = await GetSource.create_source(glob, guild_id, url, source_type=video.class_type, video_class=video)
-    set_started(glob, video, chapters=chapters, guild_object=guild_object)
-
-    # Play
-    guild_object.voice_client.play(source)
-
-    # Set volume
-    await commands.voice.volume_command_def(ctx, glob, db_guild.options.volume * 100, False, True)
-
-    # Response
-    embed = create_embed(glob, video, txt(guild_id, glob, "Now playing"), guild_id)
-    if db_guild.options.buttons:
-        view = classes.view.PlayerControlView(ctx, glob)
-        view.message = await ctx.reply(embed=embed, view=view)
-    else:
-        await ctx.reply(embed=embed)
-
-    update(glob)
-
-    return ReturnData(True, txt(guild_id, glob, "Radio **started**"))
-
-async def ps_def(ctx, glob: GlobalVars, effect_number: app_commands.Range[int, 1, len(sound_effects)], mute_response: bool = False) -> ReturnData:
+async def local_def(ctx, glob: GlobalVars, effect: str, mute_response: bool = False) -> ReturnData:
     """
     Play sound effect
     :param glob: GlobalVars
     :param ctx: Context
-    :param effect_number: index of sound effect (show all sound effects with sound_effects_def)
+    :param effect: str - Sound effect name or number
     :param mute_response: bool - Should bot response be muted
     :return: ReturnData
     """
     log(ctx, 'ps_def', options=locals(), log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
-    db_guild = guild(glob, guild_id)
-    db_guild.options.is_radio = False
-    glob.ses.commit()
-    try:
-        name = sound_effects[effect_number]
-    except IndexError:
-        message = txt(guild_id, glob, "Number **not in list** (use `/sound` to get all sound effects)")
+
+    url_type, url = get_url_type(effect)
+    if url_type not in ['Local', 'String']:
+        message = txt(guild_id, glob, "Wrong command! Try ") + f"`/{command_for_type(url_type)}`"
         if not mute_response:
-            await ctx.reply(message, ephemeral=True)
+            await ctx.reply(message)
         return ReturnData(False, message)
 
-    filename = f"{config.PARENT_DIR}sound_effects/{name}.mp3"
-    if path.exists(filename):
-        source, chapters = await GetSource.create_source(glob, guild_id, filename, source_type='Local')
-    else:
-        filename = f"{config.PARENT_DIR}sound_effects/{name}.wav"
-        if path.exists(filename):
-            source, chapters = await GetSource.create_source(glob, guild_id, filename, source_type='Local')
-        else:
-            message = txt(guild_id, glob, "No such file/website supported")
-            if not mute_response:
-                await ctx.reply(message, ephemeral=True)
-            return ReturnData(False, message)
+    if url_type == 'Local':
+        return await play_def(ctx, glob, url, force=True, no_search=True, mute_response=mute_response, no_after=True)
 
-    if not guild_object.voice_client:
-        join_response = await commands.voice.join_def(ctx, glob, None, True)
-        if not join_response.response:
-            return join_response
+    try:
+        code = int(effect)
+        if 1 <= code <= len(sound_effects):
+            return await local_def(ctx, glob, f'_local:{code}', mute_response)
+    except (ValueError, TypeError):
+        pass
 
-    stop_response = await commands.voice.stop_def(ctx, glob, mute_response=True)
-    if not stop_response.response:
-        return stop_response
+    effects: list[discord.app_commands.Choice] = await commands.autocomplete.local_autocomplete_def(None, effect, 5)
+    if not effects:
+        message = txt(guild_id, glob, "Effect **not found**")
+        if not mute_response:
+            await ctx.reply(message)
+        return ReturnData(False, message)
 
-    video = NowPlaying(glob, 'Local', author_id, guild_id, title=name, duration='Unknown', local_number=effect_number, stream_url=filename)
-    set_started(glob, video, guild_object, chapters=chapters)
+    view = classes.view.OptionView(ctx, glob, [effect.value for effect in effects], 'Local')
 
-    voice = guild_object.voice_client
-    voice.play(source)
-    await commands.voice.volume_command_def(ctx, glob, db_guild.options.volume * 100, False, True)
+    message = txt(guild_id, glob, "Choose effect")
+    for index, effect in enumerate(effects):
+        message += f"\n**{index + 1}#** `{effect.name}`"
 
-    message = txt(guild_id, glob, "Playing sound effect number") + f" `{effect_number}`"
     if not mute_response:
-        await ctx.reply(message, ephemeral=True)
+        view.message = await ctx.reply(message, view=view)
     return ReturnData(True, message)
 
 async def now_def(ctx, glob: GlobalVars, ephemeral: bool = False) -> ReturnData:

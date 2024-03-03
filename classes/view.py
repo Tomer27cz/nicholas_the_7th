@@ -2,9 +2,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from classes.data_classes import ReturnData
     from utils.global_vars import GlobalVars
     from classes.typed_dictionaries import VideoInfo
+
+from classes.data_classes import ReturnData
 
 from database.guild import guild
 
@@ -15,6 +16,7 @@ from utils.url import get_playlist_from_url
 
 import commands.player
 import commands.queue
+import commands.radio
 
 from discord.ui import View
 from discord.ext import commands as dc_commands
@@ -128,8 +130,12 @@ class SearchOptionView(View):
             self.glob = glob
             self.data = search_data
             self.message = None
+            self.completed = False
 
     async def on_timeout(self) -> None:
+        if self.completed:
+            return
+
         for item in self.children:
             item.disabled = True
 
@@ -148,6 +154,8 @@ class SearchOptionView(View):
 
         if self.from_play:
             await commands.player.play_def(self.ctx, self.glob)
+
+        self.completed = True
 
     # noinspection PyUnusedLocal
     @discord.ui.button(emoji=react_dict['1'], style=discord.ButtonStyle.blurple, custom_id='1')
@@ -225,3 +233,82 @@ class PlaylistOptionView(View):
 
         if self.from_play:
             await commands.player.play_def(self.ctx, self.glob)
+
+class OptionView(View):
+    def __init__(self, ctx, glob: GlobalVars, options: list[int], option_type: str):
+        super().__init__(timeout=180)
+
+        if isinstance(ctx, dc_commands.Context):
+            self.ctx = ctx
+            self.glob = glob
+            self.guild = ctx.guild
+            self.guild_id = ctx.guild.id
+            self.options = options
+            self.option_type = option_type
+            self.message = None
+            self.completed = False
+
+        if len(options) == 0:
+            for item in self.children:
+                item.disabled = True
+
+        for index, item in enumerate(self.children):
+            if index+1 > len(options):
+                item.disabled = True
+
+    async def on_timeout(self) -> None:
+        if self.completed:
+            return
+
+        for item in self.children:
+            item.disabled = True
+
+        if self.message:
+            await self.message.edit(view=self, content=self.message.content+"\n**Interaction Timed Out**")
+
+    # noinspection PyUnusedLocal
+    async def do_callback(self, interaction, button, num):
+        if self.options[num-1] == 0:
+            await interaction.response.edit_message(content=txt(self.guild_id, self.glob, "Cancelled"), view=None)
+            return
+
+        if self.option_type == 'RadioCz':
+            ret: ReturnData = await commands.radio.radio_cz_def(self.ctx, self.glob, f"{self.options[num-1]}", mute_response=True)
+        elif self.option_type == 'RadioGarden':
+            ret: ReturnData = await commands.radio.radio_garden_def(self.ctx, self.glob, f"{self.options[num-1]}", mute_response=True)
+        elif self.option_type == 'RadioTuneIn':
+            ret: ReturnData = await commands.radio.radio_tunein_def(self.ctx, self.glob, f"{self.options[num-1]}", mute_response=True)
+        elif self.option_type == 'Local':
+            ret: ReturnData = await commands.player.local_def(self.ctx, self.glob, f"{self.options[num-1]}", mute_response=True)
+        else:
+            ret: ReturnData = ReturnData(False, "Error")
+
+        update(self.glob)
+        await interaction.response.edit_message(content=ret.message, view=None)
+
+        self.completed = True
+
+    # noinspection PyUnusedLocal
+    @discord.ui.button(emoji=react_dict['1'], style=discord.ButtonStyle.blurple, custom_id='1')
+    async def callback_1(self, interaction, button):
+        await self.do_callback(interaction, button, 1)
+
+    # noinspection PyUnusedLocal
+    @discord.ui.button(emoji=react_dict['2'], style=discord.ButtonStyle.blurple, custom_id='2')
+    async def callback_2(self, interaction, button):
+        await self.do_callback(interaction, button, 2)
+
+    # noinspection PyUnusedLocal
+    @discord.ui.button(emoji=react_dict['3'], style=discord.ButtonStyle.blurple, custom_id='3')
+    async def callback_3(self, interaction, button):
+        await self.do_callback(interaction, button, 3)
+
+    # noinspection PyUnusedLocal
+    @discord.ui.button(emoji=react_dict['4'], style=discord.ButtonStyle.blurple, custom_id='4')
+    async def callback_4(self, interaction, button):
+        await self.do_callback(interaction, button, 4)
+
+    # noinspection PyUnusedLocal
+    @discord.ui.button(emoji=react_dict['5'], style=discord.ButtonStyle.blurple, custom_id='5')
+    async def callback_5(self, interaction, button):
+        await self.do_callback(interaction, button, 5)

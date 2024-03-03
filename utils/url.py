@@ -1,4 +1,5 @@
 import re
+from typing import Literal
 
 def extract_yt_id(url_string: str) -> str or None:
     """
@@ -57,12 +58,40 @@ def get_first_url(string: str) -> str or None:
         return None
     return re_search[0]
 
-def get_url_type(string: str):
+def get_url_type(string: str) -> tuple[Literal['YouTube Playlist',
+                                               'YouTube Playlist Video',
+                                               'YouTube Video',
+                                               'Spotify Playlist',
+                                               'Spotify Album',
+                                               'Spotify Track',
+                                               'Spotify URL',
+                                               'SoundCloud URL',
+                                               'RadioGarden',
+                                               'RadioTuneIn',
+                                               'RadioCz',
+                                               'Local',
+                                               'String with URL',
+                                               'String'], str]:
     """
     Returns type of url
 
     :param string: str - string to search in
-    :return: ('YouTube Playlist', 'YouTube Playlist Video', 'YouTube Video', 'Spotify Playlist', 'Spotify Album', 'Spotify Track', 'RadioGarden', 'String'), url: str
+    :return: (
+    'YouTube Playlist',
+    'YouTube Playlist Video',
+    'YouTube Video',
+    'Spotify Playlist',
+    'Spotify Album',
+    'Spotify Track',
+    'Spotify URL',
+    'SoundCloud URL',
+    'RadioGarden',
+    'RadioTuneIn',
+    'RadioCz',
+    'Local',
+    'String with URL',
+    'String'
+    ), url: str
     """
     first_url = get_first_url(string)
     yt_id = extract_yt_id(string)
@@ -120,7 +149,45 @@ def get_url_type(string: str):
             return 'String', string
         return 'RadioGarden', extracted_url
 
+    if string.startswith('_tunein:'):
+        return 'RadioTuneIn', string
+
+    if string.startswith('_radia_cz:'):
+        return 'RadioCz', string
+
+    if string.startswith('_local:'):
+        return 'Local', string
+
     if first_url is not None:
         return 'String with URL', first_url
 
     return 'String', string
+
+def command_for_type(url_type: str) -> str:
+    """
+    Returns command for url type
+    :param url_type: str - url type
+    :return: str - command
+    """
+    if url_type in ['YouTube Playlist', 'YouTube Playlist Video', 'YouTube Video']:
+        return 'play'
+
+    if url_type in ['Spotify Playlist', 'Spotify Album', 'Spotify Track', 'Spotify URL']:
+        return 'play'
+
+    if url_type in ['SoundCloud URL', 'String with URL']:
+        return 'play'
+
+    if url_type == "Local":
+        return "ps"
+
+    if url_type == "RadioCz":
+        return "radio cz"
+
+    if url_type == "RadioTuneIn":
+        return "radio tunein"
+
+    if url_type == "RadioGarden":
+        return "radio garden"
+
+    return 'search'

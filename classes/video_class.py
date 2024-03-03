@@ -16,11 +16,10 @@ import utils.save
 
 from sclib import Track
 from time import time
-from bs4 import BeautifulSoup
 from youtubesearchpython import Video
 
-# import aiohttp
 import requests
+import xmltodict
 
 import config
 
@@ -41,6 +40,8 @@ def get_video_data(url: str) -> (dict, str) or (None, str):
 
 # Video Class Functions
 
+# class_type: Literal['Video', 'RadioCz', 'RadioGarden', 'RadioTuneIn', 'Local', 'Probe', 'SoundCloud']
+
 def video_class_init(self,
                      glob: GlobalVars,
                      class_type: str,
@@ -58,7 +59,8 @@ def video_class_init(self,
                      played_duration: [TimeSegment] = None,
                      chapters: [VideoChapter] = None,
                      stream_url: str = None,
-                     discord_channel: DiscordChannelInfo = None
+                     discord_channel: DiscordChannelInfo = None,
+                     only_set: bool = False
                      ):
     self.class_type = class_type
     self.author = author
@@ -75,6 +77,9 @@ def video_class_init(self,
     self.played_duration = played_duration
     self.chapters = chapters
     self.discord_channel = discord_channel
+    if only_set:
+        self.stream_url = stream_url
+        return
 
     if created_at is None:
         self.created_at = int(time())
@@ -82,6 +87,28 @@ def video_class_init(self,
     if played_duration is None:
         # [{'start': {'epoch': None, 'time_stamp': None},'end': {'epoch': None, 'time_stamp': None}}]
         self.played_duration = []
+
+    if self.class_type in ['RadioCz', 'RadioGarden', 'RadioTuneIn']:
+        if self.radio_info is None:
+            raise ValueError("radio_info required")
+
+        provider_name_dict = {'radia_cz': 'radia.cz', 'tunein': 'tunein.com', 'garden': 'radio.garden'}
+        provider_url_dict = {'radia_cz': 'station_website', 'tunein': 'url', 'garden': 'url'}
+
+        provider_name = provider_name_dict.get(self.radio_info['type'], 'Unknown')
+        # noinspection PyTypedDict
+        provider_url = self.radio_info[provider_url_dict.get(self.radio_info['type'], 'url')]
+
+        self.url = self.radio_info['station_website'] if self.url is None else self.url
+        self.title = self.radio_info['station_name'] if self.title is None else self.title
+        self.picture = self.radio_info['station_picture'] if self.picture is None else self.picture
+        self.duration = 'Stream' if self.duration is None else self.duration
+
+        self.channel_name = provider_name if self.channel_name is None else self.channel_name
+        self.channel_link = provider_url if self.channel_link is None else self.channel_link
+
+        self.stream_url = self.radio_info['stream'] if self.stream_url is None else self.stream_url
+        stream_url = self.radio_info['stream']
 
     if self.class_type == 'Video':
         if url is None:
@@ -98,42 +125,41 @@ def video_class_init(self,
             self.channel_name = video['channel']['name']
             self.channel_link = video['channel']['link']
 
-    elif self.class_type == 'Radio':
-        if radio_info is None:
+    elif self.class_type == 'RadioCz':
+        if self.radio_info is None:
             raise ValueError("radio_info required")
 
-        if not isinstance(radio_info, dict):
-            raise ValueError("radio_info must be a dict")
+        if self.radio_info['station_name'] is None:
+            raise ValueError("station_name required")
 
-        if 'name' not in radio_info.keys():
-            raise ValueError("radio_info must contain name")
+        self.radio_info['station_website'] = self.radio_info.get('station_website', radio_dict[self.radio_info['id']]['link'])
+        self.radio_info['url'] = self.radio_info.get('url', radio_dict[self.radio_info['id']]['nowplay'])
+        self.radio_info['station_picture'] = self.radio_info.get('station_picture', radio_dict[self.radio_info['id']]['logo'])
+        self.radio_info['stream'] = self.radio_info.get('stream', radio_dict[self.radio_info['id']]['streams']['stream'][0]['url'] if type(radio_dict[self.radio_info['id']]['streams']['stream']) is list else radio_dict[self.radio_info['id']]['streams']['stream']['url'])
 
-        if any(v is None for v in [url, title, picture, duration, channel_name, channel_link]):
-            radio_name = radio_info['name']
-            self.url = radio_dict[radio_name]['url']
-            self.title = radio_dict[radio_name]['name']
-            self.picture = f'{config.WEB_URL}/static/radio_png/png_radio_{radio_dict[radio_name]["id"]}.png'
-            self.duration = 'Stream'
-            self.channel_name = radio_dict[radio_name]['type']
-            self.channel_link = self.url
-            self.radio_info['website'] = radio_dict[radio_name]['type']
+        self.url = self.radio_info['station_website'] if self.url is None else self.url
+        self.title = self.radio_info['station_name'] if self.title is None else self.title
+        self.picture = self.radio_info['station_picture'] if self.picture is None else self.picture
+        self.stream_url = self.radio_info['stream'] if self.stream_url is None else self.stream_url
+        stream_url = self.radio_info['stream']
 
         video_class_renew(self, glob, from_init=True)
 
     elif self.class_type == 'RadioGarden':
-        if url is None:
-            raise ValueError("URL is required")
-        if title is None:
-            raise ValueError("Title is required")
-        if channel_name is None:
-            raise ValueError("Channel name is required")
-        if channel_link is None:
-            raise ValueError("Channel link is required")
-        if stream_url is None:
-            raise ValueError("Stream URL is required")
+        if self.radio_info is None:
+            raise ValueError("radio_info required")
 
-        self.picture = 'https://radio.garden/icons/favicon.png'
-        self.duration = 'Stream'
+        self.radio_info['station_picture'] = self.radio_info.get('station_picture', 'https://radio.garden/icons/favicon.png')
+        self.picture = self.radio_info['station_picture'] if self.picture is None else self.picture
+
+    elif self.class_type == 'RadioTuneIn':
+        if self.radio_info is None:
+            raise ValueError("radio_info required")
+
+        self.radio_info['station_picture'] = self.radio_info.get('station_picture', 'https://tunein.com/favicon.ico')
+        self.picture = self.radio_info['station_picture'] if self.picture is None else self.picture
+
+        video_class_renew(self, glob, from_init=True)
 
     elif self.class_type == 'Local':
         if local_number is None:
@@ -174,15 +200,67 @@ def video_class_init(self,
     self.stream_url = stream_url
 
 def video_class_renew(self, glob: GlobalVars, from_init: bool = False):
-    if self.class_type == 'Radio':
-        radio_info_class = glob.ses.query(RadioInfo).filter(RadioInfo.name == self.radio_info['name']).first()
-        if radio_info_class is None:
-            radio_info_class = RadioInfo(radio_id=radio_dict[self.radio_info['name']]['id'])
-            glob.ses.add(radio_info_class)
-            glob.ses.commit()
+    if self.class_type not in ['RadioCz', 'RadioGarden', 'RadioTuneIn']:
+        return
 
-        if int(time()) - radio_info_class.last_update > 10 or from_init:
-            radio_info_class.update()
+    if self.radio_info is None:
+        return
+
+    ri: RadioInfoDict = self.radio_info
+
+    try:
+        if int(time()) - int(ri['last_update']) < 10 and not from_init:
+            return
+    except (ValueError, TypeError):
+        pass
+
+    if ri['type'] == 'radia_cz':
+        resp = requests.get(ri['url'])
+        resp.encoding = 'utf-8'
+        xml_dict: RadiosCzNow = xmltodict.parse(resp.text)
+
+        now_picture = None
+        if xml_dict['NowPlay']['Item']['Images'] is not None:
+            if type(xml_dict['NowPlay']['Item']['Images']['Image']) is list:
+                now_picture = xml_dict['NowPlay']['Item']['Images']['Image'][0]['#text']
+            else:
+                now_picture = xml_dict['NowPlay']['Item']['Images']['Image']['#text']
+
+        now_title = None
+        if xml_dict['NowPlay']['Item']['Song'] is not None:
+            if type(xml_dict['NowPlay']['Item']['Song']) is dict:
+                now_title = xml_dict['NowPlay']['Item']['Song']['#text']
+            else:
+                now_title = xml_dict['NowPlay']['Item']['Song']
+
+        now_artist = None
+        if xml_dict['NowPlay']['Item']['Artist'] is not None:
+            if type(xml_dict['NowPlay']['Item']['Artist']) is dict:
+                now_artist = xml_dict['NowPlay']['Item']['Artist']['#text']
+            else:
+                now_artist = xml_dict['NowPlay']['Item']['Artist']
+
+        ri['now_title'] = now_title
+        ri['now_picture'] = now_picture
+        ri['now_artist'] = now_artist
+
+    elif ri['type'] == 'garden':
+        pass
+
+    elif ri['type'] == 'tunein':
+        resp = requests.get(f'https://opml.radiotime.com/Describe.ashx?id={ri["id"]}&render=json').json()
+        r = resp['body'][0]
+
+        ri['station_name'] = r['name']
+        ri['station_picture'] = r['logo']
+        ri['station_website'] = r['url']
+
+        ri['now_title'] = r['current_song'] if r['current_song'] is not None else None
+        ri['now_picture'] = r['logo'] if r['current_artist_art'] is None else r['current_artist_art'] if r['current_album_art'] is None else r['current_album_art']
+        ri['now_artist'] = r['current_artist'] if r['current_artist'] is not None else None
+
+    ri['last_update'] = int(time())
+    self.radio_info = ri
 
 def video_class_current_chapter(self, glob: GlobalVars):
     if self.played_duration is None:
@@ -231,76 +309,6 @@ def video_class_time(self, glob: GlobalVars) -> str:
         return '0:00 / ' + convert_duration(duration)
 
     return f'{convert_duration(elapsed_time)} / {convert_duration(duration)}'
-
-class RadioInfo(Base):
-    """
-    Data class for storing radio information
-    """
-    __tablename__ = 'radio_info'
-
-    id = Column(Integer, primary_key=True)
-    name = Column(String)
-    url = Column(String)
-    website = Column(String)
-    picture = Column(String)
-    channel_name = Column(String)
-    title = Column(String)
-    last_update = Column(Integer)
-
-    def __init__(self, radio_id: int):
-        self.id: int = radio_id
-        self.url: str = [radio['url'] for radio in radio_dict.values() if radio['id'] == radio_id][0]
-        self.website: str = [radio['type'] for radio in radio_dict.values() if radio['id'] == radio_id][0]
-        self.name: str = [radio['name'] for radio in radio_dict.values() if radio['id'] == radio_id][0]
-        self.last_update: int = int(time())
-
-    def update(self) -> None:
-        # unfortunately cannot use aiohttp here
-        # async with aiohttp.ClientSession() as session:
-        #     async with session.get(self.url) as response:
-        #         if self.website == 'radia_cz':
-        #             html = await response.txt()
-        #             soup = BeautifulSoup(html, features="lxml")
-        #             data1 = soup.find('div', attrs={'class': 'interpret-image'})
-        #             data2 = soup.find('div', attrs={'class': 'interpret-info'})
-        #             # if data1 is None or data2 is None:
-        #             #     return None
-        #
-        #             self.picture = data1.find('img')['src']
-        #             self.channel_name = data2.find('div', attrs={'class': 'nazev'}).text.lstrip().rstrip()
-        #             self.title = data2.find('div', attrs={'class': 'song'}).text.lstrip().rstrip()
-        #
-        #         elif self.website == 'actve':
-        #             r = await response.json()
-        #             self.picture = r['coverBase']
-        #             self.channel_name = r['artist']
-        #             self.title = r['title']
-        #
-        #         else:
-        #             raise ValueError("Invalid radio website")
-
-        if self.website == 'radia_cz':
-            html = requests.get(self.url).text
-            soup = BeautifulSoup(html, features="lxml")
-            data1 = soup.find('div', attrs={'class': 'interpret-image'})
-            data2 = soup.find('div', attrs={'class': 'interpret-info'})
-            # if data1 is None or data2 is None:
-            #     return None
-
-            self.picture = data1.find('img')['src']
-            self.channel_name = data2.find('div', attrs={'class': 'nazev'}).text.lstrip().rstrip()
-            self.title = data2.find('div', attrs={'class': 'song'}).text.lstrip().rstrip()
-
-        elif self.website == 'actve':
-            r = requests.get(self.url).json()
-            self.picture = r['coverBase']
-            self.channel_name = r['artist']
-            self.title = r['title']
-
-        else:
-            raise ValueError("Invalid radio website")
-
-        self.last_update = int(time())
 
 # Video Classes
 
@@ -422,7 +430,8 @@ class Queue(Base):
                  played_duration: [TimeSegment] = None,
                  chapters: [VideoChapter] = None,
                  stream_url: str = None,
-                 discord_channel: DiscordChannelInfo = None
+                 discord_channel: DiscordChannelInfo = None,
+                 only_set: bool = False
                  ):
         video_class_init(self,
                          glob,
@@ -441,7 +450,8 @@ class Queue(Base):
                          played_duration=played_duration,
                          chapters=chapters,
                          stream_url=stream_url,
-                         discord_channel=discord_channel)
+                         discord_channel=discord_channel,
+                         only_set=only_set)
 
     def renew(self, glob: GlobalVars, force: bool = False):
         video_class_renew(self, glob, from_init=force)
@@ -497,7 +507,8 @@ class NowPlaying(Base):
                  played_duration: [TimeSegment] = None,
                  chapters: [VideoChapter] = None,
                  stream_url: str = None,
-                 discord_channel: DiscordChannelInfo = None
+                 discord_channel: DiscordChannelInfo = None,
+                 only_set: bool = False
                  ):
         video_class_init(self,
                          glob,
@@ -516,7 +527,8 @@ class NowPlaying(Base):
                          played_duration=played_duration,
                          chapters=chapters,
                          stream_url=stream_url,
-                         discord_channel=discord_channel)
+                         discord_channel=discord_channel,
+                         only_set=only_set)
 
     def renew(self, glob: GlobalVars, force: bool = False):
         video_class_renew(self, glob, from_init=force)
@@ -572,7 +584,8 @@ class History(Base):
                  played_duration: [TimeSegment] = None,
                  chapters: [VideoChapter] = None,
                  stream_url: str = None,
-                 discord_channel: DiscordChannelInfo = None
+                 discord_channel: DiscordChannelInfo = None,
+                 only_set: bool = False
                  ):
         video_class_init(self,
                          glob,
@@ -591,7 +604,8 @@ class History(Base):
                          played_duration=played_duration,
                          chapters=chapters,
                          stream_url=stream_url,
-                         discord_channel=discord_channel)
+                         discord_channel=discord_channel,
+                         only_set=only_set)
 
     def renew(self, glob: GlobalVars, force: bool = False):
         video_class_renew(self, glob, from_init=force)
@@ -650,7 +664,8 @@ class SaveVideo(Base):
                  played_duration: [TimeSegment] = None,
                  chapters: [VideoChapter] = None,
                  stream_url: str = None,
-                 discord_channel: DiscordChannelInfo = None
+                 discord_channel: DiscordChannelInfo = None,
+                 only_set: bool = False
                  ):
         self.save_id = save_id
         video_class_init(self,
@@ -670,7 +685,8 @@ class SaveVideo(Base):
                          played_duration=played_duration,
                          chapters=chapters,
                          stream_url=stream_url,
-                         discord_channel=discord_channel)
+                         discord_channel=discord_channel,
+                         only_set=only_set)
 
     def renew(self, glob: GlobalVars, force: bool = False):
         video_class_renew(self, glob, from_init=force)
@@ -704,7 +720,8 @@ def to_queue_class(glob, _video_class) -> Queue:
         played_duration=_video_class.played_duration,
         chapters=_video_class.chapters,
         stream_url=_video_class.stream_url,
-        discord_channel=_video_class.discord_channel
+        discord_channel=_video_class.discord_channel,
+        only_set=True
     )
 
 def to_now_playing_class(glob, _video_class) -> NowPlaying:
@@ -728,7 +745,8 @@ def to_now_playing_class(glob, _video_class) -> NowPlaying:
         played_duration=_video_class.played_duration,
         chapters=_video_class.chapters,
         stream_url=_video_class.stream_url,
-        discord_channel=_video_class.discord_channel
+        discord_channel=_video_class.discord_channel,
+        only_set=True
     )
 
 def to_history_class(glob, _video_class) -> History:
@@ -752,7 +770,8 @@ def to_history_class(glob, _video_class) -> History:
         played_duration=_video_class.played_duration,
         chapters=_video_class.chapters,
         stream_url=_video_class.stream_url,
-        discord_channel=_video_class.discord_channel
+        discord_channel=_video_class.discord_channel,
+        only_set=True
     )
 
 def to_save_video_class(glob, _video_class, save_id) -> SaveVideo:
@@ -777,5 +796,6 @@ def to_save_video_class(glob, _video_class, save_id) -> SaveVideo:
         played_duration=_video_class.played_duration,
         chapters=_video_class.chapters,
         stream_url=_video_class.stream_url,
-        discord_channel=_video_class.discord_channel
+        discord_channel=_video_class.discord_channel,
+        only_set=True
     )

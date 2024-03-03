@@ -1,7 +1,7 @@
-from youtubesearchpython.__future__ import Playlist, VideosSearch
+import youtubesearchpython.__future__ as ytsp
 from classes.data_classes import ReturnData
 from classes.video_class import Queue
-from classes.typed_dictionaries import VideoInfo, RadioGardenInfo
+from classes.typed_dictionaries import VideoInfo, RadioGardenInfo, RadioInfoDict, TuneInDescribe, RadiosJSON
 import classes.view
 
 from utils.log import log
@@ -11,18 +11,17 @@ from utils.cli import get_url_probe_data
 from utils.discord import to_queue, create_embed, create_search_embed
 from utils.spotify import spotify_album_to_yt_video_list, spotify_playlist_to_yt_video_list, spotify_to_yt_video
 from utils.save import update, push_update
-from utils.convert import convert_duration
-from utils.global_vars import GlobalVars
-from utils.radio_garden import get_radio_garden_info
+from utils.global_vars import GlobalVars, radio_dict, sound_effects
+from utils.radio import get_radio_garden_info, get_tunein_info
 
-from database.guild import guild, clear_queue, guild_queue, guild_history, guild_data_key, guild_options_loop
+from database.guild import guild, clear_queue, guild_data_key
 
 import commands.player
 import commands.voice
 from commands.utils import ctx_check
 
 from typing import Literal
-import discord
+from time import time
 import asyncio
 import random
 from sclib import Track, Playlist
@@ -100,7 +99,7 @@ async def queue_command_def(ctx,
                 await ctx.defer(ephemeral=ephemeral)
 
         try:
-            playlist = await Playlist.getVideos(url)
+            playlist = await ytsp.Playlist.getVideos(url)
             playlist_videos: list = playlist['videos']
         except KeyError:
             message = f'This playlist is not viewable: `{url}`'
@@ -218,6 +217,39 @@ async def queue_command_def(ctx,
                 await ctx.reply(message, ephemeral=ephemeral)
             return ReturnData(True, message)
 
+    # RADIO CZ ---------------------------------------------------------------------------------------------------------
+
+    if url_type == 'RadioCz':
+        radio_id = url.split(':')[1]
+        if radio_id not in radio_dict.keys():
+            message = f'Invalid radio id: `{radio_id}`'
+            if not mute_response:
+                await ctx.reply(message, ephemeral=ephemeral)
+            return ReturnData(False, message)
+
+        radio: RadiosJSON = radio_dict[str(radio_id)]
+
+        radio_info: RadioInfoDict = {
+            'type': 'radia_cz',
+            'id': radio['id'],
+            'station_name': radio['name'],
+            'station_picture': radio['logo'],
+            'station_website': radio['link'],
+            'now_title': None,
+            'now_artist': None,
+            'now_picture': None,
+            'url': radio['nowplay'],
+            'stream': radio['streams']['stream'][0]['url'] if type(radio['streams']['stream']) is list else radio['streams']['stream']['url'],
+            'last_update': None
+        }
+
+        video = Queue(glob, 'RadioCz', author_id, guild_id, radio_info=radio_info)
+
+        message = to_queue(glob, guild_id, video, position=position, copy_video=False, stream_strip=False)
+        if not mute_response:
+            await ctx.reply(message, ephemeral=ephemeral)
+        return ReturnData(True, message, video)
+
     # RADIO GARDEN -----------------------------------------------------------------------------------------------------
 
     if url_type == 'RadioGarden':
@@ -229,11 +261,80 @@ async def queue_command_def(ctx,
                 await ctx.reply(message, ephemeral=ephemeral)
             return ReturnData(False, message)
 
-        video = Queue(glob, 'RadioGarden', author_id, guild_id, url=f"https://radio.garden{radio_info['url']}",
-                      title=radio_info['title'], channel_name=radio_info['title'], channel_link=radio_info['website'],
-                      stream_url=radio_info['stream'])
+        ri: RadioInfoDict = {
+            'type': 'garden',
+            'id': radio_info['id'],
+            'station_name': radio_info['title'],
+            'station_picture': 'https://radio.garden/icons/favicon.png',
+            'station_website': radio_info['website'],
+            'now_title': None,
+            'now_artist': None,
+            'now_picture': None,
+            'url': f"https://radio.garden{radio_info['url']}",
+            'stream': radio_info['stream'],
+            'last_update': None
+        }
+
+        video = Queue(glob, 'RadioGarden', author_id, guild_id, radio_info=ri)
 
         message = to_queue(glob, guild_id, video, position=position, copy_video=False, stream_strip=False)
+        if not mute_response:
+            await ctx.reply(message, ephemeral=ephemeral)
+        return ReturnData(True, message, video)
+
+    # RADIO TUNEIN -----------------------------------------------------------------------------------------------------
+
+    if url_type == 'RadioTuneIn':
+        resp = await get_tunein_info(url)
+        ri: TuneInDescribe = resp[1]
+        if not resp[0]:
+            message = f'Failed to get TuneIn info: `{url}`'
+            if not mute_response:
+                await ctx.reply(message, ephemeral=ephemeral)
+            return ReturnData(False, message)
+
+        radio_info: RadioInfoDict = {
+            'type': 'tunein',
+            'id': ri['guide_id'],
+            'station_name': ri['name'],
+            'station_picture': ri['logo'],
+            'station_website': ri['url'],
+            'now_title': ri['current_song'] if ri['current_song'] is not None else None,
+            'now_artist': ri['current_artist'] if ri['current_artist'] is not None else None,
+            'now_picture': ri['logo'] if ri['current_artist_art'] is None else ri['current_artist_art'] if ri['current_album_art'] is None else ri['current_album_art'],
+            'url': ri['tunein_url'],
+            'stream': resp[2],
+            'last_update': int(time())
+        }
+
+        video = Queue(glob, 'RadioTuneIn', author_id, guild_id, radio_info=radio_info)
+
+        message = to_queue(glob, guild_id, video, position=position, copy_video=False, stream_strip=False)
+        if not mute_response:
+            await ctx.reply(message, ephemeral=ephemeral)
+        return ReturnData(True, message, video)
+
+    # LOCAL FILE -------------------------------------------------------------------------------------------------------
+
+    if url_type == 'Local':
+        try:
+            code = int(url.split(':')[1])
+        except (ValueError, TypeError):
+            message = f'Invalid local file code: `{url}`'
+            if not mute_response:
+                await ctx.reply(message, ephemeral=ephemeral)
+            return ReturnData(False, message)
+
+        if code > len(sound_effects) or code < 1:
+            message = f'Local file code out of range: `{url}`'
+            if not mute_response:
+                await ctx.reply(message, ephemeral=ephemeral)
+            return ReturnData(False, message)
+
+        name = sound_effects[code-1]
+        video = Queue(glob, 'Local', author_id, guild_id, url=f'sound_effects/{name}', title=name, local_number=code, picture=config.VLC_LOGO, duration='Unknown')
+
+        message = to_queue(glob, guild_id, video, position=position, copy_video=False)
         if not mute_response:
             await ctx.reply(message, ephemeral=ephemeral)
         return ReturnData(True, message, video)
@@ -264,7 +365,7 @@ async def queue_command_def(ctx,
         await ctx.reply(message, ephemeral=ephemeral)
     return ReturnData(False, message)
 
-async def next_up_def(ctx, glob: GlobalVars, url, ephemeral: bool = False):
+async def nextup_def(ctx, glob: GlobalVars, url, ephemeral: bool = False):
     """
     Adds a song to the queue and plays it if the queue is empty
     :param ctx: Context
@@ -273,7 +374,7 @@ async def next_up_def(ctx, glob: GlobalVars, url, ephemeral: bool = False):
     :param ephemeral: Should the response be ephemeral
     :return: None
     """
-    log(ctx, 'next_up_def', options=locals(), log_type='function', author=ctx.author)
+    log(ctx, 'nextup_def', options=locals(), log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
     response = await queue_command_def(ctx, glob, url, position=0, mute_response=True, force=True)
 
@@ -461,107 +562,6 @@ async def shuffle_def(ctx, glob: GlobalVars, ephemeral: bool = False) -> ReturnD
     await ctx.reply(message, ephemeral=ephemeral)
     return ReturnData(True, message)
 
-async def show_def(ctx, glob: GlobalVars, display_type: Literal['short', 'medium', 'long'] = None,
-                   list_type: Literal['queue', 'history'] = 'queue', ephemeral: bool = False) -> ReturnData:
-    """
-    Shows the queue or history (only in discord)
-    :param ctx: Context
-    :param glob: GlobalVars
-    :param display_type: ('short', 'medium' or 'long') How the response should be displayed
-    :param list_type: ('queue' or 'history') Which list to show
-    :param ephemeral: Should the response be ephemeral
-    :return: ReturnData
-    """
-    log(ctx, 'show_def', options=locals(), log_type='function', author=ctx.author)
-    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
-
-    if not is_ctx:
-        return ReturnData(False, txt(guild_id, glob, 'Cannot use this command in WEB'))
-
-    # db_guild = guild(glob, guild_id)
-
-    if list_type == 'queue':
-        show_list = guild_queue(glob, guild_id)
-    elif list_type == 'history':
-        show_list = list(reversed(guild_history(glob, guild_id)))
-    else:
-        return ReturnData(False, txt(guild_id, glob, 'Bad list_type'))
-
-    max_embed = 5
-    if not show_list:
-        message = txt(guild_id, glob, "Nothing to **show**, queue is **empty!**")
-        await ctx.reply(message, ephemeral=ephemeral)
-        return ReturnData(True, message)
-
-    if not display_type:
-        if len(show_list) <= max_embed:
-            display_type = 'long'
-        else:
-            display_type = 'medium'
-
-    loop = guild_options_loop(glob, guild_id)
-    key = guild_data_key(glob, guild_id)
-
-    if display_type == 'long':
-        message = f"**THE {list_type.capitalize()}**\n **Loop** mode  `{loop}`,  **Display** type `{display_type}`, [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={key})"
-        await ctx.send(message, ephemeral=ephemeral, mention_author=False)
-
-        for index, val in enumerate(show_list):
-            embed = create_embed(glob, val, f'{txt(guild_id, glob, f"{list_type.upper()} #")}{index}', guild_id)
-
-            await ctx.send(embed=embed, ephemeral=ephemeral, mention_author=False)
-
-    if display_type == 'medium':
-        embed = discord.Embed(title=f"Song {list_type}",
-                              description=f'Loop: {loop} | Display type: {display_type} | [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={loop})',
-                              color=0x00ff00)
-
-        message = ''
-        for index, val in enumerate(show_list):
-            add = f'**{index}** --> `{convert_duration(val.duration)}`  [{val.title}](<{val.url}>) \n'
-
-            if len(message) + len(add) > 1023:
-                embed.add_field(name="", value=message, inline=False)
-                message = ''
-            else:
-                message = message + add
-
-        embed.add_field(name="", value=message, inline=False)
-
-        if len(embed) < 6000:
-            await ctx.reply(embed=embed, ephemeral=ephemeral, mention_author=False)
-        else:
-            await ctx.reply("HTTPException(discord 6000 character limit) >> using display type `short`",
-                            ephemeral=ephemeral, mention_author=False)
-            display_type = 'short'
-
-    if display_type == 'short':
-        send = f"**THE {list_type.upper()}**\n **Loop** mode  `{loop}`,  **Display** type `{display_type}`, [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={key})"
-        # noinspection PyUnresolvedReferences
-        if ctx.interaction.response.is_done():
-            await ctx.send(send, ephemeral=ephemeral, mention_author=False)
-        else:
-            await ctx.reply(send, ephemeral=ephemeral, mention_author=False)
-
-        message = ''
-        for index, val in enumerate(show_list):
-            add = f'**{txt(guild_id, glob, f"{list_type.upper()} #")}{index}**  `{convert_duration(val.duration)}`  [`{val.title}`](<{val.url}>) \n'
-            if len(message) + len(add) > 2000:
-                if ephemeral:
-                    await ctx.send(message, ephemeral=ephemeral, mention_author=False)
-                else:
-                    await ctx.message.channel.send(content=message, mention_author=False)
-                message = ''
-            else:
-                message = message + add
-
-        if ephemeral:
-            await ctx.send(message, ephemeral=ephemeral, mention_author=False)
-        else:
-            await ctx.message.channel.send(content=message, mention_author=False)
-
-    update(glob)
-
 async def search_command_def(ctx, glob: GlobalVars, search_query, display_type: Literal['short', 'long'] = None,
                              force: bool = False, from_play: bool = False, ephemeral: bool = False) -> ReturnData:
     """
@@ -602,7 +602,7 @@ async def search_command_def(ctx, glob: GlobalVars, search_query, display_type: 
     if display_type == 'long':
         await ctx.reply(txt(guild_id, glob, 'Searching...'), ephemeral=ephemeral)
 
-    cs = VideosSearch(search_query, limit=5)
+    cs = ytsp.VideosSearch(search_query, limit=5)
     csr = await cs.next()
     custom_search: list[VideoInfo] = csr['result']
 

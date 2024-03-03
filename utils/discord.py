@@ -11,7 +11,7 @@ from utils.convert import struct_to_time
 from utils.translate import txt
 from utils.video_time import set_stopped
 from utils.save import update, push_update
-from database.guild import guild, get_radio_info
+from database.guild import guild
 
 from time import time
 import discord
@@ -84,23 +84,20 @@ def create_embed(glob: GlobalVars, video, name: str, guild_id: int, embed_colour
     :param embed_colour: (int, int, int) - rgb colour of embed default: (88, 101, 242) -> #5865F2 == discord.Color.blurple()
     :return: discord.Embed
     """
+    if video.radio_info is not None:
+        return create_radio_embed(glob, video, name, guild_id, embed_colour)
+
     try:
         requested_by = glob.bot.get_user(video.author).mention
     except AttributeError:
         requested_by = video.author
-    # set variables
+
     title = video.title
     time_played = video.time(glob)
     author = f'[{video.channel_name}]({video.channel_link})'
     current_chapter = video.current_chapter(glob)
     url = video.url
     thumbnail = video.picture
-
-    if video.radio_info is not None:
-        radio_info_class = get_radio_info(glob, video.radio_info['name'])
-        title = radio_info_class.title
-        author = f'[{radio_info_class.channel_name}]({video.channel_link})'
-        thumbnail = radio_info_class.picture
 
     started_at = struct_to_time(video.played_duration[0]["start"]["epoch"], "time")
     requested_at = struct_to_time(video.created_at, "time")
@@ -121,6 +118,59 @@ def create_embed(glob: GlobalVars, video, name: str, guild_id: int, embed_colour
     embed.set_footer(text=f'{txt(guild_id, glob, "Requested at")} {requested_at} | {txt(guild_id, glob, "Started playing at")} {started_at}')
 
     return embed
+
+def create_radio_embed(glob: GlobalVars, video, name: str, guild_id: int, embed_colour: (int, int, int) = (88, 101, 242)) -> discord.Embed:
+    """
+    Creates embed with radio info
+    :param video: VideoClass child - Radio class
+    :param glob: GlobalVars object
+    :param name: str - title of embed
+    :param guild_id: id of guild the embed is created for
+    :param embed_colour: (int, int, int) - rgb colour of embed default: (88, 101, 242) -> #5865F2 == discord.Color.blurple()
+    :return: discord.Embed
+    """
+    try:
+        requested_by = glob.bot.get_user(video.author).mention
+    except AttributeError:
+        requested_by = video.author
+
+    ri: RadioInfoDict = video.radio_info
+    radio_name = video.title
+    time_played = video.time(glob)
+    provider = f'[{video.channel_name}]({video.channel_link})'
+    url = video.url
+    thumbnail = video.picture
+
+    started_at = struct_to_time(video.played_duration[0]["start"]["epoch"], "time")
+    requested_at = struct_to_time(video.created_at, "time")
+
+    # Check if there is now playing info
+    if ri['now_title'] is not None:
+        now_title = f"```{ri['now_title']}```" if ri['now_title'] is not None else '```Now Playing Title```'
+        now_artist = f"```{ri['now_artist']}```" if ri['now_artist'] is not None else '```Now Playing Artist```'
+        thumbnail = ri['now_picture'] if ri['now_picture'] is not None else thumbnail
+
+        embed = discord.Embed(title=name, description=now_title+now_artist, color=discord.Color.from_rgb(*embed_colour))
+
+        # embed.add_field(name=txt(guild_id, glob, 'Artist'), value=f'```{now_artist}```')
+        embed.add_field(name=txt(guild_id, glob, 'Station'), value=f"[{radio_name}]({url})", inline=False)
+        # embed.add_field(name='', value='', inline=False)
+
+    else:
+        embed = discord.Embed(title=name, description=f'```\n{radio_name}\n```', color=discord.Color.from_rgb(*embed_colour))
+
+
+    embed.add_field(name=txt(guild_id, glob, 'Duration'), value=time_played)
+    embed.add_field(name=txt(guild_id, glob, 'Requested by'), value=f"<@{requested_by}>")
+    embed.add_field(name=txt(guild_id, glob, 'Provider'), value=provider)
+
+    embed.add_field(name=txt(guild_id, glob, 'URL'), value=url, inline=False)
+
+    embed.set_thumbnail(url=thumbnail)
+    embed.set_footer(text=f'{txt(guild_id, glob, "Requested at")} {requested_at} | {txt(guild_id, glob, "Started playing at")} {started_at}')
+
+    return embed
+
 
 def create_search_embed(glob: GlobalVars, video_info: VideoInfo, name: str, guild_id: int, embed_colour: (int, int, int) = (88, 101, 242)) -> discord.Embed:
     """
@@ -212,13 +262,15 @@ def to_queue(glob: GlobalVars, guild_id: int, video, position: int = None, copy_
     # set new creation date
     video.created_at = int(time())
 
-    if stream_strip:
+    if stream_strip is True:
         video.stream_url = None
 
+    queue_video = to_queue_class(glob, video)
+
     if position is None:
-        guild_object.queue.append(to_queue_class(glob, video))
+        guild(glob, guild_id).queue.append(queue_video)
     else:
-        guild_object.queue.insert(position, to_queue_class(glob, video))
+        guild(glob, guild_id).queue.insert(position, queue_video)
 
     if not no_push:
         push_update(glob, guild_id)

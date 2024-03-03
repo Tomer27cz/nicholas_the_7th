@@ -8,6 +8,8 @@ from utils.log import log
 from utils.translate import txt
 from utils.save import update
 from utils.global_vars import radio_dict, sound_effects, languages_dict, GlobalVars
+from utils.convert import convert_duration
+from utils.discord import create_embed
 
 import commands.admin
 
@@ -51,67 +53,144 @@ async def language_command_def(ctx, glob: GlobalVars, country_code: Literal[tupl
     await ctx.reply(message)
     return ReturnData(True, message)
 
-async def sound_effects_def(ctx, glob: GlobalVars, ephemeral: bool = True) -> ReturnData:
+async def list_command_def(ctx, glob: GlobalVars, list_type: Literal['queue', 'history', 'effects', 'radios'], display_type: Literal['short', 'medium', 'long']=None, ephemeral: bool = True) -> ReturnData:
     """
-    List of all sound effects
+    List of all sound effects or radios
     :param ctx: Context
     :param glob: GlobalVars
+    :param display_type: Type of list (short, medium, long) - text, embed, embed with info and picture
+    :param list_type: Type of list (effects, radios)
     :param ephemeral: Should bot response be ephemeral
     :return: ReturnData
     """
-    log(ctx, 'sound_effects_def', options=locals(), log_type='function', author=ctx.author)
+    log(ctx, 'list_def', options=locals(), log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
 
     if not is_ctx:
         return ReturnData(False, txt(guild_id, glob, 'Command cannot be used in WEB'))
 
-    embed = discord.Embed(title="Sound Effects", colour=discord.Colour.from_rgb(241, 196, 15))
-    message = ''
-    for index, val in enumerate(sound_effects):
-        add = f'**{index}** -> {val}\n'
+        # db_guild = guild(glob, guild_id)
+    if list_type in ['queue', 'history']:
+        db_guild = guild(glob, guild_id)
 
-        if len(message) + len(add) > 1023:
-            embed.add_field(name="", value=message, inline=False)
-            message = ''
+        if list_type == 'queue':
+            show_list = db_guild.queue
+        elif list_type == 'history':
+            show_list = list(reversed(db_guild.history))
         else:
-            message = message + add
+            return ReturnData(False, txt(guild_id, glob, 'Bad list_type'))
 
-    embed.add_field(name="", value=message, inline=False)
+        max_embed = 5
+        if not show_list:
+            message = txt(guild_id, glob, "Nothing to **show**, queue is **empty!**")
+            await ctx.reply(message, ephemeral=ephemeral)
+            return ReturnData(True, message)
 
-    update(glob)
-    await ctx.send(embed=embed, ephemeral=ephemeral)
-    return ReturnData(True, txt(guild_id, glob, 'Sound effects'))
+        if not display_type:
+            if len(show_list) <= max_embed:
+                display_type = 'long'
+            else:
+                display_type = 'medium'
 
-async def list_radios_def(ctx, glob: GlobalVars, ephemeral: bool = True) -> ReturnData:
-    """
-    List of all radios
-    :param ctx: Context
-    :param glob: GlobalVars
-    :param ephemeral: Should bot response be ephemeral
-    :return: ReturnData
-    """
-    log(ctx, 'list_radios_def', options=locals(), log_type='function', author=ctx.author)
-    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
+        loop = db_guild.options.loop
+        key = db_guild.data.key
 
-    if not is_ctx:
-        return ReturnData(False, txt(guild_id, glob, 'Command cannot be used in WEB'))
+        if display_type == 'long':
+            message = f"**THE {list_type.capitalize()}**\n **Loop** mode  `{loop}`,  **Display** type `{display_type}`, [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={key})"
+            await ctx.send(message, ephemeral=ephemeral, mention_author=False)
 
-    embed = discord.Embed(title="Radio List")
-    message = ''
-    for index, (name, val) in enumerate(radio_dict.items()):
-        add = f'**{index}** -> {name}\n'
+            for index, val in enumerate(show_list):
+                embed = create_embed(glob, val, f'{txt(guild_id, glob, f"{list_type.upper()} #")}{index}', guild_id)
 
-        if len(message) + len(add) > 1023:
-            embed.add_field(name="", value=message, inline=False)
+                await ctx.send(embed=embed, ephemeral=ephemeral, mention_author=False)
+
+        if display_type == 'medium':
+            embed = discord.Embed(title=f"Song {list_type}",
+                                  description=f'Loop: {loop} | Display type: {display_type} | [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={loop})',
+                                  color=0x00ff00)
+
             message = ''
-        else:
-            message = message + add
+            for index, val in enumerate(show_list):
+                add = f'**{index}** --> `{convert_duration(val.duration)}`  [{val.title}](<{val.url}>) \n'
 
-    embed.add_field(name="", value=message, inline=False)
+                if len(message) + len(add) > 1023:
+                    embed.add_field(name="", value=message, inline=False)
+                    message = ''
+                else:
+                    message = message + add
 
-    update(glob)
-    await ctx.send(embed=embed, ephemeral=ephemeral)
-    return ReturnData(True, txt(guild_id, glob, 'Radio list'))
+            embed.add_field(name="", value=message, inline=False)
+
+            if len(embed) < 6000:
+                await ctx.reply(embed=embed, ephemeral=ephemeral, mention_author=False)
+            else:
+                await ctx.reply("HTTPException(discord 6000 character limit) >> using display type `short`",
+                                ephemeral=ephemeral, mention_author=False)
+                display_type = 'short'
+
+        if display_type == 'short':
+            send = f"**THE {list_type.upper()}**\n **Loop** mode  `{loop}`,  **Display** type `{display_type}`, [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={key})"
+            # noinspection PyUnresolvedReferences
+            if ctx.interaction.response.is_done():
+                await ctx.send(send, ephemeral=ephemeral, mention_author=False)
+            else:
+                await ctx.reply(send, ephemeral=ephemeral, mention_author=False)
+
+            message = ''
+            for index, val in enumerate(show_list):
+                add = f'**{txt(guild_id, glob, f"{list_type.upper()} #")}{index}**  `{convert_duration(val.duration)}`  [`{val.title}`](<{val.url}>) \n'
+                if len(message) + len(add) > 2000:
+                    if ephemeral:
+                        await ctx.send(message, ephemeral=ephemeral, mention_author=False)
+                    else:
+                        await ctx.message.channel.send(content=message, mention_author=False)
+                    message = ''
+                else:
+                    message = message + add
+
+            if ephemeral:
+                await ctx.send(message, ephemeral=ephemeral, mention_author=False)
+            else:
+                await ctx.message.channel.send(content=message, mention_author=False)
+
+        update(glob)
+
+    if list_type == 'effects':
+        embed = discord.Embed(title="Sound Effects", colour=discord.Colour.from_rgb(241, 196, 15))
+        message = ''
+        for index, val in enumerate(sound_effects):
+            add = f'**{index}** -> {val}\n'
+
+            if len(message) + len(add) > 1023:
+                embed.add_field(name="", value=message, inline=False)
+                message = ''
+            else:
+                message = message + add
+
+        embed.add_field(name="", value=message, inline=False)
+
+        update(glob)
+        await ctx.send(embed=embed, ephemeral=ephemeral)
+        return ReturnData(True, txt(guild_id, glob, 'Sound effects'))
+    elif list_type == 'radios':
+        embed = discord.Embed(title="Radio List")
+        message = ''
+        for index, (name, val) in enumerate(radio_dict.items()):
+            add = f'**{index}** -> {name}\n'
+
+            if len(message) + len(add) > 1023:
+                embed.add_field(name="", value=message, inline=False)
+                message = ''
+            else:
+                message = message + add
+
+        embed.add_field(name="", value=message, inline=False)
+
+        update(glob)
+        await ctx.send(embed=embed, ephemeral=ephemeral)
+        return ReturnData(True, txt(guild_id, glob, 'Radio list'))
+
+    return ReturnData(False, txt(guild_id, glob, 'Wrong list type'))
 
 async def key_def(ctx: dc_commands.Context, glob: GlobalVars) -> ReturnData:
     """

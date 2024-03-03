@@ -48,7 +48,7 @@ class GetSource(discord.PCMVolumeTransformer):
         super().__init__(source, guild(glob, guild_id).options.volume)
 
     @classmethod
-    async def create_source(cls, glob: GlobalVars, guild_id: int, url: str, source_type: str = 'Video', time_stamp: int=None, video_class=None, attempt: int=0):
+    async def create_source(cls, glob: GlobalVars, guild_id: int, url: str, source_type: str = 'Video', time_stamp: int=None, video_class=None, attempt: int=0) -> tuple[GetSource, list]:
         """
         Get source from url
 
@@ -64,7 +64,7 @@ class GetSource(discord.PCMVolumeTransformer):
         :param time_stamp: int - time stamp in seconds
         :param attempt: int - how many times has this function been called
 
-        :return source: discord.FFmpegPCMAudio
+        :return source: discord.FFmpegPCMAudio, chapters: list
         """
         source_ffmpeg_options = {
             'before_options': f'{f"-ss {time_stamp} " if time_stamp else ""}-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
@@ -103,10 +103,10 @@ class GetSource(discord.PCMVolumeTransformer):
                 'options': '-vn'
             }
 
-        if source_type == 'RadioGarden':
+        if source_type in ['RadiaCz', 'RadioGarden', 'RadioTuneIn']:
             if not video_class:
                 raise ValueError('video_class is required for RadioGarden source')
-            url = video_class.stream_url
+            url = video_class.radio_info['stream']  # somehow sqlalchemy drops the stream url
 
         if video_class:
             video_class.stream_url = url

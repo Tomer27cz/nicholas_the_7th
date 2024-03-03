@@ -16,6 +16,9 @@ def txt(guild_id: int, glob: GlobalVars, content: str, lang: typing.Literal[tupl
     :param lang: str - language to translate to (default: 'en')
     :return: str - translated text
     """
+    return content
+    # for future me - try using flask sql alchemy in flask app - maby solve tuple index out of range error
+
     if lang is None:
         lang = 'en'
         if guild_id != 0:
