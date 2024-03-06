@@ -1,28 +1,28 @@
 <div class="modal-content" id="loadModal_content">
   <div class="modal-header">
-    <h1 class="modal-title fs-5" id="loadLabel">{{ txt(gi, glob, 'Load Queue') }}</h1>
+    <h1 class="modal-title fs-5" id="loadLabel">{{ txt(lang, 'Load Queue') }}</h1>
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
   </div>
   <div class="modal-body">
     <div class="mb-3">
       {% if saves is not none %}
-        <label for="loadName" class="btn-m">{{ txt(gi, glob, 'Name') }}</label>
+        <label for="loadName" class="btn-m">{{ txt(lang, 'Name') }}</label>
         <select class="form-select btn-m" aria-label="Default select example" name="loadName" id="loadName" required>
           {% for save in saves %}
             <option value="{{ save }}">{{ save }}</option>
           {% endfor %}
         </select>
       {% else %}
-        <p>{{ txt(gi, glob, 'No saved queues') }}</p>
+        <p>{{ txt(lang, 'No saved queues') }}</p>
       {% endif %}
     </div>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-dark" data-bs-dismiss="modal">{{ txt(gi, glob, 'Close') }}</button>
+    <button type="button" class="btn btn-dark" data-bs-dismiss="modal">{{ txt(lang, 'Close') }}</button>
     {% if saves is not none %}
       <button class="btn btn-primary" data-bs-dismiss="modal" hx-swap="outerHTML" hx-target="#q-main"
       hx-get="/guild/{{ gi }}/queue?act=loadName&key={{ key }}" hx-trigger="click throttle:500ms" hx-include="#loadName"
-      >{{ txt(gi, glob, 'Load') }}</button>
+      >{{ txt(lang, 'Load') }}</button>
     {% endif %}
   </div>
 </div>

@@ -21,3 +21,4 @@ uWSGI
 SQLAlchemy
 alembic
 xmltodict
+flask-sqlalchemy

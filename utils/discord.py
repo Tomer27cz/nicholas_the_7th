@@ -193,13 +193,14 @@ def create_search_embed(glob: GlobalVars, video_info: VideoInfo, name: str, guil
 
     return embed
 
-def now_to_history(glob: GlobalVars, guild_id: int):
+async def now_to_history(glob: GlobalVars, guild_id: int, no_push: bool = False) -> None:
     """
     Adds now_playing to history
     Removes first element of history if history length is more than options.history_length
 
     :param glob: GlobalVars object
     :param guild_id: int - id of guild
+    :param no_push: bool - if True doesn't push update
     :return: None
     """
 
@@ -215,10 +216,10 @@ def now_to_history(glob: GlobalVars, guild_id: int):
 
         # if loop is enabled and video is Radio class, add video to queue
         if guild_object.options.loop:
-            to_queue(glob, guild_id, np_video, position=None, copy_video=True)
+            await to_queue(glob, guild_id, np_video, position=None, copy_video=True)
 
         # to history class (before delete - bug fix)
-        h_video = to_history_class(glob, np_video)
+        h_video = await to_history_class(glob, np_video)
 
         # set now_playing to None
         glob.ses.query(NowPlaying).filter(NowPlaying.guild_id == guild_id).delete()
@@ -229,13 +230,16 @@ def now_to_history(glob: GlobalVars, guild_id: int):
         h_video.chapters = None
 
         # add video to history
-        guild_object.history.append(to_history_class(glob, h_video))
+        guild_object.history.append(await to_history_class(glob, h_video))
 
         # save json and push update
         update(glob)
-        push_update(glob, guild_id)
 
-def to_queue(glob: GlobalVars, guild_id: int, video, position: int = None, copy_video: bool=True, no_push: bool=False, stream_strip: bool = True) -> ReturnData or None:
+        # for play_def - play next video (would be 2 updates for next play)
+        if not no_push:
+            push_update(glob, guild_id)
+
+async def to_queue(glob: GlobalVars, guild_id: int, video, position: int = None, copy_video: bool=True, no_push: bool=False, stream_strip: bool = True) -> ReturnData or None:
     """
     Adds video to queue
 
@@ -253,7 +257,7 @@ def to_queue(glob: GlobalVars, guild_id: int, video, position: int = None, copy_
     guild_object = guild(glob, guild_id)
 
     if copy_video:
-        video = to_queue_class(glob, video)
+        video = await to_queue_class(glob, video)
 
     # strip video of time data
     video.played_duration = [{'start': {'epoch': None, 'time_stamp': None}, 'end': {'epoch': None, 'time_stamp': None}}]
@@ -265,7 +269,7 @@ def to_queue(glob: GlobalVars, guild_id: int, video, position: int = None, copy_
     if stream_strip is True:
         video.stream_url = None
 
-    queue_video = to_queue_class(glob, video)
+    queue_video = await to_queue_class(glob, video)
 
     if position is None:
         guild(glob, guild_id).queue.append(queue_video)

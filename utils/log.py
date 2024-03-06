@@ -27,10 +27,10 @@ print_handler.setLevel(logging.INFO)
 print_handler.setFormatter(formatter)
 
 # File handlers
-file_handler = logging.FileHandler('db/log/log.log')
+file_handler = logging.FileHandler('db/log/log.log', encoding='utf-8')
 file_handler.setLevel(logging.INFO)
 file_handler.setFormatter(formatter)
-web_handler = logging.FileHandler('db/log/web.log')
+web_handler = logging.FileHandler('db/log/web.log', encoding='utf-8')
 web_handler.setLevel(logging.INFO)
 web_handler.setFormatter(formatter)
 
@@ -77,7 +77,10 @@ def log(ctx: Union[dc_commands.Context, WebData, None, int], text_data, options:
         return out_str[:-2]
 
     if isinstance(ctx, dc_commands.Context):
-        guild_id = ctx.guild.id
+        if ctx.guild is None:
+            guild_id = 'Other'
+        else:
+            guild_id = ctx.guild.id
     elif ctx.__class__.__name__ == 'WebData':
         guild_id = f'WD{ctx.guild_id}'
     else:

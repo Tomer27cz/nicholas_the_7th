@@ -311,7 +311,10 @@
         "Choose radio": "Choose radio",
         "Station": "Station",
         "Provider": "Provider",
-        "Choose effect": "Choose effect"
+        "Choose effect": "Choose effect",
+        "Shows the list (queue, history, radios, sound effects)": "Shows the list (queue, history, radios, sound effects)",
+        "What to list (queue, history, radios, sound effects)": "What to list (queue, history, radios, sound effects)",
+        "Wrong list type": "Wrong list type"
     },
     "cs": {
         "If True, command sends a response, only the user can see": "Pokud je True, p\u0159\u00edkaz ode\u0161le odpov\u011b\u010f, vid\u00ed ji pouze u\u017eivatel",

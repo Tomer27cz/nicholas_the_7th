@@ -24,7 +24,7 @@ class Guild(Base):
     connected = Column(Boolean, default=True)
     slowed_users = relationship('SlowedUser', backref='guilds', lazy=True)
 
-    def __init__(self, glob: GlobalVars, guild_id, json_data: dict):
+    def __init__(self, glob: GlobalVars or None, guild_id, json_data: dict):
         self.id = guild_id
 
         glob.ses.add(Options(self.id, json_data=json_data.get('options', {})))
@@ -139,7 +139,7 @@ class GuildData(Base):
     voice_channels = Column(JSON)
     last_updated = Column(Integer)
 
-    def __init__(self, glob: GlobalVars, guild_id, json_data: dict):
+    def __init__(self, glob: GlobalVars or None, guild_id, json_data: dict):
         self.id: int = guild_id
 
         self.name: str = json_data.get('name')
@@ -162,8 +162,8 @@ class GuildData(Base):
 
         self.renew(glob)
 
-    def renew(self, glob: GlobalVars):
-        guild_object = glob.bot.get_guild(int(self.id))
+    def renew(self, glob: GlobalVars or None = None):
+        guild_object = glob.bot.get_guild(int(self.id)) if glob else None
 
         # generate random key from the ID
         random.seed(self.id)  # set seed to the guild ID

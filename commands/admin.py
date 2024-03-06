@@ -6,7 +6,7 @@ from database.guild import guild, is_user_tortured, delete_tortured_user
 
 from utils.log import log
 from utils.translate import txt
-from utils.save import update
+from utils.save import update, push_update
 from utils.checks import is_float
 from utils.convert import to_bool
 from utils.global_vars import languages_dict, GlobalVars
@@ -18,6 +18,7 @@ import sys
 import asyncio
 import random
 import discord
+import time
 
 from commands.voice import join_def
 from utils.source import GetSource
@@ -455,38 +456,47 @@ async def dev_command_def(ctx: dc_commands.Context, glob: GlobalVars, command: s
     """
     log(ctx, 'dev', locals(), log_type='function', author=ctx.author)
 
-    import json
-    import aiohttp
+    print(f'Running command: {command}')
+    print(f'time() = {int(time.time())}')
 
-    # &render=json
-    base_url = 'https://opml.radiotime.com'
+    push_update(glob, guild_id=ctx.guild.id)
 
-    query = 'evropa 2'
-
-    #  limit search to 5
-    search_url = f'{base_url}/Search.ashx?query={query}&types=station&render=json&limit=5'
+    await ctx.reply(f'Pushed update to guild: {ctx.guild.id}', ephemeral=ephemeral)
 
 
-    async with aiohttp.ClientSession() as session:
-        async with session.get(search_url) as response:
-            output = await response.json()
-            url = output['body'][0]['URL'] + '&render=json'
-
-    print(url)
-
-    async with aiohttp.ClientSession() as session:
-        async with session.get(url) as response:
-            stream_url = (await response.json())['body'][0]['url']
-
-    print(stream_url)
-
-    await join_def(ctx, glob)
-
-    source, chapters = await GetSource.create_source(glob, ctx.guild.id, stream_url, 'Probe')
-    ctx.guild.voice_client.play(source)
-
-    await ctx.reply(f'Playing: {url}', ephemeral=ephemeral)
-    return ReturnData(True, f'Playing: {url}')
+    #
+    # import json
+    # import aiohttp
+    #
+    # # &render=json
+    # base_url = 'https://opml.radiotime.com'
+    #
+    # query = 'evropa 2'
+    #
+    # #  limit search to 5
+    # search_url = f'{base_url}/Search.ashx?query={query}&types=station&render=json&limit=5'
+    #
+    #
+    # async with aiohttp.ClientSession() as session:
+    #     async with session.get(search_url) as response:
+    #         output = await response.json()
+    #         url = output['body'][0]['URL'] + '&render=json'
+    #
+    # print(url)
+    #
+    # async with aiohttp.ClientSession() as session:
+    #     async with session.get(url) as response:
+    #         stream_url = (await response.json())['body'][0]['url']
+    #
+    # print(stream_url)
+    #
+    # await join_def(ctx, glob)
+    #
+    # source, chapters = await GetSource.create_source(glob, ctx.guild.id, stream_url, 'Probe')
+    # ctx.guild.voice_client.play(source)
+    #
+    # await ctx.reply(f'Playing: {url}', ephemeral=ephemeral)
+    # return ReturnData(True, f'Playing: {url}')
 
 
     # return await play_def(ctx, glob, url)

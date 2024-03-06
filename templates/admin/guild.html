@@ -25,11 +25,11 @@
       <h2 class="no-margin q-item0 div-align-center">{{ guild_object.data.name }}</h2>
       {% if guild_object.connected %}
         <div class="q-item0 div-align-center">
-          <h4 class="no-margin c-green">{{ tg(guild_object.id, 'Connected') }}</h4>
+          <h4 class="no-margin c-green">{{ txt(lang, 'Connected') }}</h4>
         </div>
       {% else %}
         <div class="q-item0 div-align-center">
-          <h4 class="no-margin c-red">{{ tg(guild_object.id, 'Not Connected') }}</h4>
+          <h4 class="no-margin c-red">{{ txt(lang, 'Not Connected') }}</h4>
         </div>
       {% endif %}
       <button type="button" class="btn btn-sm btn-m q-item0 align-center" data-bs-toggle="dropdown"

@@ -31,7 +31,7 @@ async def web_queue(web_data, glob: GlobalVars, video_type, position=None) -> Re
         return await web_queue_from_radio(web_data, glob, video.radio_info['name'], position)
 
     try:
-        to_queue(glob, guild_id, video, position=position)
+        await to_queue(glob, guild_id, video, position=position)
 
         update(glob)
         log(guild_id, f"web_queue -> Queued: {video.url}", log_type='function')
@@ -46,12 +46,12 @@ async def web_queue_from_radio(web_data, glob: GlobalVars, radio_name=None, posi
     is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data, glob)
 
     if radio_name in radio_dict.keys():
-        video = Queue(glob, 'Radio', web_data.author_id, ctx_guild_id, radio_info=dict(name=radio_name))
+        video = await Queue.create(glob, 'Radio', web_data.author_id, ctx_guild_id, radio_info=dict(name=radio_name))
 
         if position == 'start':
-            to_queue(glob, web_data.guild_id, video, position=0, copy_video=False)
+            await to_queue(glob, web_data.guild_id, video, position=0, copy_video=False)
         else:
-            to_queue(glob, web_data.guild_id, video, copy_video=False)
+            await to_queue(glob, web_data.guild_id, video, copy_video=False)
 
         message = f'`{video.title}` ' + txt(ctx_guild_id, glob, 'added to queue!')
         update(glob)

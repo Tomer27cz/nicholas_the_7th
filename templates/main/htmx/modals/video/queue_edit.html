@@ -1,7 +1,7 @@
 <div class="modal-content" id="videoEditModal_{{ guild.queue.index(track) }}_content">
   <div class="modal-header">
     <h1 class="modal-title fs-5"
-        id="videoEditLabel_{{ guild.queue.index(track) }}">{{ txt(gi, glob, 'Video') }} {{ guild.queue.index(track) }} {{ txt(gi, glob, 'Edit') }}</h1>
+        id="videoEditLabel_{{ guild.queue.index(track) }}">{{ txt(lang, 'Video') }} {{ guild.queue.index(track) }} {{ txt(lang, 'Edit') }}</h1>
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
   </div>
   <div class="info-modal">
@@ -17,9 +17,9 @@
       {% endfor %}
       <div class="e-div">
         <button class="btn e-item1 btn-secondary btn-lg btn-m" type="button" data-bs-dismiss="modal"
-                aria-label="Close">{{ txt(gi, glob, 'Close') }}</button>
+                aria-label="Close">{{ txt(lang, 'Close') }}</button>
         <button class="btn e-item1 btn-primary btn-lg btn-m" type="submit" name="edit_btn"
-                value="{{ guild.queue.index(track) }}">{{ txt(gi, glob, 'Submit') }}</button>
+                value="{{ guild.queue.index(track) }}">{{ txt(lang, 'Submit') }}</button>
       </div>
     </form>
   </div>

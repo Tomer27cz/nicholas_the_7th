@@ -19,6 +19,7 @@ from commands.voice import *
 from sclib import SoundcloudAPI
 from spotipy.oauth2 import SpotifyClientCredentials
 from discord.ext import commands as dc_commands
+from discord import app_commands
 
 import discord.ext.commands
 import spotipy
@@ -128,7 +129,7 @@ class Bot(dc_commands.Bot):
             log(guild_id, "-->> Disconnecting when last person left -> Queue Cleared <<--")
 
             # save history
-            now_to_history(glob, guild_id)
+            await now_to_history(glob, guild_id)
 
             # clear queue when last person leaves
             clear_queue(glob, guild_id)
@@ -169,7 +170,7 @@ class Bot(dc_commands.Bot):
                         f"-->> Disconnecting after {guild(glob, guild_id).options.buffer} seconds of no play <<--")
 
                     # save history
-                    now_to_history(glob, guild_id)
+                    await now_to_history(glob, guild_id)
 
                 # check if bot is disconnected
                 if not voice.is_connected():
@@ -540,8 +541,8 @@ async def language_command(ctx: dc_commands.Context, country_code: Literal[tuple
     await language_command_def(ctx, glob, country_code)
 
 @bot.hybrid_command(name='list', with_app_command=True, description=txt(0, glob, 'command_list'), help=txt(0, glob, 'command_list'), extras={'category': 'general'})
-@app_commands.describe(list_type=txt(0, glob, 'attr_list_list_type'), user_only=txt(0, glob, 'ephemeral'))
-async def list_command(ctx: dc_commands.Context, list_type: Literal['queue', 'history', 'radios', 'effects'], display_type: Literal['short', 'medium', 'long']=None, user_only: bool = False):
+@app_commands.describe(list_type=txt(0, glob, 'attr_list_list_type'), display_type=txt(0, glob, 'attr_list_display_type'), user_only=txt(0, glob, 'ephemeral'))
+async def list_command(ctx: dc_commands.Context, list_type: Literal['queue', 'history', 'radios', 'effects']='queue', display_type: Literal['short', 'medium', 'long']=None, user_only: bool = False):
     log(ctx, 'list', options=locals(), log_type='command', author=ctx.author)
 
     await list_command_def(ctx, glob, list_type, display_type, user_only)
@@ -721,12 +722,14 @@ async def slowed_users_remove_all_command(ctx: dc_commands.Context, guild_obj: d
 async def dev_command(ctx: dc_commands.Context, message):
     log(ctx, 'dev', options=locals(), log_type='command', author=ctx.author)
 
-    await ctx.defer()
+    await dev_command_def(ctx, glob, message)
 
-    resp = await query_autocomplete_def(None, 'song', include_youtube=True, include_tunein=True, include_radio=True)
-    # await ctx.send(resp)
+    # await ctx.defer()
     #
-    # await dev_command_def(ctx, glob, message)
+    # resp = await query_autocomplete_def(None, 'song', include_youtube=True, include_tunein=True, include_radio=True)
+    # # await ctx.send(resp)
+    # #
+    # # await dev_command_def(ctx, glob, message)
 
 # ------------------------------------------ SPECIFIC USER TORTURE -----------------------------------------------------
 

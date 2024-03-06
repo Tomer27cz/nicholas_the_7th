@@ -6,9 +6,9 @@
         <p class="q-text q-2">{{ save.name }}</p>
       </div>
       <div class="q-item0">
-        <a class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#renameModal_{{ save.id }}" title="{{ txt(gi, glob, 'Rename') }}">{{ txt(gi, glob, 'Rename') }}</a>
+        <a class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#renameModal_{{ save.id }}" title="{{ txt(lang, 'Rename') }}">{{ txt(lang, 'Rename') }}</a>
         <form method="POST" id="deleteForm_{{ save.id }}" action="">
-          <button class="btn btn-danger" title="{{ txt(gi, glob, 'Delete') }}" type="submit" name="deleteSave">{{ txt(gi, glob, 'Delete') }}</button>
+          <button class="btn btn-danger" title="{{ txt(lang, 'Delete') }}" type="submit" name="deleteSave">{{ txt(lang, 'Delete') }}</button>
           <input type="hidden" name="save_name" value="{{ save.name }}">
         </form>
       </div>
@@ -54,7 +54,7 @@
       <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
           <div class="modal-header">
-            <h1 class="modal-title fs-5" id="renameLabel_{{ save.id }}">{{ txt(gi, glob, 'Rename Save') }} - {{ save.name }}</h1>
+            <h1 class="modal-title fs-5" id="renameLabel_{{ save.id }}">{{ txt(lang, 'Rename Save') }} - {{ save.name }}</h1>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <form method="POST" id="renameForm_{{ save.id }}" action="">
@@ -64,13 +64,13 @@
                 <input type="hidden" name="old_name" value="{{ save.name }}">
               </div>
               <div class="mb-3">
-                <label for="new_name" class="btn-m">{{ txt(gi, glob, 'Name') }}</label>
+                <label for="new_name" class="btn-m">{{ txt(lang, 'Name') }}</label>
                 <input type="text" class="form-control" name="new_name" id="new_name" required>
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-dark" data-bs-dismiss="modal">{{ txt(gi, glob, 'Close') }}</button>
-              <button type="submit" class="btn btn-primary" name="renameSave">{{ txt(gi, glob, 'Rename') }}</button>
+              <button type="button" class="btn btn-dark" data-bs-dismiss="modal">{{ txt(lang, 'Close') }}</button>
+              <button type="submit" class="btn btn-primary" name="renameSave">{{ txt(lang, 'Rename') }}</button>
             </div>
           </form>
         </div>

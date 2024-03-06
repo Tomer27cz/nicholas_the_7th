@@ -1,5 +1,5 @@
 from __future__ import annotations
-# from youtubesearchpython.__future__ import Video
+from youtubesearchpython.__future__ import Video
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -16,21 +16,21 @@ import utils.save
 
 from sclib import Track
 from time import time
-from youtubesearchpython import Video
+# from youtubesearchpython import Video
 
-import requests
 import xmltodict
+import aiohttp
 
 import config
 
-def get_video_data(url: str) -> (dict, str) or (None, str):
+async def get_video_data(url: str) -> (dict, str) or (None, str):
     """
     Returns youtube video info
     :param url: str - youtube video url
     :return: dict - video info
     """
     try:
-        video: VideoInfo = Video.getInfo(url)  # mode=ResultMode.json
+        video: VideoInfo = await Video.getInfo(url)  # mode=ResultMode.json
         if not video:
             return None, 'not video'
     except Exception as e:
@@ -42,26 +42,26 @@ def get_video_data(url: str) -> (dict, str) or (None, str):
 
 # class_type: Literal['Video', 'RadioCz', 'RadioGarden', 'RadioTuneIn', 'Local', 'Probe', 'SoundCloud']
 
-def video_class_init(self,
-                     glob: GlobalVars,
-                     class_type: str,
-                     author: Union[str, int],
-                     guild_id: int,
-                     url: str = None,
-                     title: str = None,
-                     picture: str = None,
-                     duration: Union[str, int] = None,
-                     channel_name: str = None,
-                     channel_link: str = None,
-                     radio_info: RadioInfoDict = None,
-                     local_number: int = None,
-                     created_at: int = None,
-                     played_duration: [TimeSegment] = None,
-                     chapters: [VideoChapter] = None,
-                     stream_url: str = None,
-                     discord_channel: DiscordChannelInfo = None,
-                     only_set: bool = False
-                     ):
+async def video_class_init(self,
+                           glob: GlobalVars,
+                           class_type: str,
+                           author: Union[str, int],
+                           guild_id: int,
+                           url: str = None,
+                           title: str = None,
+                           picture: str = None,
+                           duration: Union[str, int] = None,
+                           channel_name: str = None,
+                           channel_link: str = None,
+                           radio_info: RadioInfoDict = None,
+                           local_number: int = None,
+                           created_at: int = None,
+                           played_duration: [TimeSegment] = None,
+                           chapters: [VideoChapter] = None,
+                           stream_url: str = None,
+                           discord_channel: DiscordChannelInfo = None,
+                           only_set: bool = False
+                           ):
     self.class_type = class_type
     self.author = author
     self.guild_id = guild_id
@@ -115,7 +115,7 @@ def video_class_init(self,
             raise ValueError("URL is required")
 
         if any(v is None for v in [title, picture, duration, channel_name, channel_link]):
-            video, msg = get_video_data(url)
+            video, msg = await get_video_data(url)
             if msg != 'ok':
                 raise ValueError(msg)
 
@@ -143,7 +143,7 @@ def video_class_init(self,
         self.stream_url = self.radio_info['stream'] if self.stream_url is None else self.stream_url
         stream_url = self.radio_info['stream']
 
-        video_class_renew(self, glob, from_init=True)
+        await video_class_renew(self, glob, from_init=True)
 
     elif self.class_type == 'RadioGarden':
         if self.radio_info is None:
@@ -159,7 +159,7 @@ def video_class_init(self,
         self.radio_info['station_picture'] = self.radio_info.get('station_picture', 'https://tunein.com/favicon.ico')
         self.picture = self.radio_info['station_picture'] if self.picture is None else self.picture
 
-        video_class_renew(self, glob, from_init=True)
+        await video_class_renew(self, glob, from_init=True)
 
     elif self.class_type == 'Local':
         if local_number is None:
@@ -199,7 +199,7 @@ def video_class_init(self,
     # set stream_url at the end for json readability
     self.stream_url = stream_url
 
-def video_class_renew(self, glob: GlobalVars, from_init: bool = False):
+async def video_class_renew(self, glob: GlobalVars or None=None, from_init: bool = False):
     if self.class_type not in ['RadioCz', 'RadioGarden', 'RadioTuneIn']:
         return
 
@@ -215,9 +215,10 @@ def video_class_renew(self, glob: GlobalVars, from_init: bool = False):
         pass
 
     if ri['type'] == 'radia_cz':
-        resp = requests.get(ri['url'])
-        resp.encoding = 'utf-8'
-        xml_dict: RadiosCzNow = xmltodict.parse(resp.text)
+        async with aiohttp.ClientSession() as session:
+            async with session.get(ri['url']) as resp:
+                resp.encoding = 'utf-8'
+                xml_dict: RadiosCzNow = xmltodict.parse(await resp.text())
 
         now_picture = None
         if xml_dict['NowPlay']['Item']['Images'] is not None:
@@ -248,8 +249,10 @@ def video_class_renew(self, glob: GlobalVars, from_init: bool = False):
         pass
 
     elif ri['type'] == 'tunein':
-        resp = requests.get(f'https://opml.radiotime.com/Describe.ashx?id={ri["id"]}&render=json').json()
-        r = resp['body'][0]
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f'https://opml.radiotime.com/Describe.ashx?id={ri["id"]}&render=json') as resp:
+                json_resp = await resp.json()
+                r = json_resp['body'][0]
 
         ri['station_name'] = r['name']
         ri['station_picture'] = r['logo']
@@ -262,7 +265,7 @@ def video_class_renew(self, glob: GlobalVars, from_init: bool = False):
     ri['last_update'] = int(time())
     self.radio_info = ri
 
-def video_class_current_chapter(self, glob: GlobalVars):
+def video_class_current_chapter(self, glob: GlobalVars or None=None):
     if self.played_duration is None:
         return None
     if self.chapters is None:
@@ -283,7 +286,7 @@ def video_class_current_chapter(self, glob: GlobalVars):
         if chapter['start_time'] < time_from_play < chapter['end_time']:
             return chapter['title']
 
-def video_class_time(self, glob: GlobalVars) -> str:
+def video_class_time(self, glob: GlobalVars or None=None) -> str:
     """
     Returns time from start and duration of video
     @param self: VideoClass object child
@@ -413,53 +416,57 @@ class Queue(Base):
     stream_url = Column(String)
     discord_channel = Column(JSON)
 
-    def __init__(self,
-                 glob: GlobalVars,
-                 class_type: str,
-                 author: Union[str, int],
-                 guild_id: int,
-                 url: str = None,
-                 title: str = None,
-                 picture: str = None,
-                 duration: Union[str, int] = None,
-                 channel_name: str = None,
-                 channel_link: str = None,
-                 radio_info: RadioInfoDict = None,
-                 local_number: int = None,
-                 created_at: int = None,
-                 played_duration: [TimeSegment] = None,
-                 chapters: [VideoChapter] = None,
-                 stream_url: str = None,
-                 discord_channel: DiscordChannelInfo = None,
-                 only_set: bool = False
-                 ):
-        video_class_init(self,
-                         glob,
-                         class_type=class_type,
-                         author=author,
-                         guild_id=guild_id,
-                         url=url,
-                         title=title,
-                         picture=picture,
-                         duration=duration,
-                         channel_name=channel_name,
-                         channel_link=channel_link,
-                         radio_info=radio_info,
-                         local_number=local_number,
-                         created_at=created_at,
-                         played_duration=played_duration,
-                         chapters=chapters,
-                         stream_url=stream_url,
-                         discord_channel=discord_channel,
-                         only_set=only_set)
+    @classmethod
+    async def create(cls,
+                     glob: GlobalVars or None,
+                     class_type: str,
+                     author: Union[str, int],
+                     guild_id: int,
+                     url: str = None,
+                     title: str = None,
+                     picture: str = None,
+                     duration: Union[str, int] = None,
+                     channel_name: str = None,
+                     channel_link: str = None,
+                     radio_info: RadioInfoDict = None,
+                     local_number: int = None,
+                     created_at: int = None,
+                     played_duration: [TimeSegment] = None,
+                     chapters: [VideoChapter] = None,
+                     stream_url: str = None,
+                     discord_channel: DiscordChannelInfo = None,
+                     only_set: bool = False
+                     ) -> Queue:
+        self = cls()
+        await video_class_init(self,
+                               glob,
+                               class_type=class_type,
+                               author=author,
+                               guild_id=guild_id,
+                               url=url,
+                               title=title,
+                               picture=picture,
+                               duration=duration,
+                               channel_name=channel_name,
+                               channel_link=channel_link,
+                               radio_info=radio_info,
+                               local_number=local_number,
+                               created_at=created_at,
+                               played_duration=played_duration,
+                               chapters=chapters,
+                               stream_url=stream_url,
+                               discord_channel=discord_channel,
+                               only_set=only_set)
 
-    def renew(self, glob: GlobalVars, force: bool = False):
-        video_class_renew(self, glob, from_init=force)
+        return self
 
-    def current_chapter(self, glob: GlobalVars):
+    async def renew(self, glob: GlobalVars or None=None, force: bool = False):
+        await video_class_renew(self, glob, from_init=force)
+
+    def current_chapter(self, glob: GlobalVars or None=None):
         return video_class_current_chapter(self, glob)
 
-    def time(self, glob: GlobalVars):
+    def time(self, glob: GlobalVars or None=None):
         return video_class_time(self, glob)
 
 class NowPlaying(Base):
@@ -490,53 +497,56 @@ class NowPlaying(Base):
     stream_url = Column(String)
     discord_channel = Column(JSON)
 
-    def __init__(self,
-                 glob: GlobalVars,
-                 class_type: str,
-                 author: Union[str, int],
-                 guild_id: int,
-                 url: str = None,
-                 title: str = None,
-                 picture: str = None,
-                 duration: Union[str, int] = None,
-                 channel_name: str = None,
-                 channel_link: str = None,
-                 radio_info: RadioInfoDict = None,
-                 local_number: int = None,
-                 created_at: int = None,
-                 played_duration: [TimeSegment] = None,
-                 chapters: [VideoChapter] = None,
-                 stream_url: str = None,
-                 discord_channel: DiscordChannelInfo = None,
-                 only_set: bool = False
-                 ):
-        video_class_init(self,
-                         glob,
-                         class_type=class_type,
-                         author=author,
-                         guild_id=guild_id,
-                         url=url,
-                         title=title,
-                         picture=picture,
-                         duration=duration,
-                         channel_name=channel_name,
-                         channel_link=channel_link,
-                         radio_info=radio_info,
-                         local_number=local_number,
-                         created_at=created_at,
-                         played_duration=played_duration,
-                         chapters=chapters,
-                         stream_url=stream_url,
-                         discord_channel=discord_channel,
-                         only_set=only_set)
+    @classmethod
+    async def create(cls,
+                     glob: GlobalVars or None,
+                     class_type: str,
+                     author: Union[str, int],
+                     guild_id: int,
+                     url: str = None,
+                     title: str = None,
+                     picture: str = None,
+                     duration: Union[str, int] = None,
+                     channel_name: str = None,
+                     channel_link: str = None,
+                     radio_info: RadioInfoDict = None,
+                     local_number: int = None,
+                     created_at: int = None,
+                     played_duration: [TimeSegment] = None,
+                     chapters: [VideoChapter] = None,
+                     stream_url: str = None,
+                     discord_channel: DiscordChannelInfo = None,
+                     only_set: bool = False
+                     ) -> NowPlaying:
+        self = cls()
+        await video_class_init(self,
+                               glob,
+                               class_type=class_type,
+                               author=author,
+                               guild_id=guild_id,
+                               url=url,
+                               title=title,
+                               picture=picture,
+                               duration=duration,
+                               channel_name=channel_name,
+                               channel_link=channel_link,
+                               radio_info=radio_info,
+                               local_number=local_number,
+                               created_at=created_at,
+                               played_duration=played_duration,
+                               chapters=chapters,
+                               stream_url=stream_url,
+                               discord_channel=discord_channel,
+                               only_set=only_set)
+        return self
 
-    def renew(self, glob: GlobalVars, force: bool = False):
-        video_class_renew(self, glob, from_init=force)
+    async def renew(self, glob: GlobalVars or None=None, force: bool = False):
+        await video_class_renew(self, glob, from_init=force)
 
-    def current_chapter(self, glob: GlobalVars):
+    def current_chapter(self, glob: GlobalVars or None=None):
         return video_class_current_chapter(self, glob)
 
-    def time(self, glob: GlobalVars):
+    def time(self, glob: GlobalVars or None=None):
         return video_class_time(self, glob)
 
 class History(Base):
@@ -567,53 +577,56 @@ class History(Base):
     stream_url = Column(String)
     discord_channel = Column(JSON)
 
-    def __init__(self,
-                 glob: GlobalVars,
-                 class_type: str,
-                 author: Union[str, int],
-                 guild_id: int,
-                 url: str = None,
-                 title: str = None,
-                 picture: str = None,
-                 duration: Union[str, int] = None,
-                 channel_name: str = None,
-                 channel_link: str = None,
-                 radio_info: RadioInfoDict = None,
-                 local_number: int = None,
-                 created_at: int = None,
-                 played_duration: [TimeSegment] = None,
-                 chapters: [VideoChapter] = None,
-                 stream_url: str = None,
-                 discord_channel: DiscordChannelInfo = None,
-                 only_set: bool = False
-                 ):
-        video_class_init(self,
-                         glob,
-                         class_type=class_type,
-                         author=author,
-                         guild_id=guild_id,
-                         url=url,
-                         title=title,
-                         picture=picture,
-                         duration=duration,
-                         channel_name=channel_name,
-                         channel_link=channel_link,
-                         radio_info=radio_info,
-                         local_number=local_number,
-                         created_at=created_at,
-                         played_duration=played_duration,
-                         chapters=chapters,
-                         stream_url=stream_url,
-                         discord_channel=discord_channel,
-                         only_set=only_set)
+    @classmethod
+    async def create(cls,
+                     glob: GlobalVars or None,
+                     class_type: str,
+                     author: Union[str, int],
+                     guild_id: int,
+                     url: str = None,
+                     title: str = None,
+                     picture: str = None,
+                     duration: Union[str, int] = None,
+                     channel_name: str = None,
+                     channel_link: str = None,
+                     radio_info: RadioInfoDict = None,
+                     local_number: int = None,
+                     created_at: int = None,
+                     played_duration: [TimeSegment] = None,
+                     chapters: [VideoChapter] = None,
+                     stream_url: str = None,
+                     discord_channel: DiscordChannelInfo = None,
+                     only_set: bool = False
+                     ) -> History:
+        self = cls()
+        await video_class_init(self,
+                               glob,
+                               class_type=class_type,
+                               author=author,
+                               guild_id=guild_id,
+                               url=url,
+                               title=title,
+                               picture=picture,
+                               duration=duration,
+                               channel_name=channel_name,
+                               channel_link=channel_link,
+                               radio_info=radio_info,
+                               local_number=local_number,
+                               created_at=created_at,
+                               played_duration=played_duration,
+                               chapters=chapters,
+                               stream_url=stream_url,
+                               discord_channel=discord_channel,
+                               only_set=only_set)
+        return self
 
-    def renew(self, glob: GlobalVars, force: bool = False):
-        video_class_renew(self, glob, from_init=force)
+    async def renew(self, glob: GlobalVars or None=None, force: bool = False):
+        await video_class_renew(self, glob, from_init=force)
 
-    def current_chapter(self, glob: GlobalVars):
+    def current_chapter(self, glob: GlobalVars or None=None):
         return video_class_current_chapter(self, glob)
 
-    def time(self, glob: GlobalVars):
+    def time(self, glob: GlobalVars or None=None):
         return video_class_time(self, glob)
 
 class SaveVideo(Base):
@@ -646,64 +659,67 @@ class SaveVideo(Base):
     stream_url = Column(String)
     discord_channel = Column(JSON)
 
-    def __init__(self,
-                 glob: GlobalVars,
-                 class_type: str,
-                 author: Union[str, int],
-                 guild_id: int,
-                 save_id: int,
-                 url: str = None,
-                 title: str = None,
-                 picture: str = None,
-                 duration: Union[str, int] = None,
-                 channel_name: str = None,
-                 channel_link: str = None,
-                 radio_info: RadioInfoDict = None,
-                 local_number: int = None,
-                 created_at: int = None,
-                 played_duration: [TimeSegment] = None,
-                 chapters: [VideoChapter] = None,
-                 stream_url: str = None,
-                 discord_channel: DiscordChannelInfo = None,
-                 only_set: bool = False
-                 ):
+    @classmethod
+    async def create(cls,
+                     glob: GlobalVars or None,
+                     class_type: str,
+                     author: Union[str, int],
+                     guild_id: int,
+                     save_id: int,
+                     url: str = None,
+                     title: str = None,
+                     picture: str = None,
+                     duration: Union[str, int] = None,
+                     channel_name: str = None,
+                     channel_link: str = None,
+                     radio_info: RadioInfoDict = None,
+                     local_number: int = None,
+                     created_at: int = None,
+                     played_duration: [TimeSegment] = None,
+                     chapters: [VideoChapter] = None,
+                     stream_url: str = None,
+                     discord_channel: DiscordChannelInfo = None,
+                     only_set: bool = False
+                     ) -> SaveVideo:
+        self = cls()
         self.save_id = save_id
-        video_class_init(self,
-                         glob,
-                         class_type=class_type,
-                         author=author,
-                         guild_id=guild_id,
-                         url=url,
-                         title=title,
-                         picture=picture,
-                         duration=duration,
-                         channel_name=channel_name,
-                         channel_link=channel_link,
-                         radio_info=radio_info,
-                         local_number=local_number,
-                         created_at=created_at,
-                         played_duration=played_duration,
-                         chapters=chapters,
-                         stream_url=stream_url,
-                         discord_channel=discord_channel,
-                         only_set=only_set)
+        await video_class_init(self,
+                               glob,
+                               class_type=class_type,
+                               author=author,
+                               guild_id=guild_id,
+                               url=url,
+                               title=title,
+                               picture=picture,
+                               duration=duration,
+                               channel_name=channel_name,
+                               channel_link=channel_link,
+                               radio_info=radio_info,
+                               local_number=local_number,
+                               created_at=created_at,
+                               played_duration=played_duration,
+                               chapters=chapters,
+                               stream_url=stream_url,
+                               discord_channel=discord_channel,
+                               only_set=only_set)
+        return self
 
-    def renew(self, glob: GlobalVars, force: bool = False):
-        video_class_renew(self, glob, from_init=force)
+    async def renew(self, glob: GlobalVars or None=None, force: bool = False):
+        await video_class_renew(self, glob, from_init=force)
 
-    def current_chapter(self, glob: GlobalVars):
+    def current_chapter(self, glob: GlobalVars or None=None):
         return video_class_current_chapter(self, glob)
 
-    def time(self, glob: GlobalVars):
+    def time(self, glob: GlobalVars or None=None):
         return video_class_time(self, glob)
 
 # Transforms
 
-def to_queue_class(glob, _video_class) -> Queue:
+async def to_queue_class(glob, _video_class) -> Queue:
     if _video_class.__class__.__name__ == 'Queue':
         return _video_class
 
-    return Queue(
+    return await Queue.create(
         glob,
         class_type=_video_class.class_type,
         author=_video_class.author,
@@ -724,11 +740,11 @@ def to_queue_class(glob, _video_class) -> Queue:
         only_set=True
     )
 
-def to_now_playing_class(glob, _video_class) -> NowPlaying:
+async def to_now_playing_class(glob, _video_class) -> NowPlaying:
     if _video_class.__class__.__name__ == 'NowPlaying':
         return _video_class
 
-    return NowPlaying(
+    return await NowPlaying.create(
         glob,
         class_type=_video_class.class_type,
         author=_video_class.author,
@@ -749,11 +765,11 @@ def to_now_playing_class(glob, _video_class) -> NowPlaying:
         only_set=True
     )
 
-def to_history_class(glob, _video_class) -> History:
+async def to_history_class(glob, _video_class) -> History:
     if _video_class.__class__.__name__ == 'History':
         return _video_class
 
-    return History(
+    return await History.create(
         glob,
         class_type=_video_class.class_type,
         author=_video_class.author,
@@ -774,11 +790,11 @@ def to_history_class(glob, _video_class) -> History:
         only_set=True
     )
 
-def to_save_video_class(glob, _video_class, save_id) -> SaveVideo:
+async def to_save_video_class(glob, _video_class, save_id) -> SaveVideo:
     if _video_class.__class__.__name__ == 'SaveVideo':
         return _video_class
 
-    return SaveVideo(
+    return await SaveVideo.create(
         glob,
         class_type=_video_class.class_type,
         author=_video_class.author,

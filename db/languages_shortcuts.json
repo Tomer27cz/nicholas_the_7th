@@ -57,5 +57,8 @@
    "command_sound_effects":"Lists the available sound effects",
    "command_stop":"Stops the currently playing song",
    "command_volume":"Sets the volume",
-   "attr_volume_volume":"Volume percentage (0-200)"
+   "attr_volume_volume":"Volume percentage (0-200)",
+   "command_list":"Shows the list (queue, history, radios, sound effects)",
+   "attr_list_list_type": "What to list (queue, history, radios, sound effects)",
+   "attr_list_display_type": "short/medium/long - short: text only, medium: embeds, long: embeds with song details"
 }

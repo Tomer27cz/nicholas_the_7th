@@ -21,7 +21,7 @@ def find_save(glob: GlobalVars, guild_id: int, save_name: str) -> Save or None:
             return save
     return None
 
-def new_queue_save(glob: GlobalVars, guild_id: int, save_name: str, author_name: str, author_id: int) -> ReturnData:
+async def new_queue_save(glob: GlobalVars, guild_id: int, save_name: str, author_name: str, author_id: int) -> ReturnData:
     """
     Creates new queue save
     :param glob: GlobalVars
@@ -46,12 +46,12 @@ def new_queue_save(glob: GlobalVars, guild_id: int, save_name: str, author_name:
     guild_object.saves.append(Save(guild_id, save_name, author_name, author_id))
     new_save = find_save(glob, guild_id, save_name)
     for index, video in enumerate(guild_object.queue):
-        new_save.queue.append(to_save_video_class(glob, video, new_save.id))
+        new_save.queue.append(await to_save_video_class(glob, video, new_save.id))
     glob.ses.commit()
 
     return ReturnData(True, txt(guild_id, glob, 'queue saved'))
 
-def load_queue_save(glob: GlobalVars, guild_id: int, save_name: str) -> ReturnData:
+async def load_queue_save(glob: GlobalVars, guild_id: int, save_name: str) -> ReturnData:
     """
     Loads queue save
     :param glob: GlobalVars
@@ -70,7 +70,7 @@ def load_queue_save(glob: GlobalVars, guild_id: int, save_name: str) -> ReturnDa
         return ReturnData(False, txt(guild_id, glob, 'save not found'))
 
     load_save = find_save(glob, guild_id, save_name)
-    guild(glob, guild_id).queue = [to_queue_class(glob, video) for video in load_save.queue]
+    guild(glob, guild_id).queue = [await to_queue_class(glob, video) for video in load_save.queue]
     glob.ses.commit()
 
     return ReturnData(True, txt(guild_id, glob, 'queue loaded'))

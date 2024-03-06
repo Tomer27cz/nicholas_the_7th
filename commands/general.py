@@ -90,7 +90,7 @@ async def list_command_def(ctx, glob: GlobalVars, list_type: Literal['queue', 'h
             if len(show_list) <= max_embed:
                 display_type = 'long'
             else:
-                display_type = 'medium'
+                display_type = 'short'
 
         loop = db_guild.options.loop
         key = db_guild.data.key

@@ -128,7 +128,7 @@ async def web_duplicate(web_data, glob: GlobalVars, number) -> ReturnData:
 
     video = db_guild.queue[number]
 
-    new_video = Queue(glob, class_type=video.class_type,
+    new_video = await Queue.create(glob, class_type=video.class_type,
                       author=video.author,
                       guild_id=video.guild_id,
                       url=video.url,
@@ -140,7 +140,7 @@ async def web_duplicate(web_data, glob: GlobalVars, number) -> ReturnData:
                       radio_info=video.radio_info,
                       local_number=video.local_number)
 
-    to_queue(glob, guild_id, new_video, position=number + 1, copy_video=True)
+    await to_queue(glob, guild_id, new_video, position=number + 1, copy_video=True)
 
     message = f'{txt(ctx_guild_id, glob, "Duplicated")} #{number} : {video.title}'
     log(guild_id, f"web_duplicate -> {message}", log_type='function')

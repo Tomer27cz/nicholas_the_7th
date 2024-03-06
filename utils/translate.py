@@ -2,11 +2,12 @@ from database.guild import guild_options_language
 
 from utils.log import log
 from utils.global_vars import languages_dict, GlobalVars, languages_shortcuts_dict
+from flask_sqlalchemy import SQLAlchemy
 
 import typing
 
 # noinspection PyTypeHints
-def txt(guild_id: int, glob: GlobalVars, content: str, lang: typing.Literal[tuple(languages_dict.keys())]=None) -> str:
+def txt(guild_id: int, glob: GlobalVars or SQLAlchemy, content: str, lang: typing.Literal[tuple(languages_dict.keys())]=None) -> str:
     """
     Translates text to english
     Gets text from languages.json
@@ -16,8 +17,8 @@ def txt(guild_id: int, glob: GlobalVars, content: str, lang: typing.Literal[tupl
     :param lang: str - language to translate to (default: 'en')
     :return: str - translated text
     """
-    return content
-    # for future me - try using flask sql alchemy in flask app - maby solve tuple index out of range error
+    # return content
+    # # for future me - try using flask sql alchemy in flask app - maby solve tuple index out of range error
 
     if lang is None:
         lang = 'en'
@@ -40,6 +41,18 @@ def txt(guild_id: int, glob: GlobalVars, content: str, lang: typing.Literal[tupl
     except KeyError:
         log(None, f'KeyError: {content} in {lang} - Should not happen!')
         return content
+
+# noinspection PyTypeHints
+def txtf(lang: typing.Literal[tuple(languages_dict.keys())], content: str) -> str:
+    """
+    Translates text to guild language
+    Selects language from guild options
+    Gets text from languages.json
+    :param content: str - translation key
+    :param lang: str - language to translate to (default: 'en')
+    :return: str - translated text
+    """
+    return txt(0, None, content, lang)
 
 # def tg(guild_id: int, content: str) -> str:
 #     """

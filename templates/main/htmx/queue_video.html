@@ -1,14 +1,15 @@
 <div class="q-container" id="queue_{{ guild.queue.index(track) }}">
   <div class="q-div">
     {% if track.radio_info is not none %}
-      {% set renew = track.renew(glob) %}
-    <div class="q-item0 q-div div-radio2 r-w1">
-      <img loading="lazy" class="q-img" src="{{ track.radio_info['now_picture'] }}" alt="thumbnail">
-      <div class="q-item1 q-wd">
-        <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="{{ track.url }}">{{ track.radio_info['now_title'] }}</a></p>
-        <p class="q-text"><a class="q-2" target="_blank" rel="noopener noreferrer" href="{{ track.channel_link }}">{{ track.radio_info['now_artist'] }}</a></p>
-      </div>
-    </div>
+      {% if track.radio_info['now_title'] %}
+        <div class="q-item0 q-div div-radio2 r-w1">
+          <img loading="lazy" class="q-img" src="{{ track.radio_info['now_picture'] }}" alt="thumbnail">
+          <div class="q-item1 q-wd">
+            <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="{{ track.url }}">{{ track.radio_info['now_title'] }}</a></p>
+            <p class="q-text"><a class="q-2" target="_blank" rel="noopener noreferrer" href="{{ track.channel_link }}">{{ track.radio_info['now_artist'] }}</a></p>
+          </div>
+        </div>
+      {% endif %}
     {% endif %}
     <img loading="lazy" class="q-img" src="{{ track.picture }}" alt="thumbnail">
     <div class="q-item1 {% if radio_info is not none %}r-w2{% else %}q-wd{% endif %}">
@@ -26,21 +27,21 @@
         <button class="btn btn-outline btn-primary btn-sm btn-m" type="button" data-bs-toggle="modal"
                 data-bs-target=#videoEditModal_{{ guild.queue.index(track) }}
                 hx-target="#videoEditModal_{{ guild.queue.index(track) }}_content"
-                hx-get="/guild/{{gi}}/modals?type=queue_edit&var={{ guild.queue.index(track) }}&key={{key}}">{{ txt(gi, glob, 'Edit') }}</button>
+                hx-get="/guild/{{gi}}/modals?type=queue_edit&var={{ guild.queue.index(track) }}&key={{key}}">{{ txt(lang, 'Edit') }}</button>
       {% endif %}
-      <button type="button" class="btn btn-secondary btn-sm dropdown-toggle btn-m" data-bs-toggle="dropdown" aria-expanded="false">{{ txt(gi, glob, 'More') }}</button>
+      <button type="button" class="btn btn-secondary btn-sm dropdown-toggle btn-m" data-bs-toggle="dropdown" aria-expanded="false">{{ txt(lang, 'More') }}</button>
       <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
         <li>
           <button class="dropdown-item"
                   hx-get="/guild/{{gi}}/queue?act=top_btn&var={{ guild.queue.index(track) }}&key={{key}}"
                   hx-swap="outerHTML" hx-target="#q-main" hx-trigger="click throttle:500ms"
-          >{{ txt(gi, glob, 'Move to Top') }}</button>
+          >{{ txt(lang, 'Move to Top') }}</button>
         </li>
         <li>
           <button class="dropdown-item"
                   hx-get="/guild/{{gi}}/queue?act=bottom_btn&var={{ guild.queue.index(track) }}&key={{key}}"
                   hx-swap="outerHTML" hx-target="#q-main" hx-trigger="click throttle:500ms"
-          >{{ txt(gi, glob, 'Move to Bottom') }}</button>
+          >{{ txt(lang, 'Move to Bottom') }}</button>
         </li>
         <li>
           <hr class="dropdown-divider">
@@ -49,7 +50,7 @@
           <button class="dropdown-item"
                   hx-get="/guild/{{gi}}/queue?act=duplicate_btn&var={{ guild.queue.index(track) }}&key={{key}}"
                   hx-swap="outerHTML" hx-target="#q-main" hx-trigger="click throttle:500ms"
-          >{{ txt(gi, glob, 'Duplicate') }}</button>
+          >{{ txt(lang, 'Duplicate') }}</button>
         </li>
         <li>
           <hr class="dropdown-divider">
@@ -60,13 +61,13 @@
                   hx-target="#videoModal_{{ guild.queue.index(track) }}_content"
                   hx-get="/guild/{{gi}}/modals?type=queue&var={{ guild.queue.index(track) }}&key={{key}}"
                   hx-trigger="click throttle:500ms" hx-swap="outerHTML"
-          >{{ txt(gi, glob, 'Info') }}</button>
+          >{{ txt(lang, 'Info') }}</button>
         </li>
       </ul>
       <button class="btn btn-outline btn-danger btn-sm btn-m"
               hx-get="/guild/{{gi}}/queue?act=del_btn&var={{ guild.queue.index(track) }}&key={{key}}"
               hx-swap="outerHTML" hx-target="#q-main" hx-trigger="click throttle:500ms"
-          >{{ txt(gi, glob, 'Remove') }}</button>
+          >{{ txt(lang, 'Remove') }}</button>
     </div>
   </div>
   <div class="q-item0 q-wa q-self-center q-items-center">

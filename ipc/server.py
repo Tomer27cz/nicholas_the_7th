@@ -95,9 +95,9 @@ async def execute_function(request_dict, glob: GlobalVars) -> ReturnData:
         return await web_func.queue.web_queue_from_radio(web_data, glob, radio_name=args['radio_name'])
 
     if func_name == 'new_queue_save':
-        return new_queue_save(glob, web_data.guild_id, save_name=args['save_name'], author_name=args['author_name'], author_id=args['author_id'])
+        return await new_queue_save(glob, web_data.guild_id, save_name=args['save_name'], author_name=args['author_name'], author_id=args['author_id'])
     if func_name == 'load_queue_save':
-        return load_queue_save(glob, web_data.guild_id, save_name=args['save_name'])
+        return await load_queue_save(glob, web_data.guild_id, save_name=args['save_name'])
     if func_name == 'delete_queue_save':
         return delete_queue_save(glob, web_data.guild_id, save_name=args['save_name'])
     if func_name == 'rename_queue_save':
@@ -329,10 +329,10 @@ async def execute_get_data(request_dict, glob: GlobalVars):
         guild_id = request_dict['guild_id']
 
         if queue_type == 'now_playing':
-            guild(glob, guild_id).now_playing.renew(glob)
+            await guild(glob, guild_id).now_playing.renew(glob)
         elif queue_type == 'queue':
             try:
-                guild(glob, guild_id).queue[index].renew(glob)
+                await guild(glob, guild_id).queue[index].renew(glob)
             except IndexError:
                 pass
 

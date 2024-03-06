@@ -4,27 +4,28 @@
       <a class="btn btn-dark accordion-button" type="button" data-bs-toggle="collapse"
          data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="true"
          aria-controls="panelsStayOpen-collapseTwo">
-        <h3>{{ txt(gi, glob, 'Now Playing') }}</h3>
+        <h3>{{ txt(lang, 'Now Playing') }}</h3>
       </a>
     </div>
   </div>
   <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse show">
     <div class="accordion-body">
       {% if guild.now_playing is not none %}
-        {% set renew = guild.now_playing.renew(glob) %}
         <div class="q-div q-history">
           {% if guild.now_playing.radio_info is not none %}
-            <div class="q-item0 q-div div-radio3">
-              <img loading="lazy" class="q-img" src="{{ guild.now_playing.radio_info['now_picture'] }}" alt="thumbnail">
-              <div class="q-item1 q-wd">
-                <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer"
-                                     href="{{ guild.now_playing.url }}">{{ guild.now_playing.radio_info['title'] }}</a>
-                </p>
-                <p class="q-text"><a class="q-2" target="_blank" rel="noopener noreferrer"
-                                     href="{{ guild.now_playing.channel_link }}">{{ guild.now_playing.radio_info['artist'] }}</a>
-                </p>
+            {% if guild.now_playing.radio_info['now_title'] is not none %}
+              <div class="q-item0 q-div div-radio3">
+                <img loading="lazy" class="q-img" src="{{ guild.now_playing.radio_info['now_picture'] }}" alt="thumbnail">
+                <div class="q-item1 q-wd">
+                  <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer"
+                                       href="{{ guild.now_playing.url }}">{{ guild.now_playing.radio_info['now_title'] }}</a>
+                  </p>
+                  <p class="q-text"><a class="q-2" target="_blank" rel="noopener noreferrer"
+                                       href="{{ guild.now_playing.channel_link }}">{{ guild.now_playing.radio_info['now_artist'] }}</a>
+                  </p>
+                </div>
               </div>
-            </div>
+            {% endif %}
           {% endif %}
           <img loading="lazy" class="q-img" src="{{ guild.now_playing.picture }}" alt="thumbnail">
           <div class="q-item1">
@@ -36,7 +37,7 @@
             <p class="q-text q-3">{{ convert_duration(guild.now_playing.duration) }}</p>
           </div>
           <div class="q-item3 q-items-center">
-            <p class="q-text q-1">{{ txt(gi, glob, 'Played at') }}</p>
+            <p class="q-text q-1">{{ txt(lang, 'Played at') }}</p>
             <p class="q-text q-2">{{ struct_to_time(guild.now_playing.played_duration[0]['start']['epoch'], first='time') }}</p>
           </div>
           <div class="q-item2 q-items-center">
@@ -53,20 +54,20 @@
                 <button class="btn btn-outline btn-primary btn-sm btn-m" type="button" data-bs-toggle="modal"
                         data-bs-target=#videoEditModal_np hx-target="#videoEditModal_np_content" hx-swap="outerHTML"
                         hx-trigger="click once" hx-get="/guild/{{ gi }}/modals?type=now_playing_edit&key={{ key }}"
-                >{{ txt(gi, glob, 'Edit') }}</button>
+                >{{ txt(lang, 'Edit') }}</button>
               {% endif %}
               <button type="button" class="btn btn-secondary btn-sm dropdown-toggle btn-m" data-bs-toggle="dropdown"
-                      aria-expanded="false">{{ txt(gi, glob, 'More') }}</button>
+                      aria-expanded="false">{{ txt(lang, 'More') }}</button>
               <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
                 <li>
                   <button class="dropdown-item" hx-trigger="click throttle:500ms" hx-target="#q-main"
                           hx-swap="outerHTML" hx-get="/guild/{{ gi }}/queue?act=queue_btn&var=np&key={{ key }}"
-                  >{{ txt(gi, glob, 'Add to queue') }}</button>
+                  >{{ txt(lang, 'Add to queue') }}</button>
                 </li>
                 <li>
                   <button class="dropdown-item" hx-trigger="click throttle:500ms" hx-target="#q-main"
                           hx-swap="outerHTML" hx-get="/guild/{{ gi }}/queue?act=nextup_btn&var=np&key={{ key }}"
-                  >{{ txt(gi, glob, 'Play next') }}</button>
+                  >{{ txt(lang, 'Play next') }}</button>
                 </li>
                 <li>
                   <hr class="dropdown-divider">
@@ -74,8 +75,8 @@
                 <li>
                   <button class="dropdown-item" type="button" data-bs-toggle="modal"
                           data-bs-target=#videoModal_np hx-target="#videoModal_np_content" hx-swap="outerHTML"
-                          hx-trigger="click once" hx-get="/guild/{{ gi }}/modals?act=now_playing&key={{ key }}"
-                  >{{ txt(gi, glob, 'Info') }}</button>
+                          hx-trigger="click once" hx-get="/guild/{{ gi }}/modals?type=now_playing&key={{ key }}"
+                  >{{ txt(lang, 'Info') }}</button>
                 </li>
               </ul>
             </form>
@@ -97,7 +98,7 @@
                         {{ chapter['title'] }} ({{ convert_duration(chapter['start_time']) }}
                         - {{ convert_duration(chapter['end_time']) }})
                         <button type="submit" class="btn btn-primary btn-sm" name="jump_btn"
-                                value={{ chapter['start_time'] }}>{{ txt(gi, glob, 'Jump') }}</button>
+                                value={{ chapter['start_time'] }}>{{ txt(lang, 'Jump') }}</button>
                       </div>
                     </form>
                   </div>
@@ -118,7 +119,7 @@
         </div>
       {% else %}
         <div class="div-align">
-          <p>{{ txt(gi, glob, 'Nothing is playing right now') }}</p>
+          <p>{{ txt(lang, 'Nothing is playing right now') }}</p>
         </div>
       {% endif %}
     </div>

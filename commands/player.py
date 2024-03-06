@@ -1,7 +1,5 @@
-from classes.video_class import NowPlaying, Queue, to_now_playing_class
+from classes.video_class import Queue
 from classes.data_classes import ReturnData
-from classes.typed_dictionaries import RadioGardenInfo
-
 from commands.utils import ctx_check
 
 from database.guild import guild, clear_queue
@@ -20,14 +18,11 @@ import commands.voice
 import commands.queue
 import commands.autocomplete
 
-from discord import app_commands
-from os import path
 import discord
 import asyncio
 import random
 import sys
 import traceback
-import typing
 
 import config
 
@@ -52,7 +47,7 @@ async def play_def(ctx, glob: GlobalVars,
     if after and db_guild.options.stopped or after and player_id != db_guild.options.player_id or after and no_after is True:
         log(ctx, f"play_def -> loop stopped (stopped: {db_guild.options.stopped}, id: {player_id}, db_id: {db_guild.options.player_id}, no_after: {no_after})", log_type='function')
         # if not db_guild.options.is_radio:
-        #     now_to_history(glob, guild_id)
+        #     await now_to_history(glob, guild_id)
         return ReturnData(False, txt(guild_id, glob, "Stopped play next loop"))
 
     p_id = player_id if player_id else random.choice([i for i in range(0, 9) if i not in [db_guild.options.player_id]])
@@ -131,12 +126,12 @@ async def play_def(ctx, glob: GlobalVars,
         message = f'{txt(guild_id, glob, "There is **nothing** in your **queue**")} {notif}'
         if not after and not mute_response:
             await ctx.reply(message)
-        now_to_history(glob, guild_id)
+        await now_to_history(glob, guild_id)
         return ReturnData(False, message)
 
     db_guild = guild(glob, guild_id)
     video = db_guild.queue[0]
-    now_to_history(glob, guild_id)
+    await now_to_history(glob, guild_id, no_push=True)
 
     stream_url = video.url
     if video.class_type in ['RadioCz', 'RadioGarden', 'RadioTuneIn']:
@@ -170,11 +165,11 @@ async def play_def(ctx, glob: GlobalVars,
         # Variables update
         db_guild.options.stopped = False
         # video variables
-        set_started(glob, video, guild_object, chapters=chapters)
+        await set_started(glob, video, guild_object, chapters=chapters)
 
         # Queue update
         # if guild[guild_id].options.loop:
-        #     to_queue(guild_id, video)
+        #     await to_queue(guild_id, video)
         glob.ses.query(Queue).filter_by(id=video.id).delete()
         glob.ses.commit()
 
@@ -280,7 +275,7 @@ async def now_def(ctx, glob: GlobalVars, ephemeral: bool = False) -> ReturnData:
 
     if ctx.voice_client:
         if ctx.voice_client.is_playing():
-            db_guild.now_playing.renew(glob, force=True)
+            await db_guild.now_playing.renew(glob, force=True)
             embed = create_embed(glob, db_guild.now_playing, txt(guild_id, glob, "Now playing"), guild_id)
 
             view = classes.view.PlayerControlView(ctx, glob)
@@ -364,7 +359,7 @@ async def loop_command_def(ctx, glob: GlobalVars, clear_queue_opt: bool=False, e
             return ReturnData(False, message)
 
         clear_queue(glob, guild_id)
-        to_queue(glob, guild_id, db_guild.now_playing)
+        await to_queue(glob, guild_id, db_guild.now_playing)
         db_guild.options.loop = True
         push_update(glob, guild_id)
         update(glob)
@@ -384,7 +379,7 @@ async def loop_command_def(ctx, glob: GlobalVars, clear_queue_opt: bool=False, e
 
     db_guild.options.loop = True
     if db_guild.now_playing and add_to_queue_when_activated:
-        to_queue(glob, guild_id, db_guild.now_playing)
+        await to_queue(glob, guild_id, db_guild.now_playing)
     push_update(glob, guild_id)
     update(glob)
 

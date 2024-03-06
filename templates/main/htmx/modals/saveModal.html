@@ -1,19 +1,19 @@
 <div class="modal-content" id="saveModal_content">
   <div class="modal-header">
-    <h1 class="modal-title fs-5" id="saveLabel">{{ txt(gi, glob, 'Save Queue') }}</h1>
+    <h1 class="modal-title fs-5" id="saveLabel">{{ txt(lang, 'Save Queue') }}</h1>
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
   </div>
   <form method="POST" id="saveForm" action="" onsubmit="onSubmitDisable();">
     <input type="hidden" name="scroll" value="0" id="scrollPos14">
     <div class="modal-body">
       <div class="mb-3">
-        <label for="saveName" class="btn-m">{{ txt(gi, glob, 'Name') }}</label>
+        <label for="saveName" class="btn-m">{{ txt(lang, 'Name') }}</label>
         <input type="text" class="form-control" name="saveName" id="saveName" required>
       </div>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-dark" data-bs-dismiss="modal">{{ txt(gi, glob, 'Close') }}</button>
-      <button type="submit" class="btn btn-primary">{{ txt(gi, glob, 'Save') }}</button>
+      <button type="button" class="btn btn-dark" data-bs-dismiss="modal">{{ txt(lang, 'Close') }}</button>
+      <button type="submit" class="btn btn-primary">{{ txt(lang, 'Save') }}</button>
     </div>
   </form>
 </div>

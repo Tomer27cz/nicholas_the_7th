@@ -34,7 +34,7 @@ def set_stopped(glob: GlobalVars, video):
 
     update(glob)
 
-def set_started(glob: GlobalVars, video, guild_object, chapters: Union[list[VideoChapter], None]= None):
+async def set_started(glob: GlobalVars, video, guild_object, chapters: Union[list[VideoChapter], None]= None):
     """
     Sets the time when the video was started
     :param glob: GlobalVars
@@ -60,7 +60,7 @@ def set_started(glob: GlobalVars, video, guild_object, chapters: Union[list[Vide
         pass
 
     guild_id = guild_object.id
-    db.guild(glob, guild_id).now_playing = video_class.to_now_playing_class(glob, video)
+    db.guild(glob, guild_id).now_playing = await video_class.to_now_playing_class(glob, video)
     glob.ses.commit()
     push_update(glob, guild_id)
 

@@ -43,7 +43,7 @@ async def spotify_to_yt_video(glob: GlobalVars, spotify_url: str, author, guild_
     yt_channel_name = video['channel']['name']
     yt_channel_link = video['channel']['link']
 
-    video_class = Queue(glob, 'Video', author, guild_id, url=yt_url, title=yt_title, picture=yt_picture, duration=yt_duration,
+    video_class = await Queue.create(glob, 'Video', author, guild_id, url=yt_url, title=yt_title, picture=yt_picture, duration=yt_duration,
                         channel_name=yt_channel_name, channel_link=yt_channel_link)
 
     return video_class
@@ -91,7 +91,7 @@ async def spotify_playlist_to_yt_video_list(glob: GlobalVars, spotify_playlist_u
         yt_channel_name = video['channel']['name']
         yt_channel_link = video['channel']['link']
 
-        video_class = Queue(glob, 'Video', author, guild_id, url=yt_url, title=yt_title, picture=yt_picture, duration=yt_duration,
+        video_class = await Queue.create(glob, 'Video', author, guild_id, url=yt_url, title=yt_title, picture=yt_picture, duration=yt_duration,
                             channel_name=yt_channel_name, channel_link=yt_channel_link)
 
         video_list.append(video_class)
@@ -139,7 +139,7 @@ async def spotify_album_to_yt_video_list(glob: GlobalVars, spotify_album_url: st
         yt_channel_name = video['channel']['name']
         yt_channel_link = video['channel']['link']
 
-        video_class = Queue(glob, 'Video', author, guild_id, url=yt_url, title=yt_title, picture=yt_picture, duration=yt_duration,
+        video_class = await Queue.create(glob, 'Video', author, guild_id, url=yt_url, title=yt_title, picture=yt_picture, duration=yt_duration,
                             channel_name=yt_channel_name, channel_link=yt_channel_link)
 
         video_list.append(video_class)

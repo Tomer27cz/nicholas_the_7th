@@ -214,8 +214,7 @@ async def local_autocomplete_def(ctx: discord.Interaction or None, query: str, l
 
     data = []
     if query.isdigit():
-        nums = list(range(1, len(sound_effects)+1))
-        for num in nums:
+        for num in range(1, len(sound_effects)+1):
             if query in str(num):
                 data.append(discord.app_commands.Choice(name=f"Local: {num} - {sound_effects[num-1]}", value=f'_local:{num}'))
 

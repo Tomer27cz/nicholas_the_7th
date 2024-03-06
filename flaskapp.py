@@ -4,12 +4,14 @@ from classes.discord_classes import DiscordUser
 from utils.convert import convert_duration
 from utils.log import log, collect_data
 from utils.files import get_readable_byte_size, get_icon_class_for_filename, get_log_files
-from utils.translate import txt
+from utils.translate import txtf
 from utils.video_time import video_time_from_start
 from utils.checks import check_isdigit
 from utils.web import *
 
-from flask import Flask, render_template, request, url_for, redirect, send_file, abort, Response, send_from_directory
+import classes.data_classes
+
+from flask import Flask, render_template, request, url_for, redirect, send_file, abort, send_from_directory, Response
 from flask import session as flask_session
 from werkzeug.utils import safe_join
 
@@ -32,11 +34,8 @@ d_id = 349164237605568513
 
 # -------------------------------------------- Database -------------------------------------------- #
 
-from database.guild import *
+from database.flask import *
 from database.main import *
-
-# db connect
-session = connect_to_db()
 
 # --------------------------------------------- LOAD DATA --------------------------------------------- #
 
@@ -46,15 +45,6 @@ with open(f'db/radio.json', 'r', encoding='utf-8') as file:
 with open(f'db/languages.json', 'r', encoding='utf-8') as file:
     languages_dict = json.load(file)
     authorized_users += [my_id, 349164237605568513]
-
-# --------------------------------------------- GLOBAL VARS --------------------------------------------- #
-
-glob = GlobalVars(
-    bot_var=None,
-    ses_var=session,
-    sp_var=None,
-    sc_var=None
-)
 
 # --------------------------------------------- FUNCTIONS --------------------------------------------- #
 
@@ -117,7 +107,7 @@ def check_admin(session_data) -> list:
 
     user_id = int(session_data['discord_user']['id'])
     if user_id in authorized_users:
-        return guild_ids(glob)
+        return [_tuple[0] for _tuple in db.session.query(classes.data_classes.Guild).with_entities(classes.data_classes.Guild.id).all()]
 
     return session_data['allowed_guilds']
 
@@ -148,7 +138,14 @@ badge_dict_new = {
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = config.WEB_SECRET_KEY
-app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{config.PARENT_DIR}db/database.db'
+
+file_path = os.path.abspath(os.getcwd())+"\\db\\database.db"
+app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{file_path}'
+
+from flask_sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy(app)
+db.Model = Base
 
 @app.route('/favicon.ico')
 def favicon():
@@ -156,14 +153,14 @@ def favicon():
 
 @app.context_processor
 def inject_data():
-    return dict(glob=glob,
+    return dict(lang='en',
                 auth=authorized_users,
                 int=int,
                 range=range,
                 len=len,
                 vars=vars,
                 dict=dict,
-                txt=txt,
+                txt=txtf,
                 get_username=get_username,
                 struct_to_time=struct_to_time,
                 convert_duration=convert_duration,
@@ -188,6 +185,11 @@ async def index_page():
 
     return render_template('nav/index.html', user=user)
 
+# @app.route('/socket')
+# async def socket_page():
+#     log(request.remote_addr, request.full_path, log_type='ip')
+#     return render_template('nav/socket.html')
+
 @app.route('/about')
 async def about_page():
     log(request.remote_addr, '/about', log_type='ip')
@@ -203,8 +205,9 @@ async def guilds_page():
     user = flask_session.get('discord_user', {})
     allowed_guilds = check_admin(flask_session)
 
-    return render_template('nav/guild_list.html', guilds=sort_guilds(guilds(glob), allowed_guilds),
-                           allowed_guilds=allowed_guilds, user=user)
+    _guilds = sort_guilds(db.session.query(classes.data_classes.Guild).all(), allowed_guilds)
+
+    return render_template('nav/guild_list.html', guilds=_guilds, allowed_guilds=allowed_guilds, user=user)
 
 @app.route('/guild/<int:guild_id>', methods=['GET', 'POST'])
 async def guild_get_key_page(guild_id):
@@ -212,7 +215,7 @@ async def guild_get_key_page(guild_id):
     user = flask_session.get('discord_user', {})
     allowed_guilds = check_admin(flask_session)
 
-    guild_object = guild(glob, int(guild_id))
+    guild_object = flask_guild(db, int(guild_id))
     if guild_object is None:
         return render_template('base/message.html', guild_id=guild_id, user=user,
                                message="That Server doesn't exist or the bot is not in it", errors=None, title='Error')
@@ -251,7 +254,7 @@ async def guild_page(guild_id, key):
     user_id = user.get('id', 'WEB Guest')
     allowed_guilds = check_admin(flask_session)
 
-    guild_object = guild(glob, int(guild_id))
+    guild_object = flask_guild(db, int(guild_id))
     if guild_object is None:
         return render_template('base/message.html', guild_id=guild_id, user=user,
                                message="That Server doesn't exist or the bot is not in it", errors=None, title='Error')
@@ -329,15 +332,18 @@ async def guild_page(guild_id, key):
     pd = guild_object.now_playing.played_duration if guild_object.now_playing else [{'start': None, 'end': None}]
     npd = (guild_object.now_playing.duration if check_isdigit(guild_object.now_playing.duration) else 'null') if guild_object.now_playing else 'null'
 
+    if guild_object.now_playing:
+        await guild_object.now_playing.renew(None)
+
     return render_template('main/guild.html',
-                           guild=guild(glob, guild_id),
+                           guild=flask_guild(db, guild_id),
                            gi=int(guild_id),
                            key=key,
                            user=user,
                            errors=errors,
                            messages=messages,
                            volume=round(guild_object.options.volume * 100),
-                           saves=guild_save_names(glob, guild_object.id),
+                           saves=flask_guild_save_names(db, guild_object.id),
                            pd=json.dumps(pd),
                            npd=npd,
                            bot_status=get_guild_bot_status(int(guild_id)),
@@ -354,7 +360,7 @@ async def htmx_queue(guild_id):
     user_id = user.get('id', 'WEB Guest')
     admin = True if user_id in authorized_users else False
 
-    guild_object = guild(glob, guild_id)
+    guild_object = flask_guild(db, guild_id)
     if guild_object is None:
         return abort(404)
 
@@ -370,6 +376,7 @@ async def htmx_queue(guild_id):
         if 'queue_video' in keys:
             var = request.args.get('var')
             track = guild_object.queue[int(var)]
+            await track.renew(None)
             return render_template('main/htmx/queue_video.html', gi=int(guild_id), guild=guild_object,
                                    struct_to_time=struct_to_time, convert_duration=convert_duration,
                                    get_username=get_username, key=key, admin=admin, track=track)
@@ -449,7 +456,9 @@ async def htmx_queue(guild_id):
             log(web_data, 'web_load_queue', {'load_name': load_name}, log_type='web', author=web_data.author)
             execute_function('load_queue_save', web_data=web_data, save_name=load_name)
 
-    guild_object = guild(glob, guild_id)
+    guild_object = flask_guild(db, guild_id)
+    for video in guild_object.queue:
+        await video.renew(None)
 
     return render_template('main/htmx/queue.html', gi=int(guild_id), guild=guild_object, key=key, admin=admin)
 
@@ -463,7 +472,7 @@ async def htmx_history(guild_id):
 
     admin = True if user_id in authorized_users else False
 
-    guild_object = guild(glob, guild_id)
+    guild_object = flask_guild(db, guild_id)
     if guild_object is None:
         return abort(404)
 
@@ -498,7 +507,7 @@ async def htmx_modal(guild_id):
         if user_id in authorized_users:
             admin = True
 
-    guild_object = guild(glob, int(guild_id))
+    guild_object = flask_guild(db, int(guild_id))
     if guild_object is None:
         return abort(404)
 
@@ -514,7 +523,7 @@ async def htmx_modal(guild_id):
     if modal_type == 'joinModal':
         return render_template('main/htmx/modals/joinModal.html', gi=int(guild_id), guild=guild_object, key=key)
     if modal_type == 'loadModal':
-        return render_template('main/htmx/modals/loadModal.html', gi=int(guild_id), saves=guild_save_names(glob, guild_object.id), key=key)
+        return render_template('main/htmx/modals/loadModal.html', gi=int(guild_id), saves=flask_guild_save_names(db, guild_object.id), key=key)
     if modal_type == 'optionsModal':
         return render_template('main/htmx/modals/optionsModal.html', gi=int(guild_id), guild=guild_object, languages_dict=languages_dict, int=int, key=key)
     if modal_type == 'saveModal':
@@ -543,6 +552,51 @@ async def htmx_modal(guild_id):
 
     return abort(404)
 
+# -------------------------------------------------- Web Sockets -------------------------------------------------------
+
+# @sock.route('/guild/<int:guild_id>/update')
+# def update_socket(ws, guild_id):
+#     try:
+#         guild_id = int(guild_id)
+#     except (ValueError, TypeError):
+#         return
+#
+#     ws.send(json.dumps({'update': False, 'last_updated': int(time())}))
+#
+#     last_updated = int(time())
+#     while True:
+#         with app.app_context():
+#             last_updated_db = int(flask_guild_options_last_updated(db, guild_id))
+#
+#         print(f'last_updated: {last_updated}, last_updated_db: {last_updated_db}')
+#
+#         if last_updated_db > last_updated:
+#             print('update')
+#             last_updated = last_updated_db
+#             ws.send(json.dumps({'update': True, 'last_updated': last_updated}))
+#         sleep(1)
+
+
+# @socketio.on('/guild/<int:guild_id>/update')
+# async def update_socket(guild_id):
+#     try:
+#         guild_id = int(guild_id)
+#     except (ValueError, TypeError):
+#         return
+#
+#     def respond_to_client():
+#         last_updated = int(time())
+#         while True:
+#             with app.app_context():
+#                 last_updated_db = int(flask_guild_options_last_updated(db, guild_id))
+#             if last_updated_db > last_updated:
+#                 last_updated = last_updated_db
+#                 response = {'update': True, 'last_updated': last_updated}
+#                 emit('update', response)
+#             sleep(0.5)
+#
+#     return Response(respond_to_client(), mimetype='text/event-stream')
+
 @app.route('/guild/<int:guild_id>/update')
 async def update_page(guild_id):
     try:
@@ -553,12 +607,13 @@ async def update_page(guild_id):
     def respond_to_client():
         last_updated = int(time())
         while True:
-            last_updated_db = int(get_update(glob, guild_id))
+            with app.app_context():
+                last_updated_db = int(flask_guild_options_last_updated(db, guild_id))
             if last_updated_db > last_updated:
                 last_updated = last_updated_db
                 response = {'update': True, 'last_updated': last_updated}
                 yield f'data: {json.dumps(response)}\n\n'
-            sleep(0.5)
+            sleep(1)
 
     return Response(respond_to_client(), mimetype='text/event-stream')
 
@@ -650,10 +705,10 @@ async def admin_page():
     if int(user.get('id', 0)) not in authorized_users:
         return abort(403)
 
-    guild_list = sort_guilds(guilds(glob), flask_session.get('discord_user_guilds', []))
+    guild_list = sort_guilds(flask_guilds(db), flask_session.get('discord_user_guilds', []))
 
     return render_template('admin/admin.html', user=user, guild=guild_list,
-                           bot_status=get_guilds_bot_status(), last_played=guilds_last_played(glob))
+                           bot_status=get_guilds_bot_status(), last_played=flask_guilds_last_played(db))
 
 # Admin Files ---------------------------------------------------
 @app.route('/admin/log')
@@ -894,7 +949,7 @@ async def admin_guild(guild_id):
             else:
                 errors = [response.message]
 
-    guild_object = guild(glob, int(guild_id))
+    guild_object = flask_guild(db, int(guild_id))
     if guild_object is None:
         return abort(404)
     return render_template('admin/guild.html', user=user, guild_object=guild_object, languages_dict=languages_dict,
@@ -912,10 +967,10 @@ async def admin_guild_users(guild_id):
     if int(user.get('id', 0)) not in authorized_users:
         return abort(403)
 
-    if not guild_exists(glob, int(guild_id)):
+    if not flask_guild_exists(db, int(guild_id)):
         return abort(404)
 
-    return render_template('admin/data/guild_users.html', user=user, data=guild_data(glob, guild_id), title='Users')
+    return render_template('admin/data/guild_users.html', user=user, data=flask_guild_data(db, guild_id), title='Users')
 
 @app.route('/admin/guild/<int:guild_id>/voice_channels', methods=['GET', 'POST'])
 async def admin_guild_channels(guild_id):
@@ -928,7 +983,7 @@ async def admin_guild_channels(guild_id):
     if int(user.get('id', 0)) not in authorized_users:
         return abort(403)
 
-    data = guild_data(glob, int(guild_id))
+    data = flask_guild_data(db, int(guild_id))
     return render_template('admin/data/guild_channels.html', user=user, data=data, title='Voice Channels', channel_type='voice')
 
 @app.route('/admin/guild/<int:guild_id>/text_channels', methods=['GET', 'POST'])
@@ -942,7 +997,7 @@ async def admin_guild_text_channels(guild_id):
     if int(user.get('id', 0)) not in authorized_users:
         return abort(403)
 
-    data = guild_data(glob, int(guild_id))
+    data = flask_guild_data(db, int(guild_id))
     return render_template('admin/data/guild_channels.html', user=user, data=data, title='Text Channels', channel_type='text')
 
 @app.route('/admin/guild/<int:guild_id>/roles', methods=['GET', 'POST'])
@@ -956,7 +1011,7 @@ async def admin_guild_roles(guild_id):
     if int(user.get('id', 0)) not in authorized_users:
         return abort(403)
 
-    data = guild_data(glob, int(guild_id))
+    data = flask_guild_data(db, int(guild_id))
 
     return render_template('admin/data/guild_roles.html', user=user, data=data, title='Roles')
 
@@ -971,7 +1026,7 @@ async def admin_guild_invites(guild_id):
     if int(user.get('id', 0)) not in authorized_users:
         return abort(403)
 
-    guild_object = get_guild(glob, int(guild_id))
+    guild_object = flask_guild(db, int(guild_id))
     guild_invites = get_guild_invites(int(guild_id))
     return render_template('admin/data/guild_invites.html', user=user, invites=guild_invites,
                            guild_object=guild_object, title='Invites', type=type, DiscordUser=DiscordUser)
@@ -1002,8 +1057,8 @@ async def admin_guild_saves(guild_id):
         except Exception as e:
             log(web_data, 'error', {'error': str(e)}, log_type='web', author=web_data.author)
 
-    data = guild_data(glob, int(guild_id))
-    saves_count = guild_save_count(glob, int(guild_id))
+    data = flask_guild_data(db, int(guild_id))
+    saves_count = flask_guild_save_count(db, int(guild_id))
     return render_template('admin/data/guild_saves.html', user=user, data=data, saves_count=saves_count)
 
 # -------------------------------------------- Admin guild data HTMX ---------------------------------------------------
@@ -1137,13 +1192,13 @@ async def admin_guild_saves_htmx(guild_id):
         if index is not None:
             index = int(index)
 
-            saves = guild(glob, int(guild_id)).saves[index*5:(index+1)*5]
+            saves = flask_guild(db, int(guild_id)).saves[index*5:(index+1)*5]
             return render_template('admin/data/htmx/saves/guild_saves.html', saves=saves, gi=int(guild_id),
-                                   guild_save_queue_count=guild_save_queue_count, struct_to_time=struct_to_time)
+                                   guild_save_queue_count=flask_guild_save_queue_count, struct_to_time=struct_to_time)
     if type_of == 'save_queue':
         if save_id is not None:
             save_id = int(save_id)
-            save_queue = guild_save(glob, int(guild_id), save_id).queue
+            save_queue = flask_guild_save(db, int(guild_id), save_id).queue
             return render_template('admin/data/htmx/saves/guild_saves_queue.html', queue=save_queue, save_id=save_id,
                                    get_username=get_username, struct_to_time=struct_to_time, convert_duration=convert_duration)
 
@@ -1163,7 +1218,7 @@ async def admin_chat(guild_id, channel_id):
     if int(user['id']) not in authorized_users:
         return abort(403)
 
-    guild_text_channels = get_guild_text_channels(glob, int(guild_id))
+    guild_text_channels = get_guild_text_channels(int(guild_id))
     if guild_text_channels is None:
         return abort(404)
 
@@ -1213,7 +1268,7 @@ async def admin_fastchat(guild_id, channel_id):
     if int(user.get('id', 0)) not in authorized_users:
         return abort(403)
 
-    guild_text_channels = get_guild_text_channels(glob, int(guild_id))
+    guild_text_channels = get_guild_text_channels(int(guild_id))
     if guild_text_channels is None:
         return abort(404)
 

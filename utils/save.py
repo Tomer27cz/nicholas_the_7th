@@ -1,4 +1,4 @@
-from classes.data_classes import Guild, GuildData
+from classes.data_classes import Guild, GuildData, Options
 
 import database.guild as guild
 
@@ -67,5 +67,13 @@ def _update_guilds(glob: GlobalVars):
         # print(db_g_data)
 
 def push_update(glob: GlobalVars, guild_id: int):
+    """
+    Updates guild.options.last_updated to current time
+    :param glob: GlobalVars
+    :param guild_id: int - id of guild
+    :return: None
+    """
     glob.ses.commit()
-    guild.guild(glob, guild_id).options.last_updated = int(time())
+    with glob.ses.no_autoflush:
+        glob.ses.query(Options).filter(Options.id == guild_id).first().last_updated = int(time())
+    glob.ses.commit()

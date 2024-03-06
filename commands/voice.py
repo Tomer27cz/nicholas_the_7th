@@ -46,7 +46,9 @@ async def stop_def(ctx, glob: GlobalVars, mute_response: bool = False, keep_loop
             db_guild.options.loop = False
         glob.ses.commit()
 
-    now_to_history(glob, guild_id)
+    await now_to_history(glob, guild_id)
+
+    push_update(glob, guild_id)
 
     message = txt(guild_id, glob, "Player **stopped!**")
     if not mute_response:
@@ -142,7 +144,7 @@ async def join_def(ctx, glob: GlobalVars, channel_id=None, mute_response: bool =
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
 
     # if video in now_playing -> add to history
-    now_to_history(glob, guild_id)
+    await now_to_history(glob, guild_id)
 
     # define author channel (for ide)
     author_channel = None
@@ -239,13 +241,14 @@ async def disconnect_def(ctx, glob: GlobalVars, mute_response: bool = False) -> 
         await guild_object.voice_client.disconnect(force=True)
 
         push_update(glob, guild_id)
-        now_to_history(glob, guild_id)
+        await now_to_history(glob, guild_id)
+
         message = f"{txt(guild_id, glob, 'Left voice channel:')} `{channel}`"
         if not mute_response:
             await ctx.reply(message, ephemeral=True)
         return ReturnData(True, message)
     else:
-        now_to_history(glob, guild_id)
+        await now_to_history(glob, guild_id)
         message = txt(guild_id, glob, "Bot is **not** in a voice channel")
         if not mute_response:
             await ctx.reply(message, ephemeral=True)

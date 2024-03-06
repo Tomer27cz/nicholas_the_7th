@@ -140,18 +140,18 @@ async def web_video_edit(web_data, glob: GlobalVars, form) -> ReturnData:
         except (TypeError, ValueError, json.decoder.JSONDecodeError, AssertionError, SyntaxError):
             return ReturnData(False, f'Invalid discord channel: {discord_channel}')
 
-    video = Queue(glob, class_type, author, guild_id, url=url, title=title, picture=picture, duration=duration,
+    video = await Queue.create(glob, class_type, author, guild_id, url=url, title=title, picture=picture, duration=duration,
                   channel_name=channel_name, channel_link=channel_link, radio_info=radio_info,
                   local_number=local_number, created_at=created_at, played_duration=played_duration, chapters=chapters,
                   discord_channel=discord_channel, stream_url=stream_url)
 
     if is_np:
-        db_guild.now_playing = to_now_playing_class(glob, video)
+        db_guild.now_playing = await to_now_playing_class(glob, video)
     else:
         if is_queue:
-            db_guild.queue[index] = to_queue_class(glob, video)
+            db_guild.queue[index] = await to_queue_class(glob, video)
         else:
-            db_guild.history[index] = to_history_class(glob, video)
+            db_guild.history[index] = await to_history_class(glob, video)
 
     push_update(glob, guild_id)
     update(glob)

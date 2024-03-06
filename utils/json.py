@@ -69,7 +69,7 @@ from utils.global_vars import GlobalVars
 #     if class_type not in ['Video', 'Radio', 'Local', 'Probe', 'SoundCloud']:
 #         raise ValueError('Wrong class_type')
 #
-#     video = classes.video_class.Queue(glob, class_type,
+#     video = classes.video_class.await Queue.create(glob, class_type,
 #                        created_at=video_dict['created_at'],
 #                        played_duration=video_dict['played_duration'],
 #                        url=video_dict['url'],
