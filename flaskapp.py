@@ -96,7 +96,7 @@ def sort_guilds(_guilds: list, _allowed: list) -> list:
 
     return acl + ncl + al + nl
 
-def check_admin(session_data) -> list:
+def check_admin(session_data, _db) -> list:
     if session_data is None:
         raise ValueError('Session data is None')
 
@@ -107,7 +107,8 @@ def check_admin(session_data) -> list:
 
     user_id = int(session_data['discord_user']['id'])
     if user_id in authorized_users:
-        return [_tuple[0] for _tuple in db.session.query(classes.data_classes.Guild).with_entities(classes.data_classes.Guild.id).all()]
+        with app.app_context():
+            return [_tuple[0] for _tuple in _db.session.query(classes.data_classes.Guild).with_entities(classes.data_classes.Guild.id).all()]
 
     return session_data['allowed_guilds']
 
@@ -139,13 +140,12 @@ badge_dict_new = {
 app = Flask(__name__)
 app.config['SECRET_KEY'] = config.WEB_SECRET_KEY
 
-file_path = os.path.abspath(os.getcwd())+"\\db\\database.db"
+file_path = os.path.join(os.path.abspath(os.getcwd()), 'db', 'database.db')
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{file_path}'
 
 from flask_sqlalchemy import SQLAlchemy
 
-db = SQLAlchemy(app)
-db.Model = Base
+db = SQLAlchemy(app, model_class=Base)
 
 @app.route('/favicon.ico')
 def favicon():
@@ -203,7 +203,7 @@ async def about_page():
 async def guilds_page():
     log(request.remote_addr, request.full_path, log_type='ip')
     user = flask_session.get('discord_user', {})
-    allowed_guilds = check_admin(flask_session)
+    allowed_guilds = check_admin(flask_session, db)
 
     _guilds = sort_guilds(db.session.query(classes.data_classes.Guild).all(), allowed_guilds)
 
@@ -213,7 +213,7 @@ async def guilds_page():
 async def guild_get_key_page(guild_id):
     log(request.remote_addr, request.full_path, log_type='ip')
     user = flask_session.get('discord_user', {})
-    allowed_guilds = check_admin(flask_session)
+    allowed_guilds = check_admin(flask_session, db)
 
     guild_object = flask_guild(db, int(guild_id))
     if guild_object is None:
@@ -252,7 +252,7 @@ async def guild_page(guild_id, key):
     user = flask_session.get('discord_user', {})
     user_name = user.get('username', request.remote_addr)
     user_id = user.get('id', 'WEB Guest')
-    allowed_guilds = check_admin(flask_session)
+    allowed_guilds = check_admin(flask_session, db)
 
     guild_object = flask_guild(db, int(guild_id))
     if guild_object is None:
