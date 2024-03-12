@@ -220,7 +220,7 @@ async def video_class_renew(self, glob: GlobalVars or None=None, from_init: bool
                 resp.encoding = 'utf-8'
                 xml_dict: RadiosCzNow = xmltodict.parse(await resp.text())
 
-        now_picture = None
+        now_picture = 'https://radia.cz/build/no-artwork.svg'
         if xml_dict['NowPlay']['Item']['Images'] is not None:
             if type(xml_dict['NowPlay']['Item']['Images']['Image']) is list:
                 now_picture = xml_dict['NowPlay']['Item']['Images']['Image'][0]['#text']

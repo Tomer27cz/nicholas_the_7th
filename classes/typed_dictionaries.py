@@ -9,6 +9,29 @@ class VideoChapter(TypedDict):
     title: str
     end_time: float
 
+# ---------------------------------------------- Web Search ------------------------------------------------------------
+
+class WebSearchResult(TypedDict):
+    title: str
+    value: str
+    source: str
+    picture: Optional[str]
+
+# ---------------------------------------------- Commands --------------------------------------------------------------
+
+class DiscordCommandDictAttribute(TypedDict):
+    name: str
+    description: str
+    required: bool
+    default: Union[str, int, float, bool, None]
+    type: str
+
+class DiscordCommandDict(TypedDict):
+    name: str
+    description: str
+    category: str
+    attributes: list[DiscordCommandDictAttribute]
+
 # ------------------------------------------------- Radio --------------------------------------------------------------
 
 class RadioInfoDict(TypedDict):

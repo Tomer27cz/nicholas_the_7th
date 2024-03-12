@@ -1,5 +1,8 @@
 from classes.data_classes import WebData
 from classes.discord_classes import DiscordUser
+from classes.typed_dictionaries import WebSearchResult
+
+from commands.autocomplete import query_autocomplete_def
 
 from utils.convert import convert_duration
 from utils.log import log, collect_data
@@ -17,6 +20,7 @@ from werkzeug.utils import safe_join
 
 from time import time, sleep
 from pathlib import Path
+from typing import List
 import json
 import math
 
@@ -39,12 +43,8 @@ from database.main import *
 
 # --------------------------------------------- LOAD DATA --------------------------------------------- #
 
-with open(f'db/radio.json', 'r', encoding='utf-8') as file:
-    radio_dict = json.load(file)
-
-with open(f'db/languages.json', 'r', encoding='utf-8') as file:
-    languages_dict = json.load(file)
-    authorized_users += [my_id, 349164237605568513]
+from utils.global_vars import radio_dict, languages_dict, sound_effects
+authorized_users += [my_id, 349164237605568513]
 
 # --------------------------------------------- FUNCTIONS --------------------------------------------- #
 
@@ -146,11 +146,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{file_path}'
 from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy(app, model_class=Base)
 
-try:
-    discord_commands = get_bot_commands()
-except ConnectionRefusedError:
-    discord_commands = []
-
 @app.route('/favicon.ico')
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon/favicon.ico', mimetype='image/vnd.microsoft.icon')
@@ -164,14 +159,14 @@ def inject_data():
                 len=len,
                 vars=vars,
                 dict=dict,
+                enumerate=enumerate,
                 txt=txtf,
                 get_username=get_username,
                 struct_to_time=struct_to_time,
                 convert_duration=convert_duration,
                 video_time_from_start=video_time_from_start,
                 check_isdigit=check_isdigit,
-                ceil=math.ceil,
-                discord_commands=discord_commands
+                ceil=math.ceil
                 )
 
 @app.before_request
@@ -183,17 +178,13 @@ def make_session_permanent():
 #     ses.remove()
 
 # -------------------------------------------------- Index page --------------------------------------------------------
+
 @app.route('/')
 async def index_page():
     log(request.remote_addr, request.full_path, log_type='ip')
     user = flask_session.get('discord_user', {})
 
     return render_template('nav/index.html', user=user)
-
-# @app.route('/socket')
-# async def socket_page():
-#     log(request.remote_addr, request.full_path, log_type='ip')
-#     return render_template('nav/socket.html')
 
 @app.route('/about')
 async def about_page():
@@ -441,20 +432,10 @@ async def htmx_queue(guild_id):
         #     log(web_data, 'web_options', [request.form], log_type='web', author=web_data.author)
         #     execute_function('web_user_options_edit', web_data=web_data, form=request.form)
 
-        if 'ytURL' in keys:
-            var = request.args.get('ytURL')
+        if 'add' in keys:
+            var = request.args.get('var')
             log(web_data, 'queue_command_def', {'var': var}, log_type='web', author=web_data.author)
             execute_function('queue_command_def', web_data=web_data, url=var)
-        if 'radio-checkbox' in keys:
-            var = request.args.get('var')
-            radio_name = None
-            for radio in list(radio_dict.values())[:-1]:
-                if radio['id'] == str(var) or int(radio['id']) == int(var) or radio['name'] == var:
-                    radio_name = radio['name']
-                    break
-
-            log(web_data, 'web_queue_from_radio', {'var': var}, log_type='web', author=web_data.author)
-            execute_function('web_queue_from_radio', web_data=web_data, radio_name=radio_name)
 
         if 'loadName' in keys:
             load_name = request.args.get('loadName')
@@ -521,10 +502,17 @@ async def htmx_modal(guild_id):
         return abort(403)
 
     modal_type = request.args.get('type')
-    if modal_type == 'addToModal':
-        return render_template('main/htmx/modals/addToModal.html', gi=int(guild_id), key=key)
-    if modal_type == 'addToModalRadio':
-        return render_template('main/htmx/modals/addToModalRadio.html', gi=int(guild_id), radios=list(list(radio_dict.values())[:-1]), key=key)
+    if modal_type == 'queue1Modal':
+        return render_template('main/htmx/modals/queue/queue1Modal.html', gi=int(guild_id), key=key)
+    if modal_type == 'queue2Modal':
+        return render_template('main/htmx/modals/queue/queue2Modal.html', gi=int(guild_id), key=key)
+    if modal_type == 'queue3Modal':
+        return render_template('main/htmx/modals/queue/queue3Modal.html', gi=int(guild_id), key=key)
+    if modal_type == 'queue4Modal':  # local radio
+        return render_template('main/htmx/modals/queue/queue4Modal.html', gi=int(guild_id), key=key, radios=list(list(radio_dict.values())[:-1]))
+    if modal_type == 'queue5Modal':  # local files
+        return render_template('main/htmx/modals/queue/queue5Modal.html', gi=int(guild_id), key=key, files=sound_effects, logo=vlc_logo)
+
     if modal_type == 'joinModal':
         return render_template('main/htmx/modals/joinModal.html', gi=int(guild_id), guild=guild_object, key=key)
     if modal_type == 'loadModal':
@@ -557,50 +545,31 @@ async def htmx_modal(guild_id):
 
     return abort(404)
 
-# -------------------------------------------------- Web Sockets -------------------------------------------------------
+@app.route('/guild/<int:guild_id>/search')
+async def htmx_search(guild_id):
+    db_key = flask_guild_data_key(db, guild_id)
+    key = request.args.get('key')
+    if key != db_key:
+        return abort(403)
 
-# @sock.route('/guild/<int:guild_id>/update')
-# def update_socket(ws, guild_id):
-#     try:
-#         guild_id = int(guild_id)
-#     except (ValueError, TypeError):
-#         return
-#
-#     ws.send(json.dumps({'update': False, 'last_updated': int(time())}))
-#
-#     last_updated = int(time())
-#     while True:
-#         with app.app_context():
-#             last_updated_db = int(flask_guild_options_last_updated(db, guild_id))
-#
-#         print(f'last_updated: {last_updated}, last_updated_db: {last_updated_db}')
-#
-#         if last_updated_db > last_updated:
-#             print('update')
-#             last_updated = last_updated_db
-#             ws.send(json.dumps({'update': True, 'last_updated': last_updated}))
-#         sleep(1)
+    act = request.args.get('act')
+    if act == 'youtube':
+        results: List[WebSearchResult] = await query_autocomplete_def(None, query=request.args.get('var'), include_youtube=True, raw=True)
+    elif act == 'tunein':
+        results: List[WebSearchResult] = await query_autocomplete_def(None, query=request.args.get('var'), include_tunein=True, raw=True)
+    elif act == 'radio':
+        results: List[WebSearchResult] = await query_autocomplete_def(None, query=request.args.get('var'), include_radio=True, raw=True)
+    elif act == 'garden':
+        results: List[WebSearchResult] = await query_autocomplete_def(None, query=request.args.get('var'), include_garden=True, raw=True)
+    elif act == 'local':
+        results: List[WebSearchResult] = await query_autocomplete_def(None, query=request.args.get('var'), include_local=True, raw=True)
+    else:
+        return abort(404)
 
+    if not results:
+        return abort(404)
 
-# @socketio.on('/guild/<int:guild_id>/update')
-# async def update_socket(guild_id):
-#     try:
-#         guild_id = int(guild_id)
-#     except (ValueError, TypeError):
-#         return
-#
-#     def respond_to_client():
-#         last_updated = int(time())
-#         while True:
-#             with app.app_context():
-#                 last_updated_db = int(flask_guild_options_last_updated(db, guild_id))
-#             if last_updated_db > last_updated:
-#                 last_updated = last_updated_db
-#                 response = {'update': True, 'last_updated': last_updated}
-#                 emit('update', response)
-#             sleep(0.5)
-#
-#     return Response(respond_to_client(), mimetype='text/event-stream')
+    return render_template('main/htmx/search.html', gi=int(guild_id), key=key, results=results)
 
 @app.route('/guild/<int:guild_id>/update')
 async def update_page(guild_id):

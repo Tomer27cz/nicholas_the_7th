@@ -939,6 +939,15 @@ input.radio-checkbox[type=radio] + label {
     height: auto;
 }
 
+/* Search */
+.search-placeholder {
+    padding-bottom: 15rem;
+}
+
+.flex-no-wrap {
+    flex-wrap: nowrap;
+}
+
 
 
 

@@ -1,9 +1,12 @@
-from classes.data_classes import Guild, GuildData, Options
+from classes.data_classes import Guild, GuildData, Options, DiscordCommand
+from classes.typed_dictionaries import DiscordCommandDict
 
 import database.guild as guild
+import utils.bot
 
 from utils.log import log
 from utils.global_vars import GlobalVars
+from typing import List
 
 from time import time
 
@@ -77,3 +80,17 @@ def push_update(glob: GlobalVars, guild_id: int):
     with glob.ses.no_autoflush:
         glob.ses.query(Options).filter(Options.id == guild_id).first().last_updated = int(time())
     glob.ses.commit()
+
+def update_db_commands(glob: GlobalVars):
+    """
+    Updates the database with the current commands
+    :param glob: GlobalVars
+    :return: None
+    """
+    discord_commands: List[DiscordCommandDict] = utils.bot.get_commands(glob)
+
+    for command in discord_commands:
+        db_command = glob.ses.query(DiscordCommand).filter(DiscordCommand.name == command['name']).first()
+        if db_command:
+            glob.ses.delete(db_command)
+        glob.ses.add(DiscordCommand(command['name'], command['description'], command['category'], command['attributes']))

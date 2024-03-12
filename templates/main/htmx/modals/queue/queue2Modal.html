@@ -1,0 +1,47 @@
+<div class="modal-content" id="queue2Modal_content">
+  <div class="modal-header">
+    <nav>
+      <ul class="pagination justify-content-center" style="margin-bottom: 0">
+        <li class="page-item" style="cursor: pointer">
+          <a class="page-link" data-bs-target="#queue1Modal" data-bs-toggle="modal">Youtube</a>
+        </li>
+        <li class="page-item"><a class="page-link active">TuneIn.com</a></li>
+        <li class="page-item" style="cursor: pointer">
+          <a class="page-link" data-bs-target="#queue3Modal" data-bs-toggle="modal">Radio.garden</a>
+        </li>
+        <li class="page-item" style="cursor: pointer">
+          <a class="page-link" data-bs-target="#queue4Modal" data-bs-toggle="modal">Radia.cz</a>
+        </li>
+        <li class="page-item" style="cursor: pointer">
+          <a class="page-link" data-bs-target="#queue5Modal" data-bs-toggle="modal">Local Files</a>
+        </li>
+      </ul>
+    </nav>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  </div>
+
+  <!-- Modal Body -->
+  <div class="modal-body">
+    <div class="mb-3">
+      <label for="queue2_search" class="form-label">{{ txt(lang, 'Search on TuneIn') }}</label>
+      <input type="search" name="var" class="form-control" id="queue2_search" hx-target="#queue2_results"
+             placeholder="{{ txt(lang, 'Search on TuneIn') }}" hx-trigger="keyup[keyCode==13]"
+             hx-get="/guild/{{ gi }}/search?act=tunein&key={{ key }}" hx-swap="innerHTML" hx-indicator="#queue2_spinner">
+    </div>
+    <div class="text-center"><div id="queue2_spinner" class="spinner-border text-primary htmx-indicator" role="status" style="width: 2rem; height: 2rem;"></div></div>
+    <div id="queue2_results">
+      {% for i in range(5) %}
+      <div class="q-container"></div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Modal Footer -->
+  <div class="modal-footer">
+    <button type="button" class="btn btn-dark" data-bs-dismiss="modal">{{ txt(lang, 'Close') }}</button>
+{#    <button type="submit" class="btn btn-primary" id="addToModal_submit"#}
+{#            hx-trigger="click throttle:1s" hx-target="#q-main" hx-swap="outerHTML"#}
+{#            hx-get="/guild/{{ gi }}/queue?act=ytURL&key={{ key }}" hx-include="#ytURL" hx-validate="#ytForm"#}
+{#    >{{ txt(lang, 'Add') }}</button>#}
+  </div>
+</div>

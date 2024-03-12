@@ -239,10 +239,10 @@
         <a class="btn btn-primary" href="/admin/guild/{{ gi }}/saves">{{ txt(lang, 'Edit') }}</a>
       {% endif %}
     </div>
-    <a class="q-top-add btn btn-dark" data-bs-toggle="modal" data-bs-target="#addToModal"
-       hx-get="/guild/{{ gi }}/modals?type=addToModal&key={{ key }}"
-       hx-trigger="click once" hx-target="#addToModal_content" hx-swap="outerHTML"
-       title="{{ txt(lang, 'Add to queue') }}" hx-indicator="#addToModal_spinner">
+    <a class="q-top-add btn btn-dark" data-bs-toggle="modal" data-bs-target="#queue1Modal"
+       hx-get="/guild/{{ gi }}/modals?type=queue1Modal&key={{ key }}"
+       hx-trigger="click once" hx-target="#queue1Modal_content" hx-swap="outerHTML"
+       title="{{ txt(lang, 'Add to queue') }}" hx-indicator="#queue1Modal_spinner">
       <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-plus-lg"
            viewBox="0 0 16 16">
         <path fill-rule="evenodd"
@@ -274,25 +274,57 @@
   {% include "main/htmx/queue_dynamic.html" %}
 
   <!-- Modals -->
-
-  <div class="modal fade" id="addToModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
+  <!-- Queue1 -->
+  <div class="modal fade" id="queue1Modal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
        aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-      <div class="modal-content" id="addToModal_content">
-        <div class="text-center"><div id="addToModal_spinner" class="spinner-border text-primary htmx-indicator" role="status" style="width: 2rem; height: 2rem;"></div></div>
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content" id="queue1Modal_content" hx-get="/guild/{{ gi }}/modals?type=queue1Modal&key={{ key }}"
+       hx-trigger="intersect once" hx-target="#queue1Modal_content" hx-swap="outerHTML" hx-indicator="#queue1Modal_spinner">
+        <div class="text-center"><div id="queue1Modal_spinner" class="spinner-border text-primary htmx-indicator" role="status" style="width: 2rem; height: 2rem;"></div></div>
       </div>
     </div>
   </div>
-
-  <div class="modal" id="addToModalRadio" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
+  <!-- Queue2 -->
+  <div class="modal fade" id="queue2Modal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
        aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl r-modal">
-      <div class="modal-content" id="addToModalRadio_content">
-        <div class="text-center"><div id="addToModalRadio_spinner" class="spinner-border text-primary htmx-indicator" role="status" style="width: 2rem; height: 2rem;"></div></div>
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content" id="queue2Modal_content" hx-get="/guild/{{ gi }}/modals?type=queue2Modal&key={{ key }}"
+       hx-trigger="intersect once" hx-target="#queue2Modal_content" hx-swap="outerHTML" hx-indicator="#queue2Modal_spinner">
+        <div class="text-center"><div id="queue2Modal_spinner" class="spinner-border text-primary htmx-indicator" role="status" style="width: 2rem; height: 2rem;"></div></div>
       </div>
     </div>
   </div>
-
+  <!-- Queue3 -->
+  <div class="modal fade" id="queue3Modal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
+       aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content" id="queue3Modal_content" hx-get="/guild/{{ gi }}/modals?type=queue3Modal&key={{ key }}"
+       hx-trigger="intersect once" hx-target="#queue3Modal_content" hx-swap="outerHTML" hx-indicator="#queue3Modal_spinner">
+        <div class="text-center"><div id="queue3Modal_spinner" class="spinner-border text-primary htmx-indicator" role="status" style="width: 2rem; height: 2rem;"></div></div>
+      </div>
+    </div>
+  </div>
+  <!-- Queue4 -->
+  <div class="modal fade" id="queue4Modal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
+       aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content" id="queue4Modal_content" hx-get="/guild/{{ gi }}/modals?type=queue4Modal&key={{ key }}"
+       hx-trigger="intersect once" hx-target="#queue4Modal_content" hx-swap="outerHTML" hx-indicator="#queue4Modal_spinner">
+        <div class="text-center"><div id="queue4Modal_spinner" class="spinner-border text-primary htmx-indicator" role="status" style="width: 2rem; height: 2rem;"></div></div>
+      </div>
+    </div>
+  </div>
+  <!-- Queue5 -->
+  <div class="modal fade" id="queue5Modal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
+       aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content" id="queue5Modal_content" hx-get="/guild/{{ gi }}/modals?type=queue5Modal&key={{ key }}"
+       hx-trigger="intersect once" hx-target="#queue5Modal_content" hx-swap="outerHTML" hx-indicator="#queue5Modal_spinner">
+        <div class="text-center"><div id="queue5Modal_spinner" class="spinner-border text-primary htmx-indicator" role="status" style="width: 2rem; height: 2rem;"></div></div>
+      </div>
+    </div>
+  </div>
+  <!-- Join -->
   <div class="modal fade" id="joinModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="joinLabel"
        aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
@@ -301,7 +333,7 @@
       </div>
     </div>
   </div>
-
+  <!-- Load -->
   <div class="modal fade" id="loadModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="loadLabel" aria-modal="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content" id="loadModal_content">
@@ -309,7 +341,7 @@
       </div>
     </div>
   </div>
-
+  <!-- Options -->
   <div class="modal fade" id="optionsModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="optionsLabel"
        aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg r-modal">
@@ -318,7 +350,7 @@
       </div>
     </div>
   </div>
-
+  <!-- Save -->
   <div class="modal fade" id="saveModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="saveLabel"
        aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">

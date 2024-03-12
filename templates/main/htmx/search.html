@@ -1,0 +1,20 @@
+{% for result in results %}
+<div class="q-container">
+  <div class="q-div flex-no-wrap">
+    <img loading="lazy" class="q-img" src="{{ result['picture'] }}" alt="thumbnail" height="1rem">
+    <div class="q-item1 q-wa q-self-center q-items-center"><h4>{{ result['title'] }}</h4></div>
+    <div class="q-item0 q-wa q-self-center q-items-center">
+      <button class="btn btn-outline btn-primary btn-lg btn-m" type="button" data-bs-toggle="modal"
+              hx-trigger="click throttle:1s" hx-swap="outerHTML" hx-target="#q-main"
+              hx-get="/guild/{{ gi }}/queue?act=add&key={{ key }}&var={{ result['value'] }}"
+      ><h5>{{ txt(lang, 'Add') }}</h5></button>
+    </div>
+  </div>
+</div>
+{% endfor %}
+
+{% if not results %}
+{% for i in range(5) %}
+<div class="q-container"></div>
+{% endfor %}
+{% endif %}

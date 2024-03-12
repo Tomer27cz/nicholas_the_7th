@@ -5,6 +5,7 @@ from commands.autocomplete import *
 from utils.discord import get_content_of_message
 from utils.log import send_to_admin
 from utils.json import *
+from utils.save import update_db_commands
 
 from ipc.server import ipc_run
 
@@ -63,6 +64,8 @@ class Bot(dc_commands.Bot):
             log(None, "Trying to sync commands")
             await self.tree.sync()
             log(None, f"Synced slash commands for {self.user}")
+            update_db_commands(glob)
+            log(None, "Updated database commands")
         await bot.change_presence(activity=discord.Game(name=f"/help"))
         log(None, f'Logged in as:\n{bot.user.name}\n{bot.user.id}')
 

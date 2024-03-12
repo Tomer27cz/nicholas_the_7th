@@ -3,7 +3,9 @@ from database.main import *
 from utils.global_vars import GlobalVars
 
 from time import time
+from typing import List
 import random
+import json
 
 class Guild(Base):
     """
@@ -265,3 +267,25 @@ class TorturedUser(Base):
         self.guild_id: int = guild_id
         self.user_id: int = user_id
         self.torture_delay: int = torture_delay
+
+class DiscordCommand(Base):
+    """
+    Data class for storing discord commands
+    :type name: str
+    :type description: str
+    :type category: str
+    :type attributes: List[dict]
+    """
+    __tablename__ = 'discord_commands'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    description = Column(String)
+    category = Column(String)
+    attributes = Column(JSON)
+
+    def __init__(self, name: str, description: str, category: str, attributes: List[dict]):
+        self.name: str = name
+        self.description: str = description
+        self.category: str = category
+        self.attributes: str = json.dumps(attributes)
