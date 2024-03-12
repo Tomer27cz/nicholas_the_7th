@@ -1,4 +1,4 @@
-[![Icon](https://raw.githubusercontent.com/Tomer27cz/discord_bot_stanley_the_7th/master/.github/icon.svg)](#readme)
+[![Icon](https://raw.githubusercontent.com/Tomer27cz/nicholas_the_7th/master/.github/icon.svg)](#readme)
 
 ## About
 
@@ -6,7 +6,7 @@ This is a discord bot that I made for a few discord servers. It is a work in pro
 
 It is not meant to be used by anyone else, but if you want to use it, feel free to do so.
 
-[![Dashboard](https://raw.githubusercontent.com/Tomer27cz/discord_bot_stanley_the_7th/master/.github/dashboard.png)](#readme)
+[![Dashboard](https://raw.githubusercontent.com/Tomer27cz/nicholas_the_7th/master/.github/dashboard.png)](#readme)
 
 ## [Invite](https://discord.com/api/oauth2/authorize?client_id=1007004463933952120&permissions=3198017&scope=bot)
 
@@ -14,65 +14,41 @@ The bot is currently hosted by me. So if you want to, you can [Invite](https://d
 
 ## [Setup Guide](.github/SETUP.md)
 
-## Configuration - config.py
+## Music
 
-- Create a file called `config.py` in the main directory
-```python
-# Description: Configuration file for the bot
-# Discord
-CLIENT_ID = 'YOUR_CLIENT_ID' # This is your bots id
-OWNER_ID = 'YOUR_USER_ID' # This is your user id
-BOT_TOKEN = 'YOUR_BOT_TOKEN' # This is the token for the bot
-CLIENT_SECRET = "YOUR_CLIENT_SECRET" # This is the client secret for the bot
+`YouTube`, `SoundCloud`, and `Spotify` music streaming. You can also search for music and create playlists.
 
-# Prefix
-PREFIX = "ncl." # This is the prefix for the bot
+##### Radio
 
-# Authorised Users
-AUTHORIZED_USERS = [416254812339044365, 349164237605568513] # This is a list of authorised users (add your user id here - not required)
+`radia.cz`, `radio.garden` and `tunein.com` radio streaming.
 
-# Discord Invite
-PERMISSIONS = 3198017 # This is the permissions for the bot
-INVITE_URL = f"https://discord.com/api/oauth2/authorize?client_id={CLIENT_ID}&permissions={PERMISSIONS}&scope=bot" # a discord invite url
+### Live Search
 
-# Discord OAuth2
-REDIRECT_URI = "https://YOUR_WEBSITE:5420/login" # http://127.0.0.1:5420/login is the default redirect uri for the flask server
-DISCORD_LOGIN_URL = f"https://discord.com/api/oauth2/authorize?client_id={CLIENT_ID}&redirect_uri={REDIRECT_URI}&response_type=code&scope=identify%20guilds" # identify guilds - scopes are required for the bot to work
-DISCORD_API_ENDPOINT = 'https://discord.com/api/v10' # This is the discord api endpoint (more recent version may be available)
+![youtube_search.gif](https://raw.githubusercontent.com/Tomer27cz/nicholas_the_7th/master/.github/youtube_search.gif) ![radio_search.gif](https://raw.githubusercontent.com/Tomer27cz/nicholas_the_7th/master/.github/radio_search.gif)
 
-# Web
-WEB_SECRET_KEY = '!secret!' # This is the secret key for the flask server
-WEB_URL = 'YOUR_WEB_URL' # This is the url for the flask server (http://127.0.0.1:5420 is the default url)
+# [More in Screenshots](.github/SCREENSHOTS.md)
 
-# Spotify
-SPOTIFY_CLIENT_ID='YOUR_SPOTIFY_CLIENT_ID' # This is the client id for the spotify api
-SPOTIFY_CLIENT_SECRET='YOUR_SPOTIFY_CLIENT_SECRET' # This is the client secret for the spotify api
-SPOTIFY_REDIRECT_URI='https://localhost:8888/callback' # This is the redirect uri for the spotify api
 
-# SoundCloud
-SOUNDCLOUD_CLIENT_ID = 'YOUR_SOUNDCLOUD_ID' # SoundCloud ID (you can use your accounts id -> developer tools)
+[//]: # (## Credits)
 
-# Parent Directory
-# For docker, set this to /app/
-PARENT_DIR = r'' # Leave blank if running from root directory (has to be absolute path and have / at the end)
+[//]: # ()
+[//]: # (- [discord.py]&#40;https://github.com/Rapptz/discord.py&#41; by Rapptz)
 
-# Default Values
-DEFAULT_DISCORD_AVATAR = "https://cdn.discordapp.com/embed/avatars/0.png"
-VLC_LOGO = "https://cdn.discordapp.com/attachments/892403162315644931/1008054767379030096/vlc.png"
-DEVELOPER_ID = 349164237605568513
-```
+[//]: # (- [flask]&#40;https://github.com/pallets/flask&#41; by pallets)
 
-## Credits
+[//]: # (- [yt-dlp]&#40;https://github.com/yt-dlp/yt-dlp&#41;)
 
-- [discord.py](https://github.com/Rapptz/discord.py) by Rapptz
-- [flask](https://github.com/pallets/flask) by pallets
-- [yt-dlp](https://github.com/yt-dlp/yt-dlp)
-- [youtube-search-python](https://github.com/alexmercerind/youtube-search-python) by alexmercerind
-- [requests](https://github.com/psf/requests) by psf
-- [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/) by Leonard Richardson
-- [spotipy](https://github.com/spotipy-dev/spotipy)
-- [soundcloud-lib](https://github.com/3jackdaws/soundcloud-lib) by 3jackdaws
-- [DiscordChatExporterPy](https://github.com/mahtoid/DiscordChatExporterPy) by mahtoid
+[//]: # (- [youtube-search-python]&#40;https://github.com/alexmercerind/youtube-search-python&#41; by alexmercerind)
+
+[//]: # (- [requests]&#40;https://github.com/psf/requests&#41; by psf)
+
+[//]: # (- [BeautifulSoup]&#40;https://www.crummy.com/software/BeautifulSoup/&#41; by Leonard Richardson)
+
+[//]: # (- [spotipy]&#40;https://github.com/spotipy-dev/spotipy&#41;)
+
+[//]: # (- [soundcloud-lib]&#40;https://github.com/3jackdaws/soundcloud-lib&#41; by 3jackdaws)
+
+[//]: # (- [DiscordChatExporterPy]&#40;https://github.com/mahtoid/DiscordChatExporterPy&#41; by mahtoid)
 
 ## License
 

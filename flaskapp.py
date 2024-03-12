@@ -144,8 +144,12 @@ file_path = os.path.join(os.path.abspath(os.getcwd()), 'db', 'database.db')
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{file_path}'
 
 from flask_sqlalchemy import SQLAlchemy
-
 db = SQLAlchemy(app, model_class=Base)
+
+try:
+    discord_commands = get_bot_commands()
+except ConnectionRefusedError:
+    discord_commands = []
 
 @app.route('/favicon.ico')
 def favicon():
@@ -167,6 +171,7 @@ def inject_data():
                 video_time_from_start=video_time_from_start,
                 check_isdigit=check_isdigit,
                 ceil=math.ceil,
+                discord_commands=discord_commands
                 )
 
 @app.before_request

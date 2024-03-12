@@ -50,8 +50,6 @@ async def play_def(ctx, glob: GlobalVars,
         #     await now_to_history(glob, guild_id)
         return ReturnData(False, txt(guild_id, glob, "Stopped play next loop"))
 
-    p_id = player_id if player_id else random.choice([i for i in range(0, 9) if i not in [db_guild.options.player_id]])
-    db_guild.options.player_id = p_id
     voice = guild_object.voice_client
 
     if not voice:
@@ -155,6 +153,10 @@ async def play_def(ctx, glob: GlobalVars,
     if not force:
         db_guild.options.stopped = False
         glob.ses.commit()
+
+    # Set new player id
+    p_id = player_id if player_id else random.choice([i for i in range(0, 9) if i not in [db_guild.options.player_id]])
+    db_guild.options.player_id = p_id
 
     try:
         source, chapters = await GetSource.create_source(glob, guild_id, stream_url, source_type=video.class_type, video_class=video)

@@ -1,6 +1,6 @@
 # Nicholas the 7th - New Instance
 
-This is a setup guide for `Linux (Ubuntu)`. It is not meant to be used by anyone else, but if you want to use it, feel free to do so.
+This is a setup guide for `Linux (Ubuntu)`. This is just a guide for future me, but if you want to use it, feel free to do so. 
 
 Main [README.md](../README.md)
 
@@ -22,10 +22,7 @@ Main [README.md](../README.md)
 
 Create a folder for the bot (I am using `/var/www/` - the same as apache2)
 ```bash
-mkdir /var/www/
-```
-```bash
-cd /var/www/
+mkdir /path_to_directory 
 ```
 Clone the [nicholas_the_7th](https://github.com/Tomer27cz/nicholas_the_7th) repository
 ```bash
@@ -41,15 +38,81 @@ cd bot
 ```
 Give permissions to the folder
 ```bash
-chmod -R 777 /var/www/bot
+chmod -R 777 /path_to_directory
 ```
+
+### Discord Developer Portal
+- Go to the [Discord Developer Portal](https://discord.com/developers/applications)
+- Create a new application
+
+##### Bot tab
+- Create a new bot
+- Copy the `BOT_TOKEN`
+- Check all the Privileged Gateway Intents
+
+##### OAuth2 tab
+- Copy the `CLIENT_ID` and `CLIENT_SECRET`
+- Go to the OAuth2 tab and add the redirect uri ```http://YOUR_WEBSITE/login```
+
+##### Optional
+- Add a bot icon
+- Add a bot description
+
+
+- In the OAuth2 tab under Default Authorization Link, check `In-App Authorization` (this will show a button in the bot profile)
+- Scopes: `bot` and `application.commands`
+- Bot Permissions: `Administrator` or 
+>`Create Instant Invide`, `Read Messages/View Channels`, `Send Messages`, `Send Messages in Threads`, `Embed Links`, `Attach Files`, `Read Message History`, `Add Reactions`, `Use Slash Commands`, `Connect`, `Speak`
 
 ### Config setup
 
 If you have a config file, you can just copy it to the main directory. If not, you can create one.
 
-- ``nano config.py`` - Create a config file
-- Copy the config from ``README.md`` and fill it out
+- Create a file called `config.py` in the main directory
+```python
+# Description: Configuration file for the bot
+# Discord
+CLIENT_ID = 'YOUR_CLIENT_ID' # This is your bots id
+OWNER_ID = 'YOUR_USER_ID' # This is your user id
+BOT_TOKEN = 'YOUR_BOT_TOKEN' # This is the token for the bot
+CLIENT_SECRET = "YOUR_CLIENT_SECRET" # This is the client secret for the bot
+
+# Prefix
+PREFIX = "ncl." # This is the prefix for the bot
+
+# Authorised Users
+AUTHORIZED_USERS = [416254812339044365, 349164237605568513] # This is a list of authorised users (add your user id here - not required)
+
+# Discord Invite
+PERMISSIONS = 3198017 # This is the permissions for the bot
+INVITE_URL = f"https://discord.com/api/oauth2/authorize?client_id={CLIENT_ID}&permissions={PERMISSIONS}&scope=bot" # a discord invite url
+
+# Discord OAuth2
+REDIRECT_URI = "https://YOUR_WEBSITE/login" # The address you added to the discord developer portal
+DISCORD_LOGIN_URL = f"https://discord.com/api/oauth2/authorize?client_id={CLIENT_ID}&redirect_uri={REDIRECT_URI}&response_type=code&scope=identify%20guilds" # identify guilds - scopes are required for the bot to work
+DISCORD_API_ENDPOINT = 'https://discord.com/api/v10' # This is the discord api endpoint (more recent version may be available)
+
+# Web
+WEB_SECRET_KEY = '!secret!' # This is the secret key for the flask server
+WEB_URL = 'YOUR_WEB_URL' # This is the url for the flask server (http://127.0.0.1:5420 is the default url)
+
+# Spotify
+SPOTIFY_CLIENT_ID='YOUR_SPOTIFY_CLIENT_ID' # This is the client id for the spotify api
+SPOTIFY_CLIENT_SECRET='YOUR_SPOTIFY_CLIENT_SECRET' # This is the client secret for the spotify api
+SPOTIFY_REDIRECT_URI='https://localhost:8888/callback' # This is the redirect uri for the spotify api
+
+# SoundCloud
+SOUNDCLOUD_CLIENT_ID = 'YOUR_SOUNDCLOUD_ID' # SoundCloud ID (you can use your accounts id -> developer tools)
+
+# Parent Directory
+# For docker, set this to /app/
+PARENT_DIR = r'' # Leave blank if running from root directory (has to be absolute path and have / at the end)
+
+# Default Values
+DEFAULT_DISCORD_AVATAR = "https://cdn.discordapp.com/embed/avatars/0.png"
+VLC_LOGO = "https://cdn.discordapp.com/attachments/892403162315644931/1008054767379030096/vlc.png" # You can use your own logo (used when displaying local sound or url probe)
+DEVELOPER_ID = 349164237605568513
+```
 
 ### Copy database
 
@@ -66,7 +129,7 @@ If you have an existing database from a previous instance, you can just copy it 
 
 The bot can be run two ways. 
 
-- [Docker](#docker-setup) (I am currently using this method)) 
+- [Docker](#docker-setup) (I am currently using this method)
 - [Apache2](#apache2-setup) (I had some problems with wsgi using the wrong python version)
 
 # Docker setup
@@ -81,10 +144,6 @@ The bot can be run two ways.
 `cd /var/www/bot_docker`~~
 
 ### Docker compose
-
-```bash
-cd /var/www/bot
-```
 
 Build the containers - this will take a while
 ```bash
@@ -162,7 +221,7 @@ docker compose start
 Idk witch one to use
 ```
 <VirtualHost *>
-    ServerAdmin tomer19cz@gmial.com
+    ServerAdmin example@email.com
     ServerName localhost
     ErrorLog /var/www/bot/log/apache_error.log
     CustomLog /var/www/bot/log/apache_access.log combined
@@ -177,7 +236,7 @@ Idk witch one to use
 ```
 <VirtualHost *:80>
     ServerName ip
-    ServerAdmin tomer19cz@gmial.com
+    ServerAdmin example@email.com
     WSGIScriptAlias / /var/www/bot/server.wsgi
     <Directory /var/www/bot/>
     	Order allow,deny

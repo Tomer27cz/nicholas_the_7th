@@ -97,6 +97,17 @@ def get_guild_bot_status(guild_id: int):
     }
     # send argument dictionary
     return send_arg(arg_dict)
+def get_bot_commands():
+    """
+    Get the bot commands list
+    :return: list - list of commands
+    """
+    arg_dict = {
+        'type': 'get_data',
+        'data_type': 'bot_commands'
+    }
+    # send argument dictionary
+    return send_arg(arg_dict)
 
 # Guild Voice Channel
 def get_guild_voice_channels(guild_id: int):

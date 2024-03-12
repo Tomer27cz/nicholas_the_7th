@@ -351,6 +351,33 @@ async def execute_get_data(request_dict, glob: GlobalVars):
         return guilds_status
     elif data_type == 'guild_bot_status':
         return get_guild_bot_status(glob, request_dict['guild_id'])
+    elif data_type == 'bot_commands':
+        command_list = []
+        for command in glob.bot.commands:
+            if command.hidden:
+                continue
+
+            attrs = []
+            # noinspection PyProtectedMember
+            for key, value in command.app_command._params.items():
+                attrs.append({
+                    'name': key,
+                    'description': value.description,
+                    'required': value.required,
+                    'default': value.default,
+                    'type': value.type
+                })
+
+            command_dict = {
+                'name': command.name,
+                'description': command.description,
+                'category': command.extras.get('category', 'No category'),
+                'attributes': attrs
+            }
+
+            command_list.append(command_dict)
+
+        return command_list
     else:
         print(f'Unknown data type: {data_type}', file=sys.stderr, flush=True)
 
