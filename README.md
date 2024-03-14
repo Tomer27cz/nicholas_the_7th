@@ -24,7 +24,7 @@ The bot is currently hosted by me. So if you want to, you can [Invite](https://d
 
 ### Live Search
 
-![youtube_search.gif](https://raw.githubusercontent.com/Tomer27cz/nicholas_the_7th/master/.github/youtube_search.gif) ![radio_search.gif](https://raw.githubusercontent.com/Tomer27cz/nicholas_the_7th/master/.github/radio_search.gif)
+![youtube_search.gif](https://raw.githubusercontent.com/Tomer27cz/nicholas_the_7th/master/.github/youtube_search.gif)
 
 # [More in Screenshots](.github/SCREENSHOTS.md)
 
