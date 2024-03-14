@@ -313,6 +313,31 @@ def video_class_time(self, glob: GlobalVars or None=None) -> str:
 
     return f'{convert_duration(elapsed_time)} / {convert_duration(duration)}'
 
+def video_to_json(self) -> dict:
+    """
+    Returns video data as json
+    @param self: VideoClass object child
+    @return: dict - video data
+    """
+    return {
+        'class_type': self.class_type,
+        'author': self.author,
+        'guild_id': self.guild_id,
+        'url': self.url,
+        'title': self.title,
+        'picture': self.picture,
+        'duration': self.duration,
+        'channel_name': self.channel_name,
+        'channel_link': self.channel_link,
+        'radio_info': self.radio_info,
+        'local_number': self.local_number,
+        'created_at': self.created_at,
+        'played_duration': self.played_duration,
+        'chapters': self.chapters,
+        'stream_url': self.stream_url,
+        'discord_channel': self.discord_channel
+    }
+
 # Video Classes
 
 # class VideoClass(Base):
@@ -469,6 +494,9 @@ class Queue(Base):
     def time(self, glob: GlobalVars or None=None):
         return video_class_time(self, glob)
 
+    def to_json(self):
+        return video_to_json(self)
+
 class NowPlaying(Base):
     """
     Stores all the data for each video
@@ -549,6 +577,9 @@ class NowPlaying(Base):
     def time(self, glob: GlobalVars or None=None):
         return video_class_time(self, glob)
 
+    def to_json(self):
+        return video_to_json(self)
+
 class History(Base):
     """
     Stores all the data for each video
@@ -628,6 +659,9 @@ class History(Base):
 
     def time(self, glob: GlobalVars or None=None):
         return video_class_time(self, glob)
+
+    def to_json(self):
+        return video_to_json(self)
 
 class SaveVideo(Base):
     """
@@ -712,6 +746,9 @@ class SaveVideo(Base):
 
     def time(self, glob: GlobalVars or None=None):
         return video_class_time(self, glob)
+
+    def to_json(self):
+        return video_to_json(self)
 
 # Transforms
 

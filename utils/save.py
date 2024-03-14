@@ -1,4 +1,4 @@
-from classes.data_classes import Guild, GuildData, Options, DiscordCommand
+from classes.data_classes import Guild, DiscordCommand
 from classes.typed_dictionaries import DiscordCommandDict
 
 import database.guild as guild
@@ -6,7 +6,7 @@ import utils.bot
 
 from utils.log import log
 from utils.global_vars import GlobalVars
-from typing import List
+from typing import List, Literal
 
 from time import time
 
@@ -52,14 +52,12 @@ def _update_guilds(glob: GlobalVars):
                 log(None, f'Marked guild as connected: {guild_object.id} = {guild_object.data.name}')
                 guild_object.connected = True
 
-        guild_data_object = glob.ses.query(GuildData).filter(GuildData.id == guild_id).first()
+        guild_object = glob.ses.query(Guild).filter(Guild.id == guild_id).first()
+        guild_data_object = guild_object.data
         if guild_data_object is None:
             continue
 
-        if not isinstance(guild_data_object.last_updated, int):
-            guild_data_object.renew(glob)
-
-        if guild_data_object.last_updated < int(time()) - 3600:
+        if guild_object.last_updated['data'] < int(time()) - 3600:
             guild_data_object.renew(glob)
 
 
@@ -69,16 +67,29 @@ def _update_guilds(glob: GlobalVars):
         # db_g_data = ses.query(GuildData).filter(GuildData.id == guild_id).first()
         # print(db_g_data)
 
-def push_update(glob: GlobalVars, guild_id: int):
+def push_update(glob: GlobalVars, guild_id: int, update_type: List[Literal['queue', 'now', 'history', 'saves', 'options', 'data', 'slowed', 'all']]):
     """
     Updates guild.options.last_updated to current time
     :param glob: GlobalVars
     :param guild_id: int - id of guild
+    :param update_type: str - type of update
     :return: None
     """
-    glob.ses.commit()
-    with glob.ses.no_autoflush:
-        glob.ses.query(Options).filter(Options.id == guild_id).first().last_updated = int(time())
+    guild_object = glob.ses.query(Guild).filter(Guild.id == guild_id).first()
+    last_updated = guild_object.last_updated
+
+    # for key in last_updated.keys():
+    #     if key in update_type:
+    #         last_updated[key] = int(time())
+    #         break
+    #
+    # if 'all' in update_type:
+    #     for key in last_updated.keys():
+    #         last_updated[key] = int(time())
+
+    last_updated['queue'] = int(time())
+
+    glob.ses.query(Guild).filter(Guild.id == guild_id).update({'last_updated': last_updated})
     glob.ses.commit()
 
 def update_db_commands(glob: GlobalVars):

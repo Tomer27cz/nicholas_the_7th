@@ -175,7 +175,7 @@ async def play_def(ctx, glob: GlobalVars,
         glob.ses.query(Queue).filter_by(id=video.id).delete()
         glob.ses.commit()
 
-        push_update(glob, guild_id)
+        push_update(glob, guild_id, ['queue', 'now', 'history'])
         update(glob)
 
         # Response
@@ -363,7 +363,7 @@ async def loop_command_def(ctx, glob: GlobalVars, clear_queue_opt: bool=False, e
         clear_queue(glob, guild_id)
         await to_queue(glob, guild_id, db_guild.now_playing)
         db_guild.options.loop = True
-        push_update(glob, guild_id)
+        push_update(glob, guild_id, ['options', 'queue'])
         update(glob)
 
         message = f'{txt(guild_id, glob, "Queue **cleared**, Player will now loop **currently** playing song:")} [`{db_guild.now_playing.title}`](<{db_guild.now_playing.url}>)'
@@ -372,7 +372,7 @@ async def loop_command_def(ctx, glob: GlobalVars, clear_queue_opt: bool=False, e
 
     if options.loop:
         db_guild.options.loop = False
-        push_update(glob, guild_id)
+        push_update(glob, guild_id, ['options'])
         update(glob)
 
         message = txt(guild_id, glob, "Loop mode: `False`")
@@ -382,7 +382,7 @@ async def loop_command_def(ctx, glob: GlobalVars, clear_queue_opt: bool=False, e
     db_guild.options.loop = True
     if db_guild.now_playing and add_to_queue_when_activated:
         await to_queue(glob, guild_id, db_guild.now_playing)
-    push_update(glob, guild_id)
+    push_update(glob, guild_id, ['options', 'queue'])
     update(glob)
 
     message = txt(guild_id, glob, 'Loop mode: `True`')
@@ -431,7 +431,7 @@ async def set_video_time(ctx, glob: GlobalVars, time_stamp: int, mute_response: 
 
     voice.source = new_source
     set_new_time(glob, now_playing_video, time_stamp)
-    push_update(glob, ctx_guild_id)
+    push_update(glob, ctx_guild_id, ['now'])
 
     message = txt(ctx_guild_id, glob, f'Video time set to') + ": " + str(time_stamp)
     if not mute_response:

@@ -48,7 +48,7 @@ async def stop_def(ctx, glob: GlobalVars, mute_response: bool = False, keep_loop
 
     await now_to_history(glob, guild_id)
 
-    push_update(glob, guild_id)
+    push_update(glob, guild_id, ['all'])
 
     message = txt(guild_id, glob, "Player **stopped!**")
     if not mute_response:
@@ -87,7 +87,7 @@ async def pause_def(ctx, glob, mute_response: bool = False) -> ReturnData:
         resp = False
 
     update(glob)
-    push_update(glob, guild_id)
+    push_update(glob, guild_id, ['all'])
 
     if not mute_response:
         await ctx.reply(message, ephemeral=True)
@@ -125,7 +125,7 @@ async def resume_def(ctx, glob: GlobalVars, mute_response: bool = False) -> Retu
         resp = False
 
     update(glob)
-    push_update(glob, guild_id)
+    push_update(glob, guild_id, ['all'])
 
     if not mute_response:
         await ctx.reply(message, ephemeral=True)
@@ -204,7 +204,7 @@ async def join_def(ctx, glob: GlobalVars, channel_id=None, mute_response: bool =
         # deafen bot
         await guild_object.change_voice_state(channel=voice_channel, self_deaf=True)
 
-        push_update(glob, guild_id)
+        push_update(glob, guild_id, ['all'])
 
         message = f"{txt(guild_id, glob, 'Joined voice channel:')}  `{voice_channel.name}`"
         if not mute_response:
@@ -240,7 +240,7 @@ async def disconnect_def(ctx, glob: GlobalVars, mute_response: bool = False) -> 
         channel = guild_object.voice_client.channel
         await guild_object.voice_client.disconnect(force=True)
 
-        push_update(glob, guild_id)
+        push_update(glob, guild_id, ['all'])
         await now_to_history(glob, guild_id)
 
         message = f"{txt(guild_id, glob, 'Left voice channel:')} `{channel}`"

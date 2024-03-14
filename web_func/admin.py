@@ -153,7 +153,7 @@ async def web_video_edit(web_data, glob: GlobalVars, form) -> ReturnData:
         else:
             db_guild.history[index] = await to_history_class(glob, video)
 
-    push_update(glob, guild_id)
+    push_update(glob, guild_id, ['all'])
     update(glob)
 
     return ReturnData(True,
@@ -175,7 +175,6 @@ async def web_options_edit(web_data, glob: GlobalVars, form) -> ReturnData:
         volume = form['volume']
         buffer = form['buffer']
         history_length = form['history_length']
-        last_updated = form['last_updated']
     except KeyError:
         return ReturnData(False, txt(ctx_guild_id, glob,
                                     'Missing form data - please contact the developer (he fucked up when doing an update)'))
@@ -183,8 +182,7 @@ async def web_options_edit(web_data, glob: GlobalVars, form) -> ReturnData:
     return await commands.admin.options_def(web_data, glob, server='this', stopped=stopped, loop=loop,
                                             is_radio=is_radio, language=language,
                                             response_type=response_type, search_query=search_query, buttons=buttons,
-                                            volume=volume,
-                                            buffer=buffer, history_length=history_length, last_updated=last_updated)
+                                            volume=volume, buffer=buffer, history_length=history_length)
 
 # TODO: Figure out how to do this
 async def web_delete_guild(web_data, glob: GlobalVars, guild_id) -> ReturnData:

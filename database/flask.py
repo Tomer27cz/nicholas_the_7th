@@ -121,6 +121,16 @@ def flask_guild_ids(db: SQLAlchemy) -> list[int]:
 #     return guild(glob, guild_id).bar, guild(glob, guild_id).max_bar
 
 # Guild variables
+def flask_guild_last_updated(db: SQLAlchemy, guild_id: int) -> dict:
+    """
+    Returns the last updated of the guild
+    :param db: SQLAlchemy
+    :param guild_id: ID of the guild
+    :return: int
+    """
+    with db.session.no_autoflush:
+        return db.session.query(data_classes.Guild).filter_by(id=guild_id).with_entities(data_classes.Guild.last_updated)[0][0]
+
 def flask_guild_data_key(db: SQLAlchemy, guild_id: int) -> str:
     """
     Returns the key of the guild
@@ -202,16 +212,6 @@ def flask_guild_options_buttons(db: SQLAlchemy, guild_id: int) -> bool:
     """
     with db.session.no_autoflush:
         return db.session.query(data_classes.Options).filter_by(id=guild_id).with_entities(data_classes.Options.buttons)[0][0]
-def flask_guild_options_last_updated(db: SQLAlchemy, guild_id: int) -> int:
-    """
-    Returns the last updated of the guild
-    :param db: SQLAlchemy
-    :param guild_id: ID of the guild
-    :return: int
-    """
-    with db.session.no_autoflush:
-        return db.session.query(data_classes.Options).filter_by(id=guild_id).with_entities(data_classes.Options.last_updated)[0][0]
-
 # Guild Save
 def flask_guild_save_count(db: SQLAlchemy, guild_id: int) -> int:
     """

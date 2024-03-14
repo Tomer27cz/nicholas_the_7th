@@ -32,7 +32,7 @@ async def move_def(ctx, glob: GlobalVars, org_number, destination_number, epheme
             db_guild.queue.insert(destination_number, video)
 
             update(glob)
-            push_update(glob, guild_id)
+            push_update(glob, guild_id, ['queue'])
 
             message = f"{txt(guild_id, glob, 'Moved')} #{org_number} to #{destination_number} : {video.title}"
             await ctx.reply(message, ephemeral=ephemeral)

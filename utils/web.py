@@ -325,14 +325,6 @@ def get_update(glob: GlobalVars, guild_id: int):
     """
     return guild(glob, guild_id).options.last_updated
 
-    # # create argument dictionary
-    # arg_dict = {
-    #     'type': 'get_data',
-    #     'data_type': 'update',
-    #     'guild_id': guild_id
-    # }
-    # # send argument dictionary
-    # return send_arg(arg_dict)
 def get_language(glob: GlobalVars, guild_id: int):
     """
     Get language from the database

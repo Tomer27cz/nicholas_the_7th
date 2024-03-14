@@ -62,7 +62,7 @@ async def set_started(glob: GlobalVars, video, guild_object, chapters: Union[lis
     guild_id = guild_object.id
     db.guild(glob, guild_id).now_playing = await video_class.to_now_playing_class(glob, video)
     glob.ses.commit()
-    push_update(glob, guild_id)
+    push_update(glob, guild_id, ['queue', 'now'])
 
     update(glob)
 

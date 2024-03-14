@@ -237,7 +237,7 @@ async def now_to_history(glob: GlobalVars, guild_id: int, no_push: bool = False)
 
         # for play_def - play next video (would be 2 updates for next play)
         if not no_push:
-            push_update(glob, guild_id)
+            push_update(glob, guild_id, ['now', 'history'])
 
 async def to_queue(glob: GlobalVars, guild_id: int, video, position: int = None, copy_video: bool=True, no_push: bool=False, stream_strip: bool = True) -> ReturnData or None:
     """
@@ -277,7 +277,7 @@ async def to_queue(glob: GlobalVars, guild_id: int, video, position: int = None,
         guild(glob, guild_id).queue.insert(position, queue_video)
 
     if not no_push:
-        push_update(glob, guild_id)
+        push_update(glob, guild_id, ['queue'])
     update(glob)
 
     return f'[`{video.title}`](<{video.url}>) {txt(guild_id, glob, "added to queue!")} -> [Control Panel]({WEB_URL}/guild/{guild_id}&key={guild_object.data.key})'

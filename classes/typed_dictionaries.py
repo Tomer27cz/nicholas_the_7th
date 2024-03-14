@@ -9,6 +9,15 @@ class VideoChapter(TypedDict):
     title: str
     end_time: float
 
+class LastUpdated(TypedDict):
+    queue: int
+    now: int
+    history: int
+    saves: int
+    options: int
+    data: int
+    slowed: int
+
 # ---------------------------------------------- Web Search ------------------------------------------------------------
 
 class WebSearchResult(TypedDict):

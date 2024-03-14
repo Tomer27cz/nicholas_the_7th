@@ -133,7 +133,7 @@ async def queue_command_def(ctx,
         #
         # await asyncio.gather(*__tasks)
 
-        push_update(glob, guild_id)
+        push_update(glob, guild_id, ['queue'])
 
         message = f"`{len(playlist_videos)}` {txt(guild_id, glob, 'songs from playlist added to queue!')} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={_guild_key})"
         if not mute_response:
@@ -158,7 +158,7 @@ async def queue_command_def(ctx,
 
         for video in video_list:
             await to_queue(glob, guild_id, video, position=position, copy_video=False, no_push=True)
-        push_update(glob, guild_id)
+        push_update(glob, guild_id, ['queue'])
 
         message = f'`{len(video_list)}` {txt(guild_id, glob, "songs from playlist added to queue!")} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={_guild_key})'
         if is_ctx and adding_message:
@@ -221,7 +221,7 @@ async def queue_command_def(ctx,
                                            title=val.title, picture=val.artwork_url, duration=duration, channel_name=val.artist,
                                            channel_link=artist_url)
                 await to_queue(glob, guild_id, video, position=position, copy_video=False, no_push=True)
-            push_update(glob, guild_id)
+            push_update(glob, guild_id, ['queue'])
 
             message = f"`{len(tracks)}` {txt(guild_id, glob, 'songs from playlist added to queue!')} -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={_guild_key})"
             if not mute_response:
@@ -477,7 +477,7 @@ async def remove_def(ctx, glob: GlobalVars, number, display_type: Literal['short
 
             db_guild.queue.pop(number)
 
-            push_update(glob, guild_id)
+            push_update(glob, guild_id, ['queue'])
             update(glob)
 
             return ReturnData(True, message)
@@ -505,7 +505,7 @@ async def remove_def(ctx, glob: GlobalVars, number, display_type: Literal['short
 
             db_guild.history.pop(number)
 
-            push_update(glob, guild_id)
+            push_update(glob, guild_id, ['history'])
             update(glob)
 
             return ReturnData(True, message)
@@ -532,7 +532,7 @@ async def clear_def(ctx, glob: GlobalVars, ephemeral: bool = False) -> ReturnDat
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
 
     queue_count = clear_queue(glob, guild_id)
-    push_update(glob, guild_id)
+    push_update(glob, guild_id, ['queue'])
     update(glob)
 
     message = txt(guild_id, glob, 'Removed **all** songs from queue') + ' -> ' + f'`{queue_count}` songs removed'
@@ -560,7 +560,7 @@ async def shuffle_def(ctx, glob: GlobalVars, ephemeral: bool = False) -> ReturnD
     guild(glob, guild_id).queue = new_queue
     glob.ses.commit()
     glob.ses.commit()
-    push_update(glob, guild_id)
+    push_update(glob, guild_id, ['queue'])
     update(glob)
 
     message = txt(guild_id, glob, 'Songs in queue shuffled')

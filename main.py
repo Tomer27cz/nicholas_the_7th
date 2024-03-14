@@ -637,8 +637,7 @@ async def change_options(ctx: dc_commands.Context,
                          buffer: int = None,
                          history_length: int = None,
                          volume: int = None,
-                         search_query: str = None,
-                         last_updated: int = None):
+                         search_query: str = None):
     log(ctx, 'zz_change_options', options=locals(), log_type='command', author=ctx.author)
 
     await options_def(ctx, glob,
@@ -652,8 +651,7 @@ async def change_options(ctx: dc_commands.Context,
                       buffer=str(buffer),
                       history_length=str(history_length),
                       volume=str(volume),
-                      search_query=str(search_query),
-                      last_updated=str(last_updated))
+                      search_query=str(search_query))
 
 @bot.hybrid_command(name='zz_download_guild', with_app_command=True, hidden=True)
 @dc_commands.check(is_authorised)

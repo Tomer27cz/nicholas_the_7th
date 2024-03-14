@@ -1,4 +1,4 @@
-from classes.data_classes import WebData
+from classes.data_classes import WebData, Guild
 from classes.discord_classes import DiscordUser
 from classes.typed_dictionaries import WebSearchResult
 
@@ -15,10 +15,10 @@ from utils.web import *
 import classes.data_classes
 
 from flask import Flask, render_template, request, url_for, redirect, send_file, abort, send_from_directory, Response
-from flask import session as flask_session
+from flask import session as flask_session, jsonify
+from flask_socketio import SocketIO, emit, join_room, leave_room
 from werkzeug.utils import safe_join
 
-from time import time, sleep
 from pathlib import Path
 from typing import List
 import json
@@ -146,6 +146,13 @@ app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{file_path}'
 from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy(app, model_class=Base)
 
+with app.app_context():
+    for g_obj in db.session.query(Guild).all():
+        g_obj.keep_alive = False
+    db.session.commit()
+
+socketio = SocketIO(app)
+
 @app.route('/favicon.ico')
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon/favicon.ico', mimetype='image/vnd.microsoft.icon')
@@ -263,6 +270,8 @@ async def guild_page(guild_id, key):
         allowed_guilds.append(guild_object.id)
         flask_session['allowed_guilds'] = allowed_guilds
 
+    flask_session['guild_id'] = guild_id
+
     errors = []
     messages = []
     if request.method == 'POST':
@@ -343,7 +352,7 @@ async def guild_page(guild_id, key):
                            pd=json.dumps(pd),
                            npd=npd,
                            bot_status=get_guild_bot_status(int(guild_id)),
-                           last_updated=int(time()),
+                           last_updated=int(guild_object.last_updated['queue']),
                            radios=list(list(radio_dict.values())[:-1])
                            )
 
@@ -358,21 +367,45 @@ async def htmx_queue(guild_id):
 
     guild_object = flask_guild(db, guild_id)
     if guild_object is None:
-        return abort(404)
+        return 'Guild not found', 404
 
     key = request.args.get('key')
     if key != guild_object.data.key:
-        return abort(403)
+        return 'Invalid key', 403
+
+    render = request.args.get('render')
+    if render and render not in ['json', 'html']:
+        render = 'html'
 
     act = request.args.get('act')
     if act:
         web_data = WebData(int(guild_id), user_name, user_id)
 
         keys = [act]
+        if 'now_video' in keys:
+            track = guild_object.now_playing
+            if not track:
+                return 'No video playing', 404
+
+            if render == 'json':
+                return jsonify(guild_object.now_playing.to_json())
+
+            return render_template('main/htmx/now_playing.html', gi=int(guild_id), guild=guild_object, key=key, admin=admin)
+
         if 'queue_video' in keys:
             var = request.args.get('var')
+            if not var.isdigit():
+                return 'Invalid var', 400
+
+            if int(var) >= len(guild_object.queue):
+                return 'Invalid var', 400
+
             track = guild_object.queue[int(var)]
             await track.renew(None)
+
+            if render == 'json':
+                return jsonify(track.to_json())
+
             return render_template('main/htmx/queue_video.html', gi=int(guild_id), guild=guild_object,
                                    struct_to_time=struct_to_time, convert_duration=convert_duration,
                                    get_username=get_username, key=key, admin=admin, track=track)
@@ -441,6 +474,14 @@ async def htmx_queue(guild_id):
             load_name = request.args.get('loadName')
             log(web_data, 'web_load_queue', {'load_name': load_name}, log_type='web', author=web_data.author)
             execute_function('load_queue_save', web_data=web_data, save_name=load_name)
+
+    if render == 'json':
+        _return = []
+        for video in guild_object.queue:
+            await video.renew(None)
+            _return.append(video.to_json())
+
+        return jsonify(_return)
 
     guild_object = flask_guild(db, guild_id)
     for video in guild_object.queue:
@@ -571,25 +612,27 @@ async def htmx_search(guild_id):
 
     return render_template('main/htmx/search.html', gi=int(guild_id), key=key, results=results)
 
-@app.route('/guild/<int:guild_id>/update')
-async def update_page(guild_id):
-    try:
-        guild_id = int(guild_id)
-    except (ValueError, TypeError):
-        await abort(404)
 
-    def respond_to_client():
-        last_updated = int(time())
-        while True:
-            with app.app_context():
-                last_updated_db = int(flask_guild_options_last_updated(db, guild_id))
-            if last_updated_db > last_updated:
-                last_updated = last_updated_db
-                response = {'update': True, 'last_updated': last_updated}
-                yield f'data: {json.dumps(response)}\n\n'
-            sleep(1)
+# -------------------------------------------------- SocketIO ----------------------------------------------------------
 
-    return Response(respond_to_client(), mimetype='text/event-stream')
+@socketio.on('connect')
+def connect():
+    if 'guild_id' in flask_session.keys():
+        join_room(flask_session['guild_id'])
+
+@socketio.on('disconnect')
+def disconnect():
+    if 'guild_id' in flask_session.keys():
+        leave_room(flask_session['guild_id'])
+
+@socketio.on('getUpdate')
+def get_update(guild_id):
+    last_updated = flask_guild_last_updated(db, int(guild_id))
+    emit('update', int(last_updated['queue']), broadcast=True, to=guild_id)
+
+@socketio.on('getUpdates')
+def get_update(guild_id):
+    join_room(guild_id)
 
 # ------------------------------------------------- User Login ---------------------------------------------------------
 

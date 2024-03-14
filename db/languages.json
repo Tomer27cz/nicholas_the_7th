@@ -638,7 +638,12 @@
         "Shows the list (queue, history, radios, sound effects)": "Zobrazuje seznam (fronta, historie, r\u00e1dia, zvukov\u00e9 efekty)",
         "What to list (queue, history, radios, sound effects)": "Co uv\u00e9st (fronta, historie, r\u00e1dia, zvukov\u00e9 efekty)",
         "Wrong list type": "\u0160patn\u00fd typ seznamu",
-        "Loop mode: `False`": "Re\u017eim smy\u010dky: &quot;False&quot;."
+        "Loop mode: `False`": "Re\u017eim smy\u010dky: &quot;False&quot;.",
+        "Search or YouTube URL": "Adresa URL vyhled\u00e1v\u00e1n\u00ed nebo YouTube",
+        "Search on TuneIn": "Hledejte na TuneIn",
+        "Search or Radio.garden URL": "Vyhledejte nebo adresu URL Radio.garden",
+        "Search on Radia.cz": "Hledejte na Radia.cz",
+        "Search Local Files": "Prohledejte m\u00edstn\u00ed soubory"
     },
     "da": {
         "If True, command sends a response, only the user can see": "Hvis True, sender kommandoen et svar, som kun brugeren kan se",
@@ -956,7 +961,12 @@
         "Shows the list (queue, history, radios, sound effects)": "Viser listen (k\u00f8, historie, radioer, lydeffekter)",
         "What to list (queue, history, radios, sound effects)": "Hvad skal angives (k\u00f8, historie, radioer, lydeffekter)",
         "Wrong list type": "Forkert listetype",
-        "Loop mode: `False`": "Loop-tilstand: &#39;False&#39;"
+        "Loop mode: `False`": "Loop-tilstand: &#39;False&#39;",
+        "Search or YouTube URL": "S\u00f8g eller YouTube URL",
+        "Search on TuneIn": "S\u00f8g p\u00e5 TuneIn",
+        "Search or Radio.garden URL": "S\u00f8g eller Radio.garden URL",
+        "Search on Radia.cz": "S\u00f8g p\u00e5 Radia.cz",
+        "Search Local Files": "S\u00f8g i lokale filer"
     },
     "de": {
         "If True, command sends a response, only the user can see": "Wenn True, sendet der Befehl eine Antwort, die nur der Benutzer sehen kann",
@@ -1274,7 +1284,12 @@
         "Shows the list (queue, history, radios, sound effects)": "Zeigt die Liste an (Warteschlange, Verlauf, Radios, Soundeffekte)",
         "What to list (queue, history, radios, sound effects)": "Was aufgelistet werden soll (Warteschlange, Verlauf, Radios, Soundeffekte)",
         "Wrong list type": "Falscher Listentyp",
-        "Loop mode: `False`": "Schleifenmodus: \u201eFalsch\u201c."
+        "Loop mode: `False`": "Schleifenmodus: \u201eFalsch\u201c.",
+        "Search or YouTube URL": "Such- oder YouTube-URL",
+        "Search on TuneIn": "Suchen Sie auf TuneIn",
+        "Search or Radio.garden URL": "Suche oder Radio.garden-URL",
+        "Search on Radia.cz": "Suchen Sie auf Radia.cz",
+        "Search Local Files": "Lokale Dateien durchsuchen"
     },
     "el": {
         "If True, command sends a response, only the user can see": "\u0395\u03ac\u03bd \u03b5\u03af\u03bd\u03b1\u03b9 True, \u03b7 \u03b5\u03bd\u03c4\u03bf\u03bb\u03ae \u03c3\u03c4\u03ad\u03bb\u03bd\u03b5\u03b9 \u03bc\u03b9\u03b1 \u03b1\u03c0\u03ac\u03bd\u03c4\u03b7\u03c3\u03b7, \u03bc\u03cc\u03bd\u03bf \u03bf \u03c7\u03c1\u03ae\u03c3\u03c4\u03b7\u03c2 \u03bc\u03c0\u03bf\u03c1\u03b5\u03af \u03bd\u03b1 \u03b4\u03b5\u03b9",
@@ -1592,7 +1607,12 @@
         "Shows the list (queue, history, radios, sound effects)": "\u0395\u03bc\u03c6\u03b1\u03bd\u03af\u03b6\u03b5\u03b9 \u03c4\u03b7 \u03bb\u03af\u03c3\u03c4\u03b1 (\u03bf\u03c5\u03c1\u03ac, \u03b9\u03c3\u03c4\u03bf\u03c1\u03b9\u03ba\u03cc, \u03c1\u03b1\u03b4\u03b9\u03cc\u03c6\u03c9\u03bd\u03b1, \u03b7\u03c7\u03b7\u03c4\u03b9\u03ba\u03ac \u03b5\u03c6\u03ad)",
         "What to list (queue, history, radios, sound effects)": "\u03a4\u03b9 \u03bd\u03b1 \u03c0\u03b1\u03c1\u03b1\u03b8\u03ad\u03c3\u03c9 (\u03bf\u03c5\u03c1\u03ac, \u03b9\u03c3\u03c4\u03bf\u03c1\u03b9\u03ba\u03cc, \u03c1\u03b1\u03b4\u03b9\u03cc\u03c6\u03c9\u03bd\u03b1, \u03b7\u03c7\u03b7\u03c4\u03b9\u03ba\u03ac \u03b5\u03c6\u03ad)",
         "Wrong list type": "\u039b\u03ac\u03b8\u03bf\u03c2 \u03c4\u03cd\u03c0\u03bf\u03c2 \u03bb\u03af\u03c3\u03c4\u03b1\u03c2",
-        "Loop mode: `False`": "\u039b\u03b5\u03b9\u03c4\u03bf\u03c5\u03c1\u03b3\u03af\u03b1 \u03b2\u03c1\u03cc\u03c7\u03bf\u03c5: &quot;\u039b\u03ac\u03b8\u03bf\u03c2&quot;."
+        "Loop mode: `False`": "\u039b\u03b5\u03b9\u03c4\u03bf\u03c5\u03c1\u03b3\u03af\u03b1 \u03b2\u03c1\u03cc\u03c7\u03bf\u03c5: &quot;\u039b\u03ac\u03b8\u03bf\u03c2&quot;.",
+        "Search or YouTube URL": "\u0391\u03bd\u03b1\u03b6\u03ae\u03c4\u03b7\u03c3\u03b7 \u03ae \u03b4\u03b9\u03b5\u03cd\u03b8\u03c5\u03bd\u03c3\u03b7 URL YouTube",
+        "Search on TuneIn": "\u0391\u03bd\u03b1\u03b6\u03ae\u03c4\u03b7\u03c3\u03b7 \u03c3\u03c4\u03bf TuneIn",
+        "Search or Radio.garden URL": "URL \u03b1\u03bd\u03b1\u03b6\u03ae\u03c4\u03b7\u03c3\u03b7\u03c2 \u03ae Radio.garden",
+        "Search on Radia.cz": "\u0391\u03bd\u03b1\u03b6\u03ae\u03c4\u03b7\u03c3\u03b7 \u03c3\u03c4\u03bf Radia.cz",
+        "Search Local Files": "\u0391\u03bd\u03b1\u03b6\u03ae\u03c4\u03b7\u03c3\u03b7 \u03c4\u03bf\u03c0\u03b9\u03ba\u03ce\u03bd \u03b1\u03c1\u03c7\u03b5\u03af\u03c9\u03bd"
     },
     "eo": {
         "If True, command sends a response, only the user can see": "Se Vera, komando sendas respondon, nur la uzanto povas vidi",
@@ -1910,7 +1930,12 @@
         "Shows the list (queue, history, radios, sound effects)": "Montras la liston (vico, historio, radioj, sonefektoj)",
         "What to list (queue, history, radios, sound effects)": "Kion listigi (vico, historio, radioj, sonefektoj)",
         "Wrong list type": "Mal\u011dusta listo tipo",
-        "Loop mode: `False`": "Buklore\u011dimo: `Malvera`"
+        "Loop mode: `False`": "Buklore\u011dimo: `Malvera`",
+        "Search or YouTube URL": "Ser\u0109u a\u016d YouTube-URL",
+        "Search on TuneIn": "Ser\u0109u \u0109e TuneIn",
+        "Search or Radio.garden URL": "Ser\u0109u a\u016d Radio.garden URL",
+        "Search on Radia.cz": "Ser\u0109u \u0109e Radia.cz",
+        "Search Local Files": "Ser\u0109u Lokaj Dosieroj"
     },
     "es": {
         "If True, command sends a response, only the user can see": "Si es Verdadero, el comando env\u00eda una respuesta, solo el usuario puede ver",
@@ -2228,7 +2253,12 @@
         "Shows the list (queue, history, radios, sound effects)": "Muestra la lista (cola, historial, radios, efectos de sonido)",
         "What to list (queue, history, radios, sound effects)": "Qu\u00e9 incluir (cola, historial, radios, efectos de sonido)",
         "Wrong list type": "Tipo de lista incorrecto",
-        "Loop mode: `False`": "Modo de bucle: &quot;Falso&quot;"
+        "Loop mode: `False`": "Modo de bucle: &quot;Falso&quot;",
+        "Search or YouTube URL": "URL de b\u00fasqueda o de YouTube",
+        "Search on TuneIn": "Buscar en TuneIn",
+        "Search or Radio.garden URL": "URL de b\u00fasqueda o Radio.garden",
+        "Search on Radia.cz": "Buscar en Radia.cz",
+        "Search Local Files": "Buscar archivos locales"
     },
     "fi": {
         "If True, command sends a response, only the user can see": "Jos True, komento l\u00e4hett\u00e4\u00e4 vastauksen, vain k\u00e4ytt\u00e4j\u00e4 voi n\u00e4hd\u00e4",
@@ -2546,7 +2576,12 @@
         "Shows the list (queue, history, radios, sound effects)": "N\u00e4ytt\u00e4\u00e4 luettelon (jono, historia, radiot, \u00e4\u00e4nitehosteet)",
         "What to list (queue, history, radios, sound effects)": "Mit\u00e4 luetteloida (jono, historia, radiot, \u00e4\u00e4nitehosteet)",
         "Wrong list type": "V\u00e4\u00e4r\u00e4 luettelotyyppi",
-        "Loop mode: `False`": "Silmukkatila: &quot;False&quot;."
+        "Loop mode: `False`": "Silmukkatila: &quot;False&quot;.",
+        "Search or YouTube URL": "Hae tai YouTube-URL-osoite",
+        "Search on TuneIn": "Hae TuneInist\u00e4",
+        "Search or Radio.garden URL": "Hae tai Radio.gardenin URL-osoite",
+        "Search on Radia.cz": "Hae osoitteessa Radia.cz",
+        "Search Local Files": "Etsi paikallisia tiedostoja"
     },
     "fr": {
         "If True, command sends a response, only the user can see": "Si True, la commande envoie une r\u00e9ponse, seul l&#39;utilisateur peut voir",
@@ -2864,7 +2899,12 @@
         "Shows the list (queue, history, radios, sound effects)": "Affiche la liste (file d&#39;attente, historique, radios, effets sonores)",
         "What to list (queue, history, radios, sound effects)": "Que lister (file d&#39;attente, historique, radios, effets sonores)",
         "Wrong list type": "Mauvais type de liste",
-        "Loop mode: `False`": "Mode boucle\u00a0: `Faux`"
+        "Loop mode: `False`": "Mode boucle\u00a0: `Faux`",
+        "Search or YouTube URL": "Recherche ou URL YouTube",
+        "Search on TuneIn": "Rechercher sur TuneIn",
+        "Search or Radio.garden URL": "Recherche ou URL Radio.garden",
+        "Search on Radia.cz": "Rechercher sur Radia.cz",
+        "Search Local Files": "Rechercher des fichiers locaux"
     },
     "hu": {
         "If True, command sends a response, only the user can see": "Ha igaz, a parancs v\u00e1laszt k\u00fcld, csak a felhaszn\u00e1l\u00f3 l\u00e1thatja",
@@ -3182,7 +3222,12 @@
         "Shows the list (queue, history, radios, sound effects)": "Megjelen\u00edti a list\u00e1t (sor, el\u0151zm\u00e9nyek, r\u00e1di\u00f3k, hangeffektusok)",
         "What to list (queue, history, radios, sound effects)": "Mit kell felsorolni (sor, el\u0151zm\u00e9nyek, r\u00e1di\u00f3k, hangeffektusok)",
         "Wrong list type": "Rossz listat\u00edpus",
-        "Loop mode: `False`": "Loop m\u00f3d: &quot;False&quot;."
+        "Loop mode: `False`": "Loop m\u00f3d: &quot;False&quot;.",
+        "Search or YouTube URL": "Keres\u00e9s vagy YouTube URL",
+        "Search on TuneIn": "Keressen a TuneIn-en",
+        "Search or Radio.garden URL": "Keres\u00e9s vagy Radio.garden URL",
+        "Search on Radia.cz": "Keres\u00e9s a Radia.cz oldalon",
+        "Search Local Files": "Helyi f\u00e1jlok keres\u00e9se"
     },
     "it": {
         "If True, command sends a response, only the user can see": "Se Vero, il comando invia una risposta, visibile solo all&#39;utente",
@@ -3500,7 +3545,12 @@
         "Shows the list (queue, history, radios, sound effects)": "Mostra l&#39;elenco (coda, cronologia, radio, effetti sonori)",
         "What to list (queue, history, radios, sound effects)": "Cosa elencare (coda, cronologia, radio, effetti sonori)",
         "Wrong list type": "Tipo di elenco errato",
-        "Loop mode: `False`": "Modalit\u00e0 loop: &quot;Falso&quot;."
+        "Loop mode: `False`": "Modalit\u00e0 loop: &quot;Falso&quot;.",
+        "Search or YouTube URL": "Cerca o URL di YouTube",
+        "Search on TuneIn": "Cerca su TuneIn",
+        "Search or Radio.garden URL": "Cerca o URL di Radio.garden",
+        "Search on Radia.cz": "Cerca su Radia.cz",
+        "Search Local Files": "Cerca file locali"
     },
     "ja": {
         "If True, command sends a response, only the user can see": "True \u306e\u5834\u5408\u3001\u30b3\u30de\u30f3\u30c9\u306f\u5fdc\u7b54\u3092\u9001\u4fe1\u3057\u3001\u30e6\u30fc\u30b6\u30fc\u306e\u307f\u304c\u78ba\u8a8d\u3067\u304d\u307e\u3059\u3002",
@@ -3818,7 +3868,12 @@
         "Shows the list (queue, history, radios, sound effects)": "\u30ea\u30b9\u30c8\uff08\u30ad\u30e5\u30fc\u3001\u5c65\u6b74\u3001\u30e9\u30b8\u30aa\u3001\u52b9\u679c\u97f3\uff09\u3092\u8868\u793a\u3057\u307e\u3059",
         "What to list (queue, history, radios, sound effects)": "\u30ea\u30b9\u30c8\u3059\u308b\u5185\u5bb9 (\u30ad\u30e5\u30fc\u3001\u5c65\u6b74\u3001\u30e9\u30b8\u30aa\u3001\u52b9\u679c\u97f3)",
         "Wrong list type": "\u30ea\u30b9\u30c8\u306e\u30bf\u30a4\u30d7\u304c\u9593\u9055\u3063\u3066\u3044\u307e\u3059",
-        "Loop mode: `False`": "\u30eb\u30fc\u30d7\u30e2\u30fc\u30c9: `False`"
+        "Loop mode: `False`": "\u30eb\u30fc\u30d7\u30e2\u30fc\u30c9: `False`",
+        "Search or YouTube URL": "\u691c\u7d22\u307e\u305f\u306f YouTube URL",
+        "Search on TuneIn": "TuneIn \u3067\u691c\u7d22",
+        "Search or Radio.garden URL": "\u691c\u7d22\u307e\u305f\u306f Radio.garden \u306e URL",
+        "Search on Radia.cz": "Radia.cz \u3067\u691c\u7d22",
+        "Search Local Files": "\u30ed\u30fc\u30ab\u30eb\u30d5\u30a1\u30a4\u30eb\u306e\u691c\u7d22"
     },
     "ko": {
         "If True, command sends a response, only the user can see": "True\uc778 \uacbd\uc6b0 \uba85\ub839\uc774 \uc751\ub2f5\uc744 \ubcf4\ub0b4\uace0 \uc0ac\uc6a9\uc790\ub9cc \ubcfc \uc218 \uc788\uc2b5\ub2c8\ub2e4.",
@@ -4136,7 +4191,12 @@
         "Shows the list (queue, history, radios, sound effects)": "\ubaa9\ub85d \ud45c\uc2dc(\ub300\uae30\uc5f4, \uae30\ub85d, \ub77c\ub514\uc624, \uc74c\ud5a5 \ud6a8\uacfc)",
         "What to list (queue, history, radios, sound effects)": "\ub098\uc5f4\ud560 \ud56d\ubaa9(\ud050, \uae30\ub85d, \ub77c\ub514\uc624, \uc74c\ud5a5 \ud6a8\uacfc)",
         "Wrong list type": "\uc798\ubabb\ub41c \ubaa9\ub85d \uc720\ud615",
-        "Loop mode: `False`": "\ub8e8\ud504 \ubaa8\ub4dc: `False`"
+        "Loop mode: `False`": "\ub8e8\ud504 \ubaa8\ub4dc: `False`",
+        "Search or YouTube URL": "\uac80\uc0c9 \ub610\ub294 YouTube URL",
+        "Search on TuneIn": "TuneIn\uc5d0\uc11c \uac80\uc0c9",
+        "Search or Radio.garden URL": "\uac80\uc0c9 \ub610\ub294 Radio.garden URL",
+        "Search on Radia.cz": "Radia.cz\uc5d0\uc11c \uac80\uc0c9",
+        "Search Local Files": "\ub85c\uceec \ud30c\uc77c \uac80\uc0c9"
     },
     "la": {
         "If True, command sends a response, only the user can see": "Si verum, mandatum responsum mittit, solum utentis videre potest",
@@ -4454,7 +4514,12 @@
         "Shows the list (queue, history, radios, sound effects)": "Indicem (queue, historia, radios, effectus sonos) ostendit.",
         "What to list (queue, history, radios, sound effects)": "Quid recensere (queue, historiam, radios, effectus sonos)",
         "Wrong list type": "Nefas genus album",
-        "Loop mode: `False`": "Modus loop: `False`"
+        "Loop mode: `False`": "Modus loop: `False`",
+        "Search or YouTube URL": "Quaerere vel YouTube URL",
+        "Search on TuneIn": "Quaerere in TuneIn",
+        "Search or Radio.garden URL": "Quaerere vel Radio.garden URL",
+        "Search on Radia.cz": "Quaerere in Radia.cz",
+        "Search Local Files": "Quaerere Tabularia Localis"
     },
     "nl": {
         "If True, command sends a response, only the user can see": "Als dit waar is, verzendt de opdracht een antwoord dat alleen de gebruiker kan zien",
@@ -4772,7 +4837,12 @@
         "Shows the list (queue, history, radios, sound effects)": "Toont de lijst (wachtrij, geschiedenis, radio&#39;s, geluidseffecten)",
         "What to list (queue, history, radios, sound effects)": "Wat te vermelden (wachtrij, geschiedenis, radio&#39;s, geluidseffecten)",
         "Wrong list type": "Verkeerd lijsttype",
-        "Loop mode: `False`": "Loop-modus: `False`"
+        "Loop mode: `False`": "Loop-modus: `False`",
+        "Search or YouTube URL": "Zoek- of YouTube-URL",
+        "Search on TuneIn": "Zoek op TuneIn",
+        "Search or Radio.garden URL": "Zoek of Radio.garden-URL",
+        "Search on Radia.cz": "Zoek op Radia.cz",
+        "Search Local Files": "Zoek lokale bestanden"
     },
     "no": {
         "If True, command sends a response, only the user can see": "Hvis True, sender kommandoen et svar, bare brukeren kan se",
@@ -5090,7 +5160,12 @@
         "Shows the list (queue, history, radios, sound effects)": "Viser listen (k\u00f8, historikk, radioer, lydeffekter)",
         "What to list (queue, history, radios, sound effects)": "Hva du skal liste (k\u00f8, historikk, radioer, lydeffekter)",
         "Wrong list type": "Feil listetype",
-        "Loop mode: `False`": "Loop-modus: &#39;False&#39;"
+        "Loop mode: `False`": "Loop-modus: &#39;False&#39;",
+        "Search or YouTube URL": "S\u00f8k eller YouTube URL",
+        "Search on TuneIn": "S\u00f8k p\u00e5 TuneIn",
+        "Search or Radio.garden URL": "S\u00f8k eller Radio.garden URL",
+        "Search on Radia.cz": "S\u00f8k p\u00e5 Radia.cz",
+        "Search Local Files": "S\u00f8k i lokale filer"
     },
     "pl": {
         "If True, command sends a response, only the user can see": "Je\u015bli ma warto\u015b\u0107 True, polecenie wysy\u0142a odpowied\u017a, kt\u00f3r\u0105 mo\u017ce zobaczy\u0107 tylko u\u017cytkownik",
@@ -5408,7 +5483,12 @@
         "Shows the list (queue, history, radios, sound effects)": "Pokazuje list\u0119 (kolejka, historia, radia, efekty d\u017awi\u0119kowe)",
         "What to list (queue, history, radios, sound effects)": "Co wymieni\u0107 (kolejka, historia, radia, efekty d\u017awi\u0119kowe)",
         "Wrong list type": "Z\u0142y typ listy",
-        "Loop mode: `False`": "Tryb p\u0119tli: \u201eFa\u0142sz\u201d."
+        "Loop mode: `False`": "Tryb p\u0119tli: \u201eFa\u0142sz\u201d.",
+        "Search or YouTube URL": "Szukaj lub adres URL YouTube",
+        "Search on TuneIn": "Szukaj w TuneIn",
+        "Search or Radio.garden URL": "Wyszukaj lub adres URL Radio.garden",
+        "Search on Radia.cz": "Szukaj na Radia.cz",
+        "Search Local Files": "Wyszukaj pliki lokalne"
     },
     "pt": {
         "If True, command sends a response, only the user can see": "Se True, o comando envia uma resposta, somente o usu\u00e1rio pode ver",
@@ -5726,7 +5806,12 @@
         "Shows the list (queue, history, radios, sound effects)": "Mostra a lista (fila, hist\u00f3rico, r\u00e1dios, efeitos sonoros)",
         "What to list (queue, history, radios, sound effects)": "O que listar (fila, hist\u00f3rico, r\u00e1dios, efeitos sonoros)",
         "Wrong list type": "Tipo de lista errado",
-        "Loop mode: `False`": "Modo de loop: `Falso`"
+        "Loop mode: `False`": "Modo de loop: `Falso`",
+        "Search or YouTube URL": "Pesquisa ou URL do YouTube",
+        "Search on TuneIn": "Pesquise no TuneIn",
+        "Search or Radio.garden URL": "URL de pesquisa ou Radio.garden",
+        "Search on Radia.cz": "Pesquise em Radia.cz",
+        "Search Local Files": "Pesquisar arquivos locais"
     },
     "ru": {
         "If True, command sends a response, only the user can see": "\u0415\u0441\u043b\u0438 True, \u043a\u043e\u043c\u0430\u043d\u0434\u0430 \u043e\u0442\u043f\u0440\u0430\u0432\u043b\u044f\u0435\u0442 \u043e\u0442\u0432\u0435\u0442, \u043a\u043e\u0442\u043e\u0440\u044b\u0439 \u043c\u043e\u0436\u0435\u0442 \u0432\u0438\u0434\u0435\u0442\u044c \u0442\u043e\u043b\u044c\u043a\u043e \u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044c.",
@@ -6044,7 +6129,12 @@
         "Shows the list (queue, history, radios, sound effects)": "\u041f\u043e\u043a\u0430\u0437\u044b\u0432\u0430\u0435\u0442 \u0441\u043f\u0438\u0441\u043e\u043a (\u043e\u0447\u0435\u0440\u0435\u0434\u044c, \u0438\u0441\u0442\u043e\u0440\u0438\u044f, \u0440\u0430\u0434\u0438\u043e, \u0437\u0432\u0443\u043a\u043e\u0432\u044b\u0435 \u044d\u0444\u0444\u0435\u043a\u0442\u044b)",
         "What to list (queue, history, radios, sound effects)": "\u0427\u0442\u043e \u043f\u0435\u0440\u0435\u0447\u0438\u0441\u043b\u044f\u0442\u044c (\u043e\u0447\u0435\u0440\u0435\u0434\u044c, \u0438\u0441\u0442\u043e\u0440\u0438\u044f, \u0440\u0430\u0434\u0438\u043e, \u0437\u0432\u0443\u043a\u043e\u0432\u044b\u0435 \u044d\u0444\u0444\u0435\u043a\u0442\u044b)",
         "Wrong list type": "\u041d\u0435\u043f\u0440\u0430\u0432\u0438\u043b\u044c\u043d\u044b\u0439 \u0442\u0438\u043f \u0441\u043f\u0438\u0441\u043a\u0430",
-        "Loop mode: `False`": "\u0420\u0435\u0436\u0438\u043c \u0446\u0438\u043a\u043b\u0430: \u00ab\u041b\u043e\u0436\u044c\u00bb"
+        "Loop mode: `False`": "\u0420\u0435\u0436\u0438\u043c \u0446\u0438\u043a\u043b\u0430: \u00ab\u041b\u043e\u0436\u044c\u00bb",
+        "Search or YouTube URL": "\u041f\u043e\u0438\u0441\u043a \u0438\u043b\u0438 URL-\u0430\u0434\u0440\u0435\u0441 YouTube",
+        "Search on TuneIn": "\u0418\u0441\u043a\u0430\u0442\u044c \u043d\u0430 TuneIn",
+        "Search or Radio.garden URL": "\u041f\u043e\u0438\u0441\u043a \u0438\u043b\u0438 URL-\u0430\u0434\u0440\u0435\u0441 Radio.garden",
+        "Search on Radia.cz": "\u0418\u0441\u043a\u0430\u0442\u044c \u043d\u0430 Radia.cz",
+        "Search Local Files": "\u041f\u043e\u0438\u0441\u043a \u043b\u043e\u043a\u0430\u043b\u044c\u043d\u044b\u0445 \u0444\u0430\u0439\u043b\u043e\u0432"
     },
     "sv": {
         "If True, command sends a response, only the user can see": "Om True skickar kommandot ett svar, bara anv\u00e4ndaren kan se",
@@ -6362,7 +6452,12 @@
         "Shows the list (queue, history, radios, sound effects)": "Visar listan (k\u00f6, historik, radioapparater, ljudeffekter)",
         "What to list (queue, history, radios, sound effects)": "Vad som ska listas (k\u00f6, historik, radioapparater, ljudeffekter)",
         "Wrong list type": "Fel listtyp",
-        "Loop mode: `False`": "Slingl\u00e4ge: &quot;False&quot;."
+        "Loop mode: `False`": "Slingl\u00e4ge: &quot;False&quot;.",
+        "Search or YouTube URL": "S\u00f6k eller YouTube URL",
+        "Search on TuneIn": "S\u00f6k p\u00e5 TuneIn",
+        "Search or Radio.garden URL": "S\u00f6k eller Radio.garden URL",
+        "Search on Radia.cz": "S\u00f6k p\u00e5 Radia.cz",
+        "Search Local Files": "S\u00f6k lokala filer"
     },
     "th": {
         "If True, command sends a response, only the user can see": "\u0e2b\u0e32\u0e01\u0e40\u0e1b\u0e47\u0e19 True \u0e04\u0e33\u0e2a\u0e31\u0e48\u0e07\u0e08\u0e30\u0e2a\u0e48\u0e07\u0e01\u0e32\u0e23\u0e15\u0e2d\u0e1a\u0e01\u0e25\u0e31\u0e1a \u0e40\u0e09\u0e1e\u0e32\u0e30\u0e1c\u0e39\u0e49\u0e43\u0e0a\u0e49\u0e40\u0e17\u0e48\u0e32\u0e19\u0e31\u0e49\u0e19\u0e17\u0e35\u0e48\u0e2a\u0e32\u0e21\u0e32\u0e23\u0e16\u0e21\u0e2d\u0e07\u0e40\u0e2b\u0e47\u0e19\u0e44\u0e14\u0e49",
@@ -6680,7 +6775,12 @@
         "Shows the list (queue, history, radios, sound effects)": "\u0e41\u0e2a\u0e14\u0e07\u0e23\u0e32\u0e22\u0e01\u0e32\u0e23 (\u0e04\u0e34\u0e27 \u0e1b\u0e23\u0e30\u0e27\u0e31\u0e15\u0e34 \u0e27\u0e34\u0e17\u0e22\u0e38 \u0e40\u0e2a\u0e35\u0e22\u0e07\u0e1b\u0e23\u0e30\u0e01\u0e2d\u0e1a)",
         "What to list (queue, history, radios, sound effects)": "\u0e2a\u0e34\u0e48\u0e07\u0e17\u0e35\u0e48\u0e15\u0e49\u0e2d\u0e07\u0e41\u0e2a\u0e14\u0e07\u0e23\u0e32\u0e22\u0e01\u0e32\u0e23 (\u0e04\u0e34\u0e27 \u0e1b\u0e23\u0e30\u0e27\u0e31\u0e15\u0e34 \u0e27\u0e34\u0e17\u0e22\u0e38 \u0e40\u0e2d\u0e1f\u0e40\u0e1f\u0e01\u0e15\u0e4c\u0e40\u0e2a\u0e35\u0e22\u0e07)",
         "Wrong list type": "\u0e1b\u0e23\u0e30\u0e40\u0e20\u0e17\u0e23\u0e32\u0e22\u0e01\u0e32\u0e23\u0e44\u0e21\u0e48\u0e16\u0e39\u0e01\u0e15\u0e49\u0e2d\u0e07",
-        "Loop mode: `False`": "\u0e42\u0e2b\u0e21\u0e14\u0e27\u0e19\u0e0b\u0e49\u0e33: &#39;\u0e40\u0e17\u0e47\u0e08&#39;"
+        "Loop mode: `False`": "\u0e42\u0e2b\u0e21\u0e14\u0e27\u0e19\u0e0b\u0e49\u0e33: &#39;\u0e40\u0e17\u0e47\u0e08&#39;",
+        "Search or YouTube URL": "\u0e04\u0e49\u0e19\u0e2b\u0e32\u0e2b\u0e23\u0e37\u0e2d URL \u0e02\u0e2d\u0e07 YouTube",
+        "Search on TuneIn": "\u0e04\u0e49\u0e19\u0e2b\u0e32\u0e1a\u0e19 TuneIn",
+        "Search or Radio.garden URL": "\u0e04\u0e49\u0e19\u0e2b\u0e32\u0e2b\u0e23\u0e37\u0e2d URL \u0e02\u0e2d\u0e07 Radio.garden",
+        "Search on Radia.cz": "\u0e04\u0e49\u0e19\u0e2b\u0e32\u0e1a\u0e19 Radia.cz",
+        "Search Local Files": "\u0e04\u0e49\u0e19\u0e2b\u0e32\u0e44\u0e1f\u0e25\u0e4c\u0e43\u0e19\u0e40\u0e04\u0e23\u0e37\u0e48\u0e2d\u0e07"
     },
     "tr": {
         "If True, command sends a response, only the user can see": "True ise komut bir yan\u0131t g\u00f6nderir, yaln\u0131zca kullan\u0131c\u0131 g\u00f6rebilir",
@@ -6998,7 +7098,12 @@
         "Shows the list (queue, history, radios, sound effects)": "Listeyi g\u00f6sterir (s\u0131ra, ge\u00e7mi\u015f, radyolar, ses efektleri)",
         "What to list (queue, history, radios, sound effects)": "Listelenecekler (s\u0131ra, ge\u00e7mi\u015f, radyolar, ses efektleri)",
         "Wrong list type": "Yanl\u0131\u015f liste t\u00fcr\u00fc",
-        "Loop mode: `False`": "D\u00f6ng\u00fc modu: &#39;Yanl\u0131\u015f&#39;"
+        "Loop mode: `False`": "D\u00f6ng\u00fc modu: &#39;Yanl\u0131\u015f&#39;",
+        "Search or YouTube URL": "Arama veya YouTube URL&#39;si",
+        "Search on TuneIn": "TuneIn&#39;de ara",
+        "Search or Radio.garden URL": "Arama veya Radio.garden URL&#39;si",
+        "Search on Radia.cz": "Radia.cz&#39;de ara",
+        "Search Local Files": "Yerel Dosyalarda Ara"
     },
     "zh": {
         "If True, command sends a response, only the user can see": "\u5982\u679c\u4e3a True\uff0c\u547d\u4ee4\u4f1a\u53d1\u9001\u54cd\u5e94\uff0c\u53ea\u6709\u7528\u6237\u53ef\u4ee5\u770b\u5230",
@@ -7316,6 +7421,11 @@
         "Shows the list (queue, history, radios, sound effects)": "\u663e\u793a\u5217\u8868\uff08\u961f\u5217\u3001\u5386\u53f2\u8bb0\u5f55\u3001\u6536\u97f3\u673a\u3001\u97f3\u6548\uff09",
         "What to list (queue, history, radios, sound effects)": "\u5217\u51fa\u4ec0\u4e48\uff08\u961f\u5217\u3001\u5386\u53f2\u8bb0\u5f55\u3001\u6536\u97f3\u673a\u3001\u97f3\u6548\uff09",
         "Wrong list type": "\u5217\u8868\u7c7b\u578b\u9519\u8bef",
-        "Loop mode: `False`": "\u5faa\u73af\u6a21\u5f0f\uff1a`False`"
+        "Loop mode: `False`": "\u5faa\u73af\u6a21\u5f0f\uff1a`False`",
+        "Search or YouTube URL": "\u641c\u7d22\u6216 YouTube \u7f51\u5740",
+        "Search on TuneIn": "\u5728 TuneIn \u4e0a\u641c\u7d22",
+        "Search or Radio.garden URL": "\u641c\u7d22\u6216 Radio.garden URL",
+        "Search on Radia.cz": "\u5728 Radia.cz \u4e0a\u641c\u7d22",
+        "Search Local Files": "\u641c\u7d22\u672c\u5730\u6587\u4ef6"
     }
 }

@@ -361,136 +361,24 @@
   </div>
 
   {% if guild.now_playing %}
-  <script type="text/javascript" charset="utf-8">
-  function getSecsPlayed(played_duration) {
-      let len_played_duration = played_duration.length;
-      if (len_played_duration === 0){
-          return 0.0;
-      }
-      let last_segment = played_duration[len_played_duration - 1];
-      if (last_segment['end']['epoch'] != null){
-          return last_segment['end']['time_stamp'];
-      }
-
-      let start_of_segment = last_segment['start']['epoch'];
-      let start_of_segment_time = last_segment['start']['time_stamp'];
-      return (Math.round(Date.now() / 1000) - start_of_segment) + start_of_segment_time;
-  }
-
-  function npProgress() {
-      let duration = {{ npd|safe }};
-
-      let played_duration = {{ pd|safe }};
-      let bar_elem = document.getElementById("np_progress");
-      let text_elem = document.getElementById("progress_time");
-
-      if (duration != null) {
-          let sec_remaining = duration - getSecsPlayed(played_duration);
-
-          if (Math.sign(sec_remaining) === -1) {
-              bar_elem.style.width = 100 + '%';
-              text_elem.innerText = convertSeconds(getSecsPlayed(played_duration));
-          }
-      }
-
-      let inter = setInterval(addProgress, 1000);
-
-      function addProgress() {
-          text_elem.innerText = convertSeconds(getSecsPlayed(played_duration));
-
-          if (duration != null) {
-              let sec_remaining_add = duration - getSecsPlayed(played_duration);
-              let percentage = 100 - (sec_remaining_add / duration) * 100;
-
-              bar_elem.style.width = percentage + '%';
-
-              if (percentage > 99.99 || sec_remaining_add < 2) {
-                  clearInterval(inter);
-                  setTimeout(function () {
-                      location.reload();
-                  }, 3000);
-              }
-          }
-      }
-  }
-
-  npProgress();
-  </script>
+    <script>
+      let duration = {{ npd | safe }};
+      let played_duration = {{ pd | safe }};
+    </script>
+  {% else %}
+    <script>
+      let duration = null;
+      let played_duration = null;
+    </script>
   {% endif %}
 
-  <script type="text/javascript" charset="utf-8">
-  let eventSource = new EventSource("/guild/{{ guild.id }}/update");
-
-  eventSource.addEventListener('message', function (e) {
-      let data = JSON.parse(e.data);
-      console.log("new data: " + data.last_updated + " last_updated: " + last_updated)
-      if (data.last_updated > last_updated) {
-          location.reload();
-      }
-  }, false);
-
-  let last_updated = {{ last_updated|safe }};
-  window.addEventListener('htmx:afterSwap', function (event) {
-      last_updated = new Date() / 1000;
-      console.log("last_updated: " + last_updated);
-  }, false);
-
-  function convertSeconds(secs) {
-      let hours = Math.floor(secs / 3600)
-      let minutes = Math.floor((secs % 3600) / 60)
-      let seconds = secs % 60
-
-      function pad(num, totalLength) {
-          return String(num).padStart(totalLength, '0');
-      }
-
-      if (hours) {
-          return `${hours}:${pad(minutes, 2)}:${pad(seconds, 2)}`
-      } else {
-          return `${minutes}:${pad(seconds, 2)}`
-      }
-  }
-
-  {#function httpGet(theUrl) {#}
-  {#    let xmlHttp = new XMLHttpRequest();#}
-  {#    xmlHttp.open("GET", theUrl, false); // false for synchronous request#}
-  {#    xmlHttp.send(null);#}
-  {#    return xmlHttp.responseText;#}
-  {# } #}
-  {##}
-  {#function getUpdate() {#}
-  {#    let url = 'http://' + document.domain + ':' + location.port + '/guild/{{guild.data.id}}/update';#}
-  {#    let response = Number(httpGet(url));#}
-  {#    if (response > last_update) {#}
-  {#        location.reload();#}
-  {#    }#}
-  {# } #}
-
-  function submitRadioForm(id) {
-      let form = document.getElementById('RadioForm');
-      let delayInMilliseconds = 100; //0.1 second
-
-      setTimeout(function () {
-          form.submit();
-      }, delayInMilliseconds);
-  }
-
-  function onSubmitDisable() {
-      setTimeout(disableButtons, 10);
-
-      function disableButtons() {
-          let buttons = document.querySelectorAll(".btn");
-          for (let i = 0; i < buttons.length; i++) {
-              buttons[i].setAttribute('disabled', '');
-          }
-      }
-  }
-
-  function scrollNow(scroll_pos) {
-      window.scroll({top: scroll_pos, left: 0, behavior: "auto"});
-  }
-
-  scrollNow({{scroll_position}})
+  <script>
+  let guild_id = '{{ gi }}';
+  let key = '{{ key }}';
+  let last_updated = {{ last_updated | safe }};
+  let scroll_position = '{{ scroll_position }}';
   </script>
+  <script src="https://cdn.socket.io/4.6.0/socket.io.min.js" integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+" crossorigin="anonymous"></script>
+  <script src="{{ url_for('static', filename='js/guild.js') }}"></script>
 
 {% endblock %}

@@ -1,3 +1,5 @@
+from classes.typed_dictionaries import LastUpdated
+
 from database.main import *
 
 from utils.global_vars import GlobalVars
@@ -23,11 +25,14 @@ class Guild(Base):
     now_playing = relationship('NowPlaying', uselist=False, backref='guilds', lazy=True)
     history = relationship('History', backref='guilds', order_by='History.position', collection_class=ordering_list('position'), lazy=True)
     data = relationship('GuildData', uselist=False, backref='guilds', lazy=True)
-    connected = Column(Boolean, default=True)
     slowed_users = relationship('SlowedUser', backref='guilds', lazy=True)
+    connected = Column(Boolean, default=True)
+    last_updated = Column(JSON, default={key: int(time()) for key in LastUpdated.__annotations__.keys()})
+    keep_alive = Column(Boolean, default=False)
 
-    def __init__(self, glob: GlobalVars or None, guild_id, json_data: dict):
+    def __init__(self, glob: GlobalVars or None, guild_id, json_data: dict, last_updated: LastUpdated=None):
         self.id = guild_id
+        self.last_updated = last_updated if last_updated else {key: int(time()) for key in LastUpdated.__annotations__.keys()}
 
         glob.ses.add(Options(self.id, json_data=json_data.get('options', {})))
         glob.ses.add(GuildData(glob, self.id, json_data=json_data.get('data', {})))
@@ -94,7 +99,6 @@ class Options(Base):
     volume = Column(Float, default=1.0)
     buffer = Column(Integer, default=600)
     history_length = Column(Integer, default=20)
-    last_updated = Column(Integer, default=int(time()))
     player_id = Column(Integer, default=0)
 
     def __init__(self, guild_id: int, json_data: dict):
@@ -110,7 +114,6 @@ class Options(Base):
         self.volume: float = json_data.get('volume', 1.0)  # volume of the player
         self.buffer: int = json_data.get('buffer', 600)  # how many seconds of nothing playing before bot disconnects | 600 = 10min
         self.history_length: int = json_data.get('history_length', 20)  # how many songs are stored in the history
-        self.last_updated: int = json_data.get('last_updated', int(time()))  # when was the last time any of the guilds data was updated
         self.player_id: int = json_data.get('player_id', 0)  # ID of the player
 
 class GuildData(Base):
@@ -139,7 +142,6 @@ class GuildData(Base):
     splash = Column(String)
     discovery_splash = Column(String)
     voice_channels = Column(JSON)
-    last_updated = Column(Integer)
 
     def __init__(self, glob: GlobalVars or None, guild_id, json_data: dict):
         self.id: int = guild_id
@@ -160,7 +162,6 @@ class GuildData(Base):
         self.splash: str = json_data.get('splash')
         self.discovery_splash: str = json_data.get('discovery_splash')
         self.voice_channels: list = json_data.get('voice_channels')
-        self.last_updated: int = json_data.get('last_updated', int(time()))
 
         self.renew(glob)
 
@@ -200,8 +201,6 @@ class GuildData(Base):
             self.discovery_splash = guild_object.discovery_splash.url if guild_object.discovery_splash else None
             self.voice_channels = [{'name': channel.name, 'id': channel.id} for channel in
                                    guild_object.voice_channels] if guild_object.voice_channels else None
-
-        self.last_updated = int(time())
 
 class Save(Base):
     """

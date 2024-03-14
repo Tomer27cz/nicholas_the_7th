@@ -52,8 +52,7 @@ async def kys_def(ctx: dc_commands.Context, glob: GlobalVars):
 # noinspection DuplicatedCode
 async def options_def(ctx: dc_commands.Context, glob: GlobalVars, server: Union[str, int, None]=None, stopped: str = None, loop: str = None, is_radio: str = None,
                       buttons: str = None, language: str = None, response_type: str = None, buffer: str = None,
-                      history_length: str = None, volume: str = None, search_query: str = None, last_updated: str = None,
-                      ephemeral=True):
+                      history_length: str = None, volume: str = None, search_query: str = None, ephemeral=True):
     log(ctx, 'options_def', options=locals(), log_type='function', author=ctx.author)
     is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
 
@@ -74,7 +73,6 @@ async def options_def(ctx: dc_commands.Context, glob: GlobalVars, server: Union[
         history_length -> `{options.history_length}`
         volume -> `{options.volume}`
         search_query -> `{options.search_query}`
-        last_updated -> `{options.last_updated}`
         """
 
         await ctx.reply(message, ephemeral=ephemeral)
@@ -151,10 +149,6 @@ async def options_def(ctx: dc_commands.Context, glob: GlobalVars, server: Union[
             msg = f'history_length has to be a number: {history_length}'
             await ctx.reply(msg, ephemeral=ephemeral)
             return ReturnData(False, msg)
-        if not last_updated.isdigit() and last_updated is not None and last_updated != 'None':
-            msg = f'last_updated has to be a number: {last_updated}'
-            await ctx.reply(msg, ephemeral=ephemeral)
-            return ReturnData(False, msg)
 
         if stopped is not None and stopped != 'None':
             options.stopped = to_bool(stopped)
@@ -178,8 +172,6 @@ async def options_def(ctx: dc_commands.Context, glob: GlobalVars, server: Union[
             options.buffer = int(buffer)
         if history_length is not None and history_length != 'None':
             options.history_length = int(history_length)
-        if last_updated is not None and last_updated != 'None':
-            options.last_updated = int(last_updated)
 
         update(glob)
 
@@ -459,7 +451,7 @@ async def dev_command_def(ctx: dc_commands.Context, glob: GlobalVars, command: s
     print(f'Running command: {command}')
     print(f'time() = {int(time.time())}')
 
-    push_update(glob, guild_id=ctx.guild.id)
+    push_update(glob, guild_id=ctx.guild.id, update_type=['all'])
 
     await ctx.reply(f'Pushed update to guild: {ctx.guild.id}', ephemeral=ephemeral)
 
