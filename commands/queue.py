@@ -554,11 +554,8 @@ async def shuffle_def(ctx, glob: GlobalVars, ephemeral: bool = False) -> ReturnD
     rand_list = list(range(len(queue)))
     random.shuffle(rand_list)
 
-    new_queue = []
-    for i in rand_list:
-        new_queue.append(queue[i])
-    guild(glob, guild_id).queue = new_queue
-    glob.ses.commit()
+    for index, vid in enumerate(queue):
+        vid.position = rand_list.index(index)
     glob.ses.commit()
     await push_update(glob, guild_id, ['queue'])
     update(glob)
