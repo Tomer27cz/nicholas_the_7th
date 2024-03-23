@@ -18,7 +18,7 @@ import json
 
 async def web_video_edit(web_data, glob: GlobalVars, form) -> ReturnData:
     log(web_data, 'web_video_edit', options=locals(), log_type='function', author=web_data.author)
-    is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data, glob)
+    is_ctx, ctx_guild_id, ctx_author, ctx_guild_object = ctx_check(web_data, glob)
     guild_id = web_data.guild_id
     db_guild = guild(glob, guild_id)
     index = form['edit_btn']
@@ -106,8 +106,13 @@ async def web_video_edit(web_data, glob: GlobalVars, form) -> ReturnData:
             return ReturnData(False, f'Invalid local number: {local_number}')
         local_number = int(local_number)
 
-    if author and author.isdigit():
-        author = int(author)
+    # if author and author.isdigit():
+    #     author = int(author)
+
+    try:
+        author = dict(author)
+    except (TypeError, ValueError, json.decoder.JSONDecodeError, AssertionError, SyntaxError):
+        return ReturnData(False, f'Invalid author: {author}')
 
     if duration and duration.isdigit():
         duration = int(duration)
@@ -140,10 +145,12 @@ async def web_video_edit(web_data, glob: GlobalVars, form) -> ReturnData:
         except (TypeError, ValueError, json.decoder.JSONDecodeError, AssertionError, SyntaxError):
             return ReturnData(False, f'Invalid discord channel: {discord_channel}')
 
-    video = await Queue.create(glob, class_type, author, guild_id, url=url, title=title, picture=picture, duration=duration,
-                  channel_name=channel_name, channel_link=channel_link, radio_info=radio_info,
-                  local_number=local_number, created_at=created_at, played_duration=played_duration, chapters=chapters,
-                  discord_channel=discord_channel, stream_url=stream_url)
+    video = await Queue.create(glob, class_type, author, guild_id, url=url, title=title, picture=picture,
+                               duration=duration,
+                               channel_name=channel_name, channel_link=channel_link, radio_info=radio_info,
+                               local_number=local_number, created_at=created_at, played_duration=played_duration,
+                               chapters=chapters,
+                               discord_channel=discord_channel, stream_url=stream_url)
 
     if is_np:
         db_guild.now_playing = await to_now_playing_class(glob, video)
@@ -153,16 +160,17 @@ async def web_video_edit(web_data, glob: GlobalVars, form) -> ReturnData:
         else:
             db_guild.history[index] = await to_history_class(glob, video)
 
-    push_update(glob, guild_id, ['all'])
+    await push_update(glob, guild_id, ['all'])
     update(glob)
 
     return ReturnData(True,
-                      txt(ctx_guild_id, glob, 'Edited item') + f' {"h" if not is_queue else ""}{index} ' + txt(ctx_guild_id, glob,
-                                                                                                       'successfully!'))
+                      txt(ctx_guild_id, glob, 'Edited item') + f' {"h" if not is_queue else ""}{index} ' + txt(
+                          ctx_guild_id, glob,
+                          'successfully!'))
 
 async def web_options_edit(web_data, glob: GlobalVars, form) -> ReturnData:
     log(web_data, 'web_options_edit', options=locals(), log_type='function', author=web_data.author)
-    is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data, glob)
+    is_ctx, ctx_guild_id, ctx_author, ctx_guild_object = ctx_check(web_data, glob)
 
     try:
         stopped = form['stopped']
@@ -177,7 +185,7 @@ async def web_options_edit(web_data, glob: GlobalVars, form) -> ReturnData:
         history_length = form['history_length']
     except KeyError:
         return ReturnData(False, txt(ctx_guild_id, glob,
-                                    'Missing form data - please contact the developer (he fucked up when doing an update)'))
+                                     'Missing form data - please contact the developer (he fucked up when doing an update)'))
 
     return await commands.admin.options_def(web_data, glob, server='this', stopped=stopped, loop=loop,
                                             is_radio=is_radio, language=language,
@@ -187,7 +195,7 @@ async def web_options_edit(web_data, glob: GlobalVars, form) -> ReturnData:
 # TODO: Figure out how to do this
 async def web_delete_guild(web_data, glob: GlobalVars, guild_id) -> ReturnData:
     log(web_data, 'web_delete_guild', options=locals(), log_type='function', author=web_data.author)
-    is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data, glob)
+    is_ctx, ctx_guild_id, ctx_author, ctx_guild_object = ctx_check(web_data, glob)
 
     db_guilds = [db_guild_object.id for db_guild_object in glob.ses.query(Guild).all()]
 
@@ -203,11 +211,12 @@ async def web_delete_guild(web_data, glob: GlobalVars, guild_id) -> ReturnData:
 
     update(glob)
 
-    return ReturnData(True, txt(ctx_guild_id, glob, 'Deleted guild') + f' {guild_id} ' + txt(ctx_guild_id, glob, 'successfully!'))
+    return ReturnData(True, txt(ctx_guild_id, glob, 'Deleted guild') + f' {guild_id} ' + txt(ctx_guild_id, glob,
+                                                                                             'successfully!'))
 
 async def web_disconnect_guild(web_data, glob: GlobalVars, guild_id) -> ReturnData:
     log(web_data, 'web_disconnect_guild', options=locals(), log_type='function', author=web_data.author)
-    is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data, glob)
+    is_ctx, ctx_guild_id, ctx_author, ctx_guild_object = ctx_check(web_data, glob)
     try:
         guild_id = int(guild_id)
     except (TypeError, ValueError):
@@ -227,11 +236,12 @@ async def web_disconnect_guild(web_data, glob: GlobalVars, guild_id) -> ReturnDa
 
     update(glob)
 
-    return ReturnData(True, txt(ctx_guild_id, glob, 'Left guild') + f' {guild_id} ' + txt(ctx_guild_id, glob, 'successfully!'))
+    return ReturnData(True, txt(ctx_guild_id, glob, 'Left guild') + f' {guild_id} ' + txt(ctx_guild_id, glob,
+                                                                                          'successfully!'))
 
 async def web_create_invite(web_data, glob: GlobalVars, guild_id):
     log(web_data, 'web_create_invite', options=locals(), log_type='function', author=web_data.author)
-    is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data, glob)
+    is_ctx, ctx_guild_id, ctx_author, ctx_guild_object = ctx_check(web_data, glob)
     try:
         guild_object = glob.bot.get_guild(int(guild_id))
     except (TypeError, ValueError):

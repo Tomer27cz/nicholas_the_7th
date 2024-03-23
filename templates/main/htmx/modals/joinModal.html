@@ -3,27 +3,67 @@
     <h1 class="modal-title fs-5" id="joinLabel">Join</h1>
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
   </div>
-  <form method="POST" action="" onsubmit="onSubmitDisable();">
-    <input type="hidden" name="scroll" value="0" id="scrollPos6">
-    <div class="j-div">
-      <label class="btn-m j-label">Channel ID</label>
-      <div class="e-item2">
-        <input type="number" class="form-control" name="channel_id">
-      </div>
-      <button type="submit" class="btn btn-primary" name="join_btn" value="id">{{ txt(lang, 'Join') }}</button>
-    </div>
-    {% if guild.data.voice_channels %}
-      <div class="j-div">
-        <label class="btn-m j-label">{{ txt(lang, 'Channel') }}</label>
-        <div class="e-item2">
-          <select class="form-select" aria-label="channel_name" name="channel_name">
-            {% for channel in guild.data.voice_channels %}
-              <option value="{{ channel['id'] }}">{{ channel['name'] }}</option>
-            {% endfor %}
-          </select>
+  <div class="modal-body">
+    <div class="mb-3">
+      {% if guild.data.voice_channels %}
+        {% for channel in guild.data.voice_channels %}
+          <div class="q-container">
+            <div class="q-div flex-no-wrap">
+              <div class="q-item1 q-wa q-self-center q-items-center"><h3>{{ channel['name'] }}</h3></div>
+              <div class="q-item0 q-wa q-self-center q-items-center">
+                <input type="hidden" name="channel_id" value="{{ channel['id'] }}">
+                <button class="btn btn-outline btn-primary btn-lg btn-m" type="submit" name="join_btn" value="id"
+                        hx-target="#response-div" hx-swap="beforeend" hx-trigger="click once"
+                        hx-get="/guild/{{ guild.id }}/action?key={{ key }}&act=join&var={{ channel['id'] }}"
+                ><h5>{{ txt(lang, 'Join') }}</h5></button>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="alert alert-warning" role="alert">
+          {{ txt(lang, 'No voice channels') }}
         </div>
-        <button type="submit" class="btn btn-primary" name="join_btn" value="name">{{ txt(lang, 'Join') }}</button>
-      </div>
-    {% endif %}
-  </form>
+      {% endif %}
+    </div>
+  </div>
+  <div class="accordion accordion-flush" id="accordionJoin">
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#aJoin" aria-expanded="false" aria-controls="aJoin">
+            <h3>Advanced</h3>
+          </button>
+        </h2>
+        <div id="aJoin" class="accordion-collapse collapse" data-bs-parent="#accordionJoin">
+          <div class="accordion-body">
+            <div class="j-div">
+              <label class="btn-m j-label">Channel ID</label>
+              <div class="e-item2">
+                <input type="number" class="form-control" name="var" id="channel_id_input">
+              </div>
+              <button type="submit" class="btn btn-primary" name="join_btn" value="id"
+                      hx-target="#response-div" hx-swap="beforeend" hx-trigger="click once"
+                      hx-get="/guild/{{ guild.id }}/action?key={{ key }}&act=join" hx-include="#channel_id_input"
+              >{{ txt(lang, 'Join') }}</button>
+            </div>
+            {% if guild.data.voice_channels %}
+              <div class="j-div">
+                <label class="btn-m j-label">{{ txt(lang, 'Channel') }}</label>
+                <div class="e-item2">
+                  <select class="form-select" aria-label="channel_name" name="var" id="channel_name_input">
+                    {% for channel in guild.data.voice_channels %}
+                      <option value="{{ channel['id'] }}">{{ channel['name'] }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <button type="submit" class="btn btn-primary" name="join_btn" value="name" hx-target="#response-div"
+                        hx-swap="beforeend" hx-trigger="click once" hx-include="#channel_name_input"
+                        hx-get="/guild/{{ guild.id }}/action?key={{ key }}&act=join"
+                >{{ txt(lang, 'Join') }}</button>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+    </div>
+  </div>
 </div>

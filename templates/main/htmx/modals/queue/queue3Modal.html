@@ -22,11 +22,11 @@
 
   <!-- Modal Body -->
   <div class="modal-body">
-    <div class="mb-3">
-      <label for="queue3_search" class="form-label">{{ txt(lang, 'Search or Radio.garden URL') }}</label>
+    <div class="input-group mb-3">
       <input type="search" name="var" class="form-control" id="queue3_search" hx-target="#queue3_results"
-             placeholder="{{ txt(lang, 'Search or Radio.garden URL') }}" hx-trigger="keyup[keyCode==13]"
+             placeholder="{{ txt(lang, 'Search or Radio.garden URL') }}" hx-trigger="keyup[keyCode==13], click from:#queue3_search_button"
              hx-get="/guild/{{ gi }}/search?act=garden&key={{ key }}" hx-swap="innerHTML" hx-indicator="#queue3_spinner">
+      <button class="btn btn-outline-secondary" type="submit" id="queue3_search_button">{{ txt(lang, "Search") }}</button>
     </div>
     <div class="text-center"><div id="queue3_spinner" class="spinner-border text-primary htmx-indicator" role="status" style="width: 2rem; height: 2rem;"></div></div>
     <div id="queue3_results">

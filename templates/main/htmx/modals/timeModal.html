@@ -1,0 +1,128 @@
+<div class="modal-content" id="timeModal_content">
+  <div class="modal-header">
+    <h1 class="modal-title fs-5" id="timeLabel">Set Time</h1>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  </div>
+  <div class="modal-body">
+    <div class="mb-3">
+      <div class="time-top-div">
+        <h2 class="time-top-item"><span id="display-time">0:00</span><input type="hidden" id="time-input" name="var" value="0"></h2>
+        <button class="btn btn-outline btn-primary time-top-item" type="submit" title="{{ txt(lang, 'Set Time') }}"
+                {% if not guild.connected %}disabled{% endif %} hx-trigger="click throttle:2s" hx-swap="beforeend"
+                hx-target="#response-div" hx-get="/guild/{{gi}}/action?key={{key}}&act=time" hx-include="#time-input"
+        ><h3>Set</h3></button>
+      </div>
+      <div class="time-div">
+        <div class="time-button-div">
+          <button class="btn btn-outline btn-primary time-button" onclick="onClick(-60)" onmousedown="onDown(-60)" onmouseup="onUp()" onmouseleave="onUp()"><<<</button>
+          <button class="btn btn-outline btn-primary time-button" onclick="onClick(-10)" onmousedown="onDown(-10)" onmouseup="onUp()" onmouseleave="onUp()"><<</button>
+          <button class="btn btn-outline btn-primary time-button" onclick="onClick(-1)" onmousedown="onDown(-1)" onmouseup="onUp()" onmouseleave="onUp()"><</button>
+        </div>
+        <input type="text" id="timeTextInput" oninput="onInput()" class="time-box">
+        <div class="time-button-div">
+          <button class="btn btn-outline btn-primary time-button" onclick="onClick(1)" onmousedown="onDown(1)" onmouseup="onUp()" onmouseleave="onUp()">></button>
+          <button class="btn btn-outline btn-primary time-button" onclick="onClick(10)" onmousedown="onDown(10)" onmouseup="onUp()" onmouseleave="onUp()">>></button>
+          <button class="btn btn-outline btn-primary time-button" onclick="onClick(60)" onmousedown="onDown(60)" onmouseup="onUp()" onmouseleave="onUp()">>>></button>
+        </div>
+      </div>
+      <script>
+        let holdInterval;
+        let holdTimeout;
+
+        let holdTime = 500;
+        let holdIntervalTime = 100;
+
+        {% if guild.now_playing.duration %}
+        let maxTime = {{ guild.now_playing.duration | safe if guild.now_playing.duration != 'Stream' else 0 }};
+        {% else %}
+        let maxTime = 0;
+        {% endif %}
+
+        function convertText(text) {
+            // convert text to seconds
+            let time = text.split(':');
+            let seconds = 0;
+
+            if (time.length === 1) {
+                seconds = parseInt(time[0]);
+            } else if (time.length === 2) {
+                seconds = parseInt(time[0]) * 60 + parseInt(time[1]);
+            } else if (time.length === 3) {
+                seconds = parseInt(time[0]) * 3600 + parseInt(time[1]) * 60 + parseInt(time[2]);
+            }
+
+            if (isNaN(seconds)) {
+                seconds = 0;
+            }
+
+            return seconds;
+        }
+
+        function onInput() {
+            let text = document.getElementById('timeTextInput').value;
+            let seconds = convertText(text);
+            document.getElementById('time-input').value = String(seconds);
+            document.getElementById('display-time').innerText = convertSeconds(seconds);
+        }
+
+        function onClick(offset) {
+            let text = document.getElementById('timeTextInput').value;
+            let seconds = convertText(text) + offset;
+
+            if (seconds < 0) {
+                seconds = 0;
+            }
+
+            if (seconds > maxTime) {
+                seconds = maxTime;
+                onUp();
+            }
+
+            document.getElementById('timeTextInput').value = convertSeconds(seconds);
+            document.getElementById('display-time').innerText = convertSeconds(seconds);
+            document.getElementById('time-input').value = String(seconds);
+        }
+
+        function onDown(offset) {
+            holdTimeout = setTimeout(() => {
+                holdInterval = setInterval(() => {
+                    onClick(offset);
+                    holdInterval.holdIntervalTime -= 1;
+                }, holdIntervalTime);
+            }, holdTime);
+        }
+
+        function onUp() {
+            clearInterval(holdInterval);
+            clearTimeout(holdTimeout);
+        }
+      </script>
+    </div>
+  </div>
+  <div class="accordion accordion-flush" id="accordionTime">
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#aTime" aria-expanded="false" aria-controls="aTime">
+            <h3>Other</h3>
+          </button>
+        </h2>
+        <div id="aTime" class="accordion-collapse collapse" data-bs-parent="#accordionTime">
+          <div class="accordion-body">
+            <div class="j-div">
+              <h2><label class="btn-m j-label" id="time-advanced">0:00</label></h2>
+              <div class="e-item2">
+                <input style="width: 100%; font-size: 2rem" type="number" class="form-c form-control btn-m" name="var" id="timeInput"
+                       min="0" max="{{ guild.now_playing.duration }}" value="0" {% if not guild.connected %}disabled{% endif %}
+                       hx-on:htmx:validation:failed="htmx.find('#timeInput').reportValidity()" hx-validate="true"
+                       oninput="document.getElementById('time-advanced').innerText = convertSeconds(this.value)">
+              </div>
+              <button class="btn btn-outline btn-primary btn-sm btn-m" type="submit" title="{{ txt(lang, 'Set Time') }}"
+                      {% if not guild.connected %}disabled{% endif %} hx-trigger="click throttle:2s" hx-swap="beforeend"
+                      hx-target="#response-div" hx-get="/guild/{{gi}}/action?key={{key}}&act=time" hx-include="#timeInput"
+                      hx-validate="true"><h3>Set</h3></button>
+            </div>
+          </div>
+        </div>
+    </div>
+  </div>
+</div>

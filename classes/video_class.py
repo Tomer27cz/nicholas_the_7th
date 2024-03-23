@@ -45,7 +45,7 @@ async def get_video_data(url: str) -> (dict, str) or (None, str):
 async def video_class_init(self,
                            glob: GlobalVars,
                            class_type: str,
-                           author: Union[str, int],
+                           author: VideoAuthor,
                            guild_id: int,
                            url: str = None,
                            title: str = None,
@@ -425,7 +425,7 @@ class Queue(Base):
     id = Column(Integer, primary_key=True)
     position = Column(Integer)
     class_type = Column(String)
-    author = Column(String)
+    author = Column(JSON)
     guild_id = Column(Integer, ForeignKey('guilds.id'))
     url = Column(String)
     title = Column(String)
@@ -445,7 +445,7 @@ class Queue(Base):
     async def create(cls,
                      glob: GlobalVars or None,
                      class_type: str,
-                     author: Union[str, int],
+                     author: VideoAuthor,
                      guild_id: int,
                      url: str = None,
                      title: str = None,
@@ -509,7 +509,7 @@ class NowPlaying(Base):
     id = Column(Integer, primary_key=True)
     position = Column(Integer)
     class_type = Column(String)
-    author = Column(String)
+    author = Column(JSON)
     guild_id = Column(Integer, ForeignKey('guilds.id'))
     url = Column(String)
     title = Column(String)
@@ -529,7 +529,7 @@ class NowPlaying(Base):
     async def create(cls,
                      glob: GlobalVars or None,
                      class_type: str,
-                     author: Union[str, int],
+                     author: VideoAuthor,
                      guild_id: int,
                      url: str = None,
                      title: str = None,
@@ -592,7 +592,7 @@ class History(Base):
     id = Column(Integer, primary_key=True)
     position = Column(Integer)
     class_type = Column(String)
-    author = Column(String)
+    author = Column(JSON)
     guild_id = Column(Integer, ForeignKey('guilds.id'))
     url = Column(String)
     title = Column(String)
@@ -612,7 +612,7 @@ class History(Base):
     async def create(cls,
                      glob: GlobalVars or None,
                      class_type: str,
-                     author: Union[str, int],
+                     author: VideoAuthor,
                      guild_id: int,
                      url: str = None,
                      title: str = None,
@@ -677,7 +677,7 @@ class SaveVideo(Base):
     id = Column(Integer, primary_key=True)
     position = Column(Integer)
     class_type = Column(String)
-    author = Column(String)
+    author = Column(JSON)
     guild_id = Column(Integer, ForeignKey('guilds.id'))
     url = Column(String)
     title = Column(String)
@@ -697,7 +697,7 @@ class SaveVideo(Base):
     async def create(cls,
                      glob: GlobalVars or None,
                      class_type: str,
-                     author: Union[str, int],
+                     author: VideoAuthor,
                      guild_id: int,
                      save_id: int,
                      url: str = None,

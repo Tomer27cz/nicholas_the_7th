@@ -10,16 +10,16 @@ import commands.voice
 
 import asyncio
 
-async def web_join(web_data, glob: GlobalVars, form) -> ReturnData:
+async def web_join(web_data, glob: GlobalVars, channel_id) -> ReturnData:
     log(web_data, 'web_join', options=locals(), log_type='function', author=web_data.author)
-    is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data, glob)
+    is_ctx, ctx_guild_id, ctx_author, ctx_guild_object = ctx_check(web_data, glob)
 
-    if form['join_btn'] == 'id':
-        channel_id = form['channel_id']
-    elif form['join_btn'] == 'name':
-        channel_id = form['channel_name']
-    else:
-        return ReturnData(False, txt(ctx_guild_id, glob, 'Invalid channel id (Internal web error -> contact developer)'))
+    # if form['join_btn'] == 'id':
+    #     channel_id = form['channel_id']
+    # elif form['join_btn'] == 'name':
+    #     channel_id = form['channel_name']
+    # else:
+    #     return ReturnData(False, txt(ctx_guild_id, glob, 'Invalid channel id (Internal web error -> contact developer)'))
 
     try:
         channel_id = int(channel_id)

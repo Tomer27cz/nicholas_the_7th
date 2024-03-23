@@ -22,11 +22,11 @@
 
   <!-- Modal Body -->
   <div class="modal-body">
-    <div class="mb-3">
-      <label for="queue5_search" class="form-label">{{ txt(lang, 'Search Local Files') }}</label>
+    <div class="input-group mb-3">
       <input type="search" name="var" class="form-control" id="queue5_search" hx-target="#queue5_results"
-             placeholder="{{ txt(lang, 'Search Local Files') }}" hx-trigger="keyup[keyCode==13]"
+             placeholder="{{ txt(lang, 'Search Local Files') }}" hx-trigger="keyup[keyCode==13], click from:#queue5_search_button"
              hx-get="/guild/{{ gi }}/search?act=local&key={{ key }}" hx-swap="innerHTML" hx-indicator="#queue5_spinner">
+      <button class="btn btn-outline-secondary" type="submit" id="queue5_search_button">{{ txt(lang, "Search") }}</button>
     </div>
     <div class="text-center"><div id="queue5_spinner" class="spinner-border text-primary htmx-indicator" role="status" style="width: 2rem; height: 2rem;"></div></div>
     <div id="queue5_results">

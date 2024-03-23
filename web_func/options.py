@@ -11,7 +11,7 @@ from utils.global_vars import languages_dict, GlobalVars
 
 async def web_user_options_edit(web_data, glob: GlobalVars, form) -> ReturnData:
     log(web_data, 'web_user_options_edit', options=locals(), log_type='function', author=web_data.author)
-    is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data, glob)
+    is_ctx, ctx_guild_id, ctx_author, ctx_guild_object = ctx_check(web_data, glob)
     options = guild(glob, web_data.guild_id).options
 
     loop = form['loop']

@@ -14,6 +14,9 @@
     </div>
   {% endif %}
 
+  <div id="response-div"></div>
+  <div id="response-div2"></div>
+
   {% if errors %}
     {% for error in errors %}
       <div class="alert alert-danger div-align alert-dismissible fade show sticky-top" role="alert">
@@ -35,6 +38,11 @@
 
 
 {% block content %}
+  <!-- Loader -->
+  <div class="loader" style="display: none" id="loader">
+    <div id="loader-spinner" class="spinner-border text-primary loader-spinner" role="status"></div>
+  </div>
+
   <!-- Guild -->
   <div>
     <div class="div-align margin-bottom-1">
@@ -122,100 +130,105 @@
   <!-- Control -->
   <form action="" method="POST" onsubmit="onSubmitDisable();">
     <input type="hidden" name="scroll" value="0" id="scrollPos3">
-    <div class="q-div div-con">
-      <div class="q-item0 div-align-center">
-        <h4>
-          {% if guild.now_playing %}
-            <span id="progress_time">{{ convert_duration(video_time_from_start(guild.now_playing)) }}</span>
-            / {{ convert_duration(guild.now_playing.duration) }}
-          {% else %}
-            0:00 / 0:00
-          {% endif %}
-        </h4>
-      </div>
-      <div class="q-item1">
-        <div class="e-div">
-          <button class="btn btn-dark e-item1" type="submit" name="play_btn" title="{{ txt(lang, 'Play') }}"
-                  {% if not guild.connected %}disabled{% endif %}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#0d6efd" viewBox="0 0 384 512">
-              <path
-                  d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"></path>
-            </svg>
-          </button>
-          <button class="btn btn-dark e-item1" type="submit" name="skip_btn" title="{{ txt(lang, 'Skip') }}"
-                  {% if not guild.connected %}disabled{% endif %}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 512 512">
-              <path
-                  d="M52.5 440.6c-9.5 7.9-22.8 9.7-34.1 4.4S0 428.4 0 416V96C0 83.6 7.2 72.3 18.4 67s24.5-3.6 34.1 4.4L224 214.3V256v41.7L52.5 440.6zM256 352V256 128 96c0-12.4 7.2-23.7 18.4-29s24.5-3.6 34.1 4.4l192 160c7.3 6.1 11.5 15.1 11.5 24.6s-4.2 18.5-11.5 24.6l-192 160c-9.5 7.9-22.8 9.7-34.1 4.4s-18.4-16.6-18.4-29V352z"></path>
-            </svg>
-          </button>
-          <button class="btn btn-dark e-item1" type="submit" name="pause_btn" title="{{ txt(lang, 'Pause') }}"
-                  {% if not guild.connected %}disabled{% endif %}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 320 512">
-              <path
-                  d="M48 64C21.5 64 0 85.5 0 112V400c0 26.5 21.5 48 48 48H80c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48H48zm192 0c-26.5 0-48 21.5-48 48V400c0 26.5 21.5 48 48 48h32c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48H240z"></path>
-            </svg>
-          </button>
-          <button class="btn btn-dark e-item1" type="submit" name="stop_btn" title="{{ txt(lang, 'Stop') }}"
-                  {% if not guild.connected %}disabled{% endif %}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#dc3545" viewBox="0 0 384 512">
-              <path
-                  d="M0 128C0 92.7 28.7 64 64 64H320c35.3 0 64 28.7 64 64V384c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V128z"></path>
-            </svg>
-          </button>
-        </div>
-      </div>
-      <div class="q-item1 d-control"><p class="{{ 'd-g' if bot_status in ['Connected', 'Playing'] }}{{ 'd-r' if bot_status in ['Not connected'] }}{{ 'd-y' if bot_status in ['Unknown', 'Paused'] }} d-status">{{ txt(lang, bot_status) }}</p></div>
-      <div class="q-item1">
-        <div class="e-div">
-          <button class="btn btn-dark e-item1" type="button" data-bs-toggle="modal" data-bs-target="#joinModal"
-                  title="{{ txt(lang, 'Join Channel') }}" {% if not guild.connected %}disabled{% endif %}
-                  hx-trigger="click once" hx-target="#joinModal_content" hx-swap="outerHTML"
-                  hx-get="/guild/{{ gi }}/modals?type=joinModal&key={{ key }}" hx-indicator="#joinModal_spinner">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#198754" viewBox="0 0 16 16">
-              <path d="M14 2H16V3H14V5H13V3H11V2H13V0H14V2Z"></path>
-              <path
-                  d="M6.5 8.00667C7.88 8.00667 9 6.88667 9 5.50667C9 4.12667 7.88 3.00667 6.5 3.00667C5.12 3.00667 4 4.12667 4 5.50667C4 6.88667 5.12 8.00667 6.5 8.00667Z"></path>
-              <path d="M6.5 8.34C3.26 8.34 1 9.98666 1 12.34V13.0067H12V12.34C12 9.98 9.74 8.34 6.5 8.34Z"></path>
-            </svg>
-          </button>
-          <button class="btn btn-dark e-item1" type="submit" name="disconnect_btn" title="{{ txt(lang, 'Disconnect') }}"
-                  {% if not guild.connected %}disabled{% endif %}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#dc3545" viewBox="0 0 24 24">
-              <path
-                  d="M21.1169 1.11603L22.8839 2.88403L19.7679 6.00003L22.8839 9.11603L21.1169 10.884L17.9999 7.76803L14.8839 10.884L13.1169 9.11603L16.2329 6.00003L13.1169 2.88403L14.8839 1.11603L17.9999 4.23203L21.1169 1.11603ZM18 22H13C6.925 22 2 17.075 2 11V6C2 5.447 2.448 5 3 5H7C7.553 5 8 5.447 8 6V10C8 10.553 7.553 11 7 11H6C6.063 14.938 9 18 13 18V17C13 16.447 13.447 16 14 16H18C18.553 16 19 16.447 19 17V21C19 21.553 18.553 22 18 22Z"></path>
-            </svg>
-          </button>
-        </div>
-      </div>
-      {% if admin == True %}
-        <div class="d-flex">
-          <div class="btn-m">
-            <input style="width: 5rem" type="number" class="form-c form-control btn-m" name="timeInput" min="0" max="{{ guild.now_playing.duration }}" value="0" {% if not guild.connected %}disabled{% endif %}>
-          </div>
-          <button class="btn btn-outline btn-primary btn-sm btn-m" type="submit" name="time_btn" title="{{ txt(lang, 'Set Time') }}" {% if not guild.connected %}disabled{% endif %}>Set</button>
 
-        </div>
-        <div class="vr btm-m"></div>
-      {% endif %}
-      <div class="q-item1">
-        <div class="d-flex">
-          <div class="btn-m">
-            <input type="number" class="form-c form-control btn-m flex-fill" name="volumeInput" min="0" max="200"
-                   value="{{ int(guild.options.volume*100) }}" oninput="this.form.volumeRange.value=this.value"
-                   {% if not guild.connected %}disabled{% endif %}>
-          </div>
-          <input type="range" class="form-r form-range btn-m" name="volumeRange" min="0" max="200" value="{{ int(guild.options.volume*100) }}"
-                 oninput="this.form.volumeInput.value=this.value" {% if not guild.connected %}disabled{% endif %}>
-          <button class="btn btn-outline btn-primary btn-sm btn-m flex-fill" type="submit" name="volume_btn"
-                  title="{{ txt(lang, 'Set Volume') }}" {% if not guild.connected %}disabled{% endif %}>Set
-          </button>
-        </div>
-      </div>
-    </div>
   </form>
 
-  <!-- Queue -->
+  <div class="q-div div-con">
+    <div class="q-item0 div-align-center">
+      <h4>
+        {% if guild.now_playing %}
+          <span id="progress_time">{{ convert_duration(video_time_from_start(guild.now_playing)) }}</span>
+          / {{ convert_duration(guild.now_playing.duration) }}
+        {% else %}
+          0:00 / 0:00
+        {% endif %}
+      </h4>
+    </div>
+    <div class="q-item1">
+      <div class="e-div">
+        <button class="btn btn-dark e-item1" type="submit" name="play_btn" title="{{ txt(lang, 'Play') }}"
+                {% if not guild.connected %}disabled{% endif %} hx-trigger="click throttle:2s" hx-swap="beforeend"
+                hx-target="#response-div" hx-get="/guild/{{gi}}/action?key={{key}}&act=play">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#0d6efd" viewBox="0 0 384 512">
+            <path
+                d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"></path>
+          </svg>
+        </button>
+        <button class="btn btn-dark e-item1" type="submit" name="skip_btn" title="{{ txt(lang, 'Skip') }}"
+                {% if not guild.connected %}disabled{% endif %} hx-trigger="click throttle:2s" hx-swap="beforeend"
+                hx-target="#response-div" hx-get="/guild/{{gi}}/action?key={{key}}&act=skip">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 512 512">
+            <path
+                d="M52.5 440.6c-9.5 7.9-22.8 9.7-34.1 4.4S0 428.4 0 416V96C0 83.6 7.2 72.3 18.4 67s24.5-3.6 34.1 4.4L224 214.3V256v41.7L52.5 440.6zM256 352V256 128 96c0-12.4 7.2-23.7 18.4-29s24.5-3.6 34.1 4.4l192 160c7.3 6.1 11.5 15.1 11.5 24.6s-4.2 18.5-11.5 24.6l-192 160c-9.5 7.9-22.8 9.7-34.1 4.4s-18.4-16.6-18.4-29V352z"></path>
+          </svg>
+        </button>
+        <button class="btn btn-dark e-item1" type="submit" name="pause_btn" title="{{ txt(lang, 'Pause') }}"
+                {% if not guild.connected %}disabled{% endif %} hx-trigger="click throttle:2s" hx-swap="beforeend"
+                hx-target="#response-div" hx-get="/guild/{{gi}}/action?key={{key}}&act=pause">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 320 512">
+            <path
+                d="M48 64C21.5 64 0 85.5 0 112V400c0 26.5 21.5 48 48 48H80c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48H48zm192 0c-26.5 0-48 21.5-48 48V400c0 26.5 21.5 48 48 48h32c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48H240z"></path>
+          </svg>
+        </button>
+        <button class="btn btn-dark e-item1" type="submit" name="stop_btn" title="{{ txt(lang, 'Stop') }}"
+                {% if not guild.connected %}disabled{% endif %} hx-trigger="click throttle:2s" hx-swap="beforeend"
+                hx-target="#response-div" hx-get="/guild/{{gi}}/action?key={{key}}&act=stop">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#dc3545" viewBox="0 0 384 512">
+            <path
+                d="M0 128C0 92.7 28.7 64 64 64H320c35.3 0 64 28.7 64 64V384c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V128z"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div class="q-item1 d-control"><p class="{{ 'd-g' if bot_status in ['Connected', 'Playing'] }}{{ 'd-r' if bot_status in ['Not connected'] }}{{ 'd-y' if bot_status in ['Unknown', 'Paused'] }} d-status">{{ txt(lang, bot_status) }}</p></div>
+    <div class="q-item1">
+      <div class="e-div">
+        <button class="btn btn-dark e-item1" type="button" data-bs-toggle="modal" data-bs-target="#joinModal"
+                title="{{ txt(lang, 'Join Channel') }}" {% if not guild.connected %}disabled{% endif %}
+                hx-trigger="click once" hx-target="#joinModal_content" hx-swap="outerHTML"
+                hx-get="/guild/{{ gi }}/modals?type=joinModal&key={{ key }}" hx-indicator="#joinModal_spinner">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#198754" viewBox="0 0 16 16">
+            <path d="M14 2H16V3H14V5H13V3H11V2H13V0H14V2Z"></path>
+            <path
+                d="M6.5 8.00667C7.88 8.00667 9 6.88667 9 5.50667C9 4.12667 7.88 3.00667 6.5 3.00667C5.12 3.00667 4 4.12667 4 5.50667C4 6.88667 5.12 8.00667 6.5 8.00667Z"></path>
+            <path d="M6.5 8.34C3.26 8.34 1 9.98666 1 12.34V13.0067H12V12.34C12 9.98 9.74 8.34 6.5 8.34Z"></path>
+          </svg>
+        </button>
+        <button class="btn btn-dark e-item1" type="submit" name="disconnect_btn" title="{{ txt(lang, 'Disconnect') }}"
+                {% if not guild.connected %}disabled{% endif %} hx-trigger="click throttle:2s" hx-swap="beforeend"
+                hx-target="#response-div" hx-get="/guild/{{gi}}/action?key={{key}}&act=disconnect">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#dc3545" viewBox="0 0 24 24">
+            <path
+                d="M21.1169 1.11603L22.8839 2.88403L19.7679 6.00003L22.8839 9.11603L21.1169 10.884L17.9999 7.76803L14.8839 10.884L13.1169 9.11603L16.2329 6.00003L13.1169 2.88403L14.8839 1.11603L17.9999 4.23203L21.1169 1.11603ZM18 22H13C6.925 22 2 17.075 2 11V6C2 5.447 2.448 5 3 5H7C7.553 5 8 5.447 8 6V10C8 10.553 7.553 11 7 11H6C6.063 14.938 9 18 13 18V17C13 16.447 13.447 16 14 16H18C18.553 16 19 16.447 19 17V21C19 21.553 18.553 22 18 22Z"></path>
+          </svg>
+        </button>
+        <button class="btn btn-dark e-item1" data-bs-toggle="modal" data-bs-target="#timeModal" hx-get="/guild/{{ gi }}/modals?type=timeModal&key={{ key }}"
+                hx-trigger="click once" hx-target="#timeModal_content" hx-swap="outerHTML" hx-indicator="#timeModal_spinner">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#ffffff" viewBox="0 0 48 48">
+            <path d="M 24 4 C 12.972066 4 4 12.972074 4 24 C 4 35.027926 12.972066 44 24 44 C 35.027934 44 44 35.027926 44 24 C 44 12.972074 35.027934 4 24 4 z M 24 7 C 33.406615 7 41 14.593391 41 24 C 41 33.406609 33.406615 41 24 41 C 14.593385 41 7 33.406609 7 24 C 7 14.593391 14.593385 7 24 7 z M 22.476562 11.978516 A 1.50015 1.50015 0 0 0 21 13.5 L 21 24.5 A 1.50015 1.50015 0 0 0 21.439453 25.560547 L 26.439453 30.560547 A 1.50015 1.50015 0 1 0 28.560547 28.439453 L 24 23.878906 L 24 13.5 A 1.50015 1.50015 0 0 0 22.476562 11.978516 z"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div class="q-item1">
+      <div class="d-flex">
+        <div class="btn-m">
+          <input type="number" class="form-c form-control btn-m flex-fill" id="volumeInput" name="var" min="0" max="200"
+                 value="{{ int(guild.options.volume*100) }}" oninput="document.getElementById('volumeRange').value=this.value"
+                 {% if not guild.connected %}disabled{% endif %}>
+        </div>
+        <input type="range" class="form-r form-range btn-m" id="volumeRange" min="0" max="200" value="{{ int(guild.options.volume*100) }}"
+               oninput="document.getElementById('volumeInput').value=this.value" {% if not guild.connected %}disabled{% endif %}>
+        <button class="btn btn-outline btn-primary btn-sm btn-m flex-fill" type="submit"
+                title="{{ txt(lang, 'Set Volume') }}" {% if not guild.connected %}disabled{% endif %}
+                hx-trigger="click throttle:1s" hx-swap="beforeend" hx-target="#response-div"
+                hx-get="/guild/{{gi}}/action?key={{key}}&act=volume" hx-include="#volumeInput"
+        >Set</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Queue TOP -->
   <div class="q-top">
     <div class="q-item1 l-div gap1">
       <h3>{{ txt(lang, 'Queue') }}</h3>
@@ -228,7 +241,7 @@
         </svg>
       </a>
       <a class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#loadModal" title="{{ txt(lang, 'Load Queue') }}"
-         hx-target="#loadModal_content" hx-swap="outerHTML" hx-trigger="click once"
+         hx-target="#loadModal_content" hx-swap="outerHTML" hx-trigger="click"
          hx-get="/guild/{{gi}}/modals?type=loadModal&key={{ key }}" hx-indicator="#loadModal_spinner">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-upload" viewBox="0 0 16 16">
           <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"></path>
@@ -249,7 +262,10 @@
               d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"></path>
       </svg>
     </a>
-    {% include 'main/htmx/single/loop.html' %}
+    <button class="btn btn-dark" title="{{ txt(lang, 'Loop') }}" hx-target="this" hx-swap="innerHTML"
+        hx-trigger="click throttle:2s" hx-get="/guild/{{gi}}/action?act=loop&key={{key}}">
+      {% include 'main/htmx/single/loop.html' %}
+    </button>
     <button class="btn btn-dark" title="{{ txt(lang, 'Shuffle') }}" hx-target="#q-main" hx-swap="outerHTML"
             hx-trigger="click throttle:500ms" hx-get="/guild/{{gi}}/queue?act=shuffle_btn&key={{key}}">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-shuffle"
@@ -274,7 +290,7 @@
   {% include "main/htmx/queue_dynamic.html" %}
 
   <!-- Modals -->
-  <!-- Queue1 -->
+  <!-- Queue1 Modal -->
   <div class="modal fade" id="queue1Modal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
        aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
@@ -284,7 +300,7 @@
       </div>
     </div>
   </div>
-  <!-- Queue2 -->
+  <!-- Queue2 Modal -->
   <div class="modal fade" id="queue2Modal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
        aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
@@ -294,7 +310,7 @@
       </div>
     </div>
   </div>
-  <!-- Queue3 -->
+  <!-- Queue3 Modal -->
   <div class="modal fade" id="queue3Modal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
        aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
@@ -304,7 +320,7 @@
       </div>
     </div>
   </div>
-  <!-- Queue4 -->
+  <!-- Queue4 Modal -->
   <div class="modal fade" id="queue4Modal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
        aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
@@ -314,7 +330,7 @@
       </div>
     </div>
   </div>
-  <!-- Queue5 -->
+  <!-- Queue5 Modal -->
   <div class="modal fade" id="queue5Modal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
        aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
@@ -324,24 +340,24 @@
       </div>
     </div>
   </div>
-  <!-- Join -->
+  <!-- Join Modal -->
   <div class="modal fade" id="joinModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="joinLabel"
        aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content" id="joinModal_content">
         <div class="text-center"><div id="joinModal_spinner" class="spinner-border text-primary htmx-indicator" role="status" style="width: 2rem; height: 2rem;"></div></div>
       </div>
     </div>
   </div>
-  <!-- Load -->
+  <!-- Load Modal -->
   <div class="modal fade" id="loadModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="loadLabel" aria-modal="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content" id="loadModal_content">
         <div class="text-center"><div id="loadModal_spinner" class="spinner-border text-primary htmx-indicator" role="status" style="width: 2rem; height: 2rem;"></div></div>
       </div>
     </div>
   </div>
-  <!-- Options -->
+  <!-- Options Modal -->
   <div class="modal fade" id="optionsModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="optionsLabel"
        aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg r-modal">
@@ -350,12 +366,21 @@
       </div>
     </div>
   </div>
-  <!-- Save -->
+  <!-- Save Modal -->
   <div class="modal fade" id="saveModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="saveLabel"
        aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content" id="saveModal_content">
         <div class="text-center"><div id="saveModal_spinner" class="spinner-border text-primary htmx-indicator" role="status" style="width: 2rem; height: 2rem;"></div></div>
+      </div>
+    </div>
+  </div>
+  <!-- Time Modal -->
+  <div class="modal fade" id="timeModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="timeLabel"
+       aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content" id="timeModal_content">
+        <div class="text-center"><div id="timeModal_spinner" class="spinner-border text-primary htmx-indicator" role="status" style="width: 2rem; height: 2rem;"></div></div>
       </div>
     </div>
   </div>

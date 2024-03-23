@@ -22,3 +22,5 @@ SQLAlchemy
 alembic
 xmltodict
 flask-sqlalchemy
+flask-socketio
+eventlet

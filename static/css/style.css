@@ -536,18 +536,22 @@ input.radio-checkbox[type=radio] + label {
 
 .q-item1 {
     flex: 1 1 auto;
+    align-self: center;
 }
 
 .q-item2 {
     flex: 0 0 20%;
+    align-self: center;
 }
 
 .q-item3 {
     flex: 0 0 15%;
+    align-self: center;
 }
 
 .q-item0 {
     flex: 0 0 auto;
+    align-self: center;
 }
 
 .q-items-center {
@@ -570,6 +574,7 @@ input.radio-checkbox[type=radio] + label {
     max-height: 90px;
     width: auto;
     height: auto;
+    align-self: center;
 }
 
 .q-text {
@@ -948,8 +953,70 @@ input.radio-checkbox[type=radio] + label {
     flex-wrap: nowrap;
 }
 
+/* loader */
+.loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1060;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.loader-spinner {
+    width: 20rem;
+    height: 20rem;
+}
 
-
-
+/* time modal */
+.time-div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.time-button-div {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
+}
+.time-button {
+    flex: 1;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    background-color: var(--d-g3);
+    color: var(--d-g0);
+    transition: background-color 0.5s;
+}
+.time-box {
+    width: 100%;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    background-color: var(--d-g3);
+    color: var(--d-g0);
+    transition: background-color 0.5s;
+    text-align: center;
+    font-size: 1.5rem;
+}
+.time-top-div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
+}
+.time-top-item {
+    flex: 1;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    background-color: var(--d-g3);
+    color: var(--d-g0);
+    transition: background-color 0.5s;
+}
 
 

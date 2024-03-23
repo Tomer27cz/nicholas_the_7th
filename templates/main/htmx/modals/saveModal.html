@@ -3,17 +3,16 @@
     <h1 class="modal-title fs-5" id="saveLabel">{{ txt(lang, 'Save Queue') }}</h1>
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
   </div>
-  <form method="POST" id="saveForm" action="" onsubmit="onSubmitDisable();">
-    <input type="hidden" name="scroll" value="0" id="scrollPos14">
-    <div class="modal-body">
-      <div class="mb-3">
-        <label for="saveName" class="btn-m">{{ txt(lang, 'Name') }}</label>
-        <input type="text" class="form-control" name="saveName" id="saveName" required>
-      </div>
+  <div class="modal-body">
+    <div class="mb-3">
+      <label for="saveName" class="btn-m">{{ txt(lang, 'Name') }}</label>
+      <input type="text" class="form-control" name="var" id="saveName" required>
     </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-dark" data-bs-dismiss="modal">{{ txt(lang, 'Close') }}</button>
-      <button type="submit" class="btn btn-primary">{{ txt(lang, 'Save') }}</button>
-    </div>
-  </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-dark" data-bs-dismiss="modal">{{ txt(lang, 'Close') }}</button>
+    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" hx-target="#response-div2" hx-trigger="click"
+            hx-include="#saveName" hx-get="/guild/{{gi}}/queue?key={{key}}&act=saveName&resp=only" hx-swap="beforeend"
+    >{{ txt(lang, 'Save') }}</button>
+  </div>
 </div>

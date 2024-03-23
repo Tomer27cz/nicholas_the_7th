@@ -1,0 +1,22 @@
+{% if not response.response %}
+{% set resp='true' %}
+{% set refresh='false' %}
+{% endif %}
+
+{% if resp != 'false' %}
+<div class="alert alert-{{ 'success' if response.response else 'danger' }} div-align alert-dismissible fade show sticky-top" role="alert">
+  {{ response.message }}
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  {% if not response.response %}
+  <script>document.getElementById("loader").style.display = "none";</script>
+  {% endif %}
+</div>
+{% endif %}
+
+{% if refresh == 'true' %}
+<script>
+  setTimeout(function() {
+    location.reload();
+  }, 10);
+</script>
+{% endif %}

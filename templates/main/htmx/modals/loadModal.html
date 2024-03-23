@@ -4,25 +4,35 @@
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
   </div>
   <div class="modal-body">
+    <div class="text-center"><div id="loadModal_spinner" class="spinner-border text-primary htmx-indicator" role="status" style="width: 2rem; height: 2rem;"></div></div>
     <div class="mb-3">
-      {% if saves is not none %}
-        <label for="loadName" class="btn-m">{{ txt(lang, 'Name') }}</label>
-        <select class="form-select btn-m" aria-label="Default select example" name="loadName" id="loadName" required>
-          {% for save in saves %}
-            <option value="{{ save }}">{{ save }}</option>
-          {% endfor %}
-        </select>
+      {% if saves %}
+        {% for save in saves %}
+          <div class="q-container">
+            <div class="q-div">
+              <div class="q-item1 q-wd">
+                <p class="q-text"><h3>{{ save.name }}</h3></p>
+                <p class="q-text">{{ txt(lang, 'Tracks') }}: {{ len(save.queue) }}</p>
+              </div>
+              <div class="q-item2 q-items-center">
+                <p class="q-text">{{ save.author['name'] }}</p>
+                <p class="q-text q-3">{{ struct_to_time(save.created_at, first='time') }}</p>
+              </div>
+              <div class="q-item0 q-wa q-self-center q-items-center">
+                <button class="btn btn-outline btn-primary btn-lg btn-m" type="button" data-bs-toggle="modal"
+                        hx-swap="outerHTML" hx-target="#q-main" hx-trigger="click throttle:1s"
+                        hx-get="/guild/{{ gi }}/queue?act=loadName&key={{ key }}&var={{ save.name }}"
+                        ><h5>Load</h5></button>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
       {% else %}
-        <p>{{ txt(lang, 'No saved queues') }}</p>
+        <div class="text-center"><h3>{{ txt(lang, 'No saves found') }}</h3></div>
       {% endif %}
     </div>
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-dark" data-bs-dismiss="modal">{{ txt(lang, 'Close') }}</button>
-    {% if saves is not none %}
-      <button class="btn btn-primary" data-bs-dismiss="modal" hx-swap="outerHTML" hx-target="#q-main"
-      hx-get="/guild/{{ gi }}/queue?act=loadName&key={{ key }}" hx-trigger="click throttle:500ms" hx-include="#loadName"
-      >{{ txt(lang, 'Load') }}</button>
-    {% endif %}
   </div>
 </div>

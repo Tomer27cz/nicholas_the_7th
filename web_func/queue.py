@@ -13,7 +13,7 @@ from utils.global_vars import radio_dict, GlobalVars
 
 async def web_queue(web_data, glob: GlobalVars, video_type, position=None) -> ReturnData:
     log(web_data, 'web_queue', options=locals(), log_type='function', author=web_data.author)
-    is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data, glob)
+    is_ctx, ctx_guild_id, ctx_author, ctx_guild_object = ctx_check(web_data, glob)
     guild_id = web_data.guild_id
     db_guild = guild(glob, guild_id)
 
@@ -43,10 +43,10 @@ async def web_queue(web_data, glob: GlobalVars, video_type, position=None) -> Re
 
 async def web_queue_from_radio(web_data, glob: GlobalVars, radio_name=None, position=None) -> ReturnData:
     log(web_data, 'web_queue_from_radio', options=locals(), log_type='function', author=web_data.author)
-    is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data, glob)
+    is_ctx, ctx_guild_id, ctx_author, ctx_guild_object = ctx_check(web_data, glob)
 
     if radio_name in radio_dict.keys():
-        video = await Queue.create(glob, 'Radio', web_data.author_id, ctx_guild_id, radio_info=dict(name=radio_name))
+        video = await Queue.create(glob, 'Radio', web_data.author, ctx_guild_id, radio_info=dict(name=radio_name))
 
         if position == 'start':
             await to_queue(glob, web_data.guild_id, video, position=0, copy_video=False)

@@ -42,9 +42,9 @@
           </div>
           <div class="q-item2 q-items-center">
             <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer"
-                                 href="https://discordapp.com/users/{{ guild.now_playing.author }}">{{ get_username(guild.now_playing.author) }}</a>
+                                 href="https://discordapp.com/users/{{ guild.now_playing.author['id'] }}">{% set user_name = get_username(guild.now_playing.author['id']) %}{{ user_name if user_name == guild.now_playing.author['name'] or guild.now_playing.author['name'] is none else guild.now_playing.author['name'] }}</a>
             </p>
-            <p class="q-text q-2">{{ guild.now_playing.author }}</p>
+            <p class="q-text q-2">{{ guild.now_playing.author['id'] }}</p>
             <p class="q-text q-3">{{ struct_to_time(guild.now_playing.created_at, first='time') }}</p>
           </div>
           <div class="q-item0 q-wa q-self-center q-items-center">

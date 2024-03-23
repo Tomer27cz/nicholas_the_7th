@@ -38,11 +38,11 @@ async def play_def(ctx, glob: GlobalVars,
                    no_after: bool=None
                    ) -> ReturnData:
     log(ctx, 'play_def', options=locals(), log_type='function', author=ctx.author)
-    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
+    is_ctx, guild_id, author, guild_object = ctx_check(ctx, glob)
     db_guild = guild(glob, guild_id)
 
     response = ReturnData(False, txt(guild_id, glob, 'Unknown error'))
-    notif = f' -> [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={db_guild.data.key})'
+    notif = f' -> [Control Panel]({config.WEB_URL}/guild/{guild_id}?key={db_guild.data.key})'
 
     if after and db_guild.options.stopped or after and player_id != db_guild.options.player_id or after and no_after is True:
         log(ctx, f"play_def -> loop stopped (stopped: {db_guild.options.stopped}, id: {player_id}, db_id: {db_guild.options.player_id}, no_after: {no_after})", log_type='function')
@@ -167,7 +167,7 @@ async def play_def(ctx, glob: GlobalVars,
         # Variables update
         db_guild.options.stopped = False
         # video variables
-        await set_started(glob, video, guild_object, chapters=chapters)
+        await set_started(glob, video, guild_object, chapters=chapters, no_push=True)
 
         # Queue update
         # if guild[guild_id].options.loop:
@@ -175,7 +175,7 @@ async def play_def(ctx, glob: GlobalVars,
         glob.ses.query(Queue).filter_by(id=video.id).delete()
         glob.ses.commit()
 
-        push_update(glob, guild_id, ['queue', 'now', 'history'])
+        await push_update(glob, guild_id, ['queue', 'now', 'history'])
         update(glob)
 
         # Response
@@ -225,7 +225,7 @@ async def local_def(ctx, glob: GlobalVars, effect: str, mute_response: bool = Fa
     :return: ReturnData
     """
     log(ctx, 'ps_def', options=locals(), log_type='function', author=ctx.author)
-    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
+    is_ctx, guild_id, author, guild_object = ctx_check(ctx, glob)
 
     url_type, url = get_url_type(effect)
     if url_type not in ['Local', 'String']:
@@ -270,7 +270,7 @@ async def now_def(ctx, glob: GlobalVars, ephemeral: bool = False) -> ReturnData:
     :return: ReturnData
     """
     log(ctx, 'now_def', options=locals(), log_type='function', author=ctx.author)
-    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
+    is_ctx, guild_id, author, guild_object = ctx_check(ctx, glob)
     db_guild = guild(glob, guild_id)
     if not is_ctx:
         return ReturnData(False, txt(guild_id, glob, 'This command cant be used in WEB'))
@@ -311,7 +311,7 @@ async def last_def(ctx, glob: GlobalVars, ephemeral: bool = False) -> ReturnData
     :return: ReturnData
     """
     log(ctx, 'last_def', options=locals(), log_type='function', author=ctx.author)
-    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
+    is_ctx, guild_id, author, guild_object = ctx_check(ctx, glob)
     db_guild = guild(glob, guild_id)
     if not is_ctx:
         return ReturnData(False, txt(guild_id, glob, 'This command cant be used in WEB'))
@@ -341,7 +341,7 @@ async def loop_command_def(ctx, glob: GlobalVars, clear_queue_opt: bool=False, e
     :return: ReturnData
     """
     log(ctx, 'loop_command_def', options=locals(), log_type='function', author=ctx.author)
-    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
+    is_ctx, guild_id, author, guild_object = ctx_check(ctx, glob)
     db_guild = guild(glob, guild_id)
 
     # add now_playing to queue if loop is activated
@@ -363,7 +363,7 @@ async def loop_command_def(ctx, glob: GlobalVars, clear_queue_opt: bool=False, e
         clear_queue(glob, guild_id)
         await to_queue(glob, guild_id, db_guild.now_playing)
         db_guild.options.loop = True
-        push_update(glob, guild_id, ['options', 'queue'])
+        await push_update(glob, guild_id, ['options', 'queue'])
         update(glob)
 
         message = f'{txt(guild_id, glob, "Queue **cleared**, Player will now loop **currently** playing song:")} [`{db_guild.now_playing.title}`](<{db_guild.now_playing.url}>)'
@@ -372,7 +372,7 @@ async def loop_command_def(ctx, glob: GlobalVars, clear_queue_opt: bool=False, e
 
     if options.loop:
         db_guild.options.loop = False
-        push_update(glob, guild_id, ['options'])
+        await push_update(glob, guild_id, ['options'])
         update(glob)
 
         message = txt(guild_id, glob, "Loop mode: `False`")
@@ -382,7 +382,7 @@ async def loop_command_def(ctx, glob: GlobalVars, clear_queue_opt: bool=False, e
     db_guild.options.loop = True
     if db_guild.now_playing and add_to_queue_when_activated:
         await to_queue(glob, guild_id, db_guild.now_playing)
-    push_update(glob, guild_id, ['options', 'queue'])
+    await push_update(glob, guild_id, ['options', 'queue'])
     update(glob)
 
     message = txt(guild_id, glob, 'Loop mode: `True`')
@@ -391,7 +391,7 @@ async def loop_command_def(ctx, glob: GlobalVars, clear_queue_opt: bool=False, e
 
 async def set_video_time(ctx, glob: GlobalVars, time_stamp: int, mute_response: bool=False, ephemeral: bool=False):
     log(ctx, 'set_video_time', options=locals(), log_type='function')
-    is_ctx, ctx_guild_id, author_id, ctx_guild_object = ctx_check(ctx, glob)
+    is_ctx, ctx_guild_id, author, ctx_guild_object = ctx_check(ctx, glob)
     try:
         time_stamp = int(time_stamp)
     except (ValueError, TypeError):
@@ -431,7 +431,7 @@ async def set_video_time(ctx, glob: GlobalVars, time_stamp: int, mute_response: 
 
     voice.source = new_source
     set_new_time(glob, now_playing_video, time_stamp)
-    push_update(glob, ctx_guild_id, ['now'])
+    await push_update(glob, ctx_guild_id, ['now'])
 
     message = txt(ctx_guild_id, glob, f'Video time set to') + ": " + str(time_stamp)
     if not mute_response:
@@ -440,7 +440,7 @@ async def set_video_time(ctx, glob: GlobalVars, time_stamp: int, mute_response: 
 
 async def earrape_command_def(ctx, glob: GlobalVars):
     log(ctx, 'ear_rape_command_def', options=locals(), log_type='function', author=ctx.author)
-    is_ctx, ctx_guild_id, author_id, ctx_guild_object = ctx_check(ctx, glob)
+    is_ctx, ctx_guild_id, author, ctx_guild_object = ctx_check(ctx, glob)
     times = 10
     new_volume = 10000000000000
 

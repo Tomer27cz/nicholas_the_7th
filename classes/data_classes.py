@@ -1,4 +1,4 @@
-from classes.typed_dictionaries import LastUpdated
+from classes.typed_dictionaries import LastUpdated, VideoAuthor
 
 from database.main import *
 
@@ -61,17 +61,15 @@ class WebData:
     Replaces commands.Context when there can be none
 
     :type guild_id: int
-    :type author: str
-    :type author_id: int
+    :type author: VideoAuthor
 
     :param guild_id: ID of the guild
     :param author: Name of the author
-    :param author_id: ID of the author
+    :param author: VideoAuthor object
     """
-    def __init__(self, guild_id: int, author: str, author_id: int or str):
+    def __init__(self, guild_id: int, author: VideoAuthor):
         self.guild_id = guild_id
-        self.author = author
-        self.author_id = author_id
+        self.author: VideoAuthor = author
 
     async def reply(self, content=None, **kwargs):
         pass
@@ -202,6 +200,11 @@ class GuildData(Base):
             self.voice_channels = [{'name': channel.name, 'id': channel.id} for channel in
                                    guild_object.voice_channels] if guild_object.voice_channels else None
 
+        guild = glob.ses.query(Guild).filter(Guild.id == self.id).first()
+        if guild:
+            guild.last_updated['data'] = int(time())
+        glob.ses.commit()
+
 class Save(Base):
     """
     Data class for storing saved videos
@@ -213,18 +216,16 @@ class Save(Base):
     position = Column(Integer)
     guild_id = Column(Integer, ForeignKey('guilds.id'))
     name = Column(String)
-    author_name = Column(String)
-    author_id = Column(Integer)
+    author = Column(JSON)
     created_at = Column(Integer)
 
     queue = relationship('SaveVideo', backref='saves', order_by='SaveVideo.position', collection_class=ordering_list('position'), lazy=True)
 
-    def __init__(self, guild_id: int, name: str, author_name: str, author_id: int):
+    def __init__(self, guild_id: int, name: str, author: VideoAuthor):
         self.guild_id: int = guild_id
         self.name: str = name
         self.created_at: int = int(time())
-        self.author_name: str = author_name
-        self.author_id: int = author_id
+        self.author: VideoAuthor = author
 
 class SlowedUser(Base):
     """

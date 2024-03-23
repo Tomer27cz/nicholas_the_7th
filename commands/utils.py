@@ -22,20 +22,21 @@ def ctx_check(ctx: dc_commands.Context or classes.data_classes.WebData, glob: Gl
     :return: (is_ctx, guild_id, author_id, guild) - (bool, int, int, discord.Guild)
     """
     update(glob)
+
     if isinstance(ctx, classes.data_classes.WebData):
         bot = glob.bot
         is_ctx = False
         guild_id = ctx.guild_id
-        author_id = ctx.author_id
+        author = ctx.author
         guild_object = bot.get_guild(guild_id)
 
     elif isinstance(ctx, dc_commands.Context):
         is_ctx = True
         guild_id = ctx.guild.id
-        author_id = ctx.author.id
+        author = {'id': ctx.author.id, 'name': ctx.author.name}
         guild_object = ctx.guild
 
     else:
         raise TypeError(f'ctx_check: ctx is not a valid type: {type(ctx)}')
 
-    return is_ctx, guild_id, author_id, guild_object
+    return is_ctx, guild_id, author, guild_object

@@ -55,72 +55,72 @@ async def execute_function(request_dict, glob: GlobalVars) -> ReturnData:
         args = request_dict['args']
 
     if func_name == 'remove_def':
-        return await commands.queue.remove_def(web_data, glob, number=args['number'], list_type=args['list_type'])
+        return asyncio.run_coroutine_threadsafe(commands.queue.remove_def(web_data, glob, number=args['number'], list_type=args['list_type']), glob.bot.loop).result()
     if func_name == 'web_up':
-        return await web_func.move.web_up(web_data, glob, number=args['number'])
+        return asyncio.run_coroutine_threadsafe(web_func.move.web_up(web_data, glob, number=args['number']), glob.bot.loop).result()
     if func_name == 'web_down':
-        return await web_func.move.web_down(web_data, glob, number=args['number'])
+        return asyncio.run_coroutine_threadsafe(web_func.move.web_down(web_data, glob, number=args['number']), glob.bot.loop).result()
     if func_name == 'web_top':
-        return await web_func.move.web_top(web_data, glob, number=args['number'])
+        return asyncio.run_coroutine_threadsafe(web_func.move.web_top(web_data, glob, number=args['number']), glob.bot.loop).result()
     if func_name == 'web_bottom':
-        return await web_func.move.web_bottom(web_data, glob, number=args['number'])
+        return asyncio.run_coroutine_threadsafe(web_func.move.web_bottom(web_data, glob, number=args['number']), glob.bot.loop).result()
     if func_name == 'web_duplicate':
-        return await web_func.move.web_duplicate(web_data, glob, number=args['number'])
+        return asyncio.run_coroutine_threadsafe(web_func.move.web_duplicate(web_data, glob, number=args['number']), glob.bot.loop).result()
 
     if func_name == 'play_def':
-        return await commands.player.play_def(web_data, glob)
+        return asyncio.run_coroutine_threadsafe(commands.player.play_def(web_data, glob), glob.bot.loop).result()
     if func_name == 'stop_def':
-        return await commands.voice.stop_def(web_data, glob)
+        return asyncio.run_coroutine_threadsafe(commands.voice.stop_def(web_data, glob), glob.bot.loop).result()
     if func_name == 'pause_def':
-        return await commands.voice.pause_def(web_data, glob)
+        return asyncio.run_coroutine_threadsafe(commands.voice.pause_def(web_data, glob), glob.bot.loop).result()
     if func_name == 'skip_def':
-        return await commands.queue.skip_def(web_data, glob)
+        return asyncio.run_coroutine_threadsafe(commands.queue.skip_def(web_data, glob), glob.bot.loop).result()
 
     if func_name == 'loop_command_def':
-        return await commands.player.loop_command_def(web_data, glob)
+        return asyncio.run_coroutine_threadsafe(commands.player.loop_command_def(web_data, glob), glob.bot.loop).result()
     if func_name == 'shuffle_def':
-        return await commands.queue.shuffle_def(web_data, glob)
+        return asyncio.run_coroutine_threadsafe(commands.queue.shuffle_def(web_data, glob), glob.bot.loop).result()
     if func_name == 'clear_def':
-        return await commands.queue.clear_def(web_data, glob)
+        return asyncio.run_coroutine_threadsafe(commands.queue.clear_def(web_data, glob), glob.bot.loop).result()
 
     if func_name == 'web_disconnect':
         return await web_func.voice.web_disconnect(web_data, glob)
     if func_name == 'web_join':
-        return await web_func.voice.web_join(web_data, glob, form=args['form'])
+        return await web_func.voice.web_join(web_data, glob, channel_id=args['channel_id'])
 
     if func_name == 'web_queue':
-        return await web_func.queue.web_queue(web_data, glob, video_type=args['video_type'], position=args['position'])
+        return asyncio.run_coroutine_threadsafe(web_func.queue.web_queue(web_data, glob, video_type=args['video_type'], position=args['position']), glob.bot.loop).result()
     if func_name == 'queue_command_def':
-        return await commands.queue.queue_command_def(web_data, glob, url=args['url'])
+        return asyncio.run_coroutine_threadsafe(commands.queue.queue_command_def(web_data, glob, url=args['url']), glob.bot.loop).result()
     if func_name == 'web_queue_from_radio':
-        return await web_func.queue.web_queue_from_radio(web_data, glob, radio_name=args['radio_name'])
+        return asyncio.run_coroutine_threadsafe(web_func.queue.web_queue_from_radio(web_data, glob, radio_name=args['radio_name']), glob.bot.loop).result()
 
     if func_name == 'new_queue_save':
-        return await new_queue_save(glob, web_data.guild_id, save_name=args['save_name'], author_name=args['author_name'], author_id=args['author_id'])
+        return asyncio.run_coroutine_threadsafe(new_queue_save(glob, web_data.guild_id, save_name=args['save_name'], author=args['author']), glob.bot.loop).result()
     if func_name == 'load_queue_save':
-        return await load_queue_save(glob, web_data.guild_id, save_name=args['save_name'])
+        return asyncio.run_coroutine_threadsafe(load_queue_save(glob, web_data.guild_id, save_name=args['save_name']), glob.bot.loop).result()
     if func_name == 'delete_queue_save':
         return delete_queue_save(glob, web_data.guild_id, save_name=args['save_name'])
     if func_name == 'rename_queue_save':
         return rename_queue_save(glob, web_data.guild_id, old_name=args['old_name'], new_name=args['new_name'])
 
     if func_name == 'volume_command_def':
-        return await commands.voice.volume_command_def(web_data, glob, volume=args['volume'])
+        return asyncio.run_coroutine_threadsafe(commands.voice.volume_command_def(web_data, glob, volume=args['volume']), glob.bot.loop).result()
     if func_name == 'set_video_time':
-        return await commands.player.set_video_time(web_data, glob, time_stamp=args['time_stamp'])
+        return asyncio.run_coroutine_threadsafe(commands.player.set_video_time(web_data, glob, time_stamp=args['time_stamp']), glob.bot.loop).result()
 
     # user edit
     if func_name == 'web_user_options_edit':
-        return await web_func.options.web_user_options_edit(web_data, glob, form=args['form'])
+        return asyncio.run_coroutine_threadsafe(web_func.options.web_user_options_edit(web_data, glob, form=args['form']), glob.bot.loop).result()
 
     # admin
     if func_name == 'web_video_edit':
-        return await web_func.admin.web_video_edit(web_data, glob, form=args['form'])
+        return asyncio.run_coroutine_threadsafe(web_func.admin.web_video_edit(web_data, glob, form=args['form']), glob.bot.loop).result()
     if func_name == 'web_options_edit':
-        return await web_func.admin.web_options_edit(web_data, glob, form=args['form'])
+        return asyncio.run_coroutine_threadsafe(web_func.admin.web_options_edit(web_data, glob, form=args['form']), glob.bot.loop).result()
 
     if func_name == 'web_delete_guild':
-        return await web_func.admin.web_delete_guild(web_data, glob, guild_id=args['guild_id'])
+        return asyncio.run_coroutine_threadsafe(web_func.admin.web_delete_guild(web_data, glob, guild_id=args['guild_id']), glob.bot.loop).result()
     if func_name == 'web_disconnect_guild':
         return asyncio.run_coroutine_threadsafe(web_func.admin.web_disconnect_guild(web_data, glob, args['guild_id']), glob.bot.loop).result()
         # return await web_disconnect_guild(web_data, guild_id=args['guild_id'])
@@ -130,10 +130,10 @@ async def execute_function(request_dict, glob: GlobalVars) -> ReturnData:
 
     if func_name == 'download_guild':
         guild_id = args['guild_id']
-        return await commands.chat_export.download_guild(web_data, glob, guild_id)
+        return asyncio.run_coroutine_threadsafe(commands.chat_export.download_guild(web_data, glob, guild_id), glob.bot.loop).result()
     if func_name == 'download_guild_channel':
         channel_id = args['channel_id']
-        return await commands.chat_export.download_guild_channel(web_data, glob, channel_id)
+        return asyncio.run_coroutine_threadsafe(commands.chat_export.download_guild_channel(web_data, glob, channel_id), glob.bot.loop).result()
 
     # if func_name == 'export_queue':
     #     guild_id = args['guild_id']

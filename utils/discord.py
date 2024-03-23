@@ -88,9 +88,9 @@ def create_embed(glob: GlobalVars, video, name: str, guild_id: int, embed_colour
         return create_radio_embed(glob, video, name, guild_id, embed_colour)
 
     try:
-        requested_by = glob.bot.get_user(video.author).mention
+        requested_by = f'<@{glob.bot.get_user(video.author['id']).mention}>'
     except AttributeError:
-        requested_by = video.author
+        requested_by = video.author['name']
 
     title = video.title
     time_played = video.time(glob)
@@ -106,7 +106,7 @@ def create_embed(glob: GlobalVars, video, name: str, guild_id: int, embed_colour
     embed = (discord.Embed(title=name, description=f'```\n{title}\n```', color=discord.Color.from_rgb(*embed_colour)))
 
     embed.add_field(name=txt(guild_id, glob, 'Duration'), value=time_played)
-    embed.add_field(name=txt(guild_id, glob, 'Requested by'), value=f"<@{requested_by}>")
+    embed.add_field(name=txt(guild_id, glob, 'Requested by'), value=f"{requested_by}")
     embed.add_field(name=txt(guild_id, glob, 'Author'), value=author)
 
     if current_chapter is not None:
@@ -130,9 +130,9 @@ def create_radio_embed(glob: GlobalVars, video, name: str, guild_id: int, embed_
     :return: discord.Embed
     """
     try:
-        requested_by = glob.bot.get_user(video.author).mention
+        requested_by = f'<@{glob.bot.get_user(video.author['id']).mention}>'
     except AttributeError:
-        requested_by = video.author
+        requested_by = video.author['name']
 
     ri: RadioInfoDict = video.radio_info
     radio_name = video.title
@@ -161,7 +161,7 @@ def create_radio_embed(glob: GlobalVars, video, name: str, guild_id: int, embed_
 
 
     embed.add_field(name=txt(guild_id, glob, 'Duration'), value=time_played)
-    embed.add_field(name=txt(guild_id, glob, 'Requested by'), value=f"<@{requested_by}>")
+    embed.add_field(name=txt(guild_id, glob, 'Requested by'), value=f"{requested_by}")
     embed.add_field(name=txt(guild_id, glob, 'Provider'), value=provider)
 
     embed.add_field(name=txt(guild_id, glob, 'URL'), value=url, inline=False)
@@ -206,6 +206,9 @@ async def now_to_history(glob: GlobalVars, guild_id: int, no_push: bool = False)
 
     guild_object = guild(glob, guild_id)
 
+    if not guild_object:
+        return
+
     if guild_object.now_playing is not None:
         # trim history
         if len(guild_object.history) >= guild_object.options.history_length:
@@ -237,7 +240,7 @@ async def now_to_history(glob: GlobalVars, guild_id: int, no_push: bool = False)
 
         # for play_def - play next video (would be 2 updates for next play)
         if not no_push:
-            push_update(glob, guild_id, ['now', 'history'])
+            await push_update(glob, guild_id, ['now', 'history'])
 
 async def to_queue(glob: GlobalVars, guild_id: int, video, position: int = None, copy_video: bool=True, no_push: bool=False, stream_strip: bool = True) -> ReturnData or None:
     """
@@ -277,10 +280,10 @@ async def to_queue(glob: GlobalVars, guild_id: int, video, position: int = None,
         guild(glob, guild_id).queue.insert(position, queue_video)
 
     if not no_push:
-        push_update(glob, guild_id, ['queue'])
+        await push_update(glob, guild_id, ['queue'])
     update(glob)
 
-    return f'[`{video.title}`](<{video.url}>) {txt(guild_id, glob, "added to queue!")} -> [Control Panel]({WEB_URL}/guild/{guild_id}&key={guild_object.data.key})'
+    return f'[`{video.title}`](<{video.url}>) {txt(guild_id, glob, "added to queue!")} -> [Control Panel]({WEB_URL}/guild/{guild_id}?key={guild_object.data.key})'
 
 def get_content_of_message(glob: GlobalVars, message: discord.Message) -> (str, list or None):
     """

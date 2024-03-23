@@ -15,7 +15,10 @@ services:
     environment:
       LISTEN_HOST: '0.0.0.0'
       INSIDE_DOCKER: 'true'
-
+      SEND_HOST: web
+      SEND_PORT: 5001
+      SOCKET_HOST: socketapp
+      SOCKET_PORT: 5001
   web:
     build: .
     command: uwsgi /app/app.ini
@@ -27,12 +30,34 @@ services:
     expose:
         - 5421
         - 5420
+        - 5000
+    ports:
+      - "5000:5000"
     depends_on:
       - bot
     environment:
+      PORT: 5000
+      DEBUG: 'false'
+      HOST: '0.0.0.0'
       SEND_HOST: bot
       INSIDE_DOCKER: 'true'
-
+  socketapp:
+    build: ./socket
+    command: python -u /app/socket/socketapp.py >> /app/db/log/socket_activity.log 2>&1
+    privileged: true
+    volumes:
+      - .:/app
+    container_name: socketapp
+    restart: always
+    expose:
+        - 5001
+    ports:
+        - "5001:5001"
+    environment:
+      PORT: 5001
+      DEBUG: 'false'
+      HOST: '0.0.0.0'
+      INSIDE_DOCKER: 'true'
   nginx:
     image: nginx
     volumes:

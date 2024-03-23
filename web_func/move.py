@@ -13,7 +13,7 @@ from utils.global_vars import GlobalVars
 
 async def move_def(ctx, glob: GlobalVars, org_number, destination_number, ephemeral=True) -> ReturnData:
     log(ctx, 'web_move', options=locals(), log_type='function', author=ctx.author)
-    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
+    is_ctx, guild_id, author, guild_object = ctx_check(ctx, glob)
     db_guild = guild(glob, guild_id)
     queue_length = len(db_guild.queue)
 
@@ -32,7 +32,7 @@ async def move_def(ctx, glob: GlobalVars, org_number, destination_number, epheme
             db_guild.queue.insert(destination_number, video)
 
             update(glob)
-            push_update(glob, guild_id, ['queue'])
+            await push_update(glob, guild_id, ['queue'])
 
             message = f"{txt(guild_id, glob, 'Moved')} #{org_number} to #{destination_number} : {video.title}"
             await ctx.reply(message, ephemeral=ephemeral)
@@ -50,7 +50,7 @@ async def move_def(ctx, glob: GlobalVars, org_number, destination_number, epheme
 
 async def web_up(web_data, glob: GlobalVars, number) -> ReturnData:
     log(web_data, 'web_up', options=locals(), log_type='function', author=web_data.author)
-    is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data, glob)
+    is_ctx, ctx_guild_id, ctx_author, ctx_guild_object = ctx_check(web_data, glob)
     guild_id = web_data.guild_id
     queue_length = len(guild(glob, guild_id).queue)
     number = int(number)
@@ -66,7 +66,7 @@ async def web_up(web_data, glob: GlobalVars, number) -> ReturnData:
 
 async def web_down(web_data, glob: GlobalVars, number) -> ReturnData:
     log(web_data, 'web_down', options=locals(), log_type='function', author=web_data.author)
-    is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data, glob)
+    is_ctx, ctx_guild_id, ctx_author, ctx_guild_object = ctx_check(web_data, glob)
     guild_id = web_data.guild_id
     queue_length = len(guild(glob, guild_id).queue)
     number = int(number)
@@ -82,7 +82,7 @@ async def web_down(web_data, glob: GlobalVars, number) -> ReturnData:
 
 async def web_top(web_data, glob: GlobalVars, number) -> ReturnData:
     log(web_data, 'web_top', options=locals(), log_type='function', author=web_data.author)
-    is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data, glob)
+    is_ctx, ctx_guild_id, ctx_author, ctx_guild_object = ctx_check(web_data, glob)
     guild_id = web_data.guild_id
     queue_length = len(guild(glob, guild_id).queue)
     number = int(number)
@@ -99,7 +99,7 @@ async def web_top(web_data, glob: GlobalVars, number) -> ReturnData:
 
 async def web_bottom(web_data, glob: GlobalVars, number) -> ReturnData:
     log(web_data, 'web_bottom', options=locals(), log_type='function', author=web_data.author)
-    is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data, glob)
+    is_ctx, ctx_guild_id, ctx_author, ctx_guild_object = ctx_check(web_data, glob)
     guild_id = web_data.guild_id
     queue_length = len(guild(glob, guild_id).queue)
     number = int(number)
@@ -116,7 +116,7 @@ async def web_bottom(web_data, glob: GlobalVars, number) -> ReturnData:
 
 async def web_duplicate(web_data, glob: GlobalVars, number) -> ReturnData:
     log(web_data, 'web_duplicate', options=locals(), log_type='function', author=web_data.author)
-    is_ctx, ctx_guild_id, ctx_author_id, ctx_guild_object = ctx_check(web_data, glob)
+    is_ctx, ctx_guild_id, ctx_author, ctx_guild_object = ctx_check(web_data, glob)
     guild_id = web_data.guild_id
     db_guild = guild(glob, guild_id)
     queue_length = len(db_guild.queue)

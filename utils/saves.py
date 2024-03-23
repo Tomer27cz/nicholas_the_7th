@@ -1,5 +1,6 @@
 from classes.data_classes import ReturnData, Save
 from classes.video_class import to_save_video_class, to_queue_class, SaveVideo
+from classes.typed_dictionaries import VideoAuthor
 
 from database.guild import guild, guild_ids, guild_save_names
 
@@ -21,14 +22,13 @@ def find_save(glob: GlobalVars, guild_id: int, save_name: str) -> Save or None:
             return save
     return None
 
-async def new_queue_save(glob: GlobalVars, guild_id: int, save_name: str, author_name: str, author_id: int) -> ReturnData:
+async def new_queue_save(glob: GlobalVars, guild_id: int, save_name: str, author: VideoAuthor) -> ReturnData:
     """
     Creates new queue save
     :param glob: GlobalVars
     :param guild_id: int - id of guild
     :param save_name: str - name of save
-    :param author_name: str - name of author
-    :param author_id: int - id of author
+    :param author: VideoAuthor - author of save
     :return: ReturnData - return data
     """
     guild_object = guild(glob, guild_id)
@@ -43,7 +43,7 @@ async def new_queue_save(glob: GlobalVars, guild_id: int, save_name: str, author
     if not guild_object.queue:
         return ReturnData(False, txt(guild_id, glob, 'Queue is empty'))
 
-    guild_object.saves.append(Save(guild_id, save_name, author_name, author_id))
+    guild_object.saves.append(Save(guild_id, save_name, author))
     new_save = find_save(glob, guild_id, save_name)
     for index, video in enumerate(guild_object.queue):
         new_save.queue.append(await to_save_video_class(glob, video, new_save.id))

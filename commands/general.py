@@ -43,7 +43,7 @@ async def language_command_def(ctx, glob: GlobalVars, country_code: Literal[tupl
     :return: ReturnData
     """
     log(ctx, 'language_command_def', options=locals(), log_type='function', author=ctx.author)
-    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
+    is_ctx, guild_id, author, guild_object = ctx_check(ctx, glob)
     db_guild = guild(glob, guild_id)
 
     db_guild.options.language = country_code
@@ -64,7 +64,7 @@ async def list_command_def(ctx, glob: GlobalVars, list_type: Literal['queue', 'h
     :return: ReturnData
     """
     log(ctx, 'list_def', options=locals(), log_type='function', author=ctx.author)
-    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
+    is_ctx, guild_id, author, guild_object = ctx_check(ctx, glob)
 
     if not is_ctx:
         return ReturnData(False, txt(guild_id, glob, 'Command cannot be used in WEB'))
@@ -96,7 +96,7 @@ async def list_command_def(ctx, glob: GlobalVars, list_type: Literal['queue', 'h
         key = db_guild.data.key
 
         if display_type == 'long':
-            message = f"**THE {list_type.capitalize()}**\n **Loop** mode  `{loop}`,  **Display** type `{display_type}`, [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={key})"
+            message = f"**THE {list_type.capitalize()}**\n **Loop** mode  `{loop}`,  **Display** type `{display_type}`, [Control Panel]({config.WEB_URL}/guild/{guild_id}?key={key})"
             await ctx.send(message, ephemeral=ephemeral, mention_author=False)
 
             for index, val in enumerate(show_list):
@@ -106,7 +106,7 @@ async def list_command_def(ctx, glob: GlobalVars, list_type: Literal['queue', 'h
 
         if display_type == 'medium':
             embed = discord.Embed(title=f"Song {list_type}",
-                                  description=f'Loop: {loop} | Display type: {display_type} | [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={loop})',
+                                  description=f'Loop: {loop} | Display type: {display_type} | [Control Panel]({config.WEB_URL}/guild/{guild_id}?key={loop})',
                                   color=0x00ff00)
 
             message = ''
@@ -129,7 +129,7 @@ async def list_command_def(ctx, glob: GlobalVars, list_type: Literal['queue', 'h
                 display_type = 'short'
 
         if display_type == 'short':
-            send = f"**THE {list_type.upper()}**\n **Loop** mode  `{loop}`,  **Display** type `{display_type}`, [Control Panel]({config.WEB_URL}/guild/{guild_id}&key={key})"
+            send = f"**THE {list_type.upper()}**\n **Loop** mode  `{loop}`,  **Display** type `{display_type}`, [Control Panel]({config.WEB_URL}/guild/{guild_id}?key={key})"
             # noinspection PyUnresolvedReferences
             if ctx.interaction.response.is_done():
                 await ctx.send(send, ephemeral=ephemeral, mention_author=False)
@@ -175,8 +175,11 @@ async def list_command_def(ctx, glob: GlobalVars, list_type: Literal['queue', 'h
     elif list_type == 'radios':
         embed = discord.Embed(title="Radio List")
         message = ''
-        for index, (name, val) in enumerate(radio_dict.items()):
-            add = f'**{index}** -> {name}\n'
+        for radio_id, val in radio_dict.items():
+            if radio_id == 'last_updated':
+                continue
+
+            add = f'**{radio_id}** -> {val['name']}\n'
 
             if len(message) + len(add) > 1023:
                 embed.add_field(name="", value=message, inline=False)
@@ -203,13 +206,13 @@ async def key_def(ctx: dc_commands.Context, glob: GlobalVars) -> ReturnData:
     guild_key = guild_data_key(glob, ctx.guild.id)
     update(glob)
 
-    message = f'Key: `{guild_key}` -> [Control Panel]({config.WEB_URL}/guild/{ctx.guild.id}&key={guild_key})'
+    message = f'Key: `{guild_key}` -> [Control Panel]({config.WEB_URL}/guild/{ctx.guild.id}?key={guild_key})'
     await ctx.reply(message)
     return ReturnData(True, message)
 
 async def options_command_def(ctx, glob: GlobalVars, loop=None, language=None, response_type=None, buttons=None, volume=None, buffer=None, history_length=None) -> ReturnData:
     log(ctx, 'options_command_def', options=locals(), log_type='function', author=ctx.author)
-    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
+    is_ctx, guild_id, author, guild_object = ctx_check(ctx, glob)
 
     if not is_ctx:
         return ReturnData(False, txt(guild_id, glob, 'Command cannot be used in WEB'))

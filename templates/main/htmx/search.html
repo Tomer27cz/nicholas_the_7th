@@ -14,7 +14,12 @@
 {% endfor %}
 
 {% if not results %}
-{% for i in range(5) %}
-<div class="q-container"></div>
-{% endfor %}
+{#{% for i in range(5) %}#}
+{#<div class="q-container"></div>#}
+{#{% endfor %}#}
+<div class="q-container">
+  <div class="q-div flex-no-wrap">
+    <div class="q-item1 q-wa q-self-center q-items-center"><h4>{{ txt(lang, 'No results') }}</h4></div>
+  </div>
+</div>
 {% endif %}

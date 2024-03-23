@@ -54,7 +54,7 @@ async def options_def(ctx: dc_commands.Context, glob: GlobalVars, server: Union[
                       buttons: str = None, language: str = None, response_type: str = None, buffer: str = None,
                       history_length: str = None, volume: str = None, search_query: str = None, ephemeral=True):
     log(ctx, 'options_def', options=locals(), log_type='function', author=ctx.author)
-    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
+    is_ctx, guild_id, author, guild_object = ctx_check(ctx, glob)
 
     db_guild = guild(glob, guild_id)
 
@@ -448,10 +448,18 @@ async def dev_command_def(ctx: dc_commands.Context, glob: GlobalVars, command: s
     """
     log(ctx, 'dev', locals(), log_type='function', author=ctx.author)
 
+    # from database.guild import guild_data_key
+    #
+    # key = guild_data_key(glob, int(command))
+    #
+    # message = f"Key: {key}"
+    # await ctx.reply(message, ephemeral=ephemeral)
+    # return ReturnData(True, message)
+
     print(f'Running command: {command}')
     print(f'time() = {int(time.time())}')
 
-    push_update(glob, guild_id=ctx.guild.id, update_type=['all'])
+    await push_update(glob, guild_id=ctx.guild.id, update_type=['all'])
 
     await ctx.reply(f'Pushed update to guild: {ctx.guild.id}', ephemeral=ephemeral)
 

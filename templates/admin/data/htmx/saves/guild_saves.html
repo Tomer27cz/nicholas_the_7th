@@ -16,8 +16,8 @@
     <div class="q-div">
       <div class="q-item1">
         <p class="q-text q-1">Author</p>
-        <p class="q-text q-2">{{ save.author_name }}</p>
-        <p class="q-text q-3">{{ save.author_id }}</p>
+        <p class="q-text q-2">{{ save.author['name'] }}</p>
+        <p class="q-text q-3">{{ save.author['id'] }}</p>
       </div>
       <div class="q-item1">
         <p class="q-text q-1">Created at</p>
@@ -25,7 +25,7 @@
       </div>
       <div class="q-item1">
         <p class="q-text q-1">Songs</p>
-        <p class="q-text q-2">{{ guild_save_queue_count(gi, save.id) }}</p>
+        <p class="q-text q-2">{{ len(save.queue) }}</p>
       </div>
     </div>
     <div class="accordion accordion-g2" id="accordion_{{ save.id }}">

@@ -9,6 +9,8 @@ from utils.global_vars import GlobalVars
 from typing import List, Literal
 
 from time import time
+import aiohttp
+import os
 
 def update(glob: GlobalVars):
     """
@@ -67,7 +69,7 @@ def _update_guilds(glob: GlobalVars):
         # db_g_data = ses.query(GuildData).filter(GuildData.id == guild_id).first()
         # print(db_g_data)
 
-def push_update(glob: GlobalVars, guild_id: int, update_type: List[Literal['queue', 'now', 'history', 'saves', 'options', 'data', 'slowed', 'all']]):
+async def push_update(glob: GlobalVars, guild_id: int, update_type: List[Literal['queue', 'now', 'history', 'saves', 'options', 'data', 'slowed', 'all']]):
     """
     Updates guild.options.last_updated to current time
     :param glob: GlobalVars
@@ -77,6 +79,33 @@ def push_update(glob: GlobalVars, guild_id: int, update_type: List[Literal['queu
     """
     guild_object = glob.ses.query(Guild).filter(Guild.id == guild_id).first()
     last_updated = guild_object.last_updated
+
+    send_host = os.environ.get('SOCKET_HOST', '127.0.0.1')
+    inside_docker = os.environ.get('INSIDE_DOCKER', False)
+    send_port = f":{os.environ.get('SOCKET_PORT', '5001')}"
+
+    # noinspection HttpUrlsUsage
+    address = f'http://{send_host}{send_port if send_port is not None else ""}'
+    path = f'/push?id={guild_id}'
+    full_address = f'{address}{path}'
+
+    # import asyncio
+    #
+    # async with socketio.AsyncSimpleClient(logger=True) as sio:
+    #     await sio.connect(address)
+    #     await sio.emit('push', guild_id)
+    #     await asyncio.sleep(0.1)
+    #     await sio.disconnect()
+
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(full_address):
+                pass
+    except aiohttp.ClientConnectorError as e:
+        # log(None, f'Failed to push update to server: {e}')
+        pass
+    except Exception as e:
+        log(None, f'Failed to push update to server: {e}')
 
     # for key in last_updated.keys():
     #     if key in update_type:

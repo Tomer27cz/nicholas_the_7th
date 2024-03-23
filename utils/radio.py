@@ -166,8 +166,11 @@ async def update_radio_dict(force_update: bool=False) -> dict[str, RadiosJSON] o
 
     _return = {}
     for _item in _results:
-        _return[_item['radio']['id']] = _item['radio']
+        _ret_radio = _item['radio']
+        _ret_radio['listened'] = [___radio['listened'] for ___radio in _radios if ___radio['id'] == _ret_radio['id']][0]
+        _return[_item['radio']['id']] = _ret_radio
 
+    _return = dict(sorted(_return.items(), key=lambda x: int(x[1]['listened']), reverse=True))
     _return['last_updated'] = int(time.time())
 
     with open('db/radios.json', 'w') as f:

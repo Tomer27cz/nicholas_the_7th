@@ -24,7 +24,7 @@ async def radio_cz_def(ctx, glob: GlobalVars, query: str, mute_response: bool=Fa
     :return: ReturnData
     """
     log(ctx, 'radio_cz_def', options=locals(), log_type='function', author=ctx.author)
-    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
+    is_ctx, guild_id, author, guild_object = ctx_check(ctx, glob)
 
     # noinspection PyUnresolvedReferences
     if is_ctx:
@@ -70,7 +70,7 @@ async def radio_garden_def(ctx, glob: GlobalVars, query: str, mute_response: boo
     :return: ReturnData
     """
     log(ctx, 'radio_garden_def', options=locals(), log_type='function', author=ctx.author)
-    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
+    is_ctx, guild_id, author, guild_object = ctx_check(ctx, glob)
 
     # noinspection PyUnresolvedReferences
     if is_ctx:
@@ -114,7 +114,7 @@ async def radio_tunein_def(ctx, glob: GlobalVars, query: str, mute_response: boo
     :return: ReturnData
     """
     log(ctx, 'radio_tunein_def', options=locals(), log_type='function', author=ctx.author)
-    is_ctx, guild_id, author_id, guild_object = ctx_check(ctx, glob)
+    is_ctx, guild_id, author, guild_object = ctx_check(ctx, glob)
 
     # noinspection PyUnresolvedReferences
     if is_ctx:

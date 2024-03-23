@@ -18,6 +18,10 @@ class LastUpdated(TypedDict):
     data: int
     slowed: int
 
+class VideoAuthor(TypedDict):
+    name: Union[str, int, None]
+    id: Union[str, int, None]
+
 # ---------------------------------------------- Web Search ------------------------------------------------------------
 
 class WebSearchResult(TypedDict):

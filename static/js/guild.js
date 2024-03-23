@@ -104,7 +104,7 @@ function npProgress(duration, played_duration) {
 // }
 //
 // function reloadSaves() {
-//     fetch(`/guild/${guild_id}/modals?type=loadModal&key=${key}}`)
+//     fetch(`/guild/${guild_id}/modals?type=loadModal?key=${key}}`)
 //         .then(response => response.text())
 //         .then(data => {
 //             document.getElementById("loadModal_content").outerHTML = data;
@@ -179,8 +179,7 @@ function npProgress(duration, played_duration) {
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-let socket = io();
-let last_event = Date.now();
+let socket = io(document.domain + ':5001');
 
 socket.on('connect', function () {
     console.log("Connected to server");
@@ -189,29 +188,55 @@ socket.on('connect', function () {
 });
 
 socket.on('update', function (data) {
-    last_event = Date.now();
-    if (data > last_updated) {
+    // last_event = Date.now();
+    setTimeout(function () {
+        if (data > last_updated+1) {
+        console.log("last_updated: " + last_updated);
         location.reload();
-    }
+        }
+    }, 1000);
 });
 
-function getUpdate() {
-    if (Date.now() - last_event > 1500) {
-        socket.emit('getUpdate', guild_id);
-    }
-}
-let check = setInterval(getUpdate, 1000);
-
-if (duration != null) {
+if (duration != null || played_duration != null) {
     npProgress(duration, played_duration);
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-window.addEventListener('htmx:afterSwap', function (event) {
-      last_updated = new Date() / 1000;
-      console.log("last_updated: " + last_updated);
+window.addEventListener('htmx:beforeRequest', function (event) { // switched from afterSwap to beforeRequest - race condition
+    if (event.detail.target.id === 'q-main') {
+        console.log("qf");
+        qf();
+    } else if (event.detail.target.id === 'response-div') {
+        console.log("af");
+        af();
+    }
+
+    last_updated = new Date() / 1000;
+    console.log("last_updated: " + last_updated);
   }, false);
+
+window.addEventListener('htmx:afterSwap', function (event) {
+    last_updated = new Date() / 1000;
+    console.log("last_updated: " + last_updated);
+}, false);
+
+// ---------------------------------------------------------------------------------------------------------------------
+
+function qf() {
+    let queue_div = document.getElementById('q-main');
+    let spinner = '<div class="q-item1 text-center"><div class="spinner-border text-primary" role="status" style="width: 5rem; height: 5rem;"></div></div>';
+    queue_div.innerHTML = spinner + queue_div.innerHTML;
+
+    let buttons = queue_div.querySelectorAll(".btn");
+    for (let i = 0; i < buttons.length; i++) {
+        buttons[i].setAttribute('disabled', '');
+    }
+}
+
+function af() {
+    document.getElementById("loader").style.display = "flex";
+}
 
 // ---------------------------------------------------------------------------------------------------------------------
 
@@ -228,6 +253,10 @@ function onSubmitDisable() {
 
 function scrollNow(scroll_pos) {
   window.scroll({top: scroll_pos, left: 0, behavior: "auto"});
+}
+
+function delay(time) {
+  return new Promise(resolve => setTimeout(resolve, time));
 }
 
 scrollNow(scroll_position);

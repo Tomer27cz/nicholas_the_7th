@@ -320,7 +320,13 @@
         "Search on TuneIn": "Search on TuneIn",
         "Search or Radio.garden URL": "Search or Radio.garden URL",
         "Search on Radia.cz": "Search on Radia.cz",
-        "Search Local Files": "Search Local Files"
+        "Search Local Files": "Search Local Files",
+        "Tracks": "Tracks",
+        "No voice channels": "No voice channels",
+        "No results": "No results",
+        "Delete": "Delete",
+        "Search": "Search",
+        "No saves found": "No saves found"
     },
     "cs": {
         "If True, command sends a response, only the user can see": "Pokud je True, p\u0159\u00edkaz ode\u0161le odpov\u011b\u010f, vid\u00ed ji pouze u\u017eivatel",
@@ -643,7 +649,13 @@
         "Search on TuneIn": "Hledejte na TuneIn",
         "Search or Radio.garden URL": "Vyhledejte nebo adresu URL Radio.garden",
         "Search on Radia.cz": "Hledejte na Radia.cz",
-        "Search Local Files": "Prohledejte m\u00edstn\u00ed soubory"
+        "Search Local Files": "Prohledejte m\u00edstn\u00ed soubory",
+        "Tracks": "stopy",
+        "No voice channels": "\u017d\u00e1dn\u00e9 hlasov\u00e9 kan\u00e1ly",
+        "No results": "\u017d\u00e1dn\u00e9 v\u00fdsledky",
+        "Delete": "Vymazat",
+        "Search": "Vyhled\u00e1v\u00e1n\u00ed",
+        "No saves found": "Nebyla nalezena \u017e\u00e1dn\u00e1 ulo\u017een\u00ed"
     },
     "da": {
         "If True, command sends a response, only the user can see": "Hvis True, sender kommandoen et svar, som kun brugeren kan se",
@@ -966,7 +978,13 @@
         "Search on TuneIn": "S\u00f8g p\u00e5 TuneIn",
         "Search or Radio.garden URL": "S\u00f8g eller Radio.garden URL",
         "Search on Radia.cz": "S\u00f8g p\u00e5 Radia.cz",
-        "Search Local Files": "S\u00f8g i lokale filer"
+        "Search Local Files": "S\u00f8g i lokale filer",
+        "Tracks": "Spor",
+        "No voice channels": "Ingen talekanaler",
+        "No results": "Ingen resultater",
+        "Delete": "Slet",
+        "Search": "S\u00f8g",
+        "No saves found": "Ingen gemmer fundet"
     },
     "de": {
         "If True, command sends a response, only the user can see": "Wenn True, sendet der Befehl eine Antwort, die nur der Benutzer sehen kann",
@@ -1289,7 +1307,13 @@
         "Search on TuneIn": "Suchen Sie auf TuneIn",
         "Search or Radio.garden URL": "Suche oder Radio.garden-URL",
         "Search on Radia.cz": "Suchen Sie auf Radia.cz",
-        "Search Local Files": "Lokale Dateien durchsuchen"
+        "Search Local Files": "Lokale Dateien durchsuchen",
+        "Tracks": "Spuren",
+        "No voice channels": "Keine Sprachkan\u00e4le",
+        "No results": "Keine Ergebnisse",
+        "Delete": "L\u00f6schen",
+        "Search": "Suchen",
+        "No saves found": "Keine Speicherungen gefunden"
     },
     "el": {
         "If True, command sends a response, only the user can see": "\u0395\u03ac\u03bd \u03b5\u03af\u03bd\u03b1\u03b9 True, \u03b7 \u03b5\u03bd\u03c4\u03bf\u03bb\u03ae \u03c3\u03c4\u03ad\u03bb\u03bd\u03b5\u03b9 \u03bc\u03b9\u03b1 \u03b1\u03c0\u03ac\u03bd\u03c4\u03b7\u03c3\u03b7, \u03bc\u03cc\u03bd\u03bf \u03bf \u03c7\u03c1\u03ae\u03c3\u03c4\u03b7\u03c2 \u03bc\u03c0\u03bf\u03c1\u03b5\u03af \u03bd\u03b1 \u03b4\u03b5\u03b9",
@@ -1612,7 +1636,13 @@
         "Search on TuneIn": "\u0391\u03bd\u03b1\u03b6\u03ae\u03c4\u03b7\u03c3\u03b7 \u03c3\u03c4\u03bf TuneIn",
         "Search or Radio.garden URL": "URL \u03b1\u03bd\u03b1\u03b6\u03ae\u03c4\u03b7\u03c3\u03b7\u03c2 \u03ae Radio.garden",
         "Search on Radia.cz": "\u0391\u03bd\u03b1\u03b6\u03ae\u03c4\u03b7\u03c3\u03b7 \u03c3\u03c4\u03bf Radia.cz",
-        "Search Local Files": "\u0391\u03bd\u03b1\u03b6\u03ae\u03c4\u03b7\u03c3\u03b7 \u03c4\u03bf\u03c0\u03b9\u03ba\u03ce\u03bd \u03b1\u03c1\u03c7\u03b5\u03af\u03c9\u03bd"
+        "Search Local Files": "\u0391\u03bd\u03b1\u03b6\u03ae\u03c4\u03b7\u03c3\u03b7 \u03c4\u03bf\u03c0\u03b9\u03ba\u03ce\u03bd \u03b1\u03c1\u03c7\u03b5\u03af\u03c9\u03bd",
+        "Tracks": "\u039a\u03bf\u03bc\u03bc\u03ac\u03c4\u03b9\u03b1",
+        "No voice channels": "\u0394\u03b5\u03bd \u03c5\u03c0\u03ac\u03c1\u03c7\u03bf\u03c5\u03bd \u03ba\u03b1\u03bd\u03ac\u03bb\u03b9\u03b1 \u03c6\u03c9\u03bd\u03ae\u03c2",
+        "No results": "\u03a7\u03c9\u03c1\u03af\u03c2 \u03b1\u03c0\u03bf\u03c4\u03ad\u03bb\u03b5\u03c3\u03bc\u03b1",
+        "Delete": "\u0394\u03b9\u03b1\u03b3\u03c1\u03ac\u03c6\u03c9",
+        "Search": "\u0391\u03bd\u03b1\u03b6\u03ae\u03c4\u03b7\u03c3\u03b7",
+        "No saves found": "\u0394\u03b5\u03bd \u03b2\u03c1\u03ad\u03b8\u03b7\u03ba\u03b5 \u03ba\u03b1\u03bc\u03af\u03b1 \u03b1\u03c0\u03bf\u03b8\u03ae\u03ba\u03b5\u03c5\u03c3\u03b7"
     },
     "eo": {
         "If True, command sends a response, only the user can see": "Se Vera, komando sendas respondon, nur la uzanto povas vidi",
@@ -1935,7 +1965,13 @@
         "Search on TuneIn": "Ser\u0109u \u0109e TuneIn",
         "Search or Radio.garden URL": "Ser\u0109u a\u016d Radio.garden URL",
         "Search on Radia.cz": "Ser\u0109u \u0109e Radia.cz",
-        "Search Local Files": "Ser\u0109u Lokaj Dosieroj"
+        "Search Local Files": "Ser\u0109u Lokaj Dosieroj",
+        "Tracks": "Trakoj",
+        "No voice channels": "Neniuj vo\u0109kanaloj",
+        "No results": "Neniuj rezultoj",
+        "Delete": "Forigi",
+        "Search": "Ser\u0109u",
+        "No saves found": "Neniuj konserva\u0135oj trovitaj"
     },
     "es": {
         "If True, command sends a response, only the user can see": "Si es Verdadero, el comando env\u00eda una respuesta, solo el usuario puede ver",
@@ -2258,7 +2294,13 @@
         "Search on TuneIn": "Buscar en TuneIn",
         "Search or Radio.garden URL": "URL de b\u00fasqueda o Radio.garden",
         "Search on Radia.cz": "Buscar en Radia.cz",
-        "Search Local Files": "Buscar archivos locales"
+        "Search Local Files": "Buscar archivos locales",
+        "Tracks": "Pistas",
+        "No voice channels": "Sin canales de voz",
+        "No results": "No hay resultados",
+        "Delete": "Borrar",
+        "Search": "Buscar",
+        "No saves found": "No se encontraron guardados"
     },
     "fi": {
         "If True, command sends a response, only the user can see": "Jos True, komento l\u00e4hett\u00e4\u00e4 vastauksen, vain k\u00e4ytt\u00e4j\u00e4 voi n\u00e4hd\u00e4",
@@ -2581,7 +2623,13 @@
         "Search on TuneIn": "Hae TuneInist\u00e4",
         "Search or Radio.garden URL": "Hae tai Radio.gardenin URL-osoite",
         "Search on Radia.cz": "Hae osoitteessa Radia.cz",
-        "Search Local Files": "Etsi paikallisia tiedostoja"
+        "Search Local Files": "Etsi paikallisia tiedostoja",
+        "Tracks": "Kappaleet",
+        "No voice channels": "Ei \u00e4\u00e4nikanavia",
+        "No results": "Ei tuloksia",
+        "Delete": "Poistaa",
+        "Search": "Hae",
+        "No saves found": "Tallenteita ei l\u00f6ytynyt"
     },
     "fr": {
         "If True, command sends a response, only the user can see": "Si True, la commande envoie une r\u00e9ponse, seul l&#39;utilisateur peut voir",
@@ -2904,7 +2952,13 @@
         "Search on TuneIn": "Rechercher sur TuneIn",
         "Search or Radio.garden URL": "Recherche ou URL Radio.garden",
         "Search on Radia.cz": "Rechercher sur Radia.cz",
-        "Search Local Files": "Rechercher des fichiers locaux"
+        "Search Local Files": "Rechercher des fichiers locaux",
+        "Tracks": "Des pistes",
+        "No voice channels": "Aucun canal vocal",
+        "No results": "Aucun r\u00e9sultat",
+        "Delete": "Supprimer",
+        "Search": "Recherche",
+        "No saves found": "Aucune sauvegarde trouv\u00e9e"
     },
     "hu": {
         "If True, command sends a response, only the user can see": "Ha igaz, a parancs v\u00e1laszt k\u00fcld, csak a felhaszn\u00e1l\u00f3 l\u00e1thatja",
@@ -3227,7 +3281,13 @@
         "Search on TuneIn": "Keressen a TuneIn-en",
         "Search or Radio.garden URL": "Keres\u00e9s vagy Radio.garden URL",
         "Search on Radia.cz": "Keres\u00e9s a Radia.cz oldalon",
-        "Search Local Files": "Helyi f\u00e1jlok keres\u00e9se"
+        "Search Local Files": "Helyi f\u00e1jlok keres\u00e9se",
+        "Tracks": "P\u00e1ly\u00e1k",
+        "No voice channels": "Nincsenek hangcsatorn\u00e1k",
+        "No results": "Nincs eredm\u00e9ny",
+        "Delete": "T\u00f6r\u00f6l",
+        "Search": "Keres\u00e9s",
+        "No saves found": "Nem tal\u00e1lhat\u00f3k ment\u00e9sek"
     },
     "it": {
         "If True, command sends a response, only the user can see": "Se Vero, il comando invia una risposta, visibile solo all&#39;utente",
@@ -3550,7 +3610,13 @@
         "Search on TuneIn": "Cerca su TuneIn",
         "Search or Radio.garden URL": "Cerca o URL di Radio.garden",
         "Search on Radia.cz": "Cerca su Radia.cz",
-        "Search Local Files": "Cerca file locali"
+        "Search Local Files": "Cerca file locali",
+        "Tracks": "Brani",
+        "No voice channels": "Nessun canale vocale",
+        "No results": "Nessun risultato",
+        "Delete": "Eliminare",
+        "Search": "Ricerca",
+        "No saves found": "Nessun salvataggio trovato"
     },
     "ja": {
         "If True, command sends a response, only the user can see": "True \u306e\u5834\u5408\u3001\u30b3\u30de\u30f3\u30c9\u306f\u5fdc\u7b54\u3092\u9001\u4fe1\u3057\u3001\u30e6\u30fc\u30b6\u30fc\u306e\u307f\u304c\u78ba\u8a8d\u3067\u304d\u307e\u3059\u3002",
@@ -3873,7 +3939,13 @@
         "Search on TuneIn": "TuneIn \u3067\u691c\u7d22",
         "Search or Radio.garden URL": "\u691c\u7d22\u307e\u305f\u306f Radio.garden \u306e URL",
         "Search on Radia.cz": "Radia.cz \u3067\u691c\u7d22",
-        "Search Local Files": "\u30ed\u30fc\u30ab\u30eb\u30d5\u30a1\u30a4\u30eb\u306e\u691c\u7d22"
+        "Search Local Files": "\u30ed\u30fc\u30ab\u30eb\u30d5\u30a1\u30a4\u30eb\u306e\u691c\u7d22",
+        "Tracks": "\u30c8\u30e9\u30c3\u30af",
+        "No voice channels": "\u97f3\u58f0\u30c1\u30e3\u30f3\u30cd\u30eb\u304c\u3042\u308a\u307e\u305b\u3093",
+        "No results": "\u7d50\u679c\u304c\u3042\u308a\u307e\u305b\u3093",
+        "Delete": "\u6d88\u53bb",
+        "Search": "\u691c\u7d22",
+        "No saves found": "\u4fdd\u5b58\u304c\u898b\u3064\u304b\u308a\u307e\u305b\u3093"
     },
     "ko": {
         "If True, command sends a response, only the user can see": "True\uc778 \uacbd\uc6b0 \uba85\ub839\uc774 \uc751\ub2f5\uc744 \ubcf4\ub0b4\uace0 \uc0ac\uc6a9\uc790\ub9cc \ubcfc \uc218 \uc788\uc2b5\ub2c8\ub2e4.",
@@ -4196,7 +4268,13 @@
         "Search on TuneIn": "TuneIn\uc5d0\uc11c \uac80\uc0c9",
         "Search or Radio.garden URL": "\uac80\uc0c9 \ub610\ub294 Radio.garden URL",
         "Search on Radia.cz": "Radia.cz\uc5d0\uc11c \uac80\uc0c9",
-        "Search Local Files": "\ub85c\uceec \ud30c\uc77c \uac80\uc0c9"
+        "Search Local Files": "\ub85c\uceec \ud30c\uc77c \uac80\uc0c9",
+        "Tracks": "\ud2b8\ub799",
+        "No voice channels": "\uc74c\uc131 \ucc44\ub110 \uc5c6\uc74c",
+        "No results": "\uacb0\uacfc \uc5c6\uc74c",
+        "Delete": "\uc0ad\uc81c",
+        "Search": "\ucc3e\ub2e4",
+        "No saves found": "\uc800\uc7a5\ud55c \ub0b4\uc6a9\uc774 \uc5c6\uc2b5\ub2c8\ub2e4."
     },
     "la": {
         "If True, command sends a response, only the user can see": "Si verum, mandatum responsum mittit, solum utentis videre potest",
@@ -4519,7 +4597,13 @@
         "Search on TuneIn": "Quaerere in TuneIn",
         "Search or Radio.garden URL": "Quaerere vel Radio.garden URL",
         "Search on Radia.cz": "Quaerere in Radia.cz",
-        "Search Local Files": "Quaerere Tabularia Localis"
+        "Search Local Files": "Quaerere Tabularia Localis",
+        "Tracks": "Vestigia",
+        "No voice channels": "Nulla vox ductus",
+        "No results": "Nihil eventorum",
+        "Delete": "Delere",
+        "Search": "Quaerere",
+        "No saves found": "Non salvet inventus est"
     },
     "nl": {
         "If True, command sends a response, only the user can see": "Als dit waar is, verzendt de opdracht een antwoord dat alleen de gebruiker kan zien",
@@ -4842,7 +4926,13 @@
         "Search on TuneIn": "Zoek op TuneIn",
         "Search or Radio.garden URL": "Zoek of Radio.garden-URL",
         "Search on Radia.cz": "Zoek op Radia.cz",
-        "Search Local Files": "Zoek lokale bestanden"
+        "Search Local Files": "Zoek lokale bestanden",
+        "Tracks": "Sporen",
+        "No voice channels": "Geen spraakkanalen",
+        "No results": "Geen resultaten",
+        "Delete": "Verwijderen",
+        "Search": "Zoekopdracht",
+        "No saves found": "Geen opgeslagen bestanden gevonden"
     },
     "no": {
         "If True, command sends a response, only the user can see": "Hvis True, sender kommandoen et svar, bare brukeren kan se",
@@ -5165,7 +5255,13 @@
         "Search on TuneIn": "S\u00f8k p\u00e5 TuneIn",
         "Search or Radio.garden URL": "S\u00f8k eller Radio.garden URL",
         "Search on Radia.cz": "S\u00f8k p\u00e5 Radia.cz",
-        "Search Local Files": "S\u00f8k i lokale filer"
+        "Search Local Files": "S\u00f8k i lokale filer",
+        "Tracks": "Spor",
+        "No voice channels": "Ingen talekanaler",
+        "No results": "Ingen resultater",
+        "Delete": "Slett",
+        "Search": "S\u00f8k",
+        "No saves found": "Ingen lagringer funnet"
     },
     "pl": {
         "If True, command sends a response, only the user can see": "Je\u015bli ma warto\u015b\u0107 True, polecenie wysy\u0142a odpowied\u017a, kt\u00f3r\u0105 mo\u017ce zobaczy\u0107 tylko u\u017cytkownik",
@@ -5488,7 +5584,13 @@
         "Search on TuneIn": "Szukaj w TuneIn",
         "Search or Radio.garden URL": "Wyszukaj lub adres URL Radio.garden",
         "Search on Radia.cz": "Szukaj na Radia.cz",
-        "Search Local Files": "Wyszukaj pliki lokalne"
+        "Search Local Files": "Wyszukaj pliki lokalne",
+        "Tracks": "Utwory",
+        "No voice channels": "Brak kana\u0142\u00f3w g\u0142osowych",
+        "No results": "Brak wynik\u00f3w",
+        "Delete": "Usuwa\u0107",
+        "Search": "Szukaj",
+        "No saves found": "Nie znaleziono \u017cadnych zapis\u00f3w"
     },
     "pt": {
         "If True, command sends a response, only the user can see": "Se True, o comando envia uma resposta, somente o usu\u00e1rio pode ver",
@@ -5811,7 +5913,13 @@
         "Search on TuneIn": "Pesquise no TuneIn",
         "Search or Radio.garden URL": "URL de pesquisa ou Radio.garden",
         "Search on Radia.cz": "Pesquise em Radia.cz",
-        "Search Local Files": "Pesquisar arquivos locais"
+        "Search Local Files": "Pesquisar arquivos locais",
+        "Tracks": "Faixas",
+        "No voice channels": "Sem canais de voz",
+        "No results": "Nenhum resultado",
+        "Delete": "Excluir",
+        "Search": "Procurar",
+        "No saves found": "Nenhum salvamento encontrado"
     },
     "ru": {
         "If True, command sends a response, only the user can see": "\u0415\u0441\u043b\u0438 True, \u043a\u043e\u043c\u0430\u043d\u0434\u0430 \u043e\u0442\u043f\u0440\u0430\u0432\u043b\u044f\u0435\u0442 \u043e\u0442\u0432\u0435\u0442, \u043a\u043e\u0442\u043e\u0440\u044b\u0439 \u043c\u043e\u0436\u0435\u0442 \u0432\u0438\u0434\u0435\u0442\u044c \u0442\u043e\u043b\u044c\u043a\u043e \u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044c.",
@@ -6134,7 +6242,13 @@
         "Search on TuneIn": "\u0418\u0441\u043a\u0430\u0442\u044c \u043d\u0430 TuneIn",
         "Search or Radio.garden URL": "\u041f\u043e\u0438\u0441\u043a \u0438\u043b\u0438 URL-\u0430\u0434\u0440\u0435\u0441 Radio.garden",
         "Search on Radia.cz": "\u0418\u0441\u043a\u0430\u0442\u044c \u043d\u0430 Radia.cz",
-        "Search Local Files": "\u041f\u043e\u0438\u0441\u043a \u043b\u043e\u043a\u0430\u043b\u044c\u043d\u044b\u0445 \u0444\u0430\u0439\u043b\u043e\u0432"
+        "Search Local Files": "\u041f\u043e\u0438\u0441\u043a \u043b\u043e\u043a\u0430\u043b\u044c\u043d\u044b\u0445 \u0444\u0430\u0439\u043b\u043e\u0432",
+        "Tracks": "\u0422\u0440\u0435\u043a\u0438",
+        "No voice channels": "\u041d\u0435\u0442 \u0433\u043e\u043b\u043e\u0441\u043e\u0432\u044b\u0445 \u043a\u0430\u043d\u0430\u043b\u043e\u0432",
+        "No results": "\u0411\u0435\u0437 \u0440\u0435\u0437\u0443\u043b\u044c\u0442\u0430\u0442\u043e\u0432",
+        "Delete": "\u0423\u0434\u0430\u043b\u0438\u0442\u044c",
+        "Search": "\u041f\u043e\u0438\u0441\u043a",
+        "No saves found": "\u0421\u043e\u0445\u0440\u0430\u043d\u0435\u043d\u0438\u0439 \u043d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d\u043e"
     },
     "sv": {
         "If True, command sends a response, only the user can see": "Om True skickar kommandot ett svar, bara anv\u00e4ndaren kan se",
@@ -6457,7 +6571,13 @@
         "Search on TuneIn": "S\u00f6k p\u00e5 TuneIn",
         "Search or Radio.garden URL": "S\u00f6k eller Radio.garden URL",
         "Search on Radia.cz": "S\u00f6k p\u00e5 Radia.cz",
-        "Search Local Files": "S\u00f6k lokala filer"
+        "Search Local Files": "S\u00f6k lokala filer",
+        "Tracks": "Sp\u00e5r",
+        "No voice channels": "Inga r\u00f6stkanaler",
+        "No results": "Inga resultat",
+        "Delete": "Radera",
+        "Search": "S\u00f6k",
+        "No saves found": "Inga sparar hittades"
     },
     "th": {
         "If True, command sends a response, only the user can see": "\u0e2b\u0e32\u0e01\u0e40\u0e1b\u0e47\u0e19 True \u0e04\u0e33\u0e2a\u0e31\u0e48\u0e07\u0e08\u0e30\u0e2a\u0e48\u0e07\u0e01\u0e32\u0e23\u0e15\u0e2d\u0e1a\u0e01\u0e25\u0e31\u0e1a \u0e40\u0e09\u0e1e\u0e32\u0e30\u0e1c\u0e39\u0e49\u0e43\u0e0a\u0e49\u0e40\u0e17\u0e48\u0e32\u0e19\u0e31\u0e49\u0e19\u0e17\u0e35\u0e48\u0e2a\u0e32\u0e21\u0e32\u0e23\u0e16\u0e21\u0e2d\u0e07\u0e40\u0e2b\u0e47\u0e19\u0e44\u0e14\u0e49",
@@ -6780,7 +6900,13 @@
         "Search on TuneIn": "\u0e04\u0e49\u0e19\u0e2b\u0e32\u0e1a\u0e19 TuneIn",
         "Search or Radio.garden URL": "\u0e04\u0e49\u0e19\u0e2b\u0e32\u0e2b\u0e23\u0e37\u0e2d URL \u0e02\u0e2d\u0e07 Radio.garden",
         "Search on Radia.cz": "\u0e04\u0e49\u0e19\u0e2b\u0e32\u0e1a\u0e19 Radia.cz",
-        "Search Local Files": "\u0e04\u0e49\u0e19\u0e2b\u0e32\u0e44\u0e1f\u0e25\u0e4c\u0e43\u0e19\u0e40\u0e04\u0e23\u0e37\u0e48\u0e2d\u0e07"
+        "Search Local Files": "\u0e04\u0e49\u0e19\u0e2b\u0e32\u0e44\u0e1f\u0e25\u0e4c\u0e43\u0e19\u0e40\u0e04\u0e23\u0e37\u0e48\u0e2d\u0e07",
+        "Tracks": "\u0e41\u0e17\u0e23\u0e47\u0e01",
+        "No voice channels": "\u0e44\u0e21\u0e48\u0e21\u0e35\u0e0a\u0e48\u0e2d\u0e07\u0e40\u0e2a\u0e35\u0e22\u0e07",
+        "No results": "\u0e44\u0e21\u0e48\u0e21\u0e35\u0e1c\u0e25\u0e25\u0e31\u0e1e\u0e18\u0e4c",
+        "Delete": "\u0e25\u0e1a",
+        "Search": "\u0e04\u0e49\u0e19\u0e2b\u0e32",
+        "No saves found": "\u0e44\u0e21\u0e48\u0e1e\u0e1a\u0e01\u0e32\u0e23\u0e1a\u0e31\u0e19\u0e17\u0e36\u0e01"
     },
     "tr": {
         "If True, command sends a response, only the user can see": "True ise komut bir yan\u0131t g\u00f6nderir, yaln\u0131zca kullan\u0131c\u0131 g\u00f6rebilir",
@@ -7103,7 +7229,13 @@
         "Search on TuneIn": "TuneIn&#39;de ara",
         "Search or Radio.garden URL": "Arama veya Radio.garden URL&#39;si",
         "Search on Radia.cz": "Radia.cz&#39;de ara",
-        "Search Local Files": "Yerel Dosyalarda Ara"
+        "Search Local Files": "Yerel Dosyalarda Ara",
+        "Tracks": "Par\u00e7alar",
+        "No voice channels": "Ses kanal\u0131 yok",
+        "No results": "Sonu\u00e7 yok",
+        "Delete": "Silmek",
+        "Search": "Aramak",
+        "No saves found": "Kay\u0131t bulunamad\u0131"
     },
     "zh": {
         "If True, command sends a response, only the user can see": "\u5982\u679c\u4e3a True\uff0c\u547d\u4ee4\u4f1a\u53d1\u9001\u54cd\u5e94\uff0c\u53ea\u6709\u7528\u6237\u53ef\u4ee5\u770b\u5230",
@@ -7426,6 +7558,12 @@
         "Search on TuneIn": "\u5728 TuneIn \u4e0a\u641c\u7d22",
         "Search or Radio.garden URL": "\u641c\u7d22\u6216 Radio.garden URL",
         "Search on Radia.cz": "\u5728 Radia.cz \u4e0a\u641c\u7d22",
-        "Search Local Files": "\u641c\u7d22\u672c\u5730\u6587\u4ef6"
+        "Search Local Files": "\u641c\u7d22\u672c\u5730\u6587\u4ef6",
+        "Tracks": "\u66f2\u76ee",
+        "No voice channels": "\u65e0\u8bed\u97f3\u9891\u9053",
+        "No results": "\u6ca1\u6709\u7ed3\u679c",
+        "Delete": "\u5220\u9664",
+        "Search": "\u641c\u7d22",
+        "No saves found": "\u672a\u627e\u5230\u4fdd\u5b58\u5185\u5bb9"
     }
 }

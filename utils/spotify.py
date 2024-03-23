@@ -1,11 +1,11 @@
 from youtubesearchpython.__future__ import VideosSearch
 
 from classes.video_class import Queue
-from classes.typed_dictionaries import VideoInfo
+from classes.typed_dictionaries import VideoInfo, VideoAuthor
 
 from utils.global_vars import GlobalVars
 
-async def spotify_to_yt_video(glob: GlobalVars, spotify_url: str, author, guild_id: int):
+async def spotify_to_yt_video(glob: GlobalVars, spotify_url: str, author: VideoAuthor, guild_id: int):
     """
     Converts spotify url to youtube video
     :param glob: GlobalVars
@@ -48,7 +48,7 @@ async def spotify_to_yt_video(glob: GlobalVars, spotify_url: str, author, guild_
 
     return video_class
 
-async def spotify_playlist_to_yt_video_list(glob: GlobalVars, spotify_playlist_url: str, author, guild_id: int) -> list or None:
+async def spotify_playlist_to_yt_video_list(glob: GlobalVars, spotify_playlist_url: str, author: VideoAuthor, guild_id: int) -> list or None:
     """
     Converts spotify playlist url to list of youtube videos
     :param glob: GlobalVars
@@ -98,7 +98,7 @@ async def spotify_playlist_to_yt_video_list(glob: GlobalVars, spotify_playlist_u
 
     return video_list
 
-async def spotify_album_to_yt_video_list(glob: GlobalVars, spotify_album_url: str, author, guild_id: int) -> list or None:
+async def spotify_album_to_yt_video_list(glob: GlobalVars, spotify_album_url: str, author: VideoAuthor, guild_id: int) -> list or None:
     """
     Converts spotify album url to list of youtube videos
     :param glob: GlobalVars

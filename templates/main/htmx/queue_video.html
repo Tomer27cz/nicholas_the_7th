@@ -18,8 +18,8 @@
       <p class="q-text q-3">{{ convert_duration(track.duration) }}</p>
     </div>
     <div class="q-item2 q-items-center">
-      <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://discordapp.com/users/{{ track.author }}">{{ get_username(track.author) }}</a></p>
-      <p class="q-text q-2">{{ track.author }}</p>
+      <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="https://discordapp.com/users/{{ track.author['id'] }}">{% set user_name = get_username(track.author['id']) %}{{ user_name if user_name == track.author['name'] or track.author['name'] is none else track.author['name'] }}</a></p>
+      <p class="q-text q-2">{{ track.author['id'] }}</p>
       <p class="q-text q-3">{{ struct_to_time(track.created_at, first='time') }}</p>
     </div>
     <div class="q-item0 q-wa q-self-center q-items-center">

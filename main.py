@@ -1,4 +1,6 @@
-from classes.data_classes import WebData
+from classes.data_classes import WebData, Guild
+from classes.typed_dictionaries import LastUpdated
+from classes.video_class import History, NowPlaying, SaveVideo
 
 from commands.autocomplete import *
 
@@ -64,6 +66,7 @@ class Bot(dc_commands.Bot):
             log(None, "Trying to sync commands")
             await self.tree.sync()
             log(None, f"Synced slash commands for {self.user}")
+            await fix_guilds()
             update_db_commands(glob)
             log(None, "Updated database commands")
         await bot.change_presence(activity=discord.Game(name=f"/help"))
@@ -96,7 +99,7 @@ class Bot(dc_commands.Bot):
             await text_channels[0].send(message)
 
         # download all channels
-        await download_guild(WebData(guild_object.id, bot.user.name, bot.user.id), glob, guild_object.id,
+        await download_guild(WebData(guild_object.id, {'id': bot.user.id, 'name': bot.user.name}), glob, guild_object.id,
                              mute_response=True, ephemeral=True)
 
     @staticmethod
@@ -330,6 +333,41 @@ if build_old_guilds:
     with open('db/guilds.json', 'r', encoding='utf-8') as file:
         load_json_to_database(glob, json.load(file))
         log(None, 'Loaded old guilds.json')
+
+# ---------------- set last_updated and keep_alive ------------
+
+async def fix_guilds():
+    for guild_obj in glob.ses.query(Guild).all():
+        guild_obj.last_updated = {key: int(time()) for key in LastUpdated.__annotations__.keys()}
+        guild_obj.keep_alive = True
+    glob.ses.commit()
+
+    for vid in glob.ses.query(Queue).all():
+        if vid.author is None:
+            vid.author = {'id': 0, 'name': 'Unknown'}
+    glob.ses.commit()
+
+    for hist in glob.ses.query(History).all():
+        if hist.author is None:
+            hist.author = {'id': 0, 'name': 'Unknown'}
+    glob.ses.commit()
+
+    for np in glob.ses.query(NowPlaying).all():
+        if np.author is None:
+            np.author = {'id': 0, 'name': 'Unknown'}
+    glob.ses.commit()
+
+    for sv in glob.ses.query(SaveVideo).all():
+        if sv.author is None:
+            sv.author = {'id': 0, 'name': 'Unknown'}
+    glob.ses.commit()
+
+    ___tasks = []
+    for guild_obj in bot.guilds:
+        ___tasks.append(now_to_history(glob, guild_obj.id))
+    await asyncio.gather(*___tasks)
+
+    log(None, 'Set attributes for new start')
 
 # --------------------------------------- QUEUE --------------------------------------------------
 
