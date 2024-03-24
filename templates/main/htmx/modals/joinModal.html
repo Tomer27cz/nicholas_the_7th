@@ -13,8 +13,9 @@
               <div class="q-item0 q-wa q-self-center q-items-center">
                 <input type="hidden" name="channel_id" value="{{ channel['id'] }}">
                 <button class="btn btn-outline btn-primary btn-lg btn-m" type="submit" name="join_btn" value="id"
-                        hx-target="#response-div" hx-swap="beforeend" hx-trigger="click once"
+                        hx-target="#response-div" hx-swap="beforeend" hx-trigger="click throttle:2s"
                         hx-get="/guild/{{ guild.id }}/action?key={{ key }}&act=join&var={{ channel['id'] }}"
+                        data-bs-dismiss="modal"
                 ><h5>{{ txt(lang, 'Join') }}</h5></button>
               </div>
             </div>
@@ -41,8 +42,8 @@
               <div class="e-item2">
                 <input type="number" class="form-control" name="var" id="channel_id_input">
               </div>
-              <button type="submit" class="btn btn-primary" name="join_btn" value="id"
-                      hx-target="#response-div" hx-swap="beforeend" hx-trigger="click once"
+              <button type="submit" class="btn btn-primary" name="join_btn" value="id" data-bs-dismiss="modal"
+                      hx-target="#response-div" hx-swap="beforeend" hx-trigger="click throttle:2s"
                       hx-get="/guild/{{ guild.id }}/action?key={{ key }}&act=join" hx-include="#channel_id_input"
               >{{ txt(lang, 'Join') }}</button>
             </div>
@@ -57,8 +58,8 @@
                   </select>
                 </div>
                 <button type="submit" class="btn btn-primary" name="join_btn" value="name" hx-target="#response-div"
-                        hx-swap="beforeend" hx-trigger="click once" hx-include="#channel_name_input"
-                        hx-get="/guild/{{ guild.id }}/action?key={{ key }}&act=join"
+                        hx-swap="beforeend" hx-trigger="click throttle:2s" hx-include="#channel_name_input"
+                        hx-get="/guild/{{ guild.id }}/action?key={{ key }}&act=join" data-bs-dismiss="modal"
                 >{{ txt(lang, 'Join') }}</button>
               </div>
             {% endif %}

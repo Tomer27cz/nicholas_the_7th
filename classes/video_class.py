@@ -220,30 +220,57 @@ async def video_class_renew(self, glob: GlobalVars or None=None, from_init: bool
                 resp.encoding = 'utf-8'
                 xml_dict: RadiosCzNow = xmltodict.parse(await resp.text())
 
-        now_picture = 'https://radia.cz/build/no-artwork.svg'
-        if xml_dict['NowPlay']['Item']['Images'] is not None:
-            if type(xml_dict['NowPlay']['Item']['Images']['Image']) is list:
-                now_picture = xml_dict['NowPlay']['Item']['Images']['Image'][0]['#text']
-            else:
-                now_picture = xml_dict['NowPlay']['Item']['Images']['Image']['#text']
+        def get_xml_picture(xml_radio: RadiosCzNow) -> str:
+            _now_picture = 'https://radia.cz/build/no-artwork.svg'
+            if not xml_radio['NowPlay']:
+                return _now_picture
 
-        now_title = None
-        if xml_dict['NowPlay']['Item']['Song'] is not None:
-            if type(xml_dict['NowPlay']['Item']['Song']) is dict:
-                now_title = xml_dict['NowPlay']['Item']['Song']['#text']
-            else:
-                now_title = xml_dict['NowPlay']['Item']['Song']
+            if not xml_radio['NowPlay']['Item']:
+                return _now_picture
 
-        now_artist = None
-        if xml_dict['NowPlay']['Item']['Artist'] is not None:
-            if type(xml_dict['NowPlay']['Item']['Artist']) is dict:
-                now_artist = xml_dict['NowPlay']['Item']['Artist']['#text']
-            else:
-                now_artist = xml_dict['NowPlay']['Item']['Artist']
+            if not xml_radio['NowPlay']['Item']['Images']:
+                return _now_picture
 
-        ri['now_title'] = now_title
-        ri['now_picture'] = now_picture
-        ri['now_artist'] = now_artist
+            if type(xml_radio['NowPlay']['Item']['Images']['Image']) is list:
+                return xml_radio['NowPlay']['Item']['Images']['Image'][0]['#text']
+
+            return xml_radio['NowPlay']['Item']['Images']['Image']['#text']
+
+        def get_xml_title(xml_radio: RadiosCzNow) -> str or None:
+            _now_title = None
+            if not xml_radio['NowPlay']:
+                return _now_title
+
+            if not xml_radio['NowPlay']['Item']:
+                return _now_title
+
+            if not xml_radio['NowPlay']['Item']['Song']:
+                return _now_title
+
+            if type(xml_radio['NowPlay']['Item']['Song']) is dict:
+                return xml_radio['NowPlay']['Item']['Song']['#text']
+
+            return xml_radio['NowPlay']['Item']['Song']
+
+        def get_xml_artist(xml_radio: RadiosCzNow) -> str or None:
+            _now_artist = None
+            if not xml_radio['NowPlay']:
+                return _now_artist
+
+            if not xml_radio['NowPlay']['Item']:
+                return _now_artist
+
+            if not xml_radio['NowPlay']['Item']['Artist']:
+                return _now_artist
+
+            if type(xml_radio['NowPlay']['Item']['Artist']) is dict:
+                return xml_radio['NowPlay']['Item']['Artist']['#text']
+
+            return xml_radio['NowPlay']['Item']['Artist']
+
+        ri['now_title'] = get_xml_title(xml_dict)
+        ri['now_picture'] = get_xml_picture(xml_dict)
+        ri['now_artist'] = get_xml_artist(xml_dict)
 
     elif ri['type'] == 'garden':
         pass

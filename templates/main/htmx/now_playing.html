@@ -87,24 +87,18 @@
             <div class="p-div-m">
               {% for chapter in guild.now_playing.chapters %}
                 <div class="vr"></div>
-
-                <label for="chapter-checkbox{{ chapter['start_time'] }}" class="p-bar p-ch"
-                       style="width: {{ ((chapter['end_time'] - chapter['start_time']) / int(guild.now_playing.duration))*100 }}%">
+                <label for="chapter-checkbox{{ chapter['start_time'] }}" class="p-bar p-ch" style="width: {{ ((chapter['end_time'] - chapter['start_time']) / int(guild.now_playing.duration))*100 }}%">
                   <input type="radio" name="chapter-checkbox" id="chapter-checkbox{{ chapter['start_time'] }}">
-                  <div class="p-text">
-                    <form method="POST" action="" onsubmit="onSubmitDisable();">
-                      <input type="hidden" name="scroll" value="0" id="scrollPos13">
-                      <div class="ch-div">
-                        {{ chapter['title'] }} ({{ convert_duration(chapter['start_time']) }}
-                        - {{ convert_duration(chapter['end_time']) }})
-                        <button type="submit" class="btn btn-primary btn-sm" name="jump_btn"
-                                value={{ chapter['start_time'] }}>{{ txt(lang, 'Jump') }}</button>
-                      </div>
-                    </form>
-                  </div>
-                  </input>
+                  <span class="p-text">
+                    <span class="ch-div">
+                      {{ chapter['title'] }} ({{ convert_duration(chapter['start_time']) }}- {{ convert_duration(chapter['end_time']) }})
+                      <button class="btn btn-primary btn-sm" name="var" value="{{ chapter['start_time'] }}"
+                              hx-trigger="click throttle:2s" hx-swap="beforeend" hx-target="#response-div"
+                              hx-get="/guild/{{ gi }}/action?act=jump&key={{ key }}&var={{ chapter['start_time'] }}"
+                      >{{ txt(lang, 'Jump') }}</button>
+                    </span>
+                  </span>
                 </label>
-
               {% endfor %}
             </div>
           {% endif %}

@@ -189,6 +189,10 @@ socket.on('connect', function () {
 
 socket.on('update', function (data) {
     // last_event = Date.now();
+    // if (data > last_updated+1) {
+    //     console.log("last_updated: " + last_updated);
+    //     location.reload();
+    // }
     setTimeout(function () {
         if (data > last_updated+1) {
         console.log("last_updated: " + last_updated);

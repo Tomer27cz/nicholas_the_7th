@@ -1,7 +1,9 @@
 {% for result in results %}
 <div class="q-container">
   <div class="q-div flex-no-wrap">
-    <img loading="lazy" class="q-img" src="{{ result['picture'] }}" alt="thumbnail" height="1rem">
+    {% if result['picture'] %}
+      <img loading="lazy" class="q-img" src="{{ result['picture'] }}" alt="thumbnail" height="1rem">
+    {% endif %}
     <div class="q-item1 q-wa q-self-center q-items-center"><h4>{{ result['title'] }}</h4></div>
     <div class="q-item0 q-wa q-self-center q-items-center">
       <button class="btn btn-outline btn-primary btn-lg btn-m" type="button" data-bs-toggle="modal"

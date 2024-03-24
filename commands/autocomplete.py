@@ -1,4 +1,4 @@
-from youtubesearchpython.__future__ import VideosSearch
+from youtubesearchpython.__future__ import CustomSearch, SearchMode, Search
 
 from classes.video_class import Queue
 from classes.typed_dictionaries import TuneInSearch, RadioGardenSearch, WebSearchResult
@@ -8,7 +8,7 @@ from utils.url import get_url_type
 from utils.convert import czech_to_ascii
 from utils.radio import search_tunein
 
-from typing import List
+from typing import List, Literal
 import discord
 import aiohttp
 import asyncio
@@ -16,29 +16,82 @@ import urllib.parse
 
 from config import VLC_LOGO
 
+# ------------------------------------------------------ PICTURE -------------------------------------------------------
+
+def get_picture(source: str) -> str:
+    """
+    Get the picture of the source
+    :param source: Source of the picture
+    :return: str
+    """
+    if source in ['YouTube Playlist', 'YouTube Playlist Video', 'YouTube Video']:
+        return 'https://www.youtube.com/yts/img/favicon_32-vflOogEID.png'
+
+    if source in ['Spotify Playlist', 'Spotify Album', 'Spotify Track', 'Spotify URL']:
+        return 'https://www.scdn.co/i/_global/favicon.png'
+
+    if source in ['SoundCloud URL']:
+        return 'https://soundcloud.com/favicon.ico'
+
+    if source in ['RadioGarden']:
+        return 'https://radio.garden/icons/favicon.png'
+
+    if source in ['RadioTuneIn']:
+        return 'https://tunein.com/favicon.ico'
+
+    if source in ['RadioCz']:
+        return 'https://www.radia.cz/favicon.ico'
+
+    if source in ['Local']:
+        return VLC_LOGO
+
+    return ''
+
 # ------------------------------------------------------ QUERY ---------------------------------------------------------
 
-async def youtube_autocomplete_def(ctx: discord.Interaction or None, query: str, limit: int=5, raw: bool=False) -> List[discord.app_commands.Choice] or List[WebSearchResult]:
+async def youtube_autocomplete_def(ctx: discord.Interaction or None,
+                                   query: str,
+                                   limit: int=5,
+                                   raw: bool=False,
+                                   search_type: str='videos'
+                                   ):
     """
     Autocomplete for a YouTube query
     :param ctx: Interaction
     :param query: String to be autocompleted
     :param limit: Limit of the results
     :param raw: Return the raw data (not as a discord.app_commands.Choice)
+    :param search_type: Type of search (videos, playlists, livestreams, all)
     :return: List[discord.app_commands.Choice]
     """
     if not query:
         return []
 
-    custom_search = VideosSearch(query, limit=limit)
-    custom_search_result = await custom_search.next()
+    if search_type == 'videos':
+        search = CustomSearch(query, searchPreferences=SearchMode.videos)
+    elif search_type == 'playlists':
+        search = CustomSearch(query, searchPreferences=SearchMode.playlists)
+    elif search_type == 'livestreams':
+        search = CustomSearch(query, searchPreferences=SearchMode.livestreams)
+    else:
+        search = Search(query)
 
+    custom_search_result = await search.next()
     if custom_search_result['result']:
-        if raw:
-            return [{'title': song['title'], 'value': song['link'], 'source': 'YouTube', 'picture': f'https://img.youtube.com/vi/{song["id"]}/default.jpg'} for song in custom_search_result['result']]
+        _return = []
 
-        return [discord.app_commands.Choice(name=f"YouTube: {song['title']}", value=song['link']) for song in custom_search_result['result']]
+        for result in custom_search_result['result']:
+            if result['type'] == 'channel':
+                continue
 
+            if raw:
+                thumbnail = result['thumbnails'][0]['url'] if result['thumbnails'] else f'https://img.youtube.com/vi/{result["id"]}/default.jpg'
+                _return.append({'title': result['title'], 'value': result['link'], 'source': 'YouTube', 'picture': thumbnail})
+                continue
+
+            _return.append(discord.app_commands.Choice(name=f"YouTube: {result['title']}", value=result['link']))
+
+        return _return[:limit]
     return []
 async def tunein_autocomplete_def(ctx: discord.Interaction or None, query: str, limit: int=5, raw: bool=False) -> List[discord.app_commands.Choice] or List[WebSearchResult]:
     """
@@ -100,7 +153,8 @@ async def query_autocomplete_def(ctx: discord.Interaction or None, query: str,
                                  include_garden: bool=False,
                                  include_local: bool=False,
                                  raw: bool=False,
-                                 limit: int=5
+                                 limit: int=5,
+                                 youtube_search_type: str='videos'
                                  ) -> List[discord.app_commands.Choice] or List[WebSearchResult]:
     """
     Autocompletion for a query (play, nextup, queue, search ...)
@@ -113,6 +167,7 @@ async def query_autocomplete_def(ctx: discord.Interaction or None, query: str,
     :param include_local: Include local files in the results
     :param raw: Return the raw data (not as a discord.app_commands.Choice)
     :param limit: Limit of the results per source
+    :param youtube_search_type: Type of search for YouTube
     :return: List[discord.app_commands.Choice]
     """
     if not query:
@@ -121,13 +176,13 @@ async def query_autocomplete_def(ctx: discord.Interaction or None, query: str,
     url_type = get_url_type(query)
     if url_type[0] not in ["String", "String with URL"]:
         if raw:
-            return [{'title': f"{url_type[0]}: {url_type[1]}", 'value': url_type[1], 'source': f'{url_type[0]}', 'picture': None}]
+            return [{'title': f"{url_type[0]}: {url_type[1]}", 'value': url_type[1], 'source': f'{url_type[0]}', 'picture': get_picture(f'{url_type[0]}')}]
 
         return [discord.app_commands.Choice(name=f"{url_type[0]}: {url_type[1]}", value=url_type[1])]
 
     tasks = []
     if include_youtube:
-        tasks.append(youtube_autocomplete_def(ctx, query, raw=raw, limit=limit))
+        tasks.append(youtube_autocomplete_def(ctx, query, raw=raw, limit=limit, search_type=youtube_search_type))
 
     if include_tunein:
         tasks.append(tunein_autocomplete_def(ctx, query, raw=raw, limit=limit))

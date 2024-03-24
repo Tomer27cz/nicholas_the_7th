@@ -1,0 +1,53 @@
+<div class="modal-content" id="queue0Modal_content">
+  <div class="modal-header">
+    <nav>
+      <ul class="pagination justify-content-center flex-wrap" style="margin-bottom: 0">
+        <li class="page-item"><a class="page-link active">URL</a></li>
+        <li class="page-item" style="cursor: pointer">
+          <a class="page-link" data-bs-target="#queue1Modal" data-bs-toggle="modal">YouTube</a>
+        </li>
+        <li class="page-item" style="cursor: pointer">
+          <a class="page-link" data-bs-target="#queue2Modal" data-bs-toggle="modal">TuneIn.com</a>
+        </li>
+        <li class="page-item" style="cursor: pointer">
+          <a class="page-link" data-bs-target="#queue3Modal" data-bs-toggle="modal">Radio.garden</a>
+        </li>
+        <li class="page-item" style="cursor: pointer">
+          <a class="page-link" data-bs-target="#queue4Modal" data-bs-toggle="modal">Radia.cz</a>
+        </li>
+        <li class="page-item" style="cursor: pointer">
+          <a class="page-link" data-bs-target="#queue5Modal" data-bs-toggle="modal">Local Files</a>
+        </li>
+      </ul>
+    </nav>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  </div>
+
+  <!-- Modal Body -->
+  <div class="modal-body">
+    <div class="input-group mb-3">
+      <input type="search" name="var" class="form-control" id="queue0_search" placeholder="{{ txt(lang, 'URL') }}">
+      <button class="btn btn-outline-secondary" type="submit" id="queue0_search_button" hx-target="#q-main" hx-swap="outerHTML"
+              hx-trigger="click throttle:2s" hx-get="/guild/{{ gi }}/queue?act=add&key={{ key }}&resp=true"
+              hx-indicator="#queue0_spinner" data-bs-toggle="modal" hx-include="#queue0_search">
+        {{ txt(lang, "Submit") }}
+      </button>
+      <script>
+        document.getElementById('queue0_search').addEventListener('keyup', function(event) {
+          if (event.key === 'Enter') {
+            document.getElementById('queue0_search_button').click();
+          }
+        });
+      </script>
+
+
+    </div>
+    <div class="text-center"><div id="queue0_spinner" class="spinner-border text-primary htmx-indicator" role="status" style="width: 2rem; height: 2rem;"></div></div>
+    <div id="queue0_results"></div>
+  </div>
+
+  <!-- Modal Footer -->
+  <div class="modal-footer">
+    <button type="button" class="btn btn-dark" data-bs-dismiss="modal">{{ txt(lang, 'Close') }}</button>
+  </div>
+</div>

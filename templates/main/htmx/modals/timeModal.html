@@ -10,6 +10,7 @@
         <button class="btn btn-outline btn-primary time-top-item" type="submit" title="{{ txt(lang, 'Set Time') }}"
                 {% if not guild.connected %}disabled{% endif %} hx-trigger="click throttle:2s" hx-swap="beforeend"
                 hx-target="#response-div" hx-get="/guild/{{gi}}/action?key={{key}}&act=time" hx-include="#time-input"
+                id="time-submit" hx-validate="true"
         ><h3>Set</h3></button>
       </div>
       <div class="time-div">
@@ -55,6 +56,11 @@
                 seconds = 0;
             }
 
+            if (seconds > maxTime) {
+                seconds = maxTime;
+                onUp();
+            }
+
             return seconds;
         }
 
@@ -96,6 +102,12 @@
             clearInterval(holdInterval);
             clearTimeout(holdTimeout);
         }
+
+        document.getElementById('timeTextInput').addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') {
+                document.getElementById('time-submit').click();
+            }
+        });
       </script>
     </div>
   </div>

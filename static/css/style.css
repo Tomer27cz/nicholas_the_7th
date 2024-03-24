@@ -1019,4 +1019,12 @@ input.radio-checkbox[type=radio] + label {
     transition: background-color 0.5s;
 }
 
+.spinner-div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    left: 50%;
+}
+
 

@@ -249,27 +249,6 @@ async def guild_page(guild_id):
         response = None
 
         keys = request.form.keys()
-        if 'play_btn' in keys:
-            log(web_data, 'play', {}, log_type='web', author=web_data.author)
-            response = execute_function('play_def', web_data=web_data)
-        if 'stop_btn' in keys:
-            log(web_data, 'stop', {}, log_type='web', author=web_data.author)
-            response = execute_function('stop_def', web_data=web_data)
-        if 'pause_btn' in keys:
-            log(web_data, 'pause', {}, log_type='web', author=web_data.author)
-            response = execute_function('pause_def', web_data=web_data)
-
-        if 'skip_btn' in keys:
-            log(web_data, 'skip', {}, log_type='web', author=web_data.author)
-            response = execute_function('skip_def', web_data=web_data)
-
-        if 'disconnect_btn' in keys:
-            log(web_data, 'disconnect', {}, log_type='web', author=web_data.author)
-            response = execute_function('web_disconnect', web_data=web_data)
-        if 'join_btn' in keys:
-            log(web_data, 'join', {}, log_type='web', author=web_data.author)
-            response = execute_function('web_join', web_data=web_data, form=request.form)
-
         if 'edit_btn' in keys:
             log(web_data, 'web_video_edit', {'form': request.form}, log_type='web', author=web_data.author)
             response = execute_function('web_video_edit', web_data=web_data, form=request.form)
@@ -277,30 +256,10 @@ async def guild_page(guild_id):
             log(web_data, 'web_options', {'form': request.form}, log_type='web', author=web_data.author)
             response = execute_function('web_user_options_edit', web_data=web_data, form=request.form)
 
-        if 'volume_btn' in keys:
-            log(web_data, 'volume_command_def', {'form': request.form}, log_type='web', author=web_data.author)
-            response = execute_function('volume_command_def', web_data=web_data, volume=int(request.form['volumeRange']))
-        if 'jump_btn' in keys:
-            log(web_data, 'set_video_time', {'form': request.form}, log_type='web', author=web_data.author)
-            response = execute_function('set_video_time', web_data=web_data, time_stamp=request.form['jump_btn'])
-        if 'time_btn' in keys:
-            log(web_data, 'set_video_time', {'form': request.form}, log_type='web', author=web_data.author)
-            response = execute_function('set_video_time', web_data=web_data, time_stamp=request.form['timeInput'])
-
-        # if 'ytURL' in keys:
-        #     log(web_data, 'queue_command_def', {'form': request.form}, log_type='web', author=web_data.author)
-        #     response = execute_function('queue_command_def', web_data=web_data, url=request.form['ytURL'])
-        # if 'radio-checkbox' in keys:
-        #     log(web_data, 'web_queue_from_radio', {'form': request.form}, log_type='web', author=web_data.author)
-        #     response = execute_function('web_queue_from_radio', web_data=web_data, radio_name=request.form['radio-checkbox'])
-
         if response:
             if not response.response:
                 errors = [response.message]
-            # else:
-            #     messages = [response.message]
 
-    # pd = played_duration, npd = now_playing.duration
     pd = guild_object.now_playing.played_duration if guild_object.now_playing else [{'start': None, 'end': None}]
     npd = (guild_object.now_playing.duration if check_isdigit(guild_object.now_playing.duration) else 'null') if guild_object.now_playing else 'null'
 
@@ -363,9 +322,6 @@ async def htmx_queue(guild_id):
 
     if render and render not in ['json', 'html', 'none']:
         render = 'html'
-
-    if resp not in ['true', 'false', 'only']:
-        resp = 'false'
 
     if act:
         web_data = WebData(int(guild_id), {'id': user_id, 'name': user_name})
@@ -436,14 +392,6 @@ async def htmx_queue(guild_id):
         if 'nextup_btn' == act:
             log(web_data, 'nextup', {'var': var, 'position': 0}, log_type='web', author=web_data.author)
             response = execute_function('web_queue', web_data=web_data, video_type=var, position=0)
-
-        # Admin
-        # if 'edit_btn' == act:
-        #     log(web_data, 'web_video_edit', [request.form['edit_btn']], log_type='web', author=web_data.author)
-        #     response = execute_function('web_video_edit', web_data=web_data, form=request.form)
-        # if 'options_btn' == act:
-        #     log(web_data, 'web_options', [request.form], log_type='web', author=web_data.author)
-        #     response = execute_function('web_user_options_edit', web_data=web_data, form=request.form)
 
         if 'add' == act:
             log(web_data, 'queue_command_def', {'var': var}, log_type='web', author=web_data.author)
@@ -537,6 +485,8 @@ async def htmx_modal(guild_id):
         return abort(403)
 
     modal_type = request.args.get('type')
+    if modal_type == 'queue0Modal':
+        return render_template('main/htmx/modals/queue/queue0Modal.html', gi=int(guild_id), key=key)
     if modal_type == 'queue1Modal':
         return render_template('main/htmx/modals/queue/queue1Modal.html', gi=int(guild_id), key=key)
     if modal_type == 'queue2Modal':
@@ -593,7 +543,8 @@ async def htmx_search(guild_id):
 
     act = request.args.get('act')
     if act == 'youtube':
-        results: List[WebSearchResult] = await query_autocomplete_def(None, query=request.args.get('var'), include_youtube=True, raw=True)
+        sp = request.args.get('sp', 'videos')
+        results: List[WebSearchResult] = await query_autocomplete_def(None, query=request.args.get('var'), include_youtube=True, raw=True, youtube_search_type=sp)
     elif act == 'tunein':
         results: List[WebSearchResult] = await query_autocomplete_def(None, query=request.args.get('var'), include_tunein=True, raw=True)
     elif act == 'radio':
@@ -1450,6 +1401,8 @@ def main():
     debug = True if debug == 'true' or debug is True else False
     port = int(os.environ.get('PORT', 5000))
     host = os.environ.get('HOST', '127.0.0.1')
+
+    # host = '0.0.0.0'
 
     simulation = 0
     os.environ['SIMULATE'] = str(simulation)

@@ -93,7 +93,7 @@ async def web_video_edit(web_data, glob: GlobalVars, form) -> ReturnData:
     if stream_url in none_list:
         stream_url = None
 
-    if class_type not in ['Video', 'Radio', 'Local', 'Probe', 'SoundCloud']:
+    if class_type not in ['Video', 'RadioCz', 'RadioGarden', 'RadioTuneIn', 'Local', 'Probe', 'SoundCloud']:
         return ReturnData(False, f'Invalid class type: {class_type}')
 
     if created_at:
@@ -106,16 +106,15 @@ async def web_video_edit(web_data, glob: GlobalVars, form) -> ReturnData:
             return ReturnData(False, f'Invalid local number: {local_number}')
         local_number = int(local_number)
 
-    # if author and author.isdigit():
-    #     author = int(author)
-
-    try:
-        author = dict(author)
-    except (TypeError, ValueError, json.decoder.JSONDecodeError, AssertionError, SyntaxError):
-        return ReturnData(False, f'Invalid author: {author}')
-
     if duration and duration.isdigit():
         duration = int(duration)
+
+    if author:
+        try:
+            author = ast.literal_eval(author)
+            assert isinstance(author, dict)
+        except (TypeError, ValueError, json.decoder.JSONDecodeError, AssertionError, SyntaxError):
+            return ReturnData(False, f'Invalid author: {author}')
 
     if radio_info:
         try:
@@ -192,7 +191,6 @@ async def web_options_edit(web_data, glob: GlobalVars, form) -> ReturnData:
                                             response_type=response_type, search_query=search_query, buttons=buttons,
                                             volume=volume, buffer=buffer, history_length=history_length)
 
-# TODO: Figure out how to do this
 async def web_delete_guild(web_data, glob: GlobalVars, guild_id) -> ReturnData:
     log(web_data, 'web_delete_guild', options=locals(), log_type='function', author=web_data.author)
     is_ctx, ctx_guild_id, ctx_author, ctx_guild_object = ctx_check(web_data, glob)

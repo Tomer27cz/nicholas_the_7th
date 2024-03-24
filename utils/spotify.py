@@ -5,6 +5,31 @@ from classes.typed_dictionaries import VideoInfo, VideoAuthor
 
 from utils.global_vars import GlobalVars
 
+async def track_to_yt_video(glob: GlobalVars, track, author: VideoAuthor, guild_id: int):
+    """
+    Converts track to youtube video
+    :param glob: GlobalVars
+    :param track: str - track
+    :param author: author of command
+    :param guild_id: guild id
+    :return: VideoClass child object
+    """
+    title = track['name']
+    artist = track['artists'][0]['name']
+    search_query = f"{title} {artist}"
+
+    cs = VideosSearch(search_query, limit=1)
+    csr = await cs.next()
+    custom_search = csr['result']
+
+    if not custom_search:
+        return None
+
+    video: VideoInfo = custom_search[0]
+
+    yt_url = video['link']
+    return await Queue.create(glob, 'Video', author, guild_id, url=yt_url)
+
 async def spotify_to_yt_video(glob: GlobalVars, spotify_url: str, author: VideoAuthor, guild_id: int):
     """
     Converts spotify url to youtube video
@@ -23,30 +48,7 @@ async def spotify_to_yt_video(glob: GlobalVars, spotify_url: str, author: VideoA
     except Exception:
         return None
 
-    title = spotify_track['name']
-    artist = spotify_track['artists'][0]['name']
-    search_query = f"{title} {artist}"
-
-    cs = VideosSearch(search_query, limit=1)
-    csr = await cs.next()
-    custom_search = csr['result']
-
-    if not custom_search:
-        return None
-
-    video: VideoInfo = custom_search[0]
-
-    yt_url = video['link']
-    yt_title = video['title']
-    yt_picture = 'https://img.youtube.com/vi/' + video['id'] + '/default.jpg'
-    yt_duration = video['duration']
-    yt_channel_name = video['channel']['name']
-    yt_channel_link = video['channel']['link']
-
-    video_class = await Queue.create(glob, 'Video', author, guild_id, url=yt_url, title=yt_title, picture=yt_picture, duration=yt_duration,
-                        channel_name=yt_channel_name, channel_link=yt_channel_link)
-
-    return video_class
+    return await track_to_yt_video(glob, spotify_track, author, guild_id)
 
 async def spotify_playlist_to_yt_video_list(glob: GlobalVars, spotify_playlist_url: str, author: VideoAuthor, guild_id: int) -> list or None:
     """
@@ -71,29 +73,7 @@ async def spotify_playlist_to_yt_video_list(glob: GlobalVars, spotify_playlist_u
     for index, item in enumerate(spotify_playlist['items']):
         spotify_track = item['track']
 
-        title = spotify_track['name']
-        artist = spotify_track['artists'][0]['name']
-        search_query = f"{title} {artist}"
-
-        cs = VideosSearch(search_query, limit=1)
-        csr = await cs.next()
-        custom_search = csr['result']
-
-        if not custom_search:
-            return None
-
-        video: VideoInfo = custom_search[0]
-
-        yt_url = video['link']
-        yt_title = video['title']
-        yt_picture = 'https://img.youtube.com/vi/' + video['id'] + '/default.jpg'
-        yt_duration = video['duration']
-        yt_channel_name = video['channel']['name']
-        yt_channel_link = video['channel']['link']
-
-        video_class = await Queue.create(glob, 'Video', author, guild_id, url=yt_url, title=yt_title, picture=yt_picture, duration=yt_duration,
-                            channel_name=yt_channel_name, channel_link=yt_channel_link)
-
+        video_class = await track_to_yt_video(glob, spotify_track, author, guild_id)
         video_list.append(video_class)
 
     return video_list
@@ -119,29 +99,7 @@ async def spotify_album_to_yt_video_list(glob: GlobalVars, spotify_album_url: st
     video_list = []
 
     for index, spotify_track in enumerate(spotify_album['items']):
-        title = spotify_track['name']
-        artist = spotify_track['artists'][0]['name']
-        search_query = f"{title} {artist}"
-
-        cs = VideosSearch(search_query, limit=1)
-        csr = await cs.next()
-        custom_search = csr['result']
-
-        if not custom_search:
-            return None
-
-        video: VideoInfo = custom_search[0]
-
-        yt_url = video['link']
-        yt_title = video['title']
-        yt_picture = 'https://img.youtube.com/vi/' + video['id'] + '/default.jpg'
-        yt_duration = video['duration']
-        yt_channel_name = video['channel']['name']
-        yt_channel_link = video['channel']['link']
-
-        video_class = await Queue.create(glob, 'Video', author, guild_id, url=yt_url, title=yt_title, picture=yt_picture, duration=yt_duration,
-                            channel_name=yt_channel_name, channel_link=yt_channel_link)
-
+        video_class = await track_to_yt_video(glob, spotify_track, author, guild_id)
         video_list.append(video_class)
 
     return video_list
