@@ -105,6 +105,7 @@
           {% if check_isdigit(guild.now_playing.duration) and guild.now_playing.duration not in ['0', 0] %}
             <div class="p-div">
               <div class="p-bar" style="width: {{ (video_time_from_start(guild.now_playing) / int(guild.now_playing.duration))*100 }}%" id="np_progress"></div>
+            </div>
           {% else %}
             <div class="p-div">
               <div class="p-bar" style="width: 100%" id="np_progress"></div>

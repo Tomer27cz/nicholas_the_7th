@@ -445,17 +445,17 @@ async def htmx_history(guild_id):
 
     guild_object = guild(db, guild_id)
     if guild_object is None:
-        return abort(404)
+        return abort(404, 'Guild not found')
 
     key = request.args.get('key')
     if key != guild_object.data.key:
-        return abort(403)
+        return abort(403, 'Invalid key')
 
 
     act = request.args.get('act')
     if act:
         if not admin:
-            return abort(403)
+            return abort(403, 'User is not admin')
 
         web_data = WebData(int(guild_id), {'id': user_id, 'name': user_name})
         if 'hdel_btn' == act:
@@ -478,11 +478,11 @@ async def htmx_modal(guild_id):
 
     guild_object = guild(db, int(guild_id))
     if guild_object is None:
-        return abort(404)
+        return abort(404, 'Guild not found')
 
     key = request.args.get('key')
     if key != guild_object.data.key:
-        return abort(403)
+        return abort(403, 'Invalid key')
 
     modal_type = request.args.get('type')
     if modal_type == 'queue0Modal':
@@ -530,7 +530,7 @@ async def htmx_modal(guild_id):
     if modal_type == 'now_playing_edit' and admin:
         return render_template('main/htmx/modals/video/now_playing_edit.html', gi=int(guild_id), guild=guild_object, key=key)
 
-    return abort(404)
+    return abort(404, 'Modal not found')
 
 @app.route('/guild/<int:guild_id>/search')
 async def htmx_search(guild_id):
@@ -539,7 +539,7 @@ async def htmx_search(guild_id):
     db_key = guild_data_key(db, guild_id)
     key = request.args.get('key')
     if key != db_key:
-        return abort(403)
+        return abort(403, 'Invalid key')
 
     act = request.args.get('act')
     if act == 'youtube':
@@ -554,7 +554,7 @@ async def htmx_search(guild_id):
     elif act == 'local':
         results: List[WebSearchResult] = await query_autocomplete_def(None, query=request.args.get('var'), include_local=True, raw=True)
     else:
-        return abort(404)
+        return abort(404, 'Unknown search type')
 
     return render_template('main/htmx/search.html', gi=int(guild_id), key=key, results=results)
 
@@ -763,7 +763,7 @@ async def admin_page():
                                errors=None, user=None, title='403 Forbidden'), 403
 
     if int(user.get('id', 0)) not in authorized_users:
-        return abort(403)
+        return abort(403, 'User not authorized')
 
     guild_list = sort_guilds(guilds(db), flask_session.get('discord_user_guilds', []))
 
@@ -781,7 +781,7 @@ async def admin_log_tree():
                                errors=None, user=None, title='403 Forbidden'), 403
 
     if not is_admin(user):
-        return abort(403)
+        return abort(403, 'User not authorized')
 
     log_files = get_log_files()
 
@@ -798,11 +798,11 @@ async def admin_log_page(file_name):
                                errors=None, user=None, title='403 Forbidden'), 403
 
     if not is_admin(user):
-        return abort(403)
+        return abort(403, 'User not authorized')
 
     file_names = get_log_files()
     if file_name not in file_names:
-        return abort(404)
+        return abort(404, 'File not found')
 
     try:
         with open(f'db/log/{file_name}', 'r', encoding='utf-8') as f:
@@ -810,7 +810,7 @@ async def admin_log_page(file_name):
             chunks = math.ceil(len(lines) / 100)
     except Exception as e:
         log(request.remote_addr, [str(e)], log_type='error', author=user['username'])
-        return abort(500)
+        return abort(500, f'Error reading file {e}')
 
     separate_lines = True if request.args.get('separate_lines') is not None else False
 
@@ -870,24 +870,24 @@ async def admin_inflog_page():
                                errors=None, user=None, title='403 Forbidden'), 403
 
     if not is_admin(user):
-        return abort(403)
+        return abort(403, 'User not authorized')
 
     log_type = request.args.get('type')
     if log_type not in get_log_files():
-        return abort(404)
+        return abort(404, 'File not found')
 
     try:
         with open(f'db/log/{log_type}', 'r', encoding='utf-8') as f:
             lines = list(reversed([(value, index) for index, value in enumerate(f.readlines())]))
     except Exception as e:
         log(request.remote_addr, [str(e)], log_type='error', author=user['username'])
-        return abort(500)
+        return abort(500, f'Error reading file {e}')
 
     index_num = request.args.get('index')
     if index_num:
         index_num = int(index_num)
     else:
-        return abort(400)
+        return abort(400, 'No index provided')
 
     if index_num > math.ceil(len(lines)/100):
         return "<p>Index out of range</p>"
@@ -915,7 +915,7 @@ async def admin_user_page(user_id):
                                errors=None, user=None, title='403 Forbidden'), 403
 
     if int(user.get('id', 0)) not in authorized_users:
-        return abort(403)
+        return abort(403, 'User not authorized')
 
     data = get_user_data(user_id)
 
@@ -933,14 +933,14 @@ async def get_files(req_path):
                                errors=None, user=None, title='403 Forbidden'), 403
 
     if int(user.get('id', 0)) not in authorized_users:
-        return abort(403)
+        return abort(403, 'User not authorized')
 
     # Joining the base and the requested path
     abs_path = safe_join(config.PARENT_DIR, req_path)
 
     # Return 404 if path doesn't exist
     if not os.path.exists(abs_path):
-        return abort(404)
+        return abort(404, 'Path not found')
 
     # Check if path is a file and serve
     if os.path.isfile(abs_path):
@@ -982,7 +982,7 @@ async def admin_guild(guild_id):
                                errors=None, user=None, title='403 Forbidden'), 403
 
     if int(user.get('id', 0)) not in authorized_users:
-        return abort(403)
+        return abort(403, 'User not authorized')
 
     errors = []
     messages = []
@@ -1018,7 +1018,7 @@ async def admin_guild(guild_id):
 
     guild_object = guild(db, int(guild_id))
     if guild_object is None:
-        return abort(404)
+        return abort(404, 'Guild not found')
     return render_template('admin/guild.html', user=user, guild_object=guild_object, languages_dict=languages_dict,
                            errors=errors, messages=messages, title='Admin Guild Dashboard', int=int)
 
@@ -1033,10 +1033,10 @@ async def admin_guild_users(guild_id):
                                errors=None, user=None, title='403 Forbidden'), 403
 
     if int(user.get('id', 0)) not in authorized_users:
-        return abort(403)
+        return abort(403, 'User not authorized')
 
     if not guild_exists(db, int(guild_id)):
-        return abort(404)
+        return abort(404, 'Guild not found')
 
     return render_template('admin/data/guild_users.html', user=user, data=guild_data(db, guild_id), title='Users')
 
@@ -1050,7 +1050,7 @@ async def admin_guild_channels(guild_id):
                                errors=None, user=None, title='403 Forbidden'), 403
 
     if int(user.get('id', 0)) not in authorized_users:
-        return abort(403)
+        return abort(403, 'User not authorized')
 
     data = guild_data(db, int(guild_id))
     return render_template('admin/data/guild_channels.html', user=user, data=data, title='Voice Channels', channel_type='voice')
@@ -1065,7 +1065,7 @@ async def admin_guild_text_channels(guild_id):
                                errors=None, user=None, title='403 Forbidden'), 403
 
     if int(user.get('id', 0)) not in authorized_users:
-        return abort(403)
+        return abort(403, 'User not authorized')
 
     data = guild_data(db, int(guild_id))
     return render_template('admin/data/guild_channels.html', user=user, data=data, title='Text Channels', channel_type='text')
@@ -1080,7 +1080,7 @@ async def admin_guild_roles(guild_id):
                                errors=None, user=None, title='403 Forbidden'), 403
 
     if int(user.get('id', 0)) not in authorized_users:
-        return abort(403)
+        return abort(403, 'User not authorized')
 
     data = guild_data(db, int(guild_id))
 
@@ -1096,7 +1096,7 @@ async def admin_guild_invites(guild_id):
                                errors=None, user=None, title='403 Forbidden'), 403
 
     if int(user.get('id', 0)) not in authorized_users:
-        return abort(403)
+        return abort(403, 'User not authorized')
 
     guild_object = guild(db, int(guild_id))
     guild_invites = get_guild_invites(int(guild_id))
@@ -1113,7 +1113,7 @@ async def admin_guild_saves(guild_id):
                                errors=None, user=None, title='403 Forbidden'), 403
 
     if int(user['id']) not in authorized_users:
-        return abort(403)
+        return abort(403, 'User not authorized')
 
     if request.method == 'POST':
         web_data = WebData(guild_id, {'id': user['id'], 'name': user['username']})
@@ -1145,7 +1145,7 @@ async def admin_guild_users_htmx(guild_id):
                                errors=None, user=None, title='403 Forbidden')
 
     if int(user['id']) not in authorized_users:
-        return abort(403)
+        return abort(403, 'User not authorized')
 
     index = request.args.get('index')
     if index is not None:
@@ -1156,7 +1156,7 @@ async def admin_guild_users_htmx(guild_id):
 
         return render_template('admin/data/htmx/guild_users.html', users=users, badge_dict=badge_dict_new)
 
-    return abort(400)
+    return abort(400, 'Invalid request')
 
 @app.route('/admin/guild/<int:guild_id>/channels/htmx', methods=['GET', 'POST'])
 async def admin_guild_channels_htmx(guild_id):
@@ -1167,7 +1167,7 @@ async def admin_guild_channels_htmx(guild_id):
                                errors=None, user=None, title='403 Forbidden')
 
     if int(user['id']) not in authorized_users:
-        return abort(403)
+        return abort(403, 'User not authorized')
 
     index = request.args.get('index')
     type_of = request.args.get('type')
@@ -1209,7 +1209,7 @@ async def admin_guild_channels_htmx(guild_id):
             return render_template('admin/data/htmx/channels/guild_channels.html',
                                    channels=channels, guild_id=guild_id, channel_type='text')
 
-    return abort(400)
+    return abort(400, 'Invalid request')
 
 @app.route('/admin/guild/<int:guild_id>/roles/htmx', methods=['GET', 'POST'])
 async def admin_guild_roles_htmx(guild_id):
@@ -1220,7 +1220,7 @@ async def admin_guild_roles_htmx(guild_id):
                                errors=None, user=None, title='403 Forbidden')
 
     if int(user['id']) not in authorized_users:
-        return abort(403)
+        return abort(403, 'User not authorized')
 
     index = request.args.get('index')
     role_id = request.args.get('role_id')
@@ -1230,26 +1230,26 @@ async def admin_guild_roles_htmx(guild_id):
 
     if type_of == 'role':
         if index is None:
-            return abort(400)
+            return abort(400, 'Index not provided')
 
         roles = get_guild_roles_index(int(guild_id), index*5, (index+1)*5)
         return render_template('admin/data/htmx/roles/guild_roles.html', roles=roles, guild_id=guild_id)
 
     if type_of == 'members':
         if not role_id:
-            return abort(400)
+            return abort(400, 'Role ID not provided')
 
         members = get_guild_role_members(int(guild_id), int(role_id))
         return render_template('admin/data/htmx/roles/guild_roles_members.html', members=members, role_id=role_id)
 
     if type_of == 'permissions':
         if not role_id:
-            return abort(400)
+            return abort(400, 'Role ID not provided')
 
         permissions = get_guild_role_permissions(int(guild_id), int(role_id))
         return render_template('admin/data/htmx/roles/guild_roles_permissions.html', permissions=permissions, role_id=role_id)
 
-    return abort(400)
+    return abort(400, 'Type not provided or invalid')
 
 @app.route('/admin/guild/<int:guild_id>/saves/htmx', methods=['GET', 'POST'])
 async def admin_guild_saves_htmx(guild_id):
@@ -1260,7 +1260,7 @@ async def admin_guild_saves_htmx(guild_id):
                                errors=None, user=None, title='403 Forbidden')
 
     if int(user['id']) not in authorized_users:
-        return abort(403)
+        return abort(403, 'User not authorized')
 
     index = request.args.get('index')
     type_of = request.args.get('type')
@@ -1279,7 +1279,7 @@ async def admin_guild_saves_htmx(guild_id):
             return render_template('admin/data/htmx/saves/guild_saves_queue.html', queue=save_queue, save_id=save_id,
                                    get_username=get_username, struct_to_time=struct_to_time, convert_duration=convert_duration)
 
-    return abort(400)
+    return abort(400, 'Invalid request')
 
 
 # -------------------------------------------------- Admin Chat --------------------------------------------------------
@@ -1294,11 +1294,11 @@ async def admin_chat(guild_id, channel_id):
                                errors=None, user=None, title='403 Forbidden'), 403
 
     if int(user['id']) not in authorized_users:
-        return abort(403)
+        return abort(403, 'User not authorized')
 
     guild_text_channels = get_guild_text_channels(int(guild_id))
     if guild_text_channels is None:
-        return abort(404)
+        return abort(404, 'No text channels')
 
     errors = []
     messages = []
@@ -1345,11 +1345,11 @@ async def admin_fastchat(guild_id, channel_id):
                                errors=None, user=None, title='403 Forbidden'), 403
 
     if int(user.get('id', 0)) not in authorized_users:
-        return abort(403)
+        return abort(403, 'Not authorized')
 
     guild_text_channels = get_guild_text_channels(int(guild_id))
     if guild_text_channels is None:
-        return abort(404)
+        return abort(404, 'No text channels')
 
     if channel_id == 0:
         content = 0
@@ -1363,7 +1363,7 @@ async def admin_fastchat(guild_id, channel_id):
 async def page_not_found(_):
     log(request.remote_addr, f'{request.full_path} -> 404', log_type='ip')
     await simulate()
-    return render_template('base/error.html', title='404 Not Found', message="404 Not Found",
+    return render_template('base/error.html', title='404 Not Found', message="404 Not Found", message2=_ if _ else None,
                            message4='The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.',
                            ), 404
 
@@ -1371,14 +1371,14 @@ async def page_not_found(_):
 async def page_forbidden(_):
     log(request.remote_addr, f'{request.full_path} -> 403', log_type='ip')
     await simulate()
-    return render_template('base/error.html', message="403 Forbidden", message4='You do not have permission.',
+    return render_template('base/error.html', message="403 Forbidden", message4='You do not have permission.', message2=_ if _ else None,
                            title='403 Forbidden'), 403
 
 @app.errorhandler(400)
 async def bad_request(_):
     log(request.remote_addr, f'{request.full_path} -> 400', log_type='ip')
     await simulate()
-    return render_template('base/error.html', message="400 Bad Request", title='400 Bad Request',
+    return render_template('base/error.html', message="400 Bad Request", title='400 Bad Request', message2=_ if _ else None,
                            message4='The server could not understand the request due to invalid syntax.'
                            ), 400
 
@@ -1386,7 +1386,7 @@ async def bad_request(_):
 async def internal_server_error(_):
     log(request.remote_addr, f'{request.full_path} -> 500', log_type='ip')
     await simulate()
-    return render_template('base/error.html', message="500 Internal Server Error",
+    return render_template('base/error.html', message="500 Internal Server Error", message2=_ if _ else None,
                            message4='The server encountered an internal error and was unable to complete your request.',
                            title='500 Internal Server Error'), 500
 

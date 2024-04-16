@@ -2,12 +2,11 @@ from classes.data_classes import ReturnData, SlowedUser, TorturedUser
 
 from commands.utils import ctx_check
 
-from database.guild import guild, is_user_tortured, delete_tortured_user
+from database.guild import guild, is_user_tortured, delete_tortured_user, guild_ids
 
 from utils.log import log
 from utils.translate import txt
 from utils.save import update, push_update
-from utils.checks import is_float
 from utils.convert import to_bool
 from utils.global_vars import languages_dict, GlobalVars
 
@@ -50,42 +49,33 @@ async def kys_def(ctx: dc_commands.Context, glob: GlobalVars):
     sys.exit(3)
 
 # noinspection DuplicatedCode
-async def options_def(ctx: dc_commands.Context, glob: GlobalVars, server: Union[str, int, None]=None, stopped: str = None, loop: str = None, is_radio: str = None,
-                      buttons: str = None, language: str = None, response_type: str = None, buffer: str = None,
-                      history_length: str = None, volume: str = None, search_query: str = None, ephemeral=True):
+async def options_def(ctx: dc_commands.Context, glob: GlobalVars,
+                      server: Union[str, int, None]=None,
+                      stopped: str = None,
+                      loop: str = None,
+                      is_radio: str = None,
+                      buttons: str = None,
+                      language: str = None,
+                      response_type: str = None,
+                      buffer: str = None,
+                      history_length: str = None,
+                      volume: str = None,
+                      search_query: str = None,
+                      ephemeral=True
+                      ):
     log(ctx, 'options_def', options=locals(), log_type='function', author=ctx.author)
     is_ctx, guild_id, author, guild_object = ctx_check(ctx, glob)
 
-    db_guild = guild(glob, guild_id)
+    guilds_to_change = []
+    if server is None:
+        pass
 
-    if not server:
-        options = db_guild.options
-
-        message = f"""
-        **Options:**
-        stopped -> `{options.stopped}`
-        loop -> `{options.loop}`
-        is_radio -> `{options.is_radio}`
-        buttons -> `{options.buttons}`
-        language -> `{options.language}`
-        response_type -> `{options.response_type}`
-        buffer -> `{options.buffer}`
-        history_length -> `{options.history_length}`
-        volume -> `{options.volume}`
-        search_query -> `{options.search_query}`
-        """
-
-        await ctx.reply(message, ephemeral=ephemeral)
-        return ReturnData(True, message)
-
-    guilds = []
-
-    if server == 'this':
-        guilds.append(guild_id)
+    elif server == 'this':
+        guilds_to_change.append(guild_id)
 
     elif server == 'all':
-        for guild_id in db_guild.keys():
-            guilds.append(guild_id)
+        for _guild_id in guild_ids(glob):
+            guilds_to_change.append(_guild_id)
 
     else:
         try:
@@ -95,85 +85,159 @@ async def options_def(ctx: dc_commands.Context, glob: GlobalVars, server: Union[
             await ctx.reply(message, ephemeral=ephemeral)
             return ReturnData(False, message)
 
-        if server not in db_guild.keys():
+        if server not in guild_ids(glob):
             message = txt(guild_id, glob, "That guild doesn't exist or the bot is not in it")
             await ctx.reply(message, ephemeral=ephemeral)
             return ReturnData(False, message)
 
-        guilds.append(server)
+        guilds_to_change.append(server)
 
-    for for_guild_id in guilds:
+    for for_guild_id in guilds_to_change:
         options = guild(glob, for_guild_id).options
 
         bool_list_t = ['True', 'true', '1']
         bool_list_f = ['False', 'false', '0']
         bool_list = bool_list_f + bool_list_t
+
         response_types = ['long', 'short']
 
-        if stopped not in bool_list and stopped is not None and stopped != 'None':
-            msg = f'stopped has to be: {bool_list} --> {stopped}'
-            await ctx.reply(msg, ephemeral=ephemeral)
-            return ReturnData(False, msg)
-        if loop not in bool_list and loop is not None and loop != 'None':
-            msg = f'loop has to be: {bool_list} --> {loop}'
-            await ctx.reply(msg, ephemeral=ephemeral)
-            return ReturnData(False, msg)
-        if is_radio not in bool_list and is_radio is not None and is_radio != 'None':
-            msg = f'is_radio has to be: {bool_list} --> {is_radio}'
-            await ctx.reply(msg, ephemeral=ephemeral)
-            return ReturnData(False, msg)
-        if buttons not in bool_list and buttons is not None and buttons != 'None':
-            msg = f'buttons has to be: {bool_list} --> {buttons}'
-            await ctx.reply(msg, ephemeral=ephemeral)
-            return ReturnData(False, msg)
+        def check_none(value):
+            if value == 'None':
+                return None
+            return value
 
-        if response_type not in response_types and response_type is not None and response_type != 'None':
-            msg = f'response_type has to be: {response_types} --> {response_type}'
-            await ctx.reply(msg, ephemeral=ephemeral)
-            return ReturnData(False, msg)
+        stopped = check_none(stopped)
+        loop = check_none(loop)
+        is_radio = check_none(is_radio)
+        buttons = check_none(buttons)
+        language = check_none(language)
+        response_type = check_none(response_type)
+        buffer = check_none(buffer)
+        history_length = check_none(history_length)
+        volume = check_none(volume)
+        search_query = check_none(search_query)
 
-        if language not in languages_dict() and language is not None and language != 'None':
-            msg = f'language has to be: {languages_dict().keys()} --> {language}'
-            await ctx.reply(msg, ephemeral=ephemeral)
-            return ReturnData(False, msg)
+        async def bool_check(value):
+            if value is None:
+                return ReturnData(True, 'value is None')
 
-        if not is_float(volume) and volume is not None and volume != 'None':
-            msg = f'volume has to be a number: {volume}'
-            await ctx.reply(msg, ephemeral=ephemeral)
-            return ReturnData(False, msg)
-        if not buffer.isdigit() and buffer is not None and buffer != 'None':
-            msg = f'buffer has to be a number: {buffer}'
-            await ctx.reply(msg, ephemeral=ephemeral)
-            return ReturnData(False, msg)
-        if not history_length.isdigit() and history_length is not None and history_length != 'None':
-            msg = f'history_length has to be a number: {history_length}'
-            await ctx.reply(msg, ephemeral=ephemeral)
-            return ReturnData(False, msg)
+            if value not in bool_list:
+                _msg = f'{value.__name__} has to be: {bool_list} --> {value}'
+                await ctx.reply(_msg, ephemeral=ephemeral)
+                return ReturnData(False, _msg)
 
-        if stopped is not None and stopped != 'None':
-            options.stopped = to_bool(stopped)
-        if loop is not None and loop != 'None':
-            options.loop = to_bool(loop)
-        if is_radio is not None and is_radio != 'None':
-            options.is_radio = to_bool(is_radio)
-        if buttons is not None and buttons != 'None':
-            options.buttons = to_bool(buttons)
+            return ReturnData(True, 'value is ok')
 
-        if language is not None and language != 'None':
-            options.language = language
-        if search_query is not None and search_query != 'None':
-            options.search_query = search_query
-        if response_type is not None and response_type != 'None':
-            options.response_type = response_type
+        stopped_check = await bool_check(stopped)
+        if not stopped_check.response:
+            return stopped_check
 
-        if volume is not None and volume != 'None':
-            options.volume = float(int(volume) / 100)
-        if buffer is not None and buffer != 'None':
-            options.buffer = int(buffer)
-        if history_length is not None and history_length != 'None':
-            options.history_length = int(history_length)
+        loop_check = await bool_check(loop)
+        if not loop_check.response:
+            return loop_check
+
+        is_radio_check = await bool_check(is_radio)
+        if not is_radio_check.response:
+            return is_radio_check
+
+        buttons_check = await bool_check(buttons)
+        if not buttons_check.response:
+            return buttons_check
+
+        async def is_resp_type(value):
+            if value is None:
+                return ReturnData(True, 'value is None')
+
+            if value not in response_types:
+                _msg = f'{value.__name__} has to be: {response_types} --> {value}'
+                await ctx.reply(_msg, ephemeral=ephemeral)
+                return ReturnData(False, _msg)
+
+            return ReturnData(True, 'value is ok')
+
+        response_type_check = await is_resp_type(response_type)
+        if not response_type_check.response:
+            return response_type_check
+
+        async def is_lang(value):
+            if value is None:
+                return ReturnData(True, 'value is None')
+
+            if value not in languages_dict.keys():
+                _msg = f'{value.__name__} has to be: {languages_dict.keys()} --> {value}'
+                await ctx.reply(_msg, ephemeral=ephemeral)
+                return ReturnData(False, _msg)
+
+            return ReturnData(True, 'value is ok')
+
+        language_check = await is_lang(language)
+        if not language_check.response:
+            return language_check
+
+        async def is_int(value):
+            if value is None:
+                return ReturnData(True, 'value is None')
+
+            if not value.isdigit():
+                _msg = f'{value.__name__} has to be a number: {value}'
+                await ctx.reply(_msg, ephemeral=ephemeral)
+                return ReturnData(False, _msg)
+
+            return ReturnData(True, 'value is ok')
+
+        volume_check = await is_int(volume)
+        if not volume_check.response:
+            return volume_check
+
+        buffer_check = await is_int(buffer)
+        if not buffer_check.response:
+            return buffer_check
+
+        history_length_check = await is_int(history_length)
+        if not history_length_check.response:
+            return history_length_check
+
+        options.stopped = to_bool(stopped) if stopped is not None else options.stopped
+        options.loop = to_bool(loop) if loop is not None else options.loop
+        options.is_radio = to_bool(is_radio) if is_radio is not None else options.is_radio
+        options.buttons = to_bool(buttons) if buttons is not None else options.buttons
+
+        options.language = language if language is not None else options.language
+        options.search_query = search_query if search_query is not None else options.search_query
+        options.response_type = response_type if response_type is not None else options.response_type
+
+        options.volume = float(int(volume) / 100) if volume is not None else options.volume
+        options.buffer = int(buffer) if buffer is not None else options.buffer
+        options.history_length = int(history_length) if history_length is not None else options.history_length
 
         update(glob)
+
+    if len(guilds_to_change) < 2:
+        if len(guilds_to_change) == 0:
+            db_guild = guild(glob, guild_id)
+            options = db_guild.options
+            add = False
+        else:
+            db_guild = guild(glob, guilds_to_change[0])
+            options = db_guild.options
+            add = True
+
+        message = f"""
+        {txt(guild_id, glob, f'Edited options successfully!') + f' - `{db_guild.id}` ({db_guild.data.name})' if add else ''}\n**Options:**
+        stopped -> `{options.stopped}`
+        loop -> `{options.loop}`
+        is_radio -> `{options.is_radio}`
+        buttons -> `{options.buttons}`
+        language -> `{options.language}`
+        response_type -> `{options.response_type}`
+        buffer -> `{options.buffer}`
+        history_length -> `{options.history_length}`
+        volume -> `{options.volume*100}`
+        search_query -> `{options.search_query}`
+        """
+
+        await ctx.reply(message, ephemeral=ephemeral)
+        return ReturnData(True, message)
 
     message = txt(guild_id, glob, f'Edited options successfully!')
     await ctx.reply(message, ephemeral=ephemeral)
@@ -447,6 +511,8 @@ async def dev_command_def(ctx: dc_commands.Context, glob: GlobalVars, command: s
     :param ephemeral: Should bot response be ephemeral
     """
     log(ctx, 'dev', locals(), log_type='function', author=ctx.author)
+
+    raise Exception('This command raises an exception! - for dev')
 
     # from database.guild import guild_data_key
     #

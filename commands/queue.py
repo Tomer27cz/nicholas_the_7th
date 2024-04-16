@@ -1,3 +1,5 @@
+import traceback
+
 import youtubesearchpython.__future__ as ytsp
 from classes.data_classes import ReturnData
 from classes.video_class import Queue
@@ -190,6 +192,9 @@ async def queue_command_def(ctx,
                 return ReturnData(False, message)
             track = soundcloud_api.resolve(url)
         except Exception as e:
+            traceback.print_exc()
+            # TODO: Soundcloud doesn't work
+
             message = f'{txt(guild_id, glob, "Invalid SoundCloud url")}: {url} -> {e}'
             if not mute_response:
                 await ctx.reply(message, ephemeral=ephemeral)
@@ -613,12 +618,12 @@ async def search_command_def(ctx, glob: GlobalVars, search_query, display_type: 
         await ctx.reply(message, ephemeral=ephemeral)
         return ReturnData(False, message)
 
-    for i in range(5):
+    for i, s in enumerate(custom_search):
         if display_type == 'long':
-            embed = create_search_embed(glob, custom_search[i], f'{txt(guild_id, glob, "Result #")}{i + 1}', guild_id)
+            embed = create_search_embed(glob, s, f'{txt(guild_id, glob, "Result #")}{i + 1}', guild_id)
             await ctx.message.channel.send(embed=embed)
         if display_type == 'short':
-            message += f'**#{i + 1}** [`{custom_search[i]["title"]}`](<{custom_search[i]["link"]}>) by [`{custom_search[i]["channel"]["name"]}`](<{custom_search[i]["channel"]["link"]}>)\n'
+            message += f'**#{i + 1}** [`{s["title"]}`](<{s["link"]}>) by [`{s["channel"]["name"]}`](<{s["channel"]["link"]}>)\n'
 
     view = classes.view.SearchOptionView(ctx, glob, custom_search, force, from_play)
     if display_type == 'long':

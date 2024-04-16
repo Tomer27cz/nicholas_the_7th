@@ -182,6 +182,11 @@ class SearchOptionView(View):
     async def callback_5(self, interaction, button):
         await self.do_callback(interaction, button, 5)
 
+    # # noinspection PyUnusedLocal
+    # @discord.ui.button(emoji=react_dict['false'], style=discord.ButtonStyle.blurple, custom_id='false')
+    # async def callback_false(self, interaction, button):
+    #     await interaction.response.edit_message(content=txt(self.guild_id, self.glob, "Cancelled"), view=None)
+
 class PlaylistOptionView(View):
     def __init__(self, ctx, glob: GlobalVars, url, force=False, from_play=False):
         super().__init__(timeout=180)
@@ -312,3 +317,8 @@ class OptionView(View):
     @discord.ui.button(emoji=react_dict['5'], style=discord.ButtonStyle.blurple, custom_id='5')
     async def callback_5(self, interaction, button):
         await self.do_callback(interaction, button, 5)
+
+    # # noinspection PyUnusedLocal
+    # @discord.ui.button(emoji=react_dict['false'], style=discord.ButtonStyle.blurple, custom_id='false')
+    # async def callback_false(self, interaction, button):
+    #     await interaction.response.edit_message(content=txt(self.guild_id, self.glob, "Cancelled"), view=None)

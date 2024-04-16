@@ -4,6 +4,9 @@
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
   </div>
   <div class="modal-body">
+    <div class="p-div">
+      <div class="p-bar" style="width: 0" id="np_set_progress"></div>
+    </div>
     <div class="mb-3">
       <div class="time-top-div">
         <h2 class="time-top-item"><span id="display-time">0:00</span><input type="hidden" id="time-input" name="var" value="0"></h2>
@@ -13,6 +16,7 @@
                 id="time-submit" hx-validate="true"
         ><h3>Set</h3></button>
       </div>
+      <br>
       <div class="time-div">
         <div class="time-button-div">
           <button class="btn btn-outline btn-primary time-button" onclick="onClick(-60)" onmousedown="onDown(-60)" onmouseup="onUp()" onmouseleave="onUp()"><<<</button>
@@ -65,13 +69,10 @@
         }
 
         function onInput() {
-            let text = document.getElementById('timeTextInput').value;
-            let seconds = convertText(text);
-            document.getElementById('time-input').value = String(seconds);
-            document.getElementById('display-time').innerText = convertSeconds(seconds);
+            onClick(0, true);
         }
 
-        function onClick(offset) {
+        function onClick(offset, onInpt = false) {
             let text = document.getElementById('timeTextInput').value;
             let seconds = convertText(text) + offset;
 
@@ -84,9 +85,13 @@
                 onUp();
             }
 
-            document.getElementById('timeTextInput').value = convertSeconds(seconds);
+            if (!onInpt) {
+                document.getElementById('timeTextInput').value = convertSeconds(seconds);
+            }
+
             document.getElementById('display-time').innerText = convertSeconds(seconds);
             document.getElementById('time-input').value = String(seconds);
+            document.getElementById('np_set_progress').style.width = (seconds / maxTime * 100) + '%';
         }
 
         function onDown(offset) {

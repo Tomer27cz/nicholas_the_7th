@@ -161,7 +161,7 @@ def get_guild_text_channels(guild_id: int):
     response = send_arg(arg_dict)
     # if response is None:
     #     return utils.files.get_guild_text_channels_file(bot, guild_id)
-    # return response
+    return response
 def get_guild_text_channels_index(guild_id: int, start_index: int, end_index: int):
     """
     Get the guild text channels list from database

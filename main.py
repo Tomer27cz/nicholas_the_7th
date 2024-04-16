@@ -194,12 +194,15 @@ class Bot(dc_commands.Bot):
         error_traceback = traceback.format_exception(type(error), error, error.__traceback__)
         error_traceback = ''.join(error_traceback)
 
+        err_msg = f"Error: ({error})\nType: ({type(error)})\nAuthor: ({ctx.author})\nCommand: ({ctx.command})\nKwargs: ({ctx.kwargs})"
+
         if isinstance(error, discord.errors.Forbidden):
             log(ctx, 'error.Forbidden', {'error': error}, log_type='error', author=ctx.author)
+            await send_to_admin(glob, err_msg, file=True)
             await ctx.send(txt(ctx.guild.id, glob, "The command failed because I don't have the required permissions.\n Please give me the required permissions and try again."))
+            return
 
-        elif isinstance(error, dc_commands.CheckFailure):
-            err_msg = f'Error for ({ctx.author}) -> ({ctx.command}) with error ({error})'
+        if isinstance(error, dc_commands.CheckFailure):
             log(ctx, err_msg, log_type='error', author=ctx.author)
             await send_to_admin(glob, err_msg, file=True)
             await ctx.reply(f"（ ͡° ͜ʖ ͡°)つ━☆・。\n"
@@ -208,41 +211,44 @@ class Bot(dc_commands.Bot):
                             f"　　　　　　　　　.· ´¸.·´¨) ¸.·*¨)\n"
                             f"　　　　　　　　　　(¸.·´ (¸.·' ☆ **Fuck off**\n"
                             f"*{txt(ctx.guild.id, glob, 'You dont have permission to use this command')}*")
+            return
 
-        elif isinstance(error, dc_commands.MissingPermissions):
-            err_msg = f'Error for ({ctx.author}) -> ({ctx.command}) with error ({error})'
+        if isinstance(error, dc_commands.MissingPermissions):
             log(ctx, err_msg, log_type='error', author=ctx.author)
+            await send_to_admin(glob, err_msg, file=True)
             await ctx.reply(txt(ctx.guild.id, glob, 'Bot does not have permissions to execute this command correctly') + f" - {error}")
+            return
 
-        # error.__cause__.__cause__ = HybridCommandError -> CommandInvokeError -> {Exception}
-        elif isinstance(error.__cause__.__cause__, PendingRollbackError):
-            err_msg = f'Error for ({ctx.author}) -> ({ctx.command}) with error ({error})'
-            log(ctx, err_msg, log_type='error', author=ctx.author)
-            err_msg += "\n" + "-" * 50
-
-            try:
-                glob.ses.rollback()  # Rollback the session
-                err_msg += "\nRollback Successful"
-            except Exception as rollback_error:
-                rollback_traceback = traceback.format_exception(type(rollback_error), rollback_error,
-                                                                rollback_error.__traceback__)
-                rollback_traceback = ''.join(rollback_traceback)
-
-                err_msg = f'\nFailed Rollback with error ({rollback_error})({rollback_traceback})'
+        try:
+            # error.__cause__.__cause__ = HybridCommandError -> CommandInvokeError -> {Exception}
+            if isinstance(error.__cause__.__cause__, PendingRollbackError):
                 log(ctx, err_msg, log_type='error', author=ctx.author)
 
-            err_msg += "\n" + "-" * 50 + "\nOriginal Traceback" + f"\n{error_traceback}"
-            await send_to_admin(glob, err_msg, file=True)
+                try:
+                    glob.ses.rollback()  # Rollback the session
+                    err_msg += "\nRollback Successful"
+                except Exception as rollback_error:
+                    rollback_traceback = traceback.format_exception(type(rollback_error), rollback_error,
+                                                                    rollback_error.__traceback__)
+                    rollback_traceback = ''.join(rollback_traceback)
 
-            await ctx.reply(
-                f"Database error -> Attempted rollback (try again one time - if it doesn't work tell developer to restart bot)")
+                    err_msg += f"\nFailed Rollback: ({rollback_error})\nRollback Traceback: \n{rollback_traceback}"
+                    log(ctx, err_msg, log_type='error', author=ctx.author)
 
-        else:
-            message = f"Error for ({ctx.author}) -> ({ctx.command}) with error ({error})\n{error_traceback}"
-            log(ctx, message, log_type='error', author=ctx.author)
+                err_msg += f"\n{'-' * 50}\nOriginal Traceback: \n{error_traceback}"
+                await send_to_admin(glob, err_msg, file=True)
 
-            await send_to_admin(glob, message, file=True)
-            await ctx.reply(f"{error}   {bot.get_user(config.DEVELOPER_ID).mention}", ephemeral=True)
+                await ctx.reply(
+                    f"Database error -> Attempted rollback (try again one time - if it doesn't work tell developer to restart bot)")
+        except AttributeError as _e:
+            # message = f"Error for ({ctx.author}) -> ({ctx.command}) with error ({error})\n{error_traceback}\n\n{_e}"
+            pass
+
+        err_msg += f"\nTraceback: \n{error_traceback}"
+        log(ctx, err_msg, log_type='error', author=ctx.author)
+
+        await send_to_admin(glob, err_msg, file=True)
+        await ctx.reply(f"{error}   {bot.get_user(config.DEVELOPER_ID).mention}", ephemeral=True)
 
     async def on_message(self, message):
         # on every message
