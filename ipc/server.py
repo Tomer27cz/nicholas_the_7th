@@ -4,7 +4,7 @@ from classes.discord_classes import DiscordChannel, DiscordRole, DiscordUser, Di
 from database.guild import guild, guild_ids
 
 from utils.log import log
-from utils.discord import get_username
+from utils.discord import get_username, get_guild_bot_status
 from utils.save import update
 from utils.saves import new_queue_save, delete_queue_save, rename_queue_save, load_queue_save
 from utils.global_vars import GlobalVars
@@ -148,21 +148,6 @@ async def execute_function(request_dict, glob: GlobalVars) -> ReturnData:
 async def execute_get_data(request_dict, glob: GlobalVars):
     data_type = request_dict['data_type']
     # guild = get_guild_dict() # TODO: get some data directly from db --- done
-
-    def get_guild_bot_status(global_vars: GlobalVars, g_id):
-        g_object = global_vars.bot.get_guild(g_id)
-        if not g_object:
-            return 'Unknown'
-        voice = g_object.voice_client
-        if voice is None:
-            return 'Not connected'
-        if voice.is_playing():
-            return 'Playing'
-        if voice.is_paused():
-            return 'Paused'
-        elif voice.is_connected():
-            return 'Connected'
-        return 'Unknown'
 
     # Voice Channels
     if data_type == 'guild_voice_channels':

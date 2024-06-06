@@ -337,3 +337,55 @@ def get_username(glob: GlobalVars, user_id: int) -> str:
         return glob.bot.get_user(int(user_id)).name
     except Exception:
         return str(user_id)
+
+# STATUS
+def get_guild_bot_status(global_vars: GlobalVars, g_id):
+    g_object = global_vars.bot.get_guild(g_id)
+    if not g_object:
+        return 'Unknown'
+    voice = g_object.voice_client
+    if voice is None:
+        return 'Not connected'
+    if voice.is_playing():
+        return 'Playing'
+    if voice.is_paused():
+        return 'Paused'
+    elif voice.is_connected():
+        return 'Connected'
+    return 'Unknown'
+
+def guilds_get_connected_status(glob: GlobalVars) -> list:
+    """
+    Returns list with dict of connected status and name of guilds
+    the first element is dict with count of each status
+
+    :param glob: GlobalVars object
+    :return: list
+    """
+    def custom_sort(dictionaries):
+        order = ['Playing', 'Paused', 'Connected', 'Not connected', 'Unknown']
+        order_dict = {status: index for index, status in enumerate(order)}
+
+        def sort_key(d):
+            return order_dict.get(d['status'], len(order))
+
+        return sorted(dictionaries, key=sort_key)
+
+    out_list = []
+    hash_map = {
+        'Playing': 0,
+        'Paused': 0,
+        'Connected': 0,
+        'Not connected': 0,
+        'Unknown': 0
+    }
+
+    for guild_id, guild_object in glob.bot.guilds.items():
+        status = get_guild_bot_status(glob, guild_id)
+        hash_map[status] += 1
+        out_list.append({'name': guild_object.name, 'status': status, 'id': guild_id})
+
+    out_list = custom_sort(out_list)
+    out_list.insert(0, hash_map)
+
+    return out_list

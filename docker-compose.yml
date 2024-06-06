@@ -1,7 +1,8 @@
-version: "3.7"
-
 services:
   bot:
+    profiles:
+      - bot
+      - web
     build: .
     command: python -u /app/main.py >> /app/db/log/activity.log 2>&1
     privileged: true
@@ -20,6 +21,8 @@ services:
       SOCKET_HOST: socketapp
       SOCKET_PORT: 5001
   web:
+    profiles:
+      - web
     build: .
     command: uwsgi /app/app.ini
     privileged: true
@@ -42,6 +45,8 @@ services:
       SEND_HOST: bot
       INSIDE_DOCKER: 'true'
   socketapp:
+    profiles:
+      - web
     build: ./socket
     command: python -u /app/socket/socketapp.py >> /app/db/log/socket_activity.log 2>&1
     privileged: true
@@ -60,6 +65,8 @@ services:
       INSIDE_DOCKER: 'true'
   nginx:
     image: nginx
+    profiles:
+      - web
     volumes:
       - ./db:/db
       - ./nginx.conf:/etc/nginx/nginx.conf

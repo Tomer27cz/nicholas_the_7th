@@ -728,6 +728,18 @@ async def set_time_command(ctx: dc_commands.Context, time_stamp: int, ephemeral:
     log(ctx, 'set_time', options=locals(), log_type='command', author=ctx.author)
     await set_video_time(ctx, glob, time_stamp, ephemeral=ephemeral, mute_response=mute_response)
 
+@bot.hybrid_command(name='zz_list_connected', with_app_command=True, hidden=True)
+@dc_commands.check(is_authorised)
+async def list_connected_command(ctx: dc_commands.Context, ephemeral: bool = True):
+    log(ctx, 'list_connected', options=locals(), log_type='command', author=ctx.author)
+    await list_connected_def(ctx, glob, ephemeral=ephemeral)
+
+@bot.hybrid_command(name='zz_status', with_app_command=True, hidden=True)
+@dc_commands.check(is_authorised)
+async def status_command(ctx: dc_commands.Context, ephemeral: bool = True):
+    log(ctx, 'status', options=locals(), log_type='command', author=ctx.author)
+    await status_def(ctx, glob, ephemeral=ephemeral)
+
 # ------------------------------------------ ADMIN SLOWED USERS --------------------------------------------------------
 
 @bot.hybrid_command(name='zz_slowed_users', with_app_command=True, hidden=True)
@@ -902,4 +914,7 @@ def application():
     bot_thread.join()
 
 if __name__ == '__main__':
-    application()
+    if config.ENABLE_WEB in ['True', 'true', '1', True]:
+        application()
+    else:
+        bot.run(config.BOT_TOKEN)

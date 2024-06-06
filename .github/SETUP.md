@@ -66,35 +66,38 @@ chmod -R 777 /path_to_directory
 
 ### Config setup
 
-If you have a config file, you can just copy it to the main directory. If not, you can create one.
+#### Before version 4.0.4
 
-- Create a file called `config.py` in the main directory
-```python
+In versions before 4.0.4, the config file was called `config.py`. This has been changed to `.env` in the newer versions. To use the new config file, replace "f strings" with `${}` in the string (also remove the f lol).
+
+#### After version 4.0.4
+
+These are the required environment variables for the bot.
+
+- Create a file called `.env` in the main directory
+```dotenv
 # Description: Configuration file for the bot
 # Discord
-CLIENT_ID = 'YOUR_CLIENT_ID' # This is your bots id
-OWNER_ID = 'YOUR_USER_ID' # This is your user id
-BOT_TOKEN = 'YOUR_BOT_TOKEN' # This is the token for the bot
-CLIENT_SECRET = "YOUR_CLIENT_SECRET" # This is the client secret for the bot
+CLIENT_ID='YOUR_CLIENT_ID' # This is your bots id
+OWNER_ID='YOUR_USER_ID' # This is your user id
+BOT_TOKEN='YOUR_BOT_TOKEN' # This is the token for the bot
+CLIENT_SECRET="YOUR_CLIENT_SECRET" # This is the client secret for the bot
 
 # Prefix
-PREFIX = "ncl." # This is the prefix for the bot
+PREFIX="ncl." # This is the prefix for the bot
 
 # Authorised Users
-AUTHORIZED_USERS = [416254812339044365, 349164237605568513] # This is a list of authorised users (add your user id here - not required)
-
-# Discord Invite
-PERMISSIONS = 3198017 # This is the permissions for the bot
-INVITE_URL = f"https://discord.com/api/oauth2/authorize?client_id={CLIENT_ID}&permissions={PERMISSIONS}&scope=bot" # a discord invite url
-
-# Discord OAuth2
-REDIRECT_URI = "https://YOUR_WEBSITE/login" # The address you added to the discord developer portal
-DISCORD_LOGIN_URL = f"https://discord.com/api/oauth2/authorize?client_id={CLIENT_ID}&redirect_uri={REDIRECT_URI}&response_type=code&scope=identify%20guilds" # identify guilds - scopes are required for the bot to work
-DISCORD_API_ENDPOINT = 'https://discord.com/api/v10' # This is the discord api endpoint (more recent version may be available)
+AUTHORIZED_USERS='[416254812339044365, 349164237605568513]' # has to be this format | ='[1, 2, 3, ...]' | This is a list of authorised users (add your user id here - not required)
 
 # Web
-WEB_SECRET_KEY = '!secret!' # This is the secret key for the flask server
-WEB_URL = 'YOUR_WEB_URL' # This is the url for the flask server (http://127.0.0.1:5420 is the default url)
+COMPOSE_PROFILES="bot" # "bot"- only start bot, "web"- start web and bot
+WEB_SECRET_KEY='YOUR_SECRET_KEY' # This is the secret key for the flask server (you can generate one with os.urandom(24))
+WEB_URL='YOUR_WEB_URL' # This is the url for the flask server (http://127.0.0.1:5420 is the default url)
+
+# Discord OAuth2
+REDIRECT_URI="https://YOUR_WEBSITE/login" # The address you added to the discord developer portal
+DISCORD_LOGIN_URL="https://discord.com/api/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code&scope=identify%20guilds" # identify guilds - scopes are required for the bot to work
+DISCORD_API_ENDPOINT='https://discord.com/api/v10' # This is the discord api endpoint (more recent version may be available)
 
 # Spotify
 SPOTIFY_CLIENT_ID='YOUR_SPOTIFY_CLIENT_ID' # This is the client id for the spotify api
@@ -102,16 +105,19 @@ SPOTIFY_CLIENT_SECRET='YOUR_SPOTIFY_CLIENT_SECRET' # This is the client secret f
 SPOTIFY_REDIRECT_URI='https://localhost:8888/callback' # This is the redirect uri for the spotify api
 
 # SoundCloud
-SOUNDCLOUD_CLIENT_ID = 'YOUR_SOUNDCLOUD_ID' # SoundCloud ID (you can use your accounts id -> developer tools)
+SOUNDCLOUD_CLIENT_ID='YOUR_SOUNDCLOUD_ID' # SoundCloud ID (you can use your accounts id -> developer tools)
 
 # Parent Directory
 # For docker, set this to /app/
-PARENT_DIR = r'' # Leave blank if running from root directory (has to be absolute path and have / at the end)
+PARENT_DIR='' # Leave blank if running from root directory (has to be absolute path and have / at the end)
 
-# Default Values
-DEFAULT_DISCORD_AVATAR = "https://cdn.discordapp.com/embed/avatars/0.png"
-VLC_LOGO = "https://cdn.discordapp.com/attachments/892403162315644931/1008054767379030096/vlc.png" # You can use your own logo (used when displaying local sound or url probe)
-DEVELOPER_ID = 349164237605568513
+# DEFAULT VALUES - DO NOT CHANGE UNLESS YOU KNOW WHAT YOU'RE DOING
+DEFAULT_DISCORD_AVATAR="https://cdn.discordapp.com/embed/avatars/0.png"
+VLC_LOGO="https://upload.wikimedia.org/wikipedia/commons/3/38/VLC_icon.png"
+DEVELOPER_ID=349164237605568513
+# Discord
+PERMISSIONS=3198017
+INVITE_URL="https://discord.com/api/oauth2/authorize?client_id=${CLIENT_ID}&permissions=${PERMISSIONS}&scope=bot"
 ```
 
 ### Copy database
@@ -137,7 +143,7 @@ The bot can be run two ways.
 ### [Install docker](DOCKER.md)
 
 ### ~~Build Docker~~ 
-##### deprecated in newer versions (after 3.2.3)
+##### deprecated in versions after 3.2.3
 
 ~~Build a new folder with all the required files. This will create a new folder called `FOLDERNAME_docker` with all the required files.
 `python3 build_docker.py`

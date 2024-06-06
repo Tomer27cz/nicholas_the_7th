@@ -9,6 +9,7 @@ from utils.translate import txt
 from utils.save import update, push_update
 from utils.convert import to_bool
 from utils.global_vars import languages_dict, GlobalVars
+from utils.discord import guilds_get_connected_status
 
 from discord.ext import commands as dc_commands
 from typing import Union
@@ -567,7 +568,67 @@ async def dev_command_def(ctx: dc_commands.Context, glob: GlobalVars, command: s
 
     # return await play_def(ctx, glob, url)
 
+# List bot status for servers
+async def list_connected_def(ctx: dc_commands.Context, glob: GlobalVars, ephemeral: bool=True):
+    """
+    List all connected servers
+    :param glob: GlobalVars
+    :param ctx: Context
+    :param ephemeral: Should bot response be ephemeral
+    """
+    log(ctx, 'list_connected', locals(), log_type='function', author=ctx.author)
 
+    list_connected = guilds_get_connected_status(glob)
+    count = list_connected.pop(0)
+
+    # 'Playing': 0,
+    # 'Paused': 0,
+    # 'Connected': 0,
+    # 'Not connected': 0,
+    # 'Unknown': 0
+
+    # "... others are not connected" - len 40 (to be sure)
+
+    message = f"**Connected servers:**\n"
+    for name, number in count:
+        message += f">{name}: {number}\n"
+    message += "\n**List of Servers:**\n"
+
+    worth_mentioning = count['Playing'] + count['Paused'] + count['Connected']
+    if worth_mentioning == 0:
+        message += "> No servers are connected"
+        await ctx.reply(message, ephemeral=ephemeral)
+        return ReturnData(True, message)
+
+
+    for index, c_guild in enumerate(list_connected):
+        m_add = f"> {c_guild['status']} - ({c_guild['id']}){c_guild['name']}\n"
+        if c_guild['status'] not in ['Playing', 'Paused', 'Connected']:
+            m_add += "> ... others are not connected"
+
+        if len(message) + len(m_add) > 4096:
+            await ctx.reply(message, ephemeral=ephemeral)
+            message = m_add
+            continue
+
+        message += m_add
+
+    await ctx.reply(message, ephemeral=ephemeral)
+    return ReturnData(True, message)
+
+async def status_def(ctx: dc_commands.Context, glob: GlobalVars, ephemeral: bool=True):
+    """
+    Change bot status
+    :param glob: GlobalVars
+    :param ctx: Context
+    :param ephemeral: Should bot response be ephemeral
+    """
+    log(ctx, 'status', locals(), log_type='function', author=ctx.author)
+
+
+
+    await ctx.reply('Not implemented yet!', ephemeral=ephemeral)
+    raise NotImplementedError
 
 
 
