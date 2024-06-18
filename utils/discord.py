@@ -193,18 +193,17 @@ def create_search_embed(glob: GlobalVars, video_info: VideoInfo, name: str, guil
 
     return embed
 
-async def now_to_history(glob: GlobalVars, guild_id: int, no_push: bool = False) -> None:
+async def now_to_history(glob: GlobalVars, guild_id: int or Guild, no_push: bool = False) -> None:
     """
     Adds now_playing to history
     Removes first element of history if history length is more than options.history_length
 
     :param glob: GlobalVars object
-    :param guild_id: int - id of guild
+    :param guild_id: int or Guild - id of guild or Guild object
     :param no_push: bool - if True doesn't push update
     :return: None
     """
-
-    guild_object = guild(glob, guild_id)
+    guild_object: Guild = guild(glob, guild_id)
 
     if not guild_object:
         return
@@ -225,7 +224,7 @@ async def now_to_history(glob: GlobalVars, guild_id: int, no_push: bool = False)
         h_video = await to_history_class(glob, np_video)
 
         # set now_playing to None
-        glob.ses.query(NowPlaying).filter(NowPlaying.guild_id == guild_id).delete()
+        glob.ses.query(NowPlaying).filter(NowPlaying.guild_id == guild_object.id).delete()
         glob.ses.commit()
 
         # strip not needed data
@@ -242,14 +241,14 @@ async def now_to_history(glob: GlobalVars, guild_id: int, no_push: bool = False)
         if not no_push:
             await push_update(glob, guild_id, ['now', 'history'])
 
-async def to_queue(glob: GlobalVars, guild_id: int, video, position: int = None, copy_video: bool=True, no_push: bool=False, stream_strip: bool = True) -> ReturnData or None:
+async def to_queue(glob: GlobalVars, guild_id: int or Guild, video, position: int = None, copy_video: bool=True, no_push: bool=False, stream_strip: bool = True) -> ReturnData or None:
     """
     Adds video to queue
 
     if return_message is True returns: [bool, str, VideoClass child]
 
     :param glob: GlobalVars object
-    :param guild_id: id of guild: int
+    :param guild_id: id of guild: int or Guild
     :param video: VideoClass child
     :param position: int - position in queue to add video
     :param copy_video: bool - if True copies video
@@ -380,10 +379,10 @@ def guilds_get_connected_status(glob: GlobalVars) -> list:
         'Unknown': 0
     }
 
-    for guild_id, guild_object in glob.bot.guilds.items():
-        status = get_guild_bot_status(glob, guild_id)
+    for guild_object in glob.bot.guilds:
+        status = get_guild_bot_status(glob, guild_object.id)
         hash_map[status] += 1
-        out_list.append({'name': guild_object.name, 'status': status, 'id': guild_id})
+        out_list.append({'name': guild_object.name, 'status': status, 'id': guild_object.id})
 
     out_list = custom_sort(out_list)
     out_list.insert(0, hash_map)

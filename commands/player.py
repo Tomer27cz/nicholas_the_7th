@@ -5,7 +5,7 @@ from commands.utils import ctx_check
 from database.guild import guild, clear_queue
 
 from utils.source import GetSource
-from utils.log import log
+from utils.log import log, tl
 from utils.translate import txt
 from utils.save import update, push_update
 from utils.discord import now_to_history, create_embed, to_queue
@@ -174,6 +174,9 @@ async def play_def(ctx, glob: GlobalVars,
         #     await to_queue(guild_id, video)
         glob.ses.query(Queue).filter_by(id=video.id).delete()
         glob.ses.commit()
+
+        tl(glob, 3, guild_id=guild_id, channel_id=voice.channel.id)  # start playing
+        tl(glob, 10, guild_id=guild_id, channel_id=voice.channel.id)  # count song played
 
         await push_update(glob, guild_id, ['queue', 'now', 'history'])
         update(glob)

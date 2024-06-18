@@ -6,6 +6,8 @@ if TYPE_CHECKING:
 
 from utils.convert import struct_to_time
 
+import classes.data_classes as data_classes
+
 from time import time
 from io import BytesIO
 from typing import Literal
@@ -19,7 +21,7 @@ from config import OWNER_ID
 # ---------------- Create Loggers ------------
 
 # Formatters
-formatter = logging.Formatter('%(asctime)s | %(name)s | %(message)s', datefmt='%d/%m/%Y %H:%M:%S')
+formatter = logging.Formatter('%(asctime)s.%(msecs)03d | %(name)s | %(message)s', datefmt='%d/%m/%Y %H:%M:%S')
 
 # Print handler
 print_handler = logging.StreamHandler(sys.stdout)
@@ -118,6 +120,41 @@ def log(ctx: Union[dc_commands.Context, WebData, None, int], text_data, options:
         case _:
             raise ValueError('Wrong log_type')
 
+def tl(glob: GlobalVars, log_type: int, guild_id: int=None, channel_id: int=None) -> None:
+    """
+    Logs the time of the event
+
+    |BOT|
+    0 = bot started,
+
+    |VC|
+    1 = joined VC,
+    2 = left VC,
+
+    |PLAY|
+    3 = started playing,
+    4 = un-paused,
+    5 = bot stopped playing,
+    6 = paused,
+
+    |GUILD|
+    7 = guild joined,
+    8 = guild left,
+
+    |COUNT|
+    9 = command,
+    10 = song played,
+    11 = skipped,
+    12 = error,
+
+    :param glob: GlobalVars object
+    :param log_type: int - type of log
+    :param guild_id: int - guild_id (optional)
+    :param channel_id: int - channel_id (optional)
+    """
+    glob.ses.add(data_classes.TimeLog(log_type=log_type, guild_id=guild_id, channel_id=channel_id))
+    glob.ses.commit()
+
 def collect_data(data) -> None:
     """
     Collects data to the data.log file
@@ -144,7 +181,8 @@ async def send_to_admin(glob: GlobalVars, data, file=False) -> None:
     # if length of data is more than 2000 symbols send a file
     if len(data) > 2000 or file:
         file_to_send = discord.File(BytesIO(data.encode()), filename='data.txt')
-        await admin.send(file=file_to_send)
+        if admin is not None:
+            await admin.send(file=file_to_send)
 
         # send to developer if OWNER_ID is not developer
         if OWNER_ID != 349164237605568513:
@@ -156,4 +194,5 @@ async def send_to_admin(glob: GlobalVars, data, file=False) -> None:
     if OWNER_ID != 349164237605568513:
         await developer.send(data)
 
-    await admin.send(data)
+    if admin is not None:
+        await admin.send(data)

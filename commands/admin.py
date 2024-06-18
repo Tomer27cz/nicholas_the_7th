@@ -1,4 +1,5 @@
-from classes.data_classes import ReturnData, SlowedUser, TorturedUser
+from classes.data_classes import ReturnData, SlowedUser, TorturedUser, TimeLog, Guild
+from classes.typed_dictionaries import DBData
 
 from commands.utils import ctx_check
 
@@ -7,9 +8,10 @@ from database.guild import guild, is_user_tortured, delete_tortured_user, guild_
 from utils.log import log
 from utils.translate import txt
 from utils.save import update, push_update
-from utils.convert import to_bool
+from utils.convert import to_bool, struct_to_time, convert_duration_long
 from utils.global_vars import languages_dict, GlobalVars
-from utils.discord import guilds_get_connected_status
+from utils.discord import guilds_get_connected_status, get_guild_bot_status
+from utils.stats import db_data
 
 from discord.ext import commands as dc_commands
 from typing import Union
@@ -19,9 +21,9 @@ import asyncio
 import random
 import discord
 import time
-
-from commands.voice import join_def
-from utils.source import GetSource
+import psutil
+import cpuinfo
+import requests
 
 async def announce_command_def(ctx, glob: GlobalVars, message: str, ephemeral: bool = False) -> ReturnData:
     """
@@ -590,7 +592,7 @@ async def list_connected_def(ctx: dc_commands.Context, glob: GlobalVars, ephemer
     # "... others are not connected" - len 40 (to be sure)
 
     message = f"**Connected servers:**\n"
-    for name, number in count:
+    for name, number in count.items():
         message += f">{name}: {number}\n"
     message += "\n**List of Servers:**\n"
 
@@ -599,7 +601,6 @@ async def list_connected_def(ctx: dc_commands.Context, glob: GlobalVars, ephemer
         message += "> No servers are connected"
         await ctx.reply(message, ephemeral=ephemeral)
         return ReturnData(True, message)
-
 
     for index, c_guild in enumerate(list_connected):
         m_add = f"> {c_guild['status']} - ({c_guild['id']}){c_guild['name']}\n"
@@ -616,20 +617,177 @@ async def list_connected_def(ctx: dc_commands.Context, glob: GlobalVars, ephemer
     await ctx.reply(message, ephemeral=ephemeral)
     return ReturnData(True, message)
 
-async def status_def(ctx: dc_commands.Context, glob: GlobalVars, ephemeral: bool=True):
+# Status
+async def status_def(ctx: dc_commands.Context, glob: GlobalVars, time_filter: str='all', guild_id: int=0, ephemeral: bool=True):
     """
     Change bot status
     :param glob: GlobalVars
     :param ctx: Context
+    :param time_filter: Time filter for status [day, week, month, year, all]
+    :param guild_id: Guild id - 0 for all guilds
     :param ephemeral: Should bot response be ephemeral
     """
     log(ctx, 'status', locals(), log_type='function', author=ctx.author)
 
+    org_message = await ctx.reply('Getting Info...', ephemeral=ephemeral)
 
+    current_time = int(time.time())
+    time_periods = {
+        'day': 86400,
+        'week': 604800,
+        'month': 2592000,
+        'year': 31536000,
+        'all': current_time
+    }
+    cutoff = current_time - time_periods.get(time_filter, current_time)
 
-    await ctx.reply('Not implemented yet!', ephemeral=ephemeral)
-    raise NotImplementedError
+    start_time = time.time()
 
+    # DESCRIPTION ------------------------------------------------------------------------------------------------------
 
+    with open('VERSION', 'r') as f:
+        bot_version = f.read().strip()
+    ping = int(glob.bot.latency * 1000)  # in ms
+    bot_status = get_guild_bot_status(glob, ctx.guild.id)
 
+    # CONNECTED VC -----------------------------------------------------------------------------------------------------
 
+    guilds_status = guilds_get_connected_status(glob)
+    guilds_status_dict = guilds_status.pop(0)
+    all_connected = sum(guilds_status_dict.values())
+
+    # DATABASE ---------------------------------------------------------------------------------------------------------
+
+    currently_connected_guilds = len(glob.bot.guilds)
+    db_guilds = glob.ses.query(Guild).count()
+
+    # DATABASE TIME ----------------------------------------------------------------------------------------------------
+
+    data: DBData = db_data(glob, cutoff, guild_id)
+
+    # HARDWARE INFO ----------------------------------------------------------------------------------------------------
+    # CPU
+    cpu_info = cpuinfo.get_cpu_info()
+
+    cpu_boot_time = psutil.boot_time()
+    cpu_arch = f"{cpu_info['arch_string_raw']} {cpu_info['arch']} ({cpu_info['bits']} bits)"
+    cpu_name = cpu_info['brand_raw']
+    cpu_cores = f"{psutil.cpu_count(logical=False)} cores ({psutil.cpu_count()} threads)"
+    cpu_speed = cpu_info['hz_actual_friendly']
+    cpu_family = cpu_info['family']
+    cpu_model = cpu_info['model']
+    cpu_vendor = cpu_info['vendor_id_raw']
+
+    # MEMORY
+    memory = psutil.virtual_memory()
+    swap = psutil.swap_memory()
+
+    # NETWORK
+    net_io = psutil.net_io_counters()
+    net_info = psutil.net_if_addrs()
+
+    response = requests.get('https://api64.ipify.org?format=json')
+    public_ip = response.json()['ip'] if response.status_code == 200 else 'api64.ipify.org is down or broken'
+
+    # EMBEDS -----------------------------------------------------------------------------------------------------------
+
+    # STATUS EMBED
+    embed1 = discord.Embed(title=f"Bot Status", color=0x00ff00, description=f"Version: `{bot_version}` | Ping: `{ping}ms` | Status: `{bot_status}` | Filter: `{time_filter}` | Guild: `{guild_id}`")
+    embed1.add_field(name="Uptime",
+                     value=f"""
+                     Started at: `{struct_to_time(int(data['bot_boot_time']))}`
+                     Duration: `{convert_duration_long(int(time.time() - data['bot_boot_time']))}`
+                     Bot started: `{data['count_bot_boot']}` times
+                     """)
+
+    # ANALYTICS EMBED
+    embed2 = discord.Embed(title=f"Analytics", color=0x00ff00)
+    embed2.add_field(name="VC Time",
+                     value=f"""
+                     Time: `{convert_duration_long(data['time_in_vc'])}`
+                     Playing: `{convert_duration_long(data['time_playing'])}`
+                     Paused: `{convert_duration_long(data['time_paused'])}`
+                     """)
+    embed2.add_field(name="Count",
+                     value=f"""
+                     Commands: `{data['count_command']}`
+                     Songs played: `{data['count_songs_played']}`
+                     Skipped: `{data['count_skipped']}`
+                     Errors: `{data['count_error']}`
+                     """)
+    embed2.add_field(name="Guild Count",
+                     value=f"""
+                     Guilds joined: `{data['count_guild_joined']}`
+                     Guilds left: `{data['count_guild_left']}`
+                     """)
+
+    # CURRENT STATUS EMBED
+    embed3 = discord.Embed(title=f"Current Status", color=0x00ff00)
+    embed3.add_field(name=f"Connected to {all_connected} guilds",
+                     value=''.join([f'{key}: `{value}`\n' for key, value in guilds_status_dict.items()]))
+    embed3.add_field(name=f"Database",
+                     value=f"""
+                     Guilds in DB: `{db_guilds}`
+                     Currently Connected Guilds: `{currently_connected_guilds}`
+                     """)
+    embed3.add_field(name=f"Guilds List",
+                     value="Use `/zz_list_connected` to get the list of connected guilds",
+                     inline=False)
+
+    # HARDWARE INFO EMBED
+    embed4 = discord.Embed(title=f"Hardware Info", color=0x00ff00)
+    embed4.add_field(name="CPU",
+                     value=f"""
+                     Name: `{cpu_name}`
+                     Architecture: `{cpu_arch}`
+                     Cores: `{cpu_cores}`
+                     Speed: `{cpu_speed}`
+                     Family: `{cpu_family}`
+                     Model: `{cpu_model}`
+                     Vendor: `{cpu_vendor}`
+                     Boot Time: `{struct_to_time(cpu_boot_time)}`
+                     Boot Duration: `{convert_duration_long(int(time.time() - cpu_boot_time))}`
+                     """)
+    embed4.add_field(name="Virtual Memory",
+                     value=f"""
+                     Total: `{memory.total / (1024 ** 3):.2f}GB`
+                     Available: `{memory.available / (1024 ** 3):.2f}GB`
+                     Used: `{memory.used / (1024 ** 3):.2f}GB`
+                     Percent: `{memory.percent}%`
+                     **Swap Memory**
+                     Total: `{swap.total / (1024 ** 3):.2f}GB`
+                     Used: `{swap.used / (1024 ** 3):.2f}GB`
+                     Free: `{swap.free / (1024 ** 3):.2f}GB`
+                     Percent: `{swap.percent}%`
+                     """)
+
+    # NETWORK INFO EMBED
+    embed5 = discord.Embed(title=f"Network Info", color=0x00ff00)
+    embed5.add_field(name="Traffic",
+                     value=f"""
+                     Total Bytes Sent: `{net_io.bytes_sent / (1024 ** 3):.2f} GB`
+                     Total Bytes Received: `{net_io.bytes_recv / (1024 ** 3):.2f} GB`
+                     Packets Sent: `{net_io.packets_sent}`
+                     Packets Received: `{net_io.packets_recv}`
+                     """)
+    embed5.add_field(name="Public IP",
+                     value=f"""
+                     IP: `{public_ip}`
+                     """)
+
+    # NETWORK INTERFACE INFO EMBED
+    embed6 = discord.Embed(title=f"Network Interface Info", color=0x00ff00)
+    for interface, address in net_info.items():
+        msg = ''
+        for addr in address:
+            msg += f"""Address Family: {addr.family.name}
+            Address: {addr.address}
+            Netmask: {addr.netmask}
+            Broadcast: {addr.broadcast}
+            PTP: {addr.ptp}"""
+
+        embed6.add_field(name=f"Interface: {interface}",
+                         value=msg)
+
+    await org_message.edit(content='**Bot Status**', embeds=[embed1, embed2, embed3, embed4, embed5, embed6])
+    return ReturnData(True, 'Status Sent')

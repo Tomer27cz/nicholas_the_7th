@@ -6,7 +6,7 @@ from classes.video_class import Queue
 from classes.typed_dictionaries import VideoInfo, RadioGardenInfo, RadioInfoDict, TuneInDescribe, RadiosJSON
 import classes.view
 
-from utils.log import log
+from utils.log import log, tl
 from utils.translate import txt
 from utils.url import get_url_type, extract_yt_id
 from utils.cli import get_url_probe_data
@@ -425,6 +425,8 @@ async def skip_def(ctx, glob: GlobalVars) -> ReturnData:
             play_response = await commands.player.play_def(ctx, glob, force=True)
             if not play_response.response:
                 return play_response
+
+            tl(glob, 11, guild_id)
 
             return ReturnData(True, 'Skipped!')
 

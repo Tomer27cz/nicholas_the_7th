@@ -49,6 +49,47 @@ def convert_duration(duration) -> str or None:
     except (ValueError, TypeError):
         return str(duration)
 
+def convert_duration_long(duration):
+    """
+    Convert the duration in seconds to a human-readable format
+    :param duration: int - duration in seconds
+    :return: str - duration in human-readable format
+    """
+    # Define the duration units in seconds
+    units = [
+        ('year', 365 * 24 * 60 * 60, 'years'),
+        ('month', 30 * 24 * 60 * 60, 'months'),
+        ('day', 24 * 60 * 60, 'days'),
+        ('hour', 60 * 60, 'hours'),
+        ('minute', 60, 'minutes'),
+        ('second', 1, 'seconds')
+    ]
+
+    print(f"duration: {duration}")
+
+    if duration == 0:
+        return '0 seconds'
+
+    result = []
+    # Loop through each unit, and calculate the quotient and remainder
+    for unit_name, unit_seconds, unit_name_plural in units:
+        unit_value, duration = divmod(duration, unit_seconds)
+
+        print(f"unit_name: {unit_name}, unit_seconds: {unit_seconds}, unit_name_plural: {unit_name_plural}")
+
+        if unit_value <= 0:
+            continue
+
+        if unit_value == 1:
+            result.append(f"{unit_value} {unit_name}")
+            continue
+
+        result.append(f"{unit_value} {unit_name_plural}")
+
+    print(f"result: {result}")
+
+    return ' '.join(result)
+
 def to_bool(text_bool: str) -> bool or None:
     """
     Converts text_bool to bool

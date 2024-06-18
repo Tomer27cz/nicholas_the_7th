@@ -22,6 +22,21 @@ class VideoAuthor(TypedDict):
     name: Union[str, int, None]
     id: Union[str, int, None]
 
+# ------------------------------------------------ STATS ---------------------------------------------------------------
+
+class DBData(TypedDict):
+    bot_boot_time: int
+    count_bot_boot: int
+    time_in_vc: int
+    time_paused: int
+    time_playing: int
+    count_guild_joined: int
+    count_guild_left: int
+    count_command: int
+    count_songs_played: int
+    count_skipped: int
+    count_error: int
+
 # ---------------------------------------------- Web Search ------------------------------------------------------------
 
 class WebSearchResult(TypedDict):

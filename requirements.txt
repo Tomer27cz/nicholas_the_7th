@@ -25,3 +25,5 @@ flask-sqlalchemy
 flask-socketio
 eventlet
 python-dotenv
+py-cpuinfo
+psutil

@@ -14,13 +14,16 @@ def get_session(glob: GlobalVars or SQLAlchemy):
     else:
         raise TypeError("glob must be either GlobalVars or SQLAlchemy")
 
-def guild(glob: GlobalVars or SQLAlchemy, guild_id: int) -> data_classes.Guild:
+def guild(glob: GlobalVars or SQLAlchemy, guild_id: int or data_classes.Guild) -> data_classes.Guild:
     """
     Returns a guild object
     :param glob: GlobalVars or SQLAlchemy
-    :param guild_id: ID of the guild
+    :param guild_id: ID of the guild or Guild object
     :return: Guild object
     """
+    if isinstance(guild_id, data_classes.Guild):
+        return guild_id
+
     session = get_session(glob)
     with session.no_autoflush:
         return session.query(data_classes.Guild).filter_by(id=int(guild_id)).first()

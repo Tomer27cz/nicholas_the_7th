@@ -4,30 +4,40 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-for key, value in os.environ.items():
-    globals()[key] = value
+# for key, value in os.environ.items():
+#     print(f'{key}={value} | {type(value)}')
+#     globals()[key] = value
 
-CLIENT_ID = os.getenv('CLIENT_ID')
-OWNER_ID = os.getenv('OWNER_ID')
-BOT_TOKEN = os.getenv('BOT_TOKEN')
-CLIENT_SECRET = os.getenv('CLIENT_SECRET')
-PREFIX = os.getenv('PREFIX')
+def get_env(_key: str, var_type: type=str, default=None):
+    _value = os.getenv(_key)
+    if _value is None:
+        return default
 
-WEB_SECRET_KEY = os.getenv('WEB_SECRET_KEY')
-WEB_URL = os.getenv('WEB_URL')
-REDIRECT_URI = os.getenv('REDIRECT_URI')
-DISCORD_LOGIN_URL = os.getenv('DISCORD_LOGIN_URL')
-DISCORD_API_ENDPOINT = os.getenv('DISCORD_API_ENDPOINT')
-SPOTIFY_CLIENT_ID = os.getenv('SPOTIFY_CLIENT_ID')
-SPOTIFY_CLIENT_SECRET = os.getenv('SPOTIFY_CLIENT_SECRET')
-SPOTIFY_REDIRECT_URI = os.getenv('SPOTIFY_REDIRECT_URI')
-SOUNDCLOUD_CLIENT_ID = os.getenv('SOUNDCLOUD_CLIENT_ID')
-PARENT_DIR = os.getenv('PARENT_DIR')
-DEFAULT_DISCORD_AVATAR = os.getenv('DEFAULT_DISCORD_AVATAR')
-VLC_LOGO = os.getenv('VLC_LOGO')
-DEVELOPER_ID = os.getenv('DEVELOPER_ID')
-PERMISSIONS = os.getenv('PERMISSIONS')
-INVITE_URL = os.getenv('INVITE_URL')
+    try:
+        return var_type(_value)
+    except ValueError:
+        return _value
+
+CLIENT_ID = get_env('CLIENT_ID', int)
+OWNER_ID = get_env('OWNER_ID', int, 349164237605568513)
+BOT_TOKEN = get_env('BOT_TOKEN')
+CLIENT_SECRET = get_env('CLIENT_SECRET')
+PREFIX = get_env('PREFIX')
+WEB_SECRET_KEY = get_env('WEB_SECRET_KEY')
+WEB_URL = get_env('WEB_URL')
+REDIRECT_URI = get_env('REDIRECT_URI')
+DISCORD_LOGIN_URL = get_env('DISCORD_LOGIN_URL')
+DISCORD_API_ENDPOINT = get_env('DISCORD_API_ENDPOINT')
+SPOTIFY_CLIENT_ID = get_env('SPOTIFY_CLIENT_ID')
+SPOTIFY_CLIENT_SECRET = get_env('SPOTIFY_CLIENT_SECRET')
+SPOTIFY_REDIRECT_URI = get_env('SPOTIFY_REDIRECT_URI')
+SOUNDCLOUD_CLIENT_ID = get_env('SOUNDCLOUD_CLIENT_ID')
+PARENT_DIR = get_env('PARENT_DIR')
+DEFAULT_DISCORD_AVATAR = get_env('DEFAULT_DISCORD_AVATAR')
+VLC_LOGO = get_env('VLC_LOGO')
+DEVELOPER_ID = get_env('DEVELOPER_ID', int, 349164237605568513)
+PERMISSIONS = get_env('PERMISSIONS')
+INVITE_URL = get_env('INVITE_URL')
 
 ENABLE_WEB = True if os.getenv('COMPOSE_PROFILES') == 'web' else False
 

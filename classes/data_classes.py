@@ -289,3 +289,31 @@ class DiscordCommand(Base):
         self.description: str = description
         self.category: str = category
         self.attributes: str = json.dumps(attributes)
+
+class TimeLog(Base):
+    """
+    Data class for storing logs with a timestamp included
+
+    :type log_type: int
+    :type timestamp: int
+    :type guild_id: int
+    :type channel_id: int
+
+    :param log_type: Type of the log (specified in the tl() function)
+    :param guild_id: ID of the guild
+    :param channel_id: ID of the channel
+    """
+    __tablename__ = 'time_logs'
+
+    id = Column(Integer, primary_key=True)
+    log_type = Column(Integer)
+    timestamp = Column(Integer)
+    guild_id = Column(Integer, ForeignKey('guilds.id'))
+    channel_id = Column(Integer)
+
+    def __init__(self, log_type: int, guild_id: int=None, channel_id: int=None, timestamp: int=None):
+        self.log_type: int = log_type
+        self.timestamp: int = int(time()) if not timestamp else timestamp
+        self.guild_id: int = guild_id
+        self.channel_id: int = channel_id
+

@@ -4,7 +4,7 @@ from commands.utils import ctx_check
 
 from database.guild import guild, clear_queue
 
-from utils.log import log
+from utils.log import log, tl
 from utils.translate import txt
 from utils.save import update, push_update
 from utils.discord import now_to_history, get_voice_client
@@ -40,6 +40,11 @@ async def stop_def(ctx, glob: GlobalVars, mute_response: bool = False, keep_loop
 
     voice.stop()
 
+    # TIME LOG
+    tl(glob, 5, guild_id=guild_id)
+    if voice.is_paused():
+        tl(glob, 4, guild_id=guild_id)  # perhaps not needed
+
     with glob.ses.no_autoflush:
         db_guild.options.stopped = True
         if not keep_loop:
@@ -72,6 +77,7 @@ async def pause_def(ctx, glob, mute_response: bool = False) -> ReturnData:
     if voice:
         if voice.is_playing():
             voice.pause()
+            tl(glob, 6, guild_id=guild_id)
             if db_guild.now_playing:
                 set_stopped(glob, db_guild.now_playing)
             message = txt(guild_id, glob, "Player **paused!**")
@@ -110,6 +116,7 @@ async def resume_def(ctx, glob: GlobalVars, mute_response: bool = False) -> Retu
     if voice:
         if voice.is_paused():
             voice.resume()
+            tl(glob, 4, guild_id=guild_id)
             if db_guild.now_playing:
                 set_resumed(glob, db_guild.now_playing)
             message = txt(guild_id, glob, "Player **resumed!**")
@@ -205,6 +212,8 @@ async def join_def(ctx, glob: GlobalVars, channel_id=None, mute_response: bool =
         await guild_object.change_voice_state(channel=voice_channel, self_deaf=True)
 
         await push_update(glob, guild_id, ['all'])
+        
+        tl(glob, 1, guild_id=guild_id, channel_id=voice_channel.id)
 
         message = f"{txt(guild_id, glob, 'Joined voice channel:')}  `{voice_channel.name}`"
         if not mute_response:
@@ -242,6 +251,9 @@ async def disconnect_def(ctx, glob: GlobalVars, mute_response: bool = False) -> 
 
         await push_update(glob, guild_id, ['all'])
         await now_to_history(glob, guild_id)
+
+        # already logs in voice state update
+        # tl(glob, 2, guild_id=guild_id, channel_id=channel.id)
 
         message = f"{txt(guild_id, glob, 'Left voice channel:')} `{channel}`"
         if not mute_response:
