@@ -9,7 +9,6 @@ RUN pip install -r /app/requirements.txt
 
 RUN apt update && apt-get install -y --no-install-recommends ffmpeg
 
-EXPOSE 5420
 EXPOSE 5421
 EXPOSE 5422
 

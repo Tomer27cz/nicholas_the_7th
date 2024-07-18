@@ -1,3 +1,5 @@
+import os
+
 from classes.data_classes import WebData, Guild, ReturnData
 from classes.discord_classes import DiscordUser
 from classes.typed_dictionaries import WebSearchResult
@@ -280,7 +282,8 @@ async def guild_page(guild_id):
                            bot_status=get_guild_bot_status(int(guild_id)),
                            last_updated=int(guild_object.last_updated['queue']),
                            # radios=sort_radios(radio_dict),
-                           admin=admin
+                           admin=admin,
+                           socket_host=os.environ.get('SOCKET_HOST', None),
                            )
 
 # ---------------------------------------------------- HTMX ------------------------------------------------------------

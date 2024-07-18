@@ -7,6 +7,7 @@ from typing import List, Optional
 
 import pytz
 
+from chat_exporter.construct.attachment_handler import AttachmentHandler
 from chat_exporter.ext.discord_import import discord
 
 from chat_exporter.construct.message import gather_messages
@@ -33,8 +34,8 @@ class TranscriptDAO:
         fancy_times: bool,
         before: Optional[datetime.datetime],
         after: Optional[datetime.datetime],
-        support_dev: bool,
         bot: Optional[discord.Client],
+        attachment_handler: Optional[AttachmentHandler],
     ):
         self.channel = channel
         self.messages = messages
@@ -43,8 +44,8 @@ class TranscriptDAO:
         self.fancy_times = fancy_times
         self.before = before
         self.after = after
-        self.support_dev = support_dev
         self.pytz_timezone = pytz_timezone
+        self.attachment_handler = attachment_handler
 
         # This is to pass timezone in to mention.py without rewriting
         setattr(discord.Guild, "timezone", self.pytz_timezone)
@@ -58,6 +59,7 @@ class TranscriptDAO:
             self.channel.guild,
             self.pytz_timezone,
             self.military_time,
+            self.attachment_handler
         )
         await self.export_transcript(message_html, meta_data)
         clear_cache()
@@ -72,7 +74,10 @@ class TranscriptDAO:
         guild_name = html.escape(self.channel.guild.name)
 
         timezone = pytz.timezone(self.pytz_timezone)
-        time_now = datetime.datetime.now(timezone).strftime("%e %B %Y at %T (%Z)")
+        if self.military_time:
+            time_now = datetime.datetime.now(timezone).strftime("%e %B %Y at %H:%M:%S (%Z)")
+        else:
+            time_now = datetime.datetime.now(timezone).strftime("%e %B %Y at %I:%M:%S %p (%Z)")
 
         meta_data_html: str = ""
         for data in meta_data:
@@ -101,7 +106,10 @@ class TranscriptDAO:
                 ("MESSAGE_COUNT", str(meta_data[int(data)][4]))
             ])
 
-        channel_creation_time = self.channel.created_at.astimezone(timezone).strftime("%b %d, %Y (%T)")
+        if self.military_time:
+            channel_creation_time = self.channel.created_at.astimezone(timezone).strftime("%b %d, %Y (%H:%M:%S)")
+        else:
+            channel_creation_time = self.channel.created_at.astimezone(timezone).strftime("%b %d, %Y (%I:%M:%S %p)")
 
         raw_channel_topic = (
             self.channel.topic if isinstance(self.channel, discord.TextChannel) and self.channel.topic else ""
@@ -123,16 +131,16 @@ class TranscriptDAO:
             ("RAW_CHANNEL_TOPIC", str(raw_channel_topic))
         ])
 
-        sd = (
-            '<div class="meta__support">'
-            '    <a href="https://ko-fi.com/mahtoid">DONATE</a>'
-            '</div>'
-        ) if self.support_dev else ""
-
         _fancy_time = ""
 
         if self.fancy_times:
+            if self.military_time:
+                time_format = "HH:mm"
+            else:
+                time_format = "hh:mm A"
+
             _fancy_time = await fill_out(self.channel.guild, fancy_time, [
+                ("TIME_FORMAT", time_format, PARSE_MODE_NONE),
                 ("TIMEZONE", str(self.pytz_timezone), PARSE_MODE_NONE)
             ])
 
@@ -150,8 +158,7 @@ class TranscriptDAO:
             ("CHANNEL_TOPIC", str(channel_topic_html), PARSE_MODE_NONE),
             ("CHANNEL_ID", str(self.channel.id), PARSE_MODE_NONE),
             ("MESSAGE_PARTICIPANTS", str(len(meta_data)), PARSE_MODE_NONE),
-            ("FANCY_TIME", _fancy_time, PARSE_MODE_NONE),
-            ("SD", sd, PARSE_MODE_NONE)
+            ("FANCY_TIME", _fancy_time, PARSE_MODE_NONE)
         ])
 
 
@@ -170,7 +177,6 @@ class Transcript(TranscriptDAO):
         try:
             return await super().build_transcript()
         except Exception:
-            self.html = "Whoops! Something went wrong..."
+            self.html = traceback.format_exc()
             traceback.print_exc()
-            print("Please send a screenshot of the above error to https://www.github.com/mahtoid/DiscordChatExporterPy")
             return self

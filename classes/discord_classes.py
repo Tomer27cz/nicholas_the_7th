@@ -204,8 +204,7 @@ class DiscordChannel:
                                                                                tz_info='GMT',
                                                                                guild=channel_object.guild,
                                                                                bot=glob.bot,
-                                                                               military_time=True,
-                                                                               support_dev=False), glob.bot.loop).result()
+                                                                               military_time=True), glob.bot.loop).result()
         self.html = transcript
 
         return self.html

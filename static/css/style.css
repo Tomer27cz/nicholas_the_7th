@@ -778,42 +778,77 @@ input.radio-checkbox[type=radio] + label {
 /* discord viewer */
 .dv-div1 {
     height: 100vh;
+    overflow-y: auto;
 }
-
 .dv-div {
     clear: none;
-    height: 95%;
+    height: 100%;
 }
 .dv-channels {
     background: var(--d-g3);
+    background-color: var(--d-g3) !important;
     float: left;
-    width: 15%;
     height: 100%;
     overflow-y: scroll;
-    display: flex;
+    display: block !important;
     justify-items: left;
     justify-content: left;
     padding-top: 1rem;
-    padding-right: 1rem;
+    padding-right: 0;
     padding-bottom: 1rem;
 }
+@media (min-width: 576px) {
+    .dv-channels {
+        width: clamp(15rem, 20%, 20rem);
+        overflow-y: scroll;
+        height: 100%;
+    }
+}
+
+/* dv content */
 .dv-content {
-    width: 85%;
-    float: left;
-    height: 100%;
+    width: 100%;
     overflow-y: scroll;
+    height: 100%;
+}
+@media (min-width: 576px) {
+    .dv-content {
+        width: calc(100% - clamp(15rem, 20%, 20rem));
+        overflow-y: scroll;
+        height: 100%;
+    }
+}
+/* dv loader */
+.dv-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1060;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
 }
 
 
+/* dv items */
 .dv-items {
     list-style: none;
+    padding-left: 0;
+    padding-right: 0;
 }
 .dv-item {
+    padding: 0.3rem 0.3rem 0.3rem 2rem;
     margin-bottom: 0.5rem;
     text-decoration: none;
     color: var(--d-g0)
 }
-
+.dv-item:hover {
+    background: var(--d-g1);
+}
 
 /* div table */
 

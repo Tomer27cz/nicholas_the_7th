@@ -179,7 +179,11 @@ function npProgress(duration, played_duration) {
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-let socket = io(document.domain + ':5001');
+if (socket_host === null || socket_host === "") {
+    socket_host = window.location.origin + ":5001";
+}
+
+let socket = io(socket_host);
 
 socket.on('connect', function () {
     console.log("Connected to server");
