@@ -106,13 +106,16 @@ async def tunein_autocomplete_def(ctx: discord.Interaction or None, query: str, 
         return []
 
     resp = await search_tunein(query, limit=5)
+
     tunein_status = resp[0]
     tunein_result: list[TuneInSearch] = resp[1]
+    audio_results: list[TuneInSearch] = [result for result in tunein_result if result.get('type', None) == 'audio']
+
     if tunein_status:
         if raw:
-            return [{'title': station['text'], 'value': f"_tunein:{station['guide_id']}", 'source': 'TuneIn', 'picture': station['image']} for station in tunein_result]
+            return [{'title': station['text'], 'value': f"_tunein:{station['guide_id']}", 'source': 'TuneIn', 'picture': station['image']} for station in audio_results]
 
-        _return = [discord.app_commands.Choice(name=f"TuneIn: {station['text']}", value=f"_tunein:{station['guide_id']}") for station in tunein_result]
+        _return = [discord.app_commands.Choice(name=f"TuneIn: {station['text']}", value=f"_tunein:{station['guide_id']}") for station in audio_results]
         return _return[:limit]
 
     return []

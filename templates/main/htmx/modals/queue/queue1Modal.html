@@ -27,7 +27,7 @@
   <div class="modal-body">
     <div class="input-group mb-3">
       <input type="search" name="var" class="form-control" id="queue1_search" hx-target="#queue1_results"
-             placeholder="{{ txt(lang, 'Search or YouTube URL') }}" hx-trigger="keyup[keyCode==13], click from:#queue1_search_button"
+             placeholder="{{ txt(lang, 'Search or YouTube URL') }}" hx-trigger="input changed delay:1s, search, click from:#queue1_search_button"
              hx-get="/guild/{{ gi }}/search?act=youtube&key={{ key }}" hx-swap="innerHTML" hx-indicator="#queue1_spinner"
              hx-include="#inlineRadio1, #inlineRadio2, #inlineRadio3, #inlineRadio4"
       >

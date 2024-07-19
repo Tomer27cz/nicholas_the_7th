@@ -44,7 +44,7 @@ def load_sound_effects():
         for file_index, file_val in enumerate(se):
             se[file_index] = se[file_index]  # [:len(file_val) - 4]
     except FileNotFoundError:
-        return ["No sound effects found"]
+        return []
     return se
 
 

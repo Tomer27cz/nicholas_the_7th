@@ -27,7 +27,7 @@
   <div class="modal-body">
     <div class="input-group mb-3">
       <input type="search" name="var" class="form-control" id="queue2_search" hx-target="#queue2_results"
-             placeholder="{{ txt(lang, 'Search on TuneIn') }}" hx-trigger="keyup[keyCode==13], click from:#queue2_search_button"
+             placeholder="{{ txt(lang, 'Search on TuneIn') }}" hx-trigger="input changed delay:1s, search, click from:#queue2_search_button"
              hx-get="/guild/{{ gi }}/search?act=tunein&key={{ key }}" hx-swap="innerHTML" hx-indicator="#queue2_spinner">
       <button class="btn btn-outline-secondary" type="submit" id="queue2_search_button">{{ txt(lang, "Search") }}</button>
     </div>
