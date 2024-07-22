@@ -3,6 +3,7 @@ from classes.typed_dictionaries import LastUpdated, VideoAuthor
 from database.main import *
 
 from utils.global_vars import GlobalVars
+from utils.voice_log import VoiceLog
 
 from time import time
 from typing import List
@@ -30,7 +31,8 @@ class Guild(Base):
     last_updated = Column(JSON, default={key: int(time()) for key in LastUpdated.__annotations__.keys()})
     keep_alive = Column(Boolean, default=False)
 
-    def __init__(self, glob: GlobalVars or None, guild_id, json_data: dict, last_updated: LastUpdated=None):
+    def __init__(self, glob: GlobalVars or None, guild_id, json_data: dict, last_updated: LastUpdated = None, **kw: any):
+        super().__init__(**kw)
         self.id = guild_id
         self.last_updated = last_updated if last_updated else {key: int(time()) for key in LastUpdated.__annotations__.keys()}
 
@@ -99,7 +101,8 @@ class Options(Base):
     history_length = Column(Integer, default=20)
     player_id = Column(Integer, default=0)
 
-    def __init__(self, guild_id: int, json_data: dict):
+    def __init__(self, guild_id: int, json_data: dict, **kw: any):
+        super().__init__(**kw)
         self.id: int = guild_id  # id of the guild
 
         self.stopped: bool = json_data.get('stopped', False)  # if the player is stopped
@@ -141,7 +144,8 @@ class GuildData(Base):
     discovery_splash = Column(String)
     voice_channels = Column(JSON)
 
-    def __init__(self, glob: GlobalVars or None, guild_id, json_data: dict):
+    def __init__(self, glob: GlobalVars or None, guild_id, json_data: dict, **kw: any):
+        super().__init__(**kw)
         self.id: int = guild_id
 
         self.name: str = json_data.get('name')
@@ -221,7 +225,8 @@ class Save(Base):
 
     queue = relationship('SaveVideo', backref='saves', order_by='SaveVideo.position', collection_class=ordering_list('position'), lazy=True)
 
-    def __init__(self, guild_id: int, name: str, author: VideoAuthor):
+    def __init__(self, guild_id: int, name: str, author: VideoAuthor, **kw: any):
+        super().__init__(**kw)
         self.guild_id: int = guild_id
         self.name: str = name
         self.created_at: int = int(time())
@@ -243,7 +248,8 @@ class SlowedUser(Base):
     guild_id = Column(Integer, ForeignKey('guilds.id'))
     slowed_for = Column(Integer)
 
-    def __init__(self, guild_id: int, user_id: int, user_name: str, slowed_for: int):
+    def __init__(self, guild_id: int, user_id: int, user_name: str, slowed_for: int, **kw: any):
+        super().__init__(**kw)
         self.guild_id: int = guild_id
         self.user_id: int = user_id
         self.user_name: str = user_name
@@ -263,7 +269,8 @@ class TorturedUser(Base):
     guild_id = Column(Integer, ForeignKey('guilds.id'))
     torture_delay = Column(Integer)
 
-    def __init__(self, guild_id: int, user_id: int, torture_delay: int):
+    def __init__(self, guild_id: int, user_id: int, torture_delay: int, **kw: any):
+        super().__init__(**kw)
         self.guild_id: int = guild_id
         self.user_id: int = user_id
         self.torture_delay: int = torture_delay
@@ -284,7 +291,8 @@ class DiscordCommand(Base):
     category = Column(String)
     attributes = Column(JSON)
 
-    def __init__(self, name: str, description: str, category: str, attributes: List[dict]):
+    def __init__(self, name: str, description: str, category: str, attributes: List[dict], **kw: any):
+        super().__init__(**kw)
         self.name: str = name
         self.description: str = description
         self.category: str = category
@@ -311,9 +319,46 @@ class TimeLog(Base):
     guild_id = Column(Integer, ForeignKey('guilds.id'))
     channel_id = Column(Integer)
 
-    def __init__(self, log_type: int, guild_id: int=None, channel_id: int=None, timestamp: int=None):
+    def __init__(self, log_type: int, guild_id: int = None, channel_id: int = None, timestamp: int = None, **kw: any):
+        super().__init__(**kw)
         self.log_type: int = log_type
         self.timestamp: int = int(time()) if not timestamp else timestamp
         self.guild_id: int = guild_id
         self.channel_id: int = channel_id
+
+class VoiceLogDB(Base):
+    """
+    Data class for storing voice logs
+
+    :type guild_id: int
+    :type channel_id: int
+    :type connected_at: int
+    :type disconnected_at: int
+    :type time_in_vc: int
+    :type time_playing: int
+    :type time_paused: int
+
+    :param voice_log: VoiceLog object
+    """
+    __tablename__ = 'voice_logs'
+
+    id = Column(Integer, primary_key=True)
+    guild_id = Column(Integer, ForeignKey('guilds.id'))
+    channel_id = Column(Integer)
+    connected_at = Column(Integer)
+    disconnected_at = Column(Integer)
+    time_in_vc = Column(Integer)
+    time_playing = Column(Integer)
+    time_paused = Column(Integer)
+
+    def __init__(self, voice_log: VoiceLog, **kw: any):
+        super().__init__(**kw)
+
+        self.guild_id: int = voice_log.guild_id
+        self.channel_id: int = voice_log.channel_id
+        self.connected_at: int = voice_log.connected_at
+        self.disconnected_at: int = voice_log.disconnected_at
+        self.time_in_vc: int = voice_log.time_in_vc
+        self.time_playing: int = voice_log.time_playing
+        self.time_paused: int = voice_log.time_paused
 

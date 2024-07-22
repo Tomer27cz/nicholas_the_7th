@@ -714,6 +714,7 @@ async def status_def(ctx: dc_commands.Context, glob: GlobalVars, time_filter: st
                      Songs played: `{data['count_songs_played']}`
                      Skipped: `{data['count_skipped']}`
                      Errors: `{data['count_error']}`
+                     Voice Sessions: `{data['count_voice_sessions']}`
                      """)
     embed2.add_field(name="Guild Count",
                      value=f"""

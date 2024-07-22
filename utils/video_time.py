@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, Union
 if TYPE_CHECKING:
-    from classes.typed_dictionaries import TimeSegment, TimeSegmentInner, VideoChapter
+    from classes.typed_dictionaries import TimeSegment, TimeSegmentInner, VideoChapter, VideoHeatMap
     from utils.global_vars import GlobalVars
 
 import classes.video_class as video_class
@@ -34,13 +34,14 @@ def set_stopped(glob: GlobalVars, video):
 
     update(glob)
 
-async def set_started(glob: GlobalVars, video, guild_object, chapters: Union[list[VideoChapter], None]=None, no_push: bool=False):
+async def set_started(glob: GlobalVars, video, guild_object, chapters: list[VideoChapter]=None, heatmap: list[VideoHeatMap]=None, no_push: bool=False):
     """
     Sets the time when the video was started
     :param glob: GlobalVars
     :param video: Video object
     :param guild_object: Guild object
     :param chapters: list[VideoChapter] - list of chapters
+    :param heatmap: list[VideoHeatMap] - list of heatmaps
     :param no_push: bool - if True, does not push the update to the guild
     """
     if len(video.played_duration) == 0:
@@ -53,6 +54,9 @@ async def set_started(glob: GlobalVars, video, guild_object, chapters: Union[lis
 
     if chapters:
         video.chapters = chapters
+
+    if heatmap:
+        video.heatmap = heatmap
 
     try:
         video.discord_channel = {"id": guild_object.voice_client.channel.id,

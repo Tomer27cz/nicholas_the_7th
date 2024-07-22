@@ -83,6 +83,11 @@
           </div>
         </div>
         <div>
+          {% if guild.now_playing.heatmap %}
+            <div {% if guild.now_playing.chapters %}class="h-div"{% endif %}>
+              <svg class="h-svg" viewBox="0 0 1000 100" preserveAspectRatio="none"><path d="{{ nph }}"></path></svg>
+            </div>
+          {% endif %}
           {% if guild.now_playing.chapters %}
             <div class="p-div-m">
               {% for chapter in guild.now_playing.chapters %}
@@ -103,7 +108,7 @@
             </div>
           {% endif %}
           {% if check_isdigit(guild.now_playing.duration) and guild.now_playing.duration not in ['0', 0] %}
-            <div class="p-div">
+            <div class="{% if guild.now_playing.heatmap %}h-p-div {% endif %}p-div">
               <div class="p-bar" style="width: {{ (video_time_from_start(guild.now_playing) / int(guild.now_playing.duration))*100 }}%" id="np_progress"></div>
             </div>
           {% else %}

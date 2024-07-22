@@ -199,14 +199,15 @@ async def now_to_history(glob: GlobalVars, guild_id: int or Guild, no_push: bool
     Removes first element of history if history length is more than options.history_length
 
     :param glob: GlobalVars object
-    :param guild_id: int or Guild - id of guild or Guild object
+    :param guild_id: int or Guild - id of guild or Guild object (if already fetched)
     :param no_push: bool - if True doesn't push update
     :return: None
     """
     guild_object: Guild = guild(glob, guild_id)
-
     if not guild_object:
         return
+
+    guild_id = guild_object.id
 
     if guild_object.now_playing is not None:
         # trim history
@@ -230,6 +231,7 @@ async def now_to_history(glob: GlobalVars, guild_id: int or Guild, no_push: bool
         # strip not needed data
         set_stopped(glob, h_video)
         h_video.chapters = None
+        h_video.heatmap = None
 
         # add video to history
         guild_object.history.append(await to_history_class(glob, h_video))

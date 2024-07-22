@@ -40,6 +40,9 @@ async def play_def(ctx, glob: GlobalVars,
     log(ctx, 'play_def', options=locals(), log_type='function', author=ctx.author)
     is_ctx, guild_id, author, guild_object = ctx_check(ctx, glob)
     db_guild = guild(glob, guild_id)
+    if is_ctx:
+        if not ctx.interaction.response.is_done():
+            await ctx.defer()
 
     response = ReturnData(False, txt(guild_id, glob, 'Unknown error'))
     notif = f' -> [Control Panel]({config.WEB_URL}/guild/{guild_id}?key={db_guild.data.key})'
@@ -62,9 +65,9 @@ async def play_def(ctx, glob: GlobalVars,
                 await ctx.reply(message)
             return ReturnData(False, message)
 
-    if is_ctx:
-        if not ctx.interaction.response.is_done():
-            await ctx.defer()
+    # if is_ctx:
+    #     if not ctx.interaction.response.is_done():
+    #         await ctx.defer()
 
     if url:
         if voice:
@@ -86,7 +89,7 @@ async def play_def(ctx, glob: GlobalVars,
             return response
 
     if not guild_object.voice_client:
-        join_response = await commands.voice.join_def(ctx, glob, None, True)
+        join_response = await commands.voice.join_def(ctx, glob, None, True, True)
         voice = guild_object.voice_client
         if not join_response.response:
             if not mute_response:
@@ -124,12 +127,12 @@ async def play_def(ctx, glob: GlobalVars,
         message = f'{txt(guild_id, glob, "There is **nothing** in your **queue**")} {notif}'
         if not after and not mute_response:
             await ctx.reply(message)
-        await now_to_history(glob, guild_id)
+        await now_to_history(glob, db_guild)
         return ReturnData(False, message)
 
     db_guild = guild(glob, guild_id)
     video = db_guild.queue[0]
-    await now_to_history(glob, guild_id, no_push=True)
+    await now_to_history(glob, db_guild, no_push=True)
 
     stream_url = video.url
     if video.class_type in ['RadioCz', 'RadioGarden', 'RadioTuneIn']:
@@ -159,7 +162,7 @@ async def play_def(ctx, glob: GlobalVars,
     db_guild.options.player_id = p_id
 
     try:
-        source, chapters = await GetSource.create_source(glob, guild_id, stream_url, source_type=video.class_type, video_class=video)
+        source, additional_data = await GetSource.create_source(glob, guild_id, stream_url, source_type=video.class_type, video_class=video)
         voice.play(source, after=lambda e: asyncio.run_coroutine_threadsafe(play_def(ctx, glob, after=True, player_id=p_id, no_after=no_after), glob.bot.loop))
 
         await commands.voice.volume_command_def(ctx, glob, db_guild.options.volume * 100, False, True)
@@ -167,7 +170,7 @@ async def play_def(ctx, glob: GlobalVars,
         # Variables update
         db_guild.options.stopped = False
         # video variables
-        await set_started(glob, video, guild_object, chapters=chapters, no_push=True)
+        await set_started(glob, video, guild_object, chapters=additional_data['chapters'], heatmap=additional_data['heatmap'], no_push=True)
 
         # Queue update
         # if guild[guild_id].options.loop:
@@ -175,7 +178,6 @@ async def play_def(ctx, glob: GlobalVars,
         glob.ses.query(Queue).filter_by(id=video.id).delete()
         glob.ses.commit()
 
-        tl(glob, 3, guild_id=guild_id, channel_id=voice.channel.id)  # start playing
         tl(glob, 10, guild_id=guild_id, channel_id=voice.channel.id)  # count song played
 
         await push_update(glob, guild_id, ['queue', 'now', 'history'])
@@ -212,12 +214,12 @@ async def play_def(ctx, glob: GlobalVars,
         await ctx.reply(e)
         return ReturnData(False, e)
     except (AttributeError, IndexError, TypeError, discord.errors.ClientException,
-            discord.errors.NotFound):
+            discord.errors.NotFound) as e:
         log(ctx, "------------------------------- play -------------------------")
         tb = traceback.format_exc()
         log(ctx, tb)
         log(ctx, "--------------------------------------------------------------")
-        message = f'{txt(guild_id, glob, "An **error** occurred while trying to play the song")} {glob.bot.get_user(config.DEVELOPER_ID).mention} ({sys.exc_info()[0]})'
+        message = f'{txt(guild_id, glob, "An **error** occurred while trying to play the song")} {glob.bot.get_user(config.DEVELOPER_ID).mention} ({str(e)})'
         await ctx.reply(message)
         return ReturnData(False, message)
 
@@ -232,6 +234,9 @@ async def local_def(ctx, glob: GlobalVars, effect: str, mute_response: bool = Fa
     """
     log(ctx, 'ps_def', options=locals(), log_type='function', author=ctx.author)
     is_ctx, guild_id, author, guild_object = ctx_check(ctx, glob)
+    if is_ctx:
+        if not ctx.interaction.response.is_done():
+            await ctx.defer()
 
     url_type, url = get_url_type(effect)
     if url_type not in ['Local', 'String']:
@@ -281,6 +286,10 @@ async def now_def(ctx, glob: GlobalVars, ephemeral: bool = False) -> ReturnData:
     if not is_ctx:
         return ReturnData(False, txt(guild_id, glob, 'This command cant be used in WEB'))
 
+    if is_ctx:
+        if not ctx.interaction.response.is_done():
+            await ctx.defer(ephemeral=ephemeral)
+
     if ctx.voice_client:
         if ctx.voice_client.is_playing():
             await db_guild.now_playing.renew(glob, force=True)
@@ -322,6 +331,10 @@ async def last_def(ctx, glob: GlobalVars, ephemeral: bool = False) -> ReturnData
     if not is_ctx:
         return ReturnData(False, txt(guild_id, glob, 'This command cant be used in WEB'))
 
+    if is_ctx:
+        if not ctx.interaction.response.is_done():
+            await ctx.defer(ephemeral=ephemeral)
+
     if not db_guild.history:
         message = txt(guild_id, glob, 'There is no song played yet')
         await ctx.reply(message, ephemeral=ephemeral)
@@ -349,6 +362,9 @@ async def loop_command_def(ctx, glob: GlobalVars, clear_queue_opt: bool=False, e
     log(ctx, 'loop_command_def', options=locals(), log_type='function', author=ctx.author)
     is_ctx, guild_id, author, guild_object = ctx_check(ctx, glob)
     db_guild = guild(glob, guild_id)
+    if is_ctx:
+        if not ctx.interaction.response.is_done():
+            await ctx.defer(ephemeral=ephemeral)
 
     # add now_playing to queue if loop is activated
     add_to_queue_when_activated = False
@@ -398,6 +414,10 @@ async def loop_command_def(ctx, glob: GlobalVars, clear_queue_opt: bool=False, e
 async def set_video_time(ctx, glob: GlobalVars, time_stamp: int, mute_response: bool=False, ephemeral: bool=False):
     log(ctx, 'set_video_time', options=locals(), log_type='function')
     is_ctx, ctx_guild_id, author, ctx_guild_object = ctx_check(ctx, glob)
+    if is_ctx:
+        if not ctx.interaction.response.is_done():
+            await ctx.defer(ephemeral=ephemeral)
+
     try:
         time_stamp = int(time_stamp)
     except (ValueError, TypeError):
@@ -433,7 +453,7 @@ async def set_video_time(ctx, glob: GlobalVars, time_stamp: int, mute_response: 
     if not url:
         url = now_playing_video.url
 
-    new_source, new_chapters = await GetSource.create_source(glob, ctx_guild_id, url, time_stamp=time_stamp, video_class=now_playing_video, source_type=now_playing_video.class_type)
+    new_source, new_additional_data = await GetSource.create_source(glob, ctx_guild_id, url, time_stamp=time_stamp, video_class=now_playing_video, source_type=now_playing_video.class_type)
 
     voice.source = new_source
     set_new_time(glob, now_playing_video, time_stamp)

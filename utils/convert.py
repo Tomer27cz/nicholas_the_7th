@@ -65,8 +65,6 @@ def convert_duration_long(duration):
         ('second', 1, 'seconds')
     ]
 
-    print(f"duration: {duration}")
-
     if duration == 0:
         return '0 seconds'
 
@@ -74,8 +72,6 @@ def convert_duration_long(duration):
     # Loop through each unit, and calculate the quotient and remainder
     for unit_name, unit_seconds, unit_name_plural in units:
         unit_value, duration = divmod(duration, unit_seconds)
-
-        print(f"unit_name: {unit_name}, unit_seconds: {unit_seconds}, unit_name_plural: {unit_name_plural}")
 
         if unit_value <= 0:
             continue
@@ -85,8 +81,6 @@ def convert_duration_long(duration):
             continue
 
         result.append(f"{unit_value} {unit_name_plural}")
-
-    print(f"result: {result}")
 
     return ' '.join(result)
 

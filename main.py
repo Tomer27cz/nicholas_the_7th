@@ -1,4 +1,4 @@
-from classes.data_classes import WebData, Guild
+from classes.data_classes import WebData, Guild, VoiceLogDB
 from classes.typed_dictionaries import LastUpdated
 from classes.video_class import History, NowPlaying, SaveVideo
 
@@ -8,6 +8,7 @@ from utils.discord import get_content_of_message
 from utils.log import send_to_admin, tl
 from utils.json import *
 from utils.save import update_db_commands
+from utils.voice_log import VoiceLog
 
 from ipc.server import ipc_run
 
@@ -117,80 +118,70 @@ class Bot(dc_commands.Bot):
         update(glob)
 
     async def on_voice_state_update(self, member, before, after):
-        # set voice state
-        voice_state = member.guild.voice_client
+        if not member.id == self.user.id:
+            return
 
-        # set guild_id
+        voice_state = member.guild.voice_client
         guild_id = member.guild.id
 
         # check if bot is alone in voice channel
         if voice_state is not None and len(voice_state.channel.members) == 1:
-            # stop playing and disconnect
             voice_state.stop()
             await voice_state.disconnect()
 
-            # set stopped to true
             guild(glob, guild_id).options.stopped = True
             ses.commit()
 
-            # log
-            log(guild_id, "-->> Disconnecting when last person left -> Queue Cleared <<--")
-
-            # save history
             await now_to_history(glob, guild_id)
-
-            # clear queue when last person leaves
             clear_queue(glob, guild_id)
 
-        if not member.id == self.user.id:
-            return
+            log(guild_id, "-->> Disconnected when last person left -> Queue Cleared <<--")
 
         # if bot joins a voice channel
         elif before.channel is None:
-            # get voice client
             voice = after.channel.guild.voice_client
 
-            # initialize loop
+            voice_log = VoiceLog(guild_id, after.channel.id)
+
             time_var = 0
             while True:
-                # check every second
-                await asyncio.sleep(5)
+                await asyncio.sleep(10)
+                time_var += 10
 
-                # increase time_var
-                time_var += 5
+                if voice.is_playing():
+                    time_var = 0
+                    voice_log.playing()
+                    continue
 
-                # check if bot is playing and not paused
-                if voice.is_playing() and not voice.is_paused():
-                    time_var = 0  # reset time_var
+                if voice.is_paused():
+                    time_var = 0
+                    voice_log.paused()
+                    continue
 
-                # check if time_var is greater than buffer
                 if time_var >= guild(glob, guild_id).options.buffer:
-                    # stop playing and disconnect
                     voice.stop()
                     await voice.disconnect()
 
-                    # set stopped to true
                     guild(glob, guild_id).options.stopped = True
                     ses.commit()
 
-                    # log
-                    log(guild_id,
-                        f"-->> Disconnecting after {guild(glob, guild_id).options.buffer} seconds of no play <<--")
-
-                    # save history
+                    log(guild_id, f"-->> Disconnecting after {guild(glob, guild_id).options.buffer} seconds of no play <<--")
                     await now_to_history(glob, guild_id)
 
-                # check if bot is disconnected
+                # At the end if disconnect caused by buffer
                 if not voice.is_connected():
-                    break  # break loop
+                    voice_log.calculate()
+                    ses.add(VoiceLogDB(voice_log))
+                    ses.commit()
+                    break
+
+                voice_log.in_vc()
 
         # if bot leaves a voice channel
         elif after.channel is None:
-            # log time of disconnect
-            tl(glob, 2, guild_id=guild_id)
-            # clear queue when bot leaves
+            guild(glob, guild_id).options.stopped = True
+            ses.commit()
             clear_queue(glob, guild_id)
-            # log
             log(guild_id, f"-->> Cleared Queue after bot Disconnected <<--")
 
     async def on_command_error(self, ctx, error):
@@ -582,36 +573,39 @@ async def volume_command(ctx: dc_commands.Context, volume: int = None, user_only
 async def play_now(inter, message: discord.Message):
     ctx = await bot.get_context(inter)
     log(ctx, 'play_now', options=locals(), log_type='command', author=ctx.author)
+    tl(glob, 9, guild_id=ctx.guild.id)
+
+    if not ctx.interaction.response.is_done():
+        await ctx.defer(ephemeral=True)
 
     if ctx.author.voice is None:
-        await inter.response.send_message(
-            content=txt(ctx.guild.id, glob, 'You are **not connected** to a voice channel'),
-            ephemeral=True)
-        return
+        return await ctx.reply( content=txt(ctx.guild.id, glob, 'You are **not connected** to a voice channel'), ephemeral=True)
 
     url, probe_data = get_content_of_message(glob, message)
-
     response: ReturnData = await queue_command_def(ctx, glob, url, mute_response=True, probe_data=probe_data,
                                                    ephemeral=True,
                                                    position=0, from_play=True)
-    if response:
-        if response.response:
-            await play_def(ctx, glob, force=True)
-        else:
-            if not inter.response.is_done():
-                await inter.response.send_message(content=response.message, ephemeral=True)
+    if not response:
+        return
+
+    if response.response:
+        return await play_def(ctx, glob, force=True)
+
+    return await ctx.reply(content=response.message, ephemeral=True)
 
 @bot.tree.context_menu(name='Add to queue')
 async def add_to_queue(inter, message: discord.Message):
     ctx = await bot.get_context(inter)
     log(ctx, 'add_to_queue', options=locals(), log_type='command', author=ctx.author)
+    tl(glob, 9, guild_id=ctx.guild.id)
+
+    if not ctx.interaction.response.is_done():
+        await ctx.defer(ephemeral=True)
 
     url, probe_data = get_content_of_message(glob, message)
+    response: ReturnData = await queue_command_def(ctx, glob, url, mute_response=True, probe_data=probe_data, ephemeral=True)
 
-    response: ReturnData = await queue_command_def(ctx, glob, url, mute_response=True, probe_data=probe_data,
-                                                   ephemeral=True)
-    if not inter.response.is_done():
-        await inter.response.send_message(content=response.message, ephemeral=True)
+    await ctx.reply(content=response.message, ephemeral=True)
 
 # --------------------------------------- GENERAL --------------------------------------------------
 
@@ -873,6 +867,7 @@ bot.remove_command('help')
 @bot.hybrid_command(name='help', with_app_command=True, description=txt(0, glob, 'command_help'), help=txt(0, glob, 'command_help'), extras={'category': 'general'})
 async def help_command(ctx: dc_commands.Context, command_name: str = None):
     log(ctx, 'help', options=locals(), log_type='command', author=ctx.author)
+    tl(glob, 9, guild_id=ctx.guild.id)
     gi = ctx.guild.id
 
     embed = discord.Embed(title=txt(gi, glob, "Commands"), description=f"{txt(gi, glob, 'Use `/help <command>` to get help on a command')} | Prefix: `{prefix}`")

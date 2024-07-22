@@ -53,3 +53,35 @@ def sort_radios(radio_dict: dict) -> list:
     :return: list of radios
     """
     return sorted(list(list(radio_dict.values())[:-1]), key=lambda x: int(x['listened']), reverse=True)
+
+def heatmap_to_svg(data_points: list[dict], duration: int) -> str:
+    """
+    Converts a list of data points to an SVG path
+    :param data_points: list of data points {'start_time': int, 'end_time': int, 'value': int}
+    :param duration: int - duration of the song in seconds
+    :return: str - SVG path
+    """
+    width = 1000
+    height = 100
+
+    try:
+        duration = int(duration)
+    except ValueError:
+        duration = int(data_points[-1]['end_time'])
+
+    def map_to_svg_coords(end_time, value):
+        x = round((end_time / duration) * width, 2)
+        y = round(height - value * height, 2)
+        return x, y
+
+    path = []
+    for point in data_points:
+        x, y = map_to_svg_coords(point['end_time'], point['value'])
+        if not path:
+            path.append(f'M {x},{y}')
+            continue
+
+        path.append(f'L {x},{y}')
+
+    path.append("L 0,100")  # Draw a line to make it a rectangle
+    return ' '.join(path)

@@ -262,11 +262,14 @@ async def guild_page(guild_id):
             if not response.response:
                 errors = [response.message]
 
-    pd = guild_object.now_playing.played_duration if guild_object.now_playing else [{'start': None, 'end': None}]
-    npd = (guild_object.now_playing.duration if check_isdigit(guild_object.now_playing.duration) else 'null') if guild_object.now_playing else 'null'
+    pd = guild_object.now_playing.played_duration if guild_object.now_playing else [{'start': None, 'end': None}] # played duration
+    npd = (guild_object.now_playing.duration if check_isdigit(guild_object.now_playing.duration) else 'null') if guild_object.now_playing else 'null' # now playing duration
+    nph = None
 
     if guild_object.now_playing:
         await guild_object.now_playing.renew(None)
+        if guild_object.now_playing.heatmap:
+            nph = heatmap_to_svg(guild_object.now_playing.heatmap, guild_object.now_playing.duration)
 
     return render_template('main/guild.html',
                            guild=guild(db, guild_id),
@@ -279,11 +282,12 @@ async def guild_page(guild_id):
                            saves=guild_save_names(db, guild_object.id),
                            pd=json.dumps(pd),
                            npd=npd,
+                           nph=nph,
                            bot_status=get_guild_bot_status(int(guild_id)),
                            last_updated=int(guild_object.last_updated['queue']),
                            # radios=sort_radios(radio_dict),
                            admin=admin,
-                           socket_host=os.environ.get('SOCKET_HOST', None),
+                           socket_host=os.environ.get('SOCKET_HOST', '127.0.0.1:5001'),
                            )
 
 # ---------------------------------------------------- HTMX ------------------------------------------------------------
@@ -1404,15 +1408,18 @@ def main():
     debug = True if debug == 'true' or debug is True else False
     port = int(os.environ.get('PORT', 5000))
     host = os.environ.get('HOST', '127.0.0.1')
+    sim = os.environ.get('SIMULATE')
 
     # host = '0.0.0.0'
 
-    simulation = 0
-    os.environ['SIMULATE'] = str(simulation)
+    # simulation = 0
+    # os.environ['SIMULATE'] = str(simulation)
+
 
     print('DEBUG:', debug)
     print('PORT:', port)
     print('HOST:', host)
+    print('SIMULATE:', sim)
 
     # print('type DEBUG:', type(debug))
     # print('type PORT:', type(port))

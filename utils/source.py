@@ -48,7 +48,7 @@ class GetSource(discord.PCMVolumeTransformer):
         super().__init__(source, guild(glob, guild_id).options.volume)
 
     @classmethod
-    async def create_source(cls, glob: GlobalVars, guild_id: int, url: str, source_type: str = 'Video', time_stamp: int=None, video_class=None, attempt: int=0) -> tuple[GetSource, list]:
+    async def create_source(cls, glob: GlobalVars, guild_id: int, url: str, source_type: str = 'Video', time_stamp: int=None, video_class=None, attempt: int=0) -> tuple[GetSource, dict]:
         """
         Get source from url
 
@@ -64,13 +64,14 @@ class GetSource(discord.PCMVolumeTransformer):
         :param time_stamp: int - time stamp in seconds
         :param attempt: int - how many times has this function been called
 
-        :return source: discord.FFmpegPCMAudio, chapters: list
+        :return source: discord.FFmpegPCMAudio, additional_data: dict
         """
         source_ffmpeg_options = {
             'before_options': f'{f"-ss {time_stamp} " if time_stamp else ""}-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
             'options': '-vn'
         }
         chapters = None
+        heatmap = None
 
         if source_type == 'Video':
             org_url = url
@@ -80,6 +81,9 @@ class GetSource(discord.PCMVolumeTransformer):
             if 'chapters' in data:
                 chapters = data['chapters']
 
+            if 'heatmap' in data:
+                heatmap = data['heatmap']
+
             if 'entries' in data:
                 data = data['entries'][0]
 
@@ -88,7 +92,7 @@ class GetSource(discord.PCMVolumeTransformer):
             if not response:
                 log(guild_id, f'Failed to get source', options={'attempt': attempt, 'org_url': org_url, 'code': code, 'url': url},  log_type='error')
                 if attempt > 9:
-                    raise ConnectionRefusedError(f'Failed to get source after 10 attempts: {org_url}')
+                    raise ConnectionRefusedError(f'Failed to get source after 10 attempts: `{org_url}`')
                 else:
                     attempt += 1
                     return await cls.create_source(glob, guild_id, org_url, source_type, time_stamp, video_class, attempt)
@@ -111,4 +115,4 @@ class GetSource(discord.PCMVolumeTransformer):
         if video_class:
             video_class.stream_url = url
 
-        return cls(glob, guild_id, discord.FFmpegPCMAudio(url, **source_ffmpeg_options)), chapters
+        return cls(glob, guild_id, discord.FFmpegPCMAudio(url, **source_ffmpeg_options)), {'chapters': chapters, 'heatmap': heatmap}

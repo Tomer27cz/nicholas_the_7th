@@ -59,6 +59,7 @@ async def web_video_edit(web_data, glob: GlobalVars, form) -> ReturnData:
     created_at = form['created_at']
     played_duration = form['played_duration']
     chapters = form['chapters']
+    heatmap = form['heatmap']
     discord_channel = form['discord_channel']
     stream_url = form['stream_url']
 
@@ -88,6 +89,8 @@ async def web_video_edit(web_data, glob: GlobalVars, form) -> ReturnData:
         played_duration = None
     if chapters in none_list:
         chapters = None
+    if heatmap in none_list:
+        heatmap = None
     if discord_channel in none_list:
         discord_channel = None
     if stream_url in none_list:
@@ -137,6 +140,13 @@ async def web_video_edit(web_data, glob: GlobalVars, form) -> ReturnData:
         except (TypeError, ValueError, json.decoder.JSONDecodeError, AssertionError, SyntaxError):
             return ReturnData(False, f'Invalid chapters: {chapters}')
 
+    if heatmap:
+        try:
+            heatmap = ast.literal_eval(heatmap)
+            assert isinstance(heatmap, list)
+        except (TypeError, ValueError, json.decoder.JSONDecodeError, AssertionError, SyntaxError):
+            return ReturnData(False, f'Invalid heatmap: {heatmap}')
+
     if discord_channel:
         try:
             discord_channel = ast.literal_eval(discord_channel)
@@ -148,7 +158,7 @@ async def web_video_edit(web_data, glob: GlobalVars, form) -> ReturnData:
                                duration=duration,
                                channel_name=channel_name, channel_link=channel_link, radio_info=radio_info,
                                local_number=local_number, created_at=created_at, played_duration=played_duration,
-                               chapters=chapters,
+                               chapters=chapters, heatmap=heatmap,
                                discord_channel=discord_channel, stream_url=stream_url)
 
     if is_np:

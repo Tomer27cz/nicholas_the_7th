@@ -133,15 +133,16 @@ def tl(glob: GlobalVars, log_type: int, guild_id: int=None, channel_id: int=None
     |BOT|
     0 = bot started,
 
-    |VC|
-    1 = joined VC,
-    2 = left VC,
-
-    |PLAY|
-    3 = started playing,
-    4 = un-paused,
-    5 = bot stopped playing,
-    6 = paused,
+    deprecated
+    xx|VC|
+    xx1 = joined VC,
+    xx2 = left VC,
+    xx
+    xx|PLAY|
+    xx3 = started playing,
+    xx4 = un-paused,
+    xx5 = bot stopped playing,
+    xx6 = paused,
 
     |GUILD|
     7 = guild joined,

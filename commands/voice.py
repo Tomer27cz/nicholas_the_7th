@@ -40,18 +40,13 @@ async def stop_def(ctx, glob: GlobalVars, mute_response: bool = False, keep_loop
 
     voice.stop()
 
-    # TIME LOG
-    tl(glob, 5, guild_id=guild_id)
-    if voice.is_paused():
-        tl(glob, 4, guild_id=guild_id)  # perhaps not needed
-
     with glob.ses.no_autoflush:
         db_guild.options.stopped = True
         if not keep_loop:
             db_guild.options.loop = False
         glob.ses.commit()
 
-    await now_to_history(glob, guild_id)
+    await now_to_history(glob, db_guild)
 
     await push_update(glob, guild_id, ['all'])
 
@@ -77,7 +72,6 @@ async def pause_def(ctx, glob, mute_response: bool = False) -> ReturnData:
     if voice:
         if voice.is_playing():
             voice.pause()
-            tl(glob, 6, guild_id=guild_id)
             if db_guild.now_playing:
                 set_stopped(glob, db_guild.now_playing)
             message = txt(guild_id, glob, "Player **paused!**")
@@ -116,7 +110,6 @@ async def resume_def(ctx, glob: GlobalVars, mute_response: bool = False) -> Retu
     if voice:
         if voice.is_paused():
             voice.resume()
-            tl(glob, 4, guild_id=guild_id)
             if db_guild.now_playing:
                 set_resumed(glob, db_guild.now_playing)
             message = txt(guild_id, glob, "Player **resumed!**")
@@ -138,13 +131,14 @@ async def resume_def(ctx, glob: GlobalVars, mute_response: bool = False) -> Retu
         await ctx.reply(message, ephemeral=True)
     return ReturnData(resp, message)
 
-async def join_def(ctx, glob: GlobalVars, channel_id=None, mute_response: bool = False) -> ReturnData:
+async def join_def(ctx, glob: GlobalVars, channel_id=None, mute_response: bool = False, no_push: bool=False) -> ReturnData:
     """
     Join voice channel
     :param ctx: Context
     :param glob: GlobalVars
     :param channel_id: id of channel to join
     :param mute_response: Should bot response be muted
+    :param no_push: Should push update be skipped
     :return: ReturnData
     """
     log(ctx, 'join_def', options=locals(), log_type='function', author=ctx.author)
@@ -157,33 +151,25 @@ async def join_def(ctx, glob: GlobalVars, channel_id=None, mute_response: bool =
     author_channel = None
 
     if not channel_id:
-        # if not from ctx and no channel_id provided return False
         if not is_ctx:
             return ReturnData(False, txt(guild_id, glob, 'No channel_id provided'))
 
-        if ctx.author.voice:
-            # get author voice channel
-            author_channel = ctx.author.voice.channel
-
-            if ctx.voice_client:
-                # if bot is already connected to author channel return True
-                if ctx.voice_client.channel == author_channel:
-                    message = txt(guild_id, glob, "I'm already in this channel")
-                    if not mute_response:
-                        await ctx.reply(message, ephemeral=True)
-                    return ReturnData(True, message)
-        else:
-            # if author is not connected to a voice channel return False
+        if not ctx.author.voice:
             message = txt(guild_id, glob, "You are **not connected** to a voice channel")
             await ctx.reply(message, ephemeral=True)
             return ReturnData(False, message)
 
+        author_channel = ctx.author.voice.channel
+
+        if ctx.voice_client:
+            if ctx.voice_client.channel == author_channel:
+                message = txt(guild_id, glob, "I'm already in this channel")
+                if not mute_response:
+                    await ctx.reply(message, ephemeral=True)
+                return ReturnData(True, message)
+
     try:
-        # get voice channel
-        if author_channel:
-            voice_channel = author_channel
-        else:
-            voice_channel = glob.bot.get_channel(int(channel_id))
+        voice_channel = author_channel if author_channel else glob.bot.get_channel(int(channel_id))
 
         # check if bot has permission to join channel
         if not voice_channel.permissions_for(guild_object.me).connect:
@@ -203,17 +189,14 @@ async def join_def(ctx, glob: GlobalVars, channel_id=None, mute_response: bool =
             await ctx.reply(message, ephemeral=True)
             return ReturnData(False, message)
 
-        # disconnect from voice channel if connected
         if guild_object.voice_client:
             await guild_object.voice_client.disconnect(force=True)
-        # connect to voice channel
+
         await voice_channel.connect()
-        # deafen bot
         await guild_object.change_voice_state(channel=voice_channel, self_deaf=True)
 
-        await push_update(glob, guild_id, ['all'])
-        
-        tl(glob, 1, guild_id=guild_id, channel_id=voice_channel.id)
+        if not no_push:
+            await push_update(glob, guild_id, ['all'])
 
         message = f"{txt(guild_id, glob, 'Joined voice channel:')}  `{voice_channel.name}`"
         if not mute_response:
@@ -251,9 +234,6 @@ async def disconnect_def(ctx, glob: GlobalVars, mute_response: bool = False) -> 
 
         await push_update(glob, guild_id, ['all'])
         await now_to_history(glob, guild_id)
-
-        # already logs in voice state update
-        # tl(glob, 2, guild_id=guild_id, channel_id=channel.id)
 
         message = f"{txt(guild_id, glob, 'Left voice channel:')} `{channel}`"
         if not mute_response:

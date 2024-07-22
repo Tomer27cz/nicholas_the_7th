@@ -9,6 +9,11 @@ class VideoChapter(TypedDict):
     title: str
     end_time: float
 
+class VideoHeatMap(TypedDict):
+    start_time: float
+    end_time: float
+    value: float
+
 class LastUpdated(TypedDict):
     queue: int
     now: int
@@ -36,6 +41,7 @@ class DBData(TypedDict):
     count_songs_played: int
     count_skipped: int
     count_error: int
+    count_voice_sessions: int
 
 # ---------------------------------------------- Web Search ------------------------------------------------------------
 

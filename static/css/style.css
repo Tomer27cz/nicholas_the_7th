@@ -717,6 +717,31 @@ input.radio-checkbox[type=radio] + label {
     gap: 1rem;
 }
 
+/* heatmap */
+.h-div {
+    position: relative;
+    top: 1rem;
+}
+.h-svg {
+    fill: var(--d-g1);
+    height: 2rem;
+    width: 100%;
+}
+.h-p-div {
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 0 !important;
+}
+
+/* chapters */
+.p-div-m {
+    display: flex;
+    height: 1rem;
+    font-size: 0.25rem;
+    border-radius: 0.375rem;
+    position: relative;
+    top: 1rem;
+}
+
 /* progress bar */
 .p-div {
     display: flex;
@@ -725,14 +750,6 @@ input.radio-checkbox[type=radio] + label {
     font-size: 0.25rem;
     background-color: #343a40;
     border-radius: 0.375rem;
-}
-.p-div-m {
-    display: flex;
-    height: 1rem;
-    font-size: 0.25rem;
-    border-radius: 0.375rem;
-    position: relative;
-    top: 1rem;
 }
 
 .p-bar {
@@ -1061,5 +1078,14 @@ input.radio-checkbox[type=radio] + label {
     position: absolute;
     left: 50%;
 }
+
+/* spinner */
+.spinner {
+    display: none;
+}
+.spinner.htmx-request {
+    display: block;
+}
+
 
 
