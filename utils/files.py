@@ -55,6 +55,6 @@ def get_guild_text_channels_file(glob: GlobalVars, guild_id: int):
 
 def get_log_files():
     log_files = []
-    for file in os.listdir(f"{PARENT_DIR}db/log"):
+    for file in os.listdir(f"{PARENT_DIR}logs"):
         log_files.append(file)
     return log_files

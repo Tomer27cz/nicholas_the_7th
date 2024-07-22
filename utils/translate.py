@@ -29,7 +29,7 @@ def txt(guild_id: int, glob: GlobalVars or SQLAlchemy, content: str, lang: typin
         content = str(languages_shortcuts_dict[content])
 
     if str(content) not in languages_dict[lang].keys():
-        with open('db/missing.txt', 'a', encoding='utf-8') as file:
+        with open('json/missing.txt', 'a', encoding='utf-8') as file:
             # lines = file.readlines()
             # if content not in lines:
             file.write(f'{lang},{content}\n')

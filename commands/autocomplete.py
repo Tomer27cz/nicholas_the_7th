@@ -47,14 +47,30 @@ def get_picture(source: str) -> str:
 
     return ''
 
+def clp(source: str, length: int=99) -> str:
+    """
+    Cut the string to the length
+    :param source: Source string
+    :param length: Length of the string
+    :return: str
+    """
+    if length is None or length == 0:
+        return source
+
+    if length < 3:
+        raise ValueError("length must be at least 3")
+
+    return source[:length-3] + '...' if len(source) > length else source
+
 # ------------------------------------------------------ QUERY ---------------------------------------------------------
 
 async def youtube_autocomplete_def(ctx: discord.Interaction or None,
                                    query: str,
                                    limit: int=5,
                                    raw: bool=False,
-                                   search_type: str='videos'
-                                   ):
+                                   search_type: str='videos',
+                                   title_max_length: int=99
+                                   ) -> List[discord.app_commands.Choice] or List[WebSearchResult]:
     """
     Autocomplete for a YouTube query
     :param ctx: Interaction
@@ -62,6 +78,7 @@ async def youtube_autocomplete_def(ctx: discord.Interaction or None,
     :param limit: Limit of the results
     :param raw: Return the raw data (not as a discord.app_commands.Choice)
     :param search_type: Type of search (videos, playlists, livestreams, all)
+    :param title_max_length: Max length of the title (99 - for discord, None or 0 - for no limit)
     :return: List[discord.app_commands.Choice]
     """
     if not query:
@@ -77,29 +94,33 @@ async def youtube_autocomplete_def(ctx: discord.Interaction or None,
         search = Search(query)
 
     custom_search_result = await search.next()
-    if custom_search_result['result']:
-        _return = []
+    if not custom_search_result['result']:
+        return []
 
-        for result in custom_search_result['result']:
-            if result['type'] == 'channel':
-                continue
+    _return = []
+    for result in custom_search_result['result']:
+        if result['type'] == 'channel':
+            continue
 
-            if raw:
-                thumbnail = result['thumbnails'][0]['url'] if result['thumbnails'] else f'https://img.youtube.com/vi/{result["id"]}/default.jpg'
-                _return.append({'title': result['title'], 'value': result['link'], 'source': 'YouTube', 'picture': thumbnail})
-                continue
+        if raw:
+            thumbnail = result['thumbnails'][0]['url'] if result[
+                'thumbnails'] else f'https://img.youtube.com/vi/{result["id"]}/default.jpg'
+            _return.append(
+                {'title': clp(result['title'], title_max_length), 'value': result['link'], 'source': 'YouTube', 'picture': thumbnail})
+            continue
 
-            _return.append(discord.app_commands.Choice(name=f"YouTube: {result['title']}", value=result['link']))
+        _return.append(discord.app_commands.Choice(name=clp(f"YouTube: {result['title']}", title_max_length), value=result['link']))
 
-        return _return[:limit]
-    return []
-async def tunein_autocomplete_def(ctx: discord.Interaction or None, query: str, limit: int=5, raw: bool=False) -> List[discord.app_commands.Choice] or List[WebSearchResult]:
+    return _return[:limit]
+
+async def tunein_autocomplete_def(ctx: discord.Interaction or None, query: str, limit: int=5, raw: bool=False, title_max_length: int=99) -> List[discord.app_commands.Choice] or List[WebSearchResult]:
     """
     Autocomplete for a TuneIn query
     :param ctx: Interaction
     :param query: String to be autocompleted
     :param limit: Limit of the results
     :param raw: Return the raw data (not as a discord.app_commands.Choice)
+    :param title_max_length: Max length of the title (99 - for discord, None or 0 - for no limit)
     :return: List[discord.app_commands.Choice]
     """
     if not query:
@@ -108,24 +129,25 @@ async def tunein_autocomplete_def(ctx: discord.Interaction or None, query: str, 
     resp = await search_tunein(query, limit=5)
 
     tunein_status = resp[0]
-    tunein_result: list[TuneInSearch] = resp[1]
-    audio_results: list[TuneInSearch] = [result for result in tunein_result if result.get('type', None) == 'audio']
+    if not tunein_status:
+        return []
 
-    if tunein_status:
-        if raw:
-            return [{'title': station['text'], 'value': f"_tunein:{station['guide_id']}", 'source': 'TuneIn', 'picture': station['image']} for station in audio_results]
+    audio_results: list[TuneInSearch] = [result for result in resp[1] if result.get('type', None) == 'audio']
 
-        _return = [discord.app_commands.Choice(name=f"TuneIn: {station['text']}", value=f"_tunein:{station['guide_id']}") for station in audio_results]
-        return _return[:limit]
+    if raw:
+        return [{'title': clp(station['text'], title_max_length), 'value': f"_tunein:{station['guide_id']}", 'source': 'TuneIn', 'picture': station['image']} for station in audio_results]
 
-    return []
-async def garden_autocomplete_def(ctx: discord.Interaction or None, query: str, limit: int=5, raw: bool=False) -> List[discord.app_commands.Choice] or List[WebSearchResult]:
+    _return = [discord.app_commands.Choice(name=clp(f"TuneIn: {station['text']}", title_max_length), value=f"_tunein:{station['guide_id']}") for station in audio_results]
+    return _return[:limit]
+
+async def garden_autocomplete_def(ctx: discord.Interaction or None, query: str, limit: int=5, raw: bool=False, title_max_length: int=99) -> List[discord.app_commands.Choice] or List[WebSearchResult]:
     """
     Autocomplete for a RadioGarden query
     :param ctx: Interaction
     :param query: String to be autocompleted
     :param limit: Limit of the results
     :param raw: Return the raw data (not as a discord.app_commands.Choice)
+    :param title_max_length: Max length of the title (99 - for discord, None or 0 - for no limit)
     :return: List[discord.app_commands.Choice]
     """
     if not query:
@@ -137,17 +159,17 @@ async def garden_autocomplete_def(ctx: discord.Interaction or None, query: str, 
             data: RadioGardenSearch = await response.json()
 
     results = data['hits']['hits']
+    if not results:
+        return []
 
-    if results:
-        results = [station for station in results if station['_source']['type'] == 'channel']
+    results = [station for station in results if station['_source']['type'] == 'channel']
 
-        if raw:
-            return [{'title': station['_source']['title'], 'value': f"https://radio.garden{station['_source']['url']}", 'source': 'RadioGarden', 'picture': 'https://radio.garden/icons/favicon.png'} for station in results]
+    if raw:
+        return [{'title': clp(station['_source']['title'], title_max_length), 'value': f"https://radio.garden{station['_source']['url']}", 'source': 'RadioGarden', 'picture': 'https://radio.garden/icons/favicon.png'} for station in results]
 
-        _return = [discord.app_commands.Choice(name=f"RadioGarden: {station['_source']['title']}", value=f"https://radio.garden{station['_source']['url']}") for station in results]
-        return _return[:limit]
+    _return = [discord.app_commands.Choice(name=clp(f"RadioGarden: {station['_source']['title']}", title_max_length), value=f"https://radio.garden{station['_source']['url']}") for station in results]
+    return _return[:limit]
 
-    return []
 
 async def query_autocomplete_def(ctx: discord.Interaction or None, query: str,
                                  include_youtube: bool=False,
@@ -157,7 +179,8 @@ async def query_autocomplete_def(ctx: discord.Interaction or None, query: str,
                                  include_local: bool=False,
                                  raw: bool=False,
                                  limit: int=5,
-                                 youtube_search_type: str='videos'
+                                 youtube_search_type: str='videos',
+                                 title_max_length: int=99
                                  ) -> List[discord.app_commands.Choice] or List[WebSearchResult]:
     """
     Autocompletion for a query (play, nextup, queue, search ...)
@@ -171,6 +194,7 @@ async def query_autocomplete_def(ctx: discord.Interaction or None, query: str,
     :param raw: Return the raw data (not as a discord.app_commands.Choice)
     :param limit: Limit of the results per source
     :param youtube_search_type: Type of search for YouTube
+    :param title_max_length: Max length of the title (99 - for discord, None or 0 - for no limit)
     :return: List[discord.app_commands.Choice]
     """
     if not query:
@@ -185,19 +209,19 @@ async def query_autocomplete_def(ctx: discord.Interaction or None, query: str,
 
     tasks = []
     if include_youtube:
-        tasks.append(youtube_autocomplete_def(ctx, query, raw=raw, limit=limit, search_type=youtube_search_type))
+        tasks.append(youtube_autocomplete_def(ctx, query, raw=raw, limit=limit, search_type=youtube_search_type, title_max_length=title_max_length))
 
     if include_tunein:
-        tasks.append(tunein_autocomplete_def(ctx, query, raw=raw, limit=limit))
+        tasks.append(tunein_autocomplete_def(ctx, query, raw=raw, limit=limit, title_max_length=title_max_length))
 
     if include_radio:
-        tasks.append(radio_autocomplete_def(ctx, query, raw=raw, limit=limit))
+        tasks.append(radio_autocomplete_def(ctx, query, raw=raw, limit=limit, title_max_length=title_max_length))
 
     if include_garden:
-        tasks.append(garden_autocomplete_def(ctx, query, raw=raw, limit=limit))
+        tasks.append(garden_autocomplete_def(ctx, query, raw=raw, limit=limit, title_max_length=title_max_length))
 
     if include_local:
-        tasks.append(local_autocomplete_def(ctx, query, raw=raw, limit=limit))
+        tasks.append(local_autocomplete_def(ctx, query, raw=raw, limit=limit, title_max_length=title_max_length))
 
     async with aiohttp.ClientSession() as _session:
         _results = await asyncio.gather(*tasks, return_exceptions=False)
@@ -210,12 +234,13 @@ async def query_autocomplete_def(ctx: discord.Interaction or None, query: str,
 
 # ------------------------------------------------------- LOCAL --------------------------------------------------------
 
-async def help_autocomplete_def(ctx: discord.Interaction or None, query: str, glob: GlobalVars) -> List[discord.app_commands.Choice]:
+async def help_autocomplete_def(ctx: discord.Interaction or None, query: str, glob: GlobalVars, title_max_length: int=99) -> List[discord.app_commands.Choice]:
     """
     Autocomplete for the help command
     :param ctx: Interaction
     :param query: String to be autocompleted
     :param glob: GlobalVars
+    :param title_max_length: Max length of the title (99 - for discord, None or 0 - for no limit)
     :return: List[discord.app_commands.Choice]
     """
 
@@ -223,95 +248,94 @@ async def help_autocomplete_def(ctx: discord.Interaction or None, query: str, gl
     list_of_commands.sort()
 
     if not query:
-        return [discord.app_commands.Choice(name=command, value=command) for command in list_of_commands[:25]]
+        return [discord.app_commands.Choice(name=clp(command, title_max_length), value=command) for command in list_of_commands[:25]]
 
     data = []
     for command in list_of_commands:
         if query.lower() in command.lower():
-            data.append(discord.app_commands.Choice(name=command, value=command))
+            data.append(discord.app_commands.Choice(name=clp(command, title_max_length), value=command))
 
     if len(data) > 25:
         return data[:25]
 
     return data
 
-async def song_autocomplete_def(ctx: discord.Interaction, query: str, glob: GlobalVars) -> List[discord.app_commands.Choice]:
+async def song_autocomplete_def(ctx: discord.Interaction, query: str, glob: GlobalVars, title_max_length: int=99) -> List[discord.app_commands.Choice]:
     """
     Autocomplete for the songs in the queue
     :param ctx: Interaction
     :param query: String to be autocompleted
     :param glob: GlobalVars
+    :param title_max_length: Max length of the title (99 - for discord, None or 0 - for no limit)
     :return: str
     """
     song_data = [_ for _ in glob.ses.query(Queue).filter(Queue.guild_id == ctx.guild.id).with_entities(Queue.title, Queue.position).all()]
 
     if not query:
         if len(song_data) > 25:
-            return [discord.app_commands.Choice(name=f"{song[1]} - {song[0]}", value=str(song[1])) for song in song_data[:25]]
-        return [discord.app_commands.Choice(name=f"{song[1]} - {song[0]}", value=str(song[1])) for song in song_data]
+            return [discord.app_commands.Choice(name=clp(f"{song[1]} - {song[0]}", title_max_length), value=str(song[1])) for song in song_data[:25]]
+        return [discord.app_commands.Choice(name=clp(f"{song[1]} - {song[0]}", title_max_length), value=str(song[1])) for song in song_data]
 
     if query.isdigit():
-        return [discord.app_commands.Choice(name=f"{song[1]} - {song[0]}", value=str(song[1])) for song in song_data if query in str(song[1])]
+        return [discord.app_commands.Choice(name=clp(f"{song[1]} - {song[0]}", title_max_length), value=str(song[1])) for song in song_data if query in str(song[1])]
 
-    return [discord.app_commands.Choice(name=f"{song[1]} - {song[0]}", value=str(song[1])) for song in song_data if query.lower() in song[0].lower()]
+    return [discord.app_commands.Choice(name=clp(f"{song[1]} - {song[0]}", title_max_length), value=str(song[1])) for song in song_data if query.lower() in song[0].lower()]
 
-async def radio_autocomplete_def(ctx: discord.Interaction or None, query: str, limit: int=5, raw: bool=False) -> List[discord.app_commands.Choice] or List[WebSearchResult]:
+async def radio_autocomplete_def(ctx: discord.Interaction or None, query: str, limit: int=5, raw: bool=False, title_max_length: int=99) -> List[discord.app_commands.Choice] or List[WebSearchResult]:
     """
     Autocomplete for the radio stations
     :param ctx: Interaction
     :param query: String to be autocompleted
     :param limit: Limit of the results
     :param raw: Return the raw data (not as a discord.app_commands.Choice)
+    :param title_max_length: Max length of the title (99 - for discord, None or 0 - for no limit)
     :return: List[discord.app_commands.Choice]
     """
     if not query and not raw:
-        return [discord.app_commands.Choice(name=f"RadiaCz: {station['id']} - {station['name']}", value=f'_radia_cz:{station['id']}') for station in list(radio_dict.values())[:-1]][:limit]
+        return [discord.app_commands.Choice(name=clp(f"RadiaCz: {station['id']} - {station['name']}", title_max_length), value=f'_radia_cz:{station['id']}') for station in list(radio_dict.values())[:-1]][:limit]
 
     if query.isdigit():
         stations = [station for station in list(radio_dict.values())[:-1] if query in str(station['id'])]
         if raw:
-            return [{'title': f"{station['name']}", 'value': f'_radia_cz:{station['id']}', 'source': 'RadiaCz', 'picture': station['logo']} for station in stations][:limit]
+            return [{'title': clp(f"{station['name']}", title_max_length), 'value': f'_radia_cz:{station['id']}', 'source': 'RadiaCz', 'picture': station['logo']} for station in stations][:limit]
 
-        return [discord.app_commands.Choice(name=f"RadiaCz: {station['id']} - {station['name']}", value=f'_radia_cz:{station['id']}') for station in stations][:limit]
+        return [discord.app_commands.Choice(name=clp(f"RadiaCz: {station['id']} - {station['name']}", title_max_length), value=f'_radia_cz:{station['id']}') for station in stations][:limit]
 
     radios = []
     for station in list(radio_dict.values())[:-1]:
         if czech_to_ascii(query.lower()) in czech_to_ascii(station['name'].lower()):
             if raw:
-                radios.append({'title': f"{station['name']}", 'value': f'_radia_cz:{station['id']}', 'source': 'RadiaCz', 'picture': station['logo']})
+                radios.append({'title': clp(f"{station['name']}", title_max_length), 'value': f'_radia_cz:{station['id']}', 'source': 'RadiaCz', 'picture': station['logo']})
                 continue
 
-            radios.append(discord.app_commands.Choice(name=f"RadiaCz: {station['id']} - {station['name']}", value=f'_radia_cz:{station['id']}'))
+            radios.append(discord.app_commands.Choice(name=clp(f"RadiaCz: {station['id']} - {station['name']}", title_max_length), value=f'_radia_cz:{station['id']}'))
 
     return radios[:limit]
 
-async def local_autocomplete_def(ctx: discord.Interaction or None, query: str, limit: int=5, raw: bool=False) -> List[discord.app_commands.Choice] or List[WebSearchResult]:
+async def local_autocomplete_def(ctx: discord.Interaction or None, query: str, limit: int=5, raw: bool=False, title_max_length: int=99) -> List[discord.app_commands.Choice] or List[WebSearchResult]:
     """
     Autocomplete for the sound effects
     :param ctx: Interaction
     :param query: String to be autocompleted
     :param limit: Limit of the results
     :param raw: Return the raw data (not as a discord.app_commands.Choice)
+    :param title_max_length: Max length of the title (99 - for discord, None or 0 - for no limit)
     :return: List[discord.app_commands.Choice]
     """
     if not query and not raw:
-        return [discord.app_commands.Choice(name=f"Local: {index+1} - {sound}", value=f'_local:{index+1}') for index, sound in enumerate(sound_effects[:limit])]
+        _return = []
+        for index, sound in enumerate(sound_effects[:limit]):
+            _return.append(discord.app_commands.Choice(name=clp(f"Local: {index+1} - {sound}", title_max_length), value=f'_local:{index+1}'))
+
+        return [discord.app_commands.Choice(name=clp(f"Local: {index+1} - {sound}", title_max_length), value=f'_local:{index+1}') for index, sound in enumerate(sound_effects[:limit])]
 
     if query.isdigit():
         if raw:
-            return [{'title': f"{index+1} - {sound}", 'value': f'_local:{index+1}', 'source': 'Local', 'picture': VLC_LOGO} for index, sound in enumerate(sound_effects) if query in str(index+1)][:limit]
+            return [{'title': clp(f"{index+1} - {sound}", title_max_length), 'value': f'_local:{index+1}', 'source': 'Local', 'picture': VLC_LOGO} for index, sound in enumerate(sound_effects) if query in str(index+1)][:limit]
 
-        return [discord.app_commands.Choice(name=f"Local: {index+1} - {sound}", value=f'_local:{index+1}') for index, sound in enumerate(sound_effects) if query in str(index+1)][:limit]
+        return [discord.app_commands.Choice(name=clp(f"Local: {index+1} - {sound}", title_max_length), value=f'_local:{index+1}') for index, sound in enumerate(sound_effects) if query in str(index+1)][:limit]
 
     if raw:
-        return [{'title': f"{index+1} - {sound}", 'value': f'_local:{index+1}', 'source': 'Local', 'picture': VLC_LOGO} for index, sound in enumerate(sound_effects) if query.lower() in sound.lower()][:limit]
+        return [{'title': clp(f"{index+1} - {sound}", title_max_length), 'value': f'_local:{index+1}', 'source': 'Local', 'picture': VLC_LOGO} for index, sound in enumerate(sound_effects) if query.lower() in sound.lower()][:limit]
 
-    return [discord.app_commands.Choice(name=f"Local: {index+1} - {sound}", value=f'_local:{index+1}') for index, sound in enumerate(sound_effects) if query.lower() in sound.lower()][:limit]
-
-
-
-
-
-
-
-
+    return [discord.app_commands.Choice(name=clp(f"Local: {index+1} - {sound}", title_max_length), value=f'_local:{index+1}') for index, sound in enumerate(sound_effects) if query.lower() in sound.lower()][:limit]

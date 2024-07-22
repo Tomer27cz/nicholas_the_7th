@@ -208,6 +208,9 @@ async def play_def(ctx, glob: GlobalVars,
         else:
             return ReturnData(True, message)
 
+    except ConnectionRefusedError as e:
+        await ctx.reply(e)
+        return ReturnData(False, e)
     except (AttributeError, IndexError, TypeError, discord.errors.ClientException,
             discord.errors.NotFound):
         log(ctx, "------------------------------- play -------------------------")

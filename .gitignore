@@ -62,6 +62,10 @@ docs/_build/
 # PyBuilder
 target/
 *.db
-/db/log
 .env
 .env_real
+/logs
+logs/data.log
+logs/log.log
+/logs
+*.log

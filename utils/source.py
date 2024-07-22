@@ -88,7 +88,7 @@ class GetSource(discord.PCMVolumeTransformer):
             if not response:
                 log(guild_id, f'Failed to get source', options={'attempt': attempt, 'org_url': org_url, 'code': code, 'url': url},  log_type='error')
                 if attempt > 9:
-                    pass
+                    raise ConnectionRefusedError(f'Failed to get source after 10 attempts: {org_url}')
                 else:
                     attempt += 1
                     return await cls.create_source(glob, guild_id, org_url, source_type, time_stamp, video_class, attempt)

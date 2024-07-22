@@ -224,6 +224,16 @@ class Bot(dc_commands.Bot):
             await ctx.reply(txt(ctx.guild.id, glob, 'Bot does not have permissions to execute this command correctly') + f" - {error}")
             return
 
+        if 'Video unavailable.' in str(error):
+            # log(ctx, err_msg, log_type='error', author=ctx.author)
+            try:
+                error = error.original.original
+            except AttributeError:
+                pass
+
+            await ctx.reply(f'{error} -> It *may be* ***GeoBlocked*** in `Czechia` (bot server location)')
+            return
+
         try:
             # error.__cause__.__cause__ = HybridCommandError -> CommandInvokeError -> {Exception}
             if isinstance(error.__cause__.__cause__, PendingRollbackError):

@@ -11,4 +11,4 @@ EXPOSE 5001
 
 # Command is changed at runtime by docker-compose.yml
 # nohup python3 -u main.py &>> log/activity.log &
-CMD python -u socket/socketapp.py >> /bot/db/log/socket_activity.log 2>&1
+CMD python -u socket/socketapp.py >> /bot/logs/socket.log 2>&1

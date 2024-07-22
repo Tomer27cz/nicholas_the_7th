@@ -1029,7 +1029,7 @@ input.radio-checkbox[type=radio] + label {
     transition: background-color 0.5s;
 }
 .time-box {
-    width: 100%;
+    width: 50%;
     padding: 0.5rem;
     border-radius: 0.5rem;
     background-color: var(--d-g3);

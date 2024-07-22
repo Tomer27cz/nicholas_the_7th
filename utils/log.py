@@ -15,10 +15,14 @@ from discord.ext import commands as dc_commands
 import discord
 import logging
 import sys
+import os
 
 from config import OWNER_ID
 
 # ---------------- Create Loggers ------------
+
+# Check if inside docker
+inside_docker = True if os.environ.get('INSIDE_DOCKER', False) in ['True', 'true'] else False
 
 # Formatters
 formatter = logging.Formatter('%(asctime)s.%(msecs)03d | %(name)s | %(message)s', datefmt='%d/%m/%Y %H:%M:%S')
@@ -29,10 +33,10 @@ print_handler.setLevel(logging.INFO)
 print_handler.setFormatter(formatter)
 
 # File handlers
-file_handler = logging.FileHandler('db/log/log.log', encoding='utf-8')
+file_handler = logging.FileHandler('logs/bot_logger.log', encoding='utf-8')
 file_handler.setLevel(logging.INFO)
 file_handler.setFormatter(formatter)
-web_handler = logging.FileHandler('db/log/web.log', encoding='utf-8')
+web_handler = logging.FileHandler('logs/web_logger.log', encoding='utf-8')
 web_handler.setLevel(logging.INFO)
 web_handler.setFormatter(formatter)
 
@@ -40,15 +44,17 @@ web_handler.setFormatter(formatter)
 main_logger = logging.getLogger('main')
 main_logger.setLevel(logging.INFO)
 main_logger.addHandler(print_handler)
-main_logger.addHandler(file_handler)
+if not inside_docker:
+    main_logger.addHandler(file_handler)
 
 # Web logger
 web_logger = logging.getLogger('web')
 web_logger.setLevel(logging.INFO)
 web_logger.addHandler(print_handler)
-web_logger.addHandler(web_handler)
+if not inside_docker:
+    web_logger.addHandler(web_handler)
 
-# logging.basicConfig(filename='db/log/log.log', level=logging.INFO, format='%(asctime)s | %(levelname)s | %(message)s')
+# logging.basicConfig(filename='logs/log.log', level=logging.INFO, format='%(asctime)s | %(levelname)s | %(message)s')
 
 def log(ctx: Union[dc_commands.Context, WebData, None, int], text_data, options: dict=None, log_type: Literal['command', 'function', 'web', 'text', 'ip', 'error', 'warning']='text', author=None) -> None:
     """
@@ -164,7 +170,7 @@ def collect_data(data) -> None:
     now_time_str = struct_to_time(time())
     message = f"{now_time_str} | {data}\n"
 
-    with open(f'db/log/data.log', "a", encoding="utf-8") as f:
+    with open(f'logs/data.log', "a", encoding="utf-8") as f:
         f.write(message)
 
 async def send_to_admin(glob: GlobalVars, data, file=False) -> None:

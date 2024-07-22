@@ -169,7 +169,7 @@ docker compose ps
 It should look something like this:
 ```
 NAME      IMAGE              COMMAND                                                     SERVICE   CREATED        STATUS        PORTS
-bot       bot-bot     "/bin/sh -c 'python main.py >> db/log/activity.log 2>&1'"   bot       19 hours ago   Up 18 hours   5420-5422/tcp
+bot       bot-bot     "/bin/sh -c 'python main.py >> logs/bot.log 2>&1'"   bot       19 hours ago   Up 18 hours   5420-5422/tcp
 nginx     bot-nginx   "/docker-entrypoint.sh nginx -g 'daemon off;'"              nginx     18 hours ago   Up 18 hours   0.0.0.0:80->80/tcp, :::80->80/tcp, 0.0.0.0:443->443/tcp, :::443->443/tcp, 0.0.0.0:5420->5420/tcp, :::5420->5420/tcp
 web       bot-web     "/bin/sh -c 'uwsgi app.ini'"                                web       18 hours ago   Up 18 hours   5420-5422/tcp
 ```
@@ -253,9 +253,9 @@ Idk witch one to use
     	Order allow,deny
     	Allow from all
     </Directory>
-    ErrorLog /var/www/bot/db/log/apache_error.log
+    ErrorLog /var/www/bot/logs/apache_error.log
     LogLevel warn
-    CustomLog /var/www/bot/db/log/apache_access.log combined
+    CustomLog /var/www/bot/logs/apache_access.log combined
 </VirtualHost>
 ```
 
@@ -268,7 +268,7 @@ Idk witch one to use
 - ``cd /var/www/bot`` - Move to main directory
 
 ```
-nohup python3 -u main.py &>> db/log/activity.log &
+nohup python3 -u main.py &>> logs/bot.log &
 ```
 - ``service apache2 restart`` - Restart apache2
 

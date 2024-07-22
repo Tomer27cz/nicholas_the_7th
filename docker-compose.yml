@@ -4,7 +4,7 @@ services:
       - bot
       - web
     build: .
-    command: python -u /app/main.py >> /app/db/log/activity.log 2>&1
+    command: python -u /app/main.py >> /app/logs/bot.log 2>&1
     privileged: true
     volumes:
       - .:/app
@@ -21,7 +21,7 @@ services:
     profiles:
       - web
     build: .
-    command: uwsgi /app/app.ini
+    command: uwsgi /app/app.ini >> /app/logs/web.log 2>&1
     privileged: true
     volumes:
       - .:/app
@@ -41,7 +41,7 @@ services:
     profiles:
       - web
     build: ./socket
-    command: python -u /app/socket/socketapp.py >> /app/db/log/socket_activity.log 2>&1
+    command: python -u /app/socket/socketapp.py >> /app/logs/socket.log 2>&1
     privileged: true
     volumes:
       - .:/app
@@ -59,7 +59,7 @@ services:
     profiles:
       - web
     volumes:
-      - ./db:/db
+      - ./logs:/logs
       - ./nginx.conf:/etc/nginx/nginx.conf
     container_name: nginx
     restart: always

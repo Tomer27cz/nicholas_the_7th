@@ -547,15 +547,15 @@ async def htmx_search(guild_id):
     act = request.args.get('act')
     if act == 'youtube':
         sp = request.args.get('sp', 'videos')
-        results: List[WebSearchResult] = await query_autocomplete_def(None, query=request.args.get('var'), include_youtube=True, raw=True, youtube_search_type=sp)
+        results: List[WebSearchResult] = await query_autocomplete_def(None, query=request.args.get('var'), include_youtube=True, raw=True, youtube_search_type=sp, title_max_length=None)
     elif act == 'tunein':
-        results: List[WebSearchResult] = await query_autocomplete_def(None, query=request.args.get('var'), include_tunein=True, raw=True)
+        results: List[WebSearchResult] = await query_autocomplete_def(None, query=request.args.get('var'), include_tunein=True, raw=True, title_max_length=None)
     elif act == 'radio':
-        results: List[WebSearchResult] = await query_autocomplete_def(None, query=request.args.get('var'), include_radio=True, raw=True)
+        results: List[WebSearchResult] = await query_autocomplete_def(None, query=request.args.get('var'), include_radio=True, raw=True, title_max_length=None)
     elif act == 'garden':
-        results: List[WebSearchResult] = await query_autocomplete_def(None, query=request.args.get('var'), include_garden=True, raw=True)
+        results: List[WebSearchResult] = await query_autocomplete_def(None, query=request.args.get('var'), include_garden=True, raw=True, title_max_length=None)
     elif act == 'local':
-        results: List[WebSearchResult] = await query_autocomplete_def(None, query=request.args.get('var'), include_local=True, raw=True)
+        results: List[WebSearchResult] = await query_autocomplete_def(None, query=request.args.get('var'), include_local=True, raw=True, title_max_length=None)
     else:
         return abort(404, 'Unknown search type')
 
@@ -808,7 +808,7 @@ async def admin_log_page(file_name):
         return abort(404, 'File not found')
 
     try:
-        with open(f'db/log/{file_name}', 'r', encoding='utf-8') as f:
+        with open(f'logs/{file_name}', 'r', encoding='utf-8') as f:
             lines = list(reversed([(value, index) for index, value in enumerate(f.readlines())]))
             chunks = math.ceil(len(lines) / 100)
     except Exception as e:
@@ -836,7 +836,7 @@ async def admin_log_page(file_name):
 #         return abort(404)
 #
 #     try:
-#         with open(f'{config.PARENT_DIR}db/{file_name}.json', 'r', encoding='utf-8') as f:
+#         with open(f'{config.PARENT_DIR}json/{file_name}.json', 'r', encoding='utf-8') as f:
 #             lines = list(reversed(f.readlines()))
 #             chunks = math.ceil(len(lines) / 100)
 #     except Exception as e:
@@ -858,7 +858,7 @@ async def admin_log_page(file_name):
 #     if int(user['id']) not in authorized_users:
 #         return abort(403)
 #
-#     with open(f'{config.PARENT_DIR}db/log/data.log', 'r', encoding='utf-8') as f:
+#     with open(f'{config.PARENT_DIR}logs/data.log', 'r', encoding='utf-8') as f:
 #         data_data = f.readlines()
 #
 #     return render_template('admin/text_file/data.html', user=user, data_data=data_data, title='Log')
@@ -880,7 +880,7 @@ async def admin_inflog_page():
         return abort(404, 'File not found')
 
     try:
-        with open(f'db/log/{log_type}', 'r', encoding='utf-8') as f:
+        with open(f'logs/{log_type}', 'r', encoding='utf-8') as f:
             lines = list(reversed([(value, index) for index, value in enumerate(f.readlines())]))
     except Exception as e:
         log(request.remote_addr, [str(e)], log_type='error', author=user['username'])

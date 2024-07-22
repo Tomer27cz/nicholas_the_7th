@@ -21,17 +21,17 @@ class GlobalVars:
 
 
 try:
-    with open(f'db/radios.json', 'r', encoding='utf-8') as file:
+    with open(f'json/radios.json', 'r', encoding='utf-8') as file:
         radio_dict = json.load(file)
 except Exception as e:
     log(None, f"Error loading radio_dict: {e}", log_type="error")
-    with open(f'db/radio.json', 'w', encoding='utf-8') as file:
+    with open(f'json/radio.json', 'w', encoding='utf-8') as file:
         radio_dict = json.load(file)
 
-with open(f'db/languages.json', 'r', encoding='utf-8') as file:
+with open(f'json/languages.json', 'r', encoding='utf-8') as file:
     languages_dict = json.load(file)
 
-with open(f'db/languages_shortcuts.json', 'r', encoding='utf-8') as file:
+with open(f'json/languages_shortcuts.json', 'r', encoding='utf-8') as file:
     languages_shortcuts_dict = json.load(file)
 
 def load_sound_effects():

@@ -115,7 +115,6 @@ async def search_tunein(query: str, limit: int=5) -> (bool, list):
     :return: (bool, list) - (successful, search results)
     """
     url = f'https://opml.radiotime.com/Search.ashx?query={urllib.parse.quote_plus(query)}&types=station&render=json&limit={limit}'
-    print(url)
     async with aiohttp.ClientSession() as _session:
         async with _session.get(url) as _response:
             if _response.status == 200:
@@ -173,7 +172,7 @@ async def update_radio_dict(force_update: bool=False) -> dict[str, RadiosJSON] o
     _return = dict(sorted(_return.items(), key=lambda x: int(x[1]['listened']), reverse=True))
     _return['last_updated'] = int(time.time())
 
-    with open('db/radios.json', 'w') as f:
+    with open('json/radios.json', 'w') as f:
         json.dump(_return, f, indent=4)
 
     globals()['radio_dict'] = _return
