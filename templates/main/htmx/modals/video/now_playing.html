@@ -6,7 +6,7 @@
   <div class="info-modal">
     <br>
     {% for key, value in guild.now_playing.__dict__.items() %}
-      <p>{{ key }}: <span class="v-info">{{ value }}</span></p>
+      <p class="{% if len(str(value)) > 300 %}collapsed{% endif %}" data-bs-toggle="collapse" data-bs-target="#n_{{ key }}" aria-expanded="{% if len(str(value)) > 300 %}false{% else %}true{% endif %}" aria-controls="n_{{ key }}">{{ key }}: <span class="v-info collapse multi-collapse {% if not len(str(value)) > 300 %}show{% endif %}" id="n_{{ key }}">{{ value }}</span></p>
     {% endfor %}
     <br>
   </div>

@@ -605,6 +605,14 @@ input.radio-checkbox[type=radio] + label {
     margin-bottom: 0.5rem;
     color: var(--json-purple);
 }
+.info-modal p:hover {
+    background: var(--d-g3);
+    cursor: pointer;
+}
+.info-modal p:is(.collapsed) {
+    cursor: pointer;
+    background: var(--d-g3);
+}
 
 .v-info {
     color: var(--json-green);

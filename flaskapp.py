@@ -139,6 +139,7 @@ def inject_data():
     return dict(lang='en',
                 auth=authorized_users,
                 int=int,
+                str=str,
                 range=range,
                 len=len,
                 vars=vars,

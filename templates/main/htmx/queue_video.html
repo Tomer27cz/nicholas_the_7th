@@ -5,16 +5,16 @@
         <div class="q-item0 q-div div-radio2 r-w1">
           <img loading="lazy" class="q-img" src="{{ track.radio_info['now_picture'] }}" alt="thumbnail">
           <div class="q-item1 q-wd">
-            <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="{{ track.url }}">{{ track.radio_info['now_title'] }}</a></p>
-            <p class="q-text"><a class="q-2" target="_blank" rel="noopener noreferrer" href="{{ track.channel_link }}">{{ track.radio_info['now_artist'] }}</a></p>
+            <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="{{ track.url }}">{{ track.radio_info['now_title'][:200] }}</a></p>
+            <p class="q-text"><a class="q-2" target="_blank" rel="noopener noreferrer" href="{{ track.channel_link }}">{{ track.radio_info['now_artist'][:200] }}</a></p>
           </div>
         </div>
       {% endif %}
     {% endif %}
     <img loading="lazy" class="q-img" src="{{ track.picture }}" alt="thumbnail">
     <div class="q-item1 {% if radio_info is not none %}r-w2{% else %}q-wd{% endif %}">
-      <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="{{ track.url }}">{{ track.title }}</a></p>
-      <p class="q-text"><a class="q-2" target="_blank" rel="noopener noreferrer" href="{{ track.channel_link }}">{{ track.channel_name }}</a></p>
+      <p class="q-text"><a class="q-1" target="_blank" rel="noopener noreferrer" href="{{ track.url }}">{{ track.title[:200] }}</a></p>
+      <p class="q-text"><a class="q-2" target="_blank" rel="noopener noreferrer" href="{{ track.channel_link }}">{{ track.channel_name[:200] }}</a></p>
       <p class="q-text q-3">{{ convert_duration(track.duration) }}</p>
     </div>
     <div class="q-item2 q-items-center">

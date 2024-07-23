@@ -8,7 +8,7 @@
     <br>
     <p>index: <span class="v-info">{{ guild.history.index(track) }}</span></p>
     {% for key, value in track.__dict__.items() %}
-      <p>{{ key }}: <span class="v-info">{{ value }}</span></p>
+      <p class="{% if len(str(value)) > 300 %}collapsed{% endif %}" data-bs-toggle="collapse" data-bs-target="#h{{ guild.history.index(track) }}_{{ key }}" aria-expanded="{% if len(str(value)) > 300 %}false{% else %}true{% endif %}" aria-controls="h{{ guild.history.index(track) }}_{{ key }}">{{ key }}: <span class="v-info collapse multi-collapse {% if not len(str(value)) > 300 %}show{% endif %}" id="h{{ guild.history.index(track) }}_{{ key }}">{{ value }}</span></p>
     {% endfor %}
     <br>
   </div>
