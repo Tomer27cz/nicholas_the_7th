@@ -1133,5 +1133,32 @@ input.radio-checkbox[type=radio] + label {
     display: block;
 }
 
-
-
+/* guilds status */
+.g-status-div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+.g-status-p {
+    background: var(--d-g3);
+    padding: 0.75rem;
+    border-radius: 1rem;
+    margin-bottom: 1rem;
+}
+.g-status-span {
+    background: var(--d-g1);
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    font-size: 1.5rem;
+}
+/* admin guild list button */
+.g-admin-button-div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+.g-admin-button {}

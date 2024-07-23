@@ -26,19 +26,24 @@
       <h1 class="btn-m">Admin</h1>
     </div>
     <div class="div-login">
-      <div class="row row-cols-lg-auto gap1 div-align-center">
-        <div class="col-12 btn-m">
+      <div class="g-status-div">
+        {% for key, value in hash_map.items() %}
+          <p class="g-status-p">{{ key }}: <span class="g-status-span">{{ value }}</span></p>
+        {% endfor %}
+      </div>
+      <div class="g-admin-button-div">
+        <div class="g-admin-button">
           <a href="/admin/file/" class="btn btn-success btn-m">Browse Files</a>
         </div>
-        <div class="col-12 btn-m">
-          <a href="/admin/log" class="btn btn-primary btn-m">Txt Tree</a>
+        <div class="g-admin-button">
+          <a href="/admin/log" class="btn btn-primary btn-m">Logs</a>
         </div>
-        <div class="col-12 btn-m">
-          <a href="/admin/log/log.log" class="btn btn-info btn-m">Show Log</a>
-        </div>
-        <div class="col-12 btn-m">
-          <a href="/admin/log/data.log?separate_lines=True" class="btn btn-info btn-m">Show Data</a>
-        </div>
+{#        <div class="g-admin-button">#}
+{#          <a href="/admin/log/log.log" class="btn btn-info btn-m">Show Log</a>#}
+{#        </div>#}
+{#        <div class="g-admin-button">#}
+{#          <a href="/admin/log/data.log?separate_lines=True" class="btn btn-info btn-m">Show Data</a>#}
+{#        </div>#}
       </div>
     </div>
 {#    <div class="div-login">#}

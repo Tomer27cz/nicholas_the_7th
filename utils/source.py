@@ -44,18 +44,29 @@ async def url_checker(url):
     except Exception as e:
         return False, e
 
-def format_subtitles(subtitles: dict) -> dict:
+def format_subtitles(subtitles: dict, subtitle_type: str='captions') -> dict:
     """
     Format subtitles only leave the json3 format like this:
     {'lang': 'url'}
 
     :param subtitles: dict
+    :param subtitle_type: str - 'captions' or 'subtitles'
     :return formatted_subtitles: dict
     """
     if subtitles is None:
         return subtitles
 
     subtitle_dict = {}
+    if subtitle_type == 'subtitles':
+        for lang, data in subtitles.items():
+            for ext in data:
+                extension = ext.get('ext', None)
+                if extension == 'json3':
+                    subtitle_dict[lang] = ext.get('url', None)
+                    break
+
+        return subtitle_dict
+
     for lang, data in subtitles.items():
         if lang == 'en': # FOR NOW ONLY ENGLISH
             for ext in data:
@@ -113,10 +124,10 @@ class GetSource(discord.PCMVolumeTransformer):
                 heatmap = data['heatmap']
 
             if 'subtitles' in data:
-                subtitles = format_subtitles(data['subtitles'])
+                subtitles = format_subtitles(data['subtitles'], 'subtitles')
 
             if 'automatic_captions' in data:
-                captions = format_subtitles(data['automatic_captions'])
+                captions = format_subtitles(data['automatic_captions'], 'captions')
 
             if 'entries' in data:
                 data = data['entries'][0]

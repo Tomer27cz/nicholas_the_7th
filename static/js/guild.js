@@ -282,7 +282,12 @@ function downloadSubtitles(lang) {
         console.log("Subtitles are null, using captions");
     }
 
-    let subtitle_url = subtitles[lang];
+    let subtitle_url = subtitles?.[lang] ?? Object.values(subtitles)[0];
+    if (subtitle_url === null || subtitle_url === undefined) {
+        console.log("Could not find subtitles for language: " + lang);
+        console.log("Could not find subtitles[0]: " + subtitles[0]);
+        return;
+    }
 
     return fetch(subtitle_url)
     .then(response => {
@@ -298,6 +303,11 @@ function downloadSubtitles(lang) {
 }
 
 function formatSubtitles(subtitles, combine_segments=false) {
+    if (subtitles === undefined) {
+        console.log("Subtitles are undefined");
+        return;
+    }
+
     let new_subtitles = [];
 
     let events = subtitles['events'];
@@ -339,6 +349,11 @@ function formatSubtitles(subtitles, combine_segments=false) {
 }
 
 function currentSubtitle(subtitles, time) {
+    if (subtitles === undefined) {
+        console.log("Subtitles are undefined");
+        return '';
+    }
+
     let subtitle_text = '';
     for (let i = 0; i < subtitles.length; i++) {
         if (((subtitles[i]['start'] + subtitles[i]['duration'])/1000) >= time && (subtitles[i]['start']/1000) <= time) {
@@ -375,6 +390,8 @@ if (duration != null && played_duration != null && bot_status !== 'Paused') {
 
 let formatted_subtitles;
 if ((subtitles !== null || captions !== null) && played_duration !== null) {
+    console.log("Downloading subtitles");
+
     downloadSubtitles('en').then(data => {formatted_subtitles = formatSubtitles(data);}).then(() => {
         document.getElementById("subtitles").innerHTML = currentSubtitle(formatted_subtitles, getSecsPlayed(played_duration));
     });

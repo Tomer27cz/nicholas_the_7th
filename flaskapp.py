@@ -782,9 +782,21 @@ async def admin_page():
         return abort(403, 'User not authorized')
 
     guild_list = sort_guilds(guilds(db), flask_session.get('discord_user_guilds', []))
+    bot_status = get_guilds_bot_status()
+
+    hash_map = {
+        'Playing': 0,
+        'Paused': 0,
+        'Connected': 0,
+        'Not connected': 0,
+        'Unknown': 0
+    }
+
+    for status in bot_status.values():
+        hash_map[status] += 1
 
     return render_template('admin/admin.html', user=user, guild=guild_list,
-                           bot_status=get_guilds_bot_status(), last_played=guilds_last_played(db))
+                           bot_status=bot_status, hash_map=hash_map, last_played=guilds_last_played(db))
 
 # Admin Files ---------------------------------------------------
 @app.route('/admin/log')
