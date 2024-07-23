@@ -83,8 +83,11 @@
           </div>
         </div>
         <div>
+          {% if guild.now_playing.subtitles or guild.now_playing.captions %}
+            <div class="sub-div"><div id="subtitles" class="subtitles"></div></div>
+          {% endif %}
           {% if guild.now_playing.heatmap %}
-            <div {% if guild.now_playing.chapters %}class="h-div"{% endif %}>
+            <div id="heatmap" {% if guild.now_playing.chapters %}class="h-div"{% endif %}>
               <svg class="h-svg" viewBox="0 0 1000 100" preserveAspectRatio="none"><path d="{{ nph }}"></path></svg>
             </div>
           {% endif %}

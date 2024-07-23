@@ -32,6 +32,9 @@ FFMPEG_OPTIONS = {
 }
 
 async def url_checker(url):
+    if url.endswith('.m3u8'):
+        return True, 200
+
     try:
         async with aiohttp.ClientSession() as session:
             async with session.get(url) as response:
@@ -40,6 +43,29 @@ async def url_checker(url):
                 return False, response.status
     except Exception as e:
         return False, e
+
+def format_subtitles(subtitles: dict) -> dict:
+    """
+    Format subtitles only leave the json3 format like this:
+    {'lang': 'url'}
+
+    :param subtitles: dict
+    :return formatted_subtitles: dict
+    """
+    if subtitles is None:
+        return subtitles
+
+    subtitle_dict = {}
+    for lang, data in subtitles.items():
+        if lang == 'en': # FOR NOW ONLY ENGLISH
+            for ext in data:
+                extension = ext.get('ext', None)
+                if extension == 'json3':
+                    subtitle_dict[lang] = ext.get('url', None)
+                    break
+
+    return subtitle_dict
+
 
 class GetSource(discord.PCMVolumeTransformer):
     ytdl = yt_dlp.YoutubeDL(YTDL_OPTIONS)
@@ -72,6 +98,8 @@ class GetSource(discord.PCMVolumeTransformer):
         }
         chapters = None
         heatmap = None
+        subtitles = None
+        captions = None
 
         if source_type == 'Video':
             org_url = url
@@ -84,6 +112,12 @@ class GetSource(discord.PCMVolumeTransformer):
             if 'heatmap' in data:
                 heatmap = data['heatmap']
 
+            if 'subtitles' in data:
+                subtitles = format_subtitles(data['subtitles'])
+
+            if 'automatic_captions' in data:
+                captions = format_subtitles(data['automatic_captions'])
+
             if 'entries' in data:
                 data = data['entries'][0]
 
@@ -91,8 +125,8 @@ class GetSource(discord.PCMVolumeTransformer):
             response, code = await url_checker(url)
             if not response:
                 log(guild_id, f'Failed to get source', options={'attempt': attempt, 'org_url': org_url, 'code': code, 'url': url},  log_type='error')
-                if attempt > 9:
-                    raise ConnectionRefusedError(f'Failed to get source after 10 attempts: `{org_url}`')
+                if attempt >= 5:
+                    raise ConnectionRefusedError(f'Failed to get source after 5 attempts: `{org_url}`')
                 else:
                     attempt += 1
                     return await cls.create_source(glob, guild_id, org_url, source_type, time_stamp, video_class, attempt)
@@ -115,4 +149,4 @@ class GetSource(discord.PCMVolumeTransformer):
         if video_class:
             video_class.stream_url = url
 
-        return cls(glob, guild_id, discord.FFmpegPCMAudio(url, **source_ffmpeg_options)), {'chapters': chapters, 'heatmap': heatmap}
+        return cls(glob, guild_id, discord.FFmpegPCMAudio(url, **source_ffmpeg_options)), {'chapters': chapters, 'heatmap': heatmap, 'subtitles': subtitles, 'captions': captions}

@@ -717,6 +717,31 @@ input.radio-checkbox[type=radio] + label {
     gap: 1rem;
 }
 
+/* subtitles */
+.sub-div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 5rem;
+}
+
+.subtitles {
+    margin: 0 1rem;
+    padding: 1rem;
+    text-align: center;
+    /*width: 60%;*/
+}
+.subtitles p {
+    text-align: center;
+    font-size: 1.5rem;
+    color: #0d6efd;
+    background: var(--d-g1);
+    border-radius: 0.5rem;
+    margin: 0;
+    padding: 0 0.3rem;
+    width: fit-content;
+}
+
 /* heatmap */
 .h-div {
     position: relative;
@@ -760,7 +785,7 @@ input.radio-checkbox[type=radio] + label {
     text-align: center;
     white-space: nowrap;
     background-color: #0d6efd;
-    transition: width 0.6s ease;
+    /*transition: width 0.6s ease;*/
 }
 .p-text {
     position: absolute;
@@ -946,9 +971,6 @@ input.radio-checkbox[type=radio] + label {
     padding: 5rem;
 }
 
-
-
-
 /* Guild Users */
 .g-users-placeholder {
     padding-bottom: calc(130rem - 80vw);
@@ -1055,6 +1077,11 @@ input.radio-checkbox[type=radio] + label {
     text-align: center;
     font-size: 1.5rem;
 }
+@media (max-width: 992px) {
+    .time-box {
+        width: 100%;
+    }
+}
 .time-top-div {
     display: flex;
     justify-content: center;
@@ -1070,7 +1097,20 @@ input.radio-checkbox[type=radio] + label {
     color: var(--d-g0);
     transition: background-color 0.5s;
 }
+.time-heatmap svg {
+    fill: var(--d-g3);
+}
+.time-range {
+    position: relative;
+    bottom: 1.11rem;
+    background: transparent !important;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 100%;
+}
 
+/* spinner */
 .spinner-div {
     display: flex;
     justify-content: center;
@@ -1078,8 +1118,6 @@ input.radio-checkbox[type=radio] + label {
     position: absolute;
     left: 50%;
 }
-
-/* spinner */
 .spinner {
     display: none;
 }

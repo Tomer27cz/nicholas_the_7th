@@ -4,8 +4,12 @@
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
   </div>
   <div class="modal-body">
-    <div class="p-div">
-      <div class="p-bar" style="width: 0" id="np_set_progress"></div>
+    <div id="time-heatmap" class="time-heatmap"></div>
+    <div>
+      <div class="p-div">
+        <div class="p-bar" style="width: 0" id="np_set_progress"></div>
+      </div>
+      <input type="range" class="time-range" id="np_set_progress_range" value="0" oninput="onSlider()" onsubmit="document.getElementById('time-submit').click();">
     </div>
     <div class="mb-3">
       <div class="time-top-div">
@@ -39,9 +43,13 @@
 
         {% if guild.now_playing.duration %}
         let maxTime = {{ guild.now_playing.duration | safe if guild.now_playing.duration != 'Stream' else 0 }};
+        document.getElementById('np_set_progress_range').max = maxTime;
         {% else %}
         let maxTime = 0;
+        document.getElementById('np_set_progress_range').style.display = 'none';
         {% endif %}
+
+        document.getElementById('time-heatmap').innerHTML = document.getElementById('heatmap').outerHTML;
 
         function convertText(text) {
             // convert text to seconds
@@ -68,6 +76,15 @@
             return seconds;
         }
 
+        function onSlider() {
+            let seconds = parseInt(document.getElementById('np_set_progress_range').value);
+            document.getElementById('np_set_progress').style.width = ((seconds / maxTime) * 100) + '%';
+            let converted = convertSeconds(seconds);
+            document.getElementById('timeTextInput').value = converted;
+            document.getElementById('display-time').innerText = converted;
+            document.getElementById('time-input').value = String(seconds);
+        }
+
         function onInput() {
             onClick(0, true);
         }
@@ -91,6 +108,7 @@
 
             document.getElementById('display-time').innerText = convertSeconds(seconds);
             document.getElementById('time-input').value = String(seconds);
+            document.getElementById('np_set_progress_range').value = seconds;
             document.getElementById('np_set_progress').style.width = (seconds / maxTime * 100) + '%';
         }
 

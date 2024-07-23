@@ -262,14 +262,20 @@ async def guild_page(guild_id):
             if not response.response:
                 errors = [response.message]
 
-    pd = guild_object.now_playing.played_duration if guild_object.now_playing else [{'start': None, 'end': None}] # played duration
+    nppd = guild_object.now_playing.played_duration if guild_object.now_playing else [{'start': None, 'end': None}] # played duration
     npd = (guild_object.now_playing.duration if check_isdigit(guild_object.now_playing.duration) else 'null') if guild_object.now_playing else 'null' # now playing duration
+    npc = 'null' # now playing captions
+    nps = 'null' # now playing subtitles
     nph = None
 
     if guild_object.now_playing:
         await guild_object.now_playing.renew(None)
         if guild_object.now_playing.heatmap:
             nph = heatmap_to_svg(guild_object.now_playing.heatmap, guild_object.now_playing.duration)
+        if guild_object.now_playing.captions:
+            npc = guild_object.now_playing.captions
+        if guild_object.now_playing.subtitles:
+            nps = guild_object.now_playing.subtitles
 
     return render_template('main/guild.html',
                            guild=guild(db, guild_id),
@@ -280,9 +286,11 @@ async def guild_page(guild_id):
                            messages=messages,
                            volume=round(guild_object.options.volume * 100),
                            saves=guild_save_names(db, guild_object.id),
-                           pd=json.dumps(pd),
+                           nppd=json.dumps(nppd),
                            npd=npd,
                            nph=nph,
+                           npc=npc,
+                           nps=nps,
                            bot_status=get_guild_bot_status(int(guild_id)),
                            last_updated=int(guild_object.last_updated['queue']),
                            # radios=sort_radios(radio_dict),

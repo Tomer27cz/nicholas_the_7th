@@ -1,7 +1,7 @@
 function convertSeconds(secs) {
     let hours = Math.floor(secs / 3600)
     let minutes = Math.floor((secs % 3600) / 60)
-    let seconds = secs % 60
+    let seconds = Math.round(secs % 60)
 
     function pad(num, totalLength) {
         return String(num).padStart(totalLength, '0');
@@ -26,12 +26,14 @@ function getSecsPlayed(played_duration) {
 
     let start_of_segment = last_segment['start']['epoch'];
     let start_of_segment_time = last_segment['start']['time_stamp'];
-    return (Math.round(Date.now() / 1000) - start_of_segment) + start_of_segment_time;
+
+    return ((Date.now() - start_of_segment*1000) + (start_of_segment_time*1000)) / 1000;
 }
 
 function npProgress(duration, played_duration) {
   let bar_elem = document.getElementById("np_progress");
   let text_elem = document.getElementById("progress_time");
+  let sub_elem = document.getElementById("subtitles");
 
   if (duration != null) {
       let sec_remaining = duration - getSecsPlayed(played_duration);
@@ -42,11 +44,17 @@ function npProgress(duration, played_duration) {
       }
   }
 
-  let inter = setInterval(addProgress, 1000);
+  let inter = setInterval(addProgress, 100);
   return inter;
 
   function addProgress() {
-      text_elem.innerText = convertSeconds(getSecsPlayed(played_duration));
+      let sec_played = getSecsPlayed(played_duration);
+      text_elem.innerText = convertSeconds(sec_played);
+
+      let new_text = currentSubtitle(formatted_subtitles, sec_played);
+      if (sub_elem.innerHTML !== new_text) {
+            sub_elem.innerHTML = new_text;
+      }
 
       if (duration != null) {
           let sec_remaining_add = duration - getSecsPlayed(played_duration);
@@ -205,10 +213,6 @@ socket.on('update', function (data) {
     }, 1000);
 });
 
-if (duration != null || played_duration != null) {
-    npProgress(duration, played_duration);
-}
-
 // ---------------------------------------------------------------------------------------------------------------------
 
 window.addEventListener('htmx:beforeRequest', function (event) { // switched from afterSwap to beforeRequest - race condition
@@ -267,4 +271,111 @@ function delay(time) {
   return new Promise(resolve => setTimeout(resolve, time));
 }
 
+// ---------------------------------------------------------------------------------------------------------------------
+
+function downloadSubtitles(lang) {
+    if (subtitles === null && captions === null) {
+        return;
+    }
+    if (subtitles === null) {
+        subtitles = captions;
+        console.log("Subtitles are null, using captions");
+    }
+
+    let subtitle_url = subtitles[lang];
+
+    return fetch(subtitle_url)
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok ' + response.statusText);
+        }
+        return response.json();  // or response.text() for plain text
+    })
+    .then(data => data)
+    .catch(error => {
+        console.error('There was a problem with downloading subtitles:', error);
+    })
+}
+
+function formatSubtitles(subtitles, combine_segments=false) {
+    let new_subtitles = [];
+
+    let events = subtitles['events'];
+    for (let i = 0; i < events.length; i++) {
+        if (events[i]['segs'] === undefined) {
+            continue;
+        }
+
+        if (combine_segments) {
+            let text = '';
+            for (let j = 0; j < events[i]['segs'].length; j++) {
+                text += events[i]['segs'][j]['utf8'];
+            }
+
+            new_subtitles.push({
+                'start': events[i]['tStartMs'],
+                'duration': events[i]['dDurationMs'],
+                'text': text
+            });
+
+            continue;
+        }
+
+        new_subtitles.push({
+            'start': events[i]['tStartMs'],
+            'duration': events[i]['dDurationMs'],
+            'segments': []
+        });
+
+        for (let j = 0; j < events[i]['segs'].length; j++) {
+            new_subtitles[new_subtitles.length-1]['segments'].push({
+                'offset': events[i]['segs'][j]['tOffsetMs'],
+                'text': events[i]['segs'][j]['utf8']
+            });
+        }
+    }
+
+    return new_subtitles;
+}
+
+function currentSubtitle(subtitles, time) {
+    let subtitle_text = '';
+    for (let i = 0; i < subtitles.length; i++) {
+        if (((subtitles[i]['start'] + subtitles[i]['duration'])/1000) >= time && (subtitles[i]['start']/1000) <= time) {
+            if (subtitles[i]['text'] === undefined) {
+                for (let j = 0; j < subtitles[i]['segments'].length; j++) {
+                    if (((subtitles[i]['start'] + subtitles[i]['segments'][j]['offset'])/1000) >= time) {
+                        break;
+                    }
+                    subtitle_text += subtitles[i]['segments'][j]['text'];
+                }
+                continue;
+            }
+            subtitle_text += subtitles[i]['text'];
+        }
+    }
+
+    let lines = subtitle_text.split('\n')
+    if (lines.length === 1) {
+        return '<p>' + subtitle_text + '</p>';
+    }
+
+    return '<p>' + lines.join('</p><p>') + '</p>';
+
+    // return '<p>' + subtitle_text.replace(/[\r\n]+/g, ' ') + '</p>';
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+
 scrollNow(scroll_position);
+
+if (duration != null && played_duration != null && bot_status !== 'Paused') {
+    npProgress(duration, played_duration);
+}
+
+let formatted_subtitles;
+if ((subtitles !== null || captions !== null) && played_duration !== null) {
+    downloadSubtitles('en').then(data => {formatted_subtitles = formatSubtitles(data);}).then(() => {
+        document.getElementById("subtitles").innerHTML = currentSubtitle(formatted_subtitles, getSecsPlayed(played_duration));
+    });
+}

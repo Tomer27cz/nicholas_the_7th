@@ -83,5 +83,6 @@ def heatmap_to_svg(data_points: list[dict], duration: int) -> str:
 
         path.append(f'L {x},{y}')
 
-    path.append("L 0,100")  # Draw a line to make it a rectangle
+    path.append(f"L {width},{height}")  # Draw a line to make it a rectangle
+    path.append(f"L 0,{height}")  # Draw a line to make it a rectangle
     return ' '.join(path)

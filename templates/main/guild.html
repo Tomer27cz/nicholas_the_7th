@@ -395,12 +395,16 @@
   {% if guild.now_playing %}
     <script>
       let duration = {{ npd | safe }};
-      let played_duration = {{ pd | safe }};
+      let played_duration = {{ nppd | safe }};
+      let subtitles = {{ nps | safe }};
+      let captions = {{ npc | safe }};
     </script>
   {% else %}
     <script>
       let duration = null;
       let played_duration = null;
+      let subtitles = null;
+      let captions = null;
     </script>
   {% endif %}
 
@@ -410,6 +414,7 @@
   let last_updated = {{ last_updated | safe }};
   let scroll_position = '{{ scroll_position }}';
   let socket_host = '{{ socket_host }}';
+  let bot_status = '{{ bot_status }}';
   </script>
   <script src="https://cdn.socket.io/4.6.0/socket.io.min.js" integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+" crossorigin="anonymous"></script>
   <script src="{{ url_for('static', filename='js/guild.js') }}"></script>

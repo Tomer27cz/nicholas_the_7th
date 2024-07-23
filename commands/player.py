@@ -170,7 +170,7 @@ async def play_def(ctx, glob: GlobalVars,
         # Variables update
         db_guild.options.stopped = False
         # video variables
-        await set_started(glob, video, guild_object, chapters=additional_data['chapters'], heatmap=additional_data['heatmap'], no_push=True)
+        await set_started(glob, video, guild_object, chapters=additional_data['chapters'], heatmap=additional_data['heatmap'], subtitles=additional_data['subtitles'], captions=additional_data['captions'], no_push=True)
 
         # Queue update
         # if guild[guild_id].options.loop:

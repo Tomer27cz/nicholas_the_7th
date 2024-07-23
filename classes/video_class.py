@@ -59,6 +59,8 @@ async def video_class_init(self,
                            played_duration: [TimeSegment] = None,
                            chapters: [VideoChapter] = None,
                            heatmap: [VideoHeatMap] = None,
+                           subtitles=None,
+                           captions=None,
                            stream_url: str = None,
                            discord_channel: DiscordChannelInfo = None,
                            only_set: bool = False
@@ -78,6 +80,8 @@ async def video_class_init(self,
     self.played_duration = played_duration
     self.chapters = chapters
     self.heatmap = heatmap
+    self.subtitles = subtitles
+    self.captions = captions
     self.discord_channel = discord_channel
     if only_set:
         self.stream_url = stream_url
@@ -364,6 +368,8 @@ def video_to_json(self) -> dict:
         'played_duration': self.played_duration,
         'chapters': self.chapters,
         'heatmap': self.heatmap,
+        'subtitles': self.subtitles,
+        'captions': self.captions,
         'stream_url': self.stream_url,
         'discord_channel': self.discord_channel
     }
@@ -396,6 +402,8 @@ def video_to_json(self) -> dict:
 #     played_duration = Column(JSON)
 #     chapters = Column(JSON)
 #     heatmap = Column(JSON)
+#     subtitles = Column(JSON)
+#     captions = Column(JSON)
 #     stream_url = Column(String)
 #     discord_channel = Column(JSON)
 #
@@ -415,6 +423,8 @@ def video_to_json(self) -> dict:
 #                  played_duration: [TimeSegment]=None,
 #                  chapters: [VideoChapter]=None,
 #                  heatmap: [VideoHeatMap]=None,
+#                  subtitles=None,
+#                  captions=None,
 #                  stream_url: str=None,
 #                  discord_channel: DiscordChannelInfo=None
 #                  ):
@@ -434,6 +444,8 @@ def video_to_json(self) -> dict:
 #                          played_duration=played_duration,
 #                          chapters=chapters,
 #                          heatmap=heatmap,
+#                          subtitles=subtitles,
+#                          captions=captions,
 #                          stream_url=stream_url,
 #                          discord_channel=discord_channel)
 #
@@ -472,6 +484,8 @@ class Queue(Base):
     played_duration = Column(JSON)
     chapters = Column(JSON)
     heatmap = Column(JSON)
+    subtitles = Column(JSON)
+    captions = Column(JSON)
     stream_url = Column(String)
     discord_channel = Column(JSON)
 
@@ -493,6 +507,8 @@ class Queue(Base):
                      played_duration: [TimeSegment] = None,
                      chapters: [VideoChapter] = None,
                      heatmap: [VideoHeatMap] = None,
+                     subtitles=None,
+                     captions=None,
                      stream_url: str = None,
                      discord_channel: DiscordChannelInfo = None,
                      only_set: bool = False
@@ -515,6 +531,8 @@ class Queue(Base):
                                played_duration=played_duration,
                                chapters=chapters,
                                heatmap=heatmap,
+                               subtitles=subtitles,
+                               captions=captions,
                                stream_url=stream_url,
                                discord_channel=discord_channel,
                                only_set=only_set)
@@ -559,6 +577,8 @@ class NowPlaying(Base):
     played_duration = Column(JSON)
     chapters = Column(JSON)
     heatmap = Column(JSON)
+    subtitles = Column(JSON)
+    captions = Column(JSON)
     stream_url = Column(String)
     discord_channel = Column(JSON)
 
@@ -580,6 +600,8 @@ class NowPlaying(Base):
                      played_duration: [TimeSegment] = None,
                      chapters: [VideoChapter] = None,
                      heatmap: [VideoHeatMap] = None,
+                     subtitles=None,
+                     captions=None,
                      stream_url: str = None,
                      discord_channel: DiscordChannelInfo = None,
                      only_set: bool = False
@@ -602,6 +624,8 @@ class NowPlaying(Base):
                                played_duration=played_duration,
                                chapters=chapters,
                                heatmap=heatmap,
+                               subtitles=subtitles,
+                               captions=captions,
                                stream_url=stream_url,
                                discord_channel=discord_channel,
                                only_set=only_set)
@@ -645,6 +669,8 @@ class History(Base):
     played_duration = Column(JSON)
     chapters = Column(JSON)
     heatmap = Column(JSON)
+    subtitles = Column(JSON)
+    captions = Column(JSON)
     stream_url = Column(String)
     discord_channel = Column(JSON)
 
@@ -666,6 +692,8 @@ class History(Base):
                      played_duration: [TimeSegment] = None,
                      chapters: [VideoChapter] = None,
                      heatmap: [VideoHeatMap] = None,
+                     subtitles=None,
+                     captions=None,
                      stream_url: str = None,
                      discord_channel: DiscordChannelInfo = None,
                      only_set: bool = False
@@ -688,6 +716,8 @@ class History(Base):
                                played_duration=played_duration,
                                chapters=chapters,
                                heatmap=heatmap,
+                               subtitles=subtitles,
+                               captions=captions,
                                stream_url=stream_url,
                                discord_channel=discord_channel,
                                only_set=only_set)
@@ -733,6 +763,8 @@ class SaveVideo(Base):
     played_duration = Column(JSON)
     chapters = Column(JSON)
     heatmap = Column(JSON)
+    subtitles = Column(JSON)
+    captions = Column(JSON)
     stream_url = Column(String)
     discord_channel = Column(JSON)
 
@@ -755,6 +787,8 @@ class SaveVideo(Base):
                      played_duration: [TimeSegment] = None,
                      chapters: [VideoChapter] = None,
                      heatmap: [VideoHeatMap] = None,
+                     subtitles=None,
+                     captions=None,
                      stream_url: str = None,
                      discord_channel: DiscordChannelInfo = None,
                      only_set: bool = False
@@ -778,6 +812,8 @@ class SaveVideo(Base):
                                played_duration=played_duration,
                                chapters=chapters,
                                heatmap=heatmap,
+                               subtitles=subtitles,
+                               captions=captions,
                                stream_url=stream_url,
                                discord_channel=discord_channel,
                                only_set=only_set)
@@ -818,6 +854,8 @@ async def to_queue_class(glob, _video_class) -> Queue:
         played_duration=_video_class.played_duration,
         chapters=_video_class.chapters,
         heatmap=_video_class.heatmap,
+        subtitles=_video_class.subtitles,
+        captions=_video_class.captions,
         stream_url=_video_class.stream_url,
         discord_channel=_video_class.discord_channel,
         only_set=True
@@ -844,6 +882,8 @@ async def to_now_playing_class(glob, _video_class) -> NowPlaying:
         played_duration=_video_class.played_duration,
         chapters=_video_class.chapters,
         heatmap=_video_class.heatmap,
+        subtitles=_video_class.subtitles,
+        captions=_video_class.captions,
         stream_url=_video_class.stream_url,
         discord_channel=_video_class.discord_channel,
         only_set=True
@@ -870,6 +910,8 @@ async def to_history_class(glob, _video_class) -> History:
         played_duration=_video_class.played_duration,
         chapters=_video_class.chapters,
         heatmap=_video_class.heatmap,
+        subtitles=_video_class.subtitles,
+        captions=_video_class.captions,
         stream_url=_video_class.stream_url,
         discord_channel=_video_class.discord_channel,
         only_set=True
@@ -897,6 +939,8 @@ async def to_save_video_class(glob, _video_class, save_id) -> SaveVideo:
         played_duration=_video_class.played_duration,
         chapters=_video_class.chapters,
         heatmap=_video_class.heatmap,
+        subtitles=_video_class.subtitles,
+        captions=_video_class.captions,
         stream_url=_video_class.stream_url,
         discord_channel=_video_class.discord_channel,
         only_set=True

@@ -232,6 +232,8 @@ async def now_to_history(glob: GlobalVars, guild_id: int or Guild, no_push: bool
         set_stopped(glob, h_video)
         h_video.chapters = None
         h_video.heatmap = None
+        h_video.subtitles = None
+        h_video.captions = None
 
         # add video to history
         guild_object.history.append(await to_history_class(glob, h_video))

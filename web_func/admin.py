@@ -60,6 +60,8 @@ async def web_video_edit(web_data, glob: GlobalVars, form) -> ReturnData:
     played_duration = form['played_duration']
     chapters = form['chapters']
     heatmap = form['heatmap']
+    subtitles = form['subtitles']
+    captions = form['captions']
     discord_channel = form['discord_channel']
     stream_url = form['stream_url']
 
@@ -91,6 +93,10 @@ async def web_video_edit(web_data, glob: GlobalVars, form) -> ReturnData:
         chapters = None
     if heatmap in none_list:
         heatmap = None
+    if subtitles in none_list:
+        subtitles = None
+    if captions in none_list:
+        captions = None
     if discord_channel in none_list:
         discord_channel = None
     if stream_url in none_list:
@@ -147,6 +153,20 @@ async def web_video_edit(web_data, glob: GlobalVars, form) -> ReturnData:
         except (TypeError, ValueError, json.decoder.JSONDecodeError, AssertionError, SyntaxError):
             return ReturnData(False, f'Invalid heatmap: {heatmap}')
 
+    if subtitles:
+        try:
+            subtitles = ast.literal_eval(subtitles)
+            assert isinstance(subtitles, dict)
+        except (TypeError, ValueError, json.decoder.JSONDecodeError, AssertionError, SyntaxError):
+            return ReturnData(False, f'Invalid subtitles: {subtitles}')
+
+    if captions:
+        try:
+            captions = ast.literal_eval(captions)
+            assert isinstance(captions, dict)
+        except (TypeError, ValueError, json.decoder.JSONDecodeError, AssertionError, SyntaxError):
+            return ReturnData(False, f'Invalid captions: {captions}')
+
     if discord_channel:
         try:
             discord_channel = ast.literal_eval(discord_channel)
@@ -158,7 +178,7 @@ async def web_video_edit(web_data, glob: GlobalVars, form) -> ReturnData:
                                duration=duration,
                                channel_name=channel_name, channel_link=channel_link, radio_info=radio_info,
                                local_number=local_number, created_at=created_at, played_duration=played_duration,
-                               chapters=chapters, heatmap=heatmap,
+                               chapters=chapters, heatmap=heatmap, subtitles=subtitles, captions=captions,
                                discord_channel=discord_channel, stream_url=stream_url)
 
     if is_np:

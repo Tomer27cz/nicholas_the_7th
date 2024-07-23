@@ -34,7 +34,7 @@ def set_stopped(glob: GlobalVars, video):
 
     update(glob)
 
-async def set_started(glob: GlobalVars, video, guild_object, chapters: list[VideoChapter]=None, heatmap: list[VideoHeatMap]=None, no_push: bool=False):
+async def set_started(glob: GlobalVars, video, guild_object, chapters: list[VideoChapter]=None, heatmap: list[VideoHeatMap]=None, subtitles=None, captions=None, no_push: bool=False):
     """
     Sets the time when the video was started
     :param glob: GlobalVars
@@ -42,6 +42,8 @@ async def set_started(glob: GlobalVars, video, guild_object, chapters: list[Vide
     :param guild_object: Guild object
     :param chapters: list[VideoChapter] - list of chapters
     :param heatmap: list[VideoHeatMap] - list of heatmaps
+    :param subtitles: dict - list of subtitles
+    :param captions: dict - list of captions
     :param no_push: bool - if True, does not push the update to the guild
     """
     if len(video.played_duration) == 0:
@@ -57,6 +59,12 @@ async def set_started(glob: GlobalVars, video, guild_object, chapters: list[Vide
 
     if heatmap:
         video.heatmap = heatmap
+
+    if subtitles:
+        video.subtitles = subtitles
+
+    if captions:
+        video.captions = captions
 
     try:
         video.discord_channel = {"id": guild_object.voice_client.channel.id,
