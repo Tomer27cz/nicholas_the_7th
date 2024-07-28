@@ -3,8 +3,6 @@ from utils.log import log
 from os import listdir
 import json
 
-import config
-
 class GlobalVars:
     def __init__(self, bot_var, ses_var, sp_var, sc_var):
         """
@@ -40,7 +38,7 @@ def load_sound_effects():
     to the global variable sound_effects
     """
     try:
-        se = listdir(f'{config.PARENT_DIR}sound_effects')
+        se = listdir(f'sound_effects')
         for file_index, file_val in enumerate(se):
             se[file_index] = se[file_index]  # [:len(file_val) - 4]
     except FileNotFoundError:

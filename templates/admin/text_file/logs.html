@@ -17,9 +17,10 @@
       </div>
     {% endfor %}
   {% endif %}
-
-  <a class="btn btn-primary div-login" href="/admin/log/log.log"><h1 style="margin: 0">log.log</h1></a>
-  <div class="q-container display-block">
+  <div class="div-align-center">
+  <h1>Logs Folder</h1>
+  </div>
+  <div class="q-container display-flex e-wrap">
     {% for log_file in log_files %}
       <a class="btn btn-dark q-item1 div-login" href="/admin/log/{{ log_file }}"><h4>{{ log_file }}</h4></a>
     {% endfor %}

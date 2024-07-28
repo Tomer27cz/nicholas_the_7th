@@ -100,6 +100,7 @@ class Options(Base):
     buffer = Column(Integer, default=600)
     history_length = Column(Integer, default=20)
     player_id = Column(Integer, default=0)
+    subtitles = Column(String, default='False')
 
     def __init__(self, guild_id: int, json_data: dict, **kw: any):
         super().__init__(**kw)
@@ -116,6 +117,7 @@ class Options(Base):
         self.buffer: int = json_data.get('buffer', 600)  # how many seconds of nothing playing before bot disconnects | 600 = 10min
         self.history_length: int = json_data.get('history_length', 20)  # how many songs are stored in the history
         self.player_id: int = json_data.get('player_id', 0)  # ID of the player
+        self.subtitles: str = json_data.get('subtitles', 'False')  # if subtitles are enabled
 
 class GuildData(Base):
     """

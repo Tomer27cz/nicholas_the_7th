@@ -5,7 +5,7 @@ from classes.typed_dictionaries import VideoAuthor
 from database.guild import guild, guild_ids, guild_save_names
 
 from utils.global_vars import GlobalVars
-from utils.convert import ascii_nospace
+from utils.convert import ascii_nospace, czech_to_ascii
 from utils.translate import txt
 
 def find_save(glob: GlobalVars, guild_id: int, save_name: str) -> Save or None:
@@ -33,12 +33,12 @@ async def new_queue_save(glob: GlobalVars, guild_id: int, save_name: str, author
     """
     guild_object = guild(glob, guild_id)
 
-    save_name = ascii_nospace(save_name)
+    save_name = ascii_nospace(czech_to_ascii(save_name))
     if save_name is False:
         return ReturnData(False, txt(guild_id, glob, 'Save name must be alphanumeric'))
 
     if save_name in guild_save_names(glob, guild_id):
-        return ReturnData(False, txt(guild_id, glob, 'save already exists'))
+        return ReturnData(False, txt(guild_id, glob, 'Save already exists: ') + save_name)
 
     if not guild_object.queue:
         return ReturnData(False, txt(guild_id, glob, 'Queue is empty'))
@@ -49,7 +49,7 @@ async def new_queue_save(glob: GlobalVars, guild_id: int, save_name: str, author
         new_save.queue.append(await to_save_video_class(glob, video, new_save.id))
     glob.ses.commit()
 
-    return ReturnData(True, txt(guild_id, glob, 'queue saved'))
+    return ReturnData(True, txt(guild_id, glob, 'Queue saved: ') + save_name)
 
 async def load_queue_save(glob: GlobalVars, guild_id: int, save_name: str) -> ReturnData:
     """
@@ -61,19 +61,19 @@ async def load_queue_save(glob: GlobalVars, guild_id: int, save_name: str) -> Re
     """
 
     if guild_id not in guild_ids(glob):
-        return ReturnData(False, txt(guild_id, glob, 'no guild found for specified guild id'))
+        return ReturnData(False, txt(guild_id, glob, 'No guild found for specified guild id'))
 
     if not guild_save_names(glob, guild_id):
-        return ReturnData(False, txt(guild_id, glob, 'no saves found for specified guild'))
+        return ReturnData(False, txt(guild_id, glob, 'No saves found for specified guild'))
 
     if save_name not in guild_save_names(glob, guild_id):
-        return ReturnData(False, txt(guild_id, glob, 'save not found'))
+        return ReturnData(False, txt(guild_id, glob, 'Save not found: ') + save_name)
 
     load_save = find_save(glob, guild_id, save_name)
     guild(glob, guild_id).queue = [await to_queue_class(glob, video) for video in load_save.queue]
     glob.ses.commit()
 
-    return ReturnData(True, txt(guild_id, glob, 'queue loaded'))
+    return ReturnData(True, txt(guild_id, glob, 'Queue loaded: ') + save_name)
 
 def delete_queue_save(glob: GlobalVars, guild_id: int, save_name: str) -> ReturnData:
     """
@@ -84,20 +84,20 @@ def delete_queue_save(glob: GlobalVars, guild_id: int, save_name: str) -> Return
     :return: ReturnData - return data
     """
     if guild_id not in guild_ids(glob):
-        return ReturnData(False, txt(guild_id, glob, 'no guild found for specified guild id'))
+        return ReturnData(False, txt(guild_id, glob, 'No guild found for specified guild id'))
 
     if not guild_save_names(glob, guild_id):
-        return ReturnData(False, txt(guild_id, glob, 'no saves found for specified guild'))
+        return ReturnData(False, txt(guild_id, glob, 'No saves found for specified guild'))
 
     if save_name not in guild_save_names(glob, guild_id):
-        return ReturnData(False, txt(guild_id, glob, 'save not found'))
+        return ReturnData(False, txt(guild_id, glob, 'Save not found: ') + save_name)
 
     save_delete = find_save(glob, guild_id, save_name)
     glob.ses.query(SaveVideo).filter('save_id' == save_delete.id).delete()
     glob.ses.delete(save_delete)
     glob.ses.commit()
 
-    return ReturnData(True, txt(guild_id, glob, 'queue save deleted'))
+    return ReturnData(True, txt(guild_id, glob, 'Queue save deleted: ') + save_name)
 
 def rename_queue_save(glob: GlobalVars, guild_id: int, old_name: str, new_name: str) -> ReturnData:
     """
@@ -109,23 +109,23 @@ def rename_queue_save(glob: GlobalVars, guild_id: int, old_name: str, new_name: 
     :return: ReturnData - return data
     """
 
-    new_name = ascii_nospace(new_name)
+    new_name = ascii_nospace(czech_to_ascii(new_name))
     if new_name is False:
         return ReturnData(False, txt(guild_id, glob, 'Save name must be alphanumeric'))
 
     if guild_id not in guild_ids(glob):
-        return ReturnData(False, txt(guild_id, glob, 'no guild found for specified guild id'))
+        return ReturnData(False, txt(guild_id, glob, 'No guild found for specified guild id'))
 
     if not guild_save_names(glob, guild_id):
-        return ReturnData(False, txt(guild_id, glob, 'no saves found for specified guild'))
+        return ReturnData(False, txt(guild_id, glob, 'No saves found for specified guild'))
 
     if old_name not in guild_save_names(glob, guild_id):
-        return ReturnData(False, txt(guild_id, glob, 'save not found'))
+        return ReturnData(False, txt(guild_id, glob, 'Save not found: ') + old_name)
 
     if new_name not in guild_save_names(glob, guild_id):
-        return ReturnData(False, txt(guild_id, glob, 'save already exists'))
+        return ReturnData(False, txt(guild_id, glob, 'Save already exists: ') + new_name)
 
     find_save(glob, guild_id, old_name).name = new_name
     glob.ses.commit()
 
-    return ReturnData(True, txt(guild_id, glob, 'queue save renamed'))
+    return ReturnData(True, txt(guild_id, glob, 'Queue save renamed: ') + f"{old_name} -> {new_name}")

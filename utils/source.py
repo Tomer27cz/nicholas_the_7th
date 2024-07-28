@@ -56,27 +56,33 @@ def format_subtitles(subtitles: dict, subtitle_type: str='captions') -> dict:
     if subtitles is None:
         return subtitles
 
-    subtitle_dict = {}
-    if subtitle_type == 'subtitles':
-        for lang, data in subtitles.items():
-            for ext in data:
-                extension = ext.get('ext', None)
-                if extension == 'json3':
-                    subtitle_dict[lang] = ext.get('url', None)
-                    break
+    if subtitle_type not in ['captions', 'subtitles']:
+        raise ValueError('Invalid subtitle type. Must be either "captions" or "subtitles".')
 
-        return subtitle_dict
+    url_template = [url for url in subtitles[list(subtitles.keys())[0]] if url.get('ext', None) == 'json3'][0]['url']
+    if subtitle_type == 'captions':
+        url_template = url_template[:url_template.index('&tlang=') + 7]
+    else:
+        url_template = url_template[:url_template.index('&lang=') + 6]
+
+    subtitle_dict = {
+        'en': None,
+        'langs': {},
+        'url': url_template,
+    }
 
     for lang, data in subtitles.items():
-        if lang == 'en': # FOR NOW ONLY ENGLISH
-            for ext in data:
-                extension = ext.get('ext', None)
-                if extension == 'json3':
-                    subtitle_dict[lang] = ext.get('url', None)
-                    break
+        for ext in data:
+            if ext.get('ext', None) == 'json3':
+                if lang == 'en':
+                    subtitle_dict['en'] = ext.get('url', None)
+
+                subtitle_dict['langs'][lang] = ext.get('name', None)
+                break
+
+    print(subtitle_dict)
 
     return subtitle_dict
-
 
 class GetSource(discord.PCMVolumeTransformer):
     ytdl = yt_dlp.YoutubeDL(YTDL_OPTIONS)
@@ -116,6 +122,8 @@ class GetSource(discord.PCMVolumeTransformer):
             org_url = url
             loop = asyncio.get_event_loop()
             data = await loop.run_in_executor(None, lambda: cls.ytdl.extract_info(url, download=False))
+
+            print(data)
 
             if 'chapters' in data:
                 chapters = data['chapters']

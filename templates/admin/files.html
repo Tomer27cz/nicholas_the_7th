@@ -33,7 +33,7 @@
     <tbody>
     <tr>
       <td>
-        <a href="{{ url_for('getFiles', reqPath=data['parentFolder']) }}">
+        <a href="{{ url_for('get_files', rel_path=data['parentFolder']) }}">
           <span><i class="bi bi-folder-symlink" style="margin-right:0.3em"></i>Parent Directory</span>
         </a>
       </td>
@@ -43,7 +43,7 @@
     {% for fileObj in data['files'] %}
       <tr>
         <td>
-          <a href="{{ url_for('getFiles', reqPath=fileObj['relPath']) }}">
+          <a href="{{ url_for('get_files', rel_path=fileObj['relPath']) }}">
             <span><i class="{{ fileObj['fIcon'] }}" style="margin-right:0.3em"></i>{{ fileObj['name'] }}</span>
           </a>
         </td>

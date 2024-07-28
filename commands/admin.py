@@ -64,6 +64,7 @@ async def options_def(ctx: dc_commands.Context, glob: GlobalVars,
                       history_length: str = None,
                       volume: str = None,
                       search_query: str = None,
+                      subtitles: str = None,
                       ephemeral=True
                       ):
     log(ctx, 'options_def', options=locals(), log_type='function', author=ctx.author)
@@ -119,6 +120,7 @@ async def options_def(ctx: dc_commands.Context, glob: GlobalVars,
         history_length = check_none(history_length)
         volume = check_none(volume)
         search_query = check_none(search_query)
+        subtitles = check_none(subtitles)
 
         async def bool_check(value):
             if value is None:
@@ -204,6 +206,7 @@ async def options_def(ctx: dc_commands.Context, glob: GlobalVars,
         options.loop = to_bool(loop) if loop is not None else options.loop
         options.is_radio = to_bool(is_radio) if is_radio is not None else options.is_radio
         options.buttons = to_bool(buttons) if buttons is not None else options.buttons
+        options.subtitles = subtitles if subtitles is not None else options.subtitles # bool in str form
 
         options.language = language if language is not None else options.language
         options.search_query = search_query if search_query is not None else options.search_query
@@ -231,6 +234,7 @@ async def options_def(ctx: dc_commands.Context, glob: GlobalVars,
         loop -> `{options.loop}`
         is_radio -> `{options.is_radio}`
         buttons -> `{options.buttons}`
+        subtitles -> `{options.subtitles}`
         language -> `{options.language}`
         response_type -> `{options.response_type}`
         buffer -> `{options.buffer}`

@@ -1,0 +1,43 @@
+<div class="modal-content" id="subtitlesModal_content">
+  <div class="modal-header">
+    <h1 class="modal-title fs-5" id="subtitlesLabel">{{ txt(lang, 'Subtitles') }} - {% if guild.options.subtitles == "True" %}<span class="c-green">{{ txt(lang, 'ON') }}</span>{% elif guild.options.subtitles == "False" %}<span class="c-red">{{ txt(lang, 'OFF') }}</span>{% else %}<span class="c-green">{{ txt(lang, 'ON') }}</span> ({{ guild.options.subtitles }}){% endif %}</h1>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  </div>
+  <div class="modal-body">
+    <div class="subtitles-modal-div">
+      <select class="subtitles-modal-input" id="subtitles_select" name="var">
+        <optgroup label="{{ txt(lang, 'State') }}">
+          <option value="True">{{ txt(lang, 'Enabled') }}</option>
+          <option value="False">{{ txt(lang, 'Disabled') }}</option>
+        </optgroup>
+        {% if guild.now_playing %}
+
+          {% if guild.now_playing.subtitles %}
+            <optgroup label="{{ txt(lang, 'Subtitles') }}">
+            {% for key, value in guild.now_playing.subtitles['langs'].items() %}
+              <option value="subtitles_{{ key }}" {{ 'selected' if guild.options.subtitles == 'subtitles_' + key }}>{{ value }} ({{ key }})</option>
+            {% endfor %}
+            </optgroup>
+          {% endif %}
+
+          {% if guild.now_playing.captions %}
+            <optgroup label="{{ txt(lang, 'Captions') }}">
+            {% for key, value in guild.now_playing.captions['langs'].items() %}
+              <option value="captions_{{ key }}" {{ 'selected' if guild.options.subtitles == 'captions_' + key }}>{{ value }} ({{ key }})</option>
+            {% endfor %}
+            </optgroup>
+          {% endif %}
+
+        {% endif %}
+      </select>
+      <button class="btn btn-outline btn-primary btn-m q-item1" type="submit" title="{{ txt(lang, 'Set Captions') }}"
+              hx-trigger="click throttle:1s" hx-swap="beforeend" hx-target="#response-div"
+              hx-get="/guild/{{gi}}/action?key={{key}}&act=subtitles" hx-include="#subtitles_select"
+      >Set</button>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-dark q-item1" data-bs-dismiss="modal">{{ txt(lang, 'Close') }}</button>
+
+  </div>
+</div>

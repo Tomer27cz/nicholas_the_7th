@@ -1,6 +1,6 @@
 <div class="modal-content" id="joinModal_content">
   <div class="modal-header">
-    <h1 class="modal-title fs-5" id="joinLabel">Join</h1>
+    <h1 class="modal-title fs-5" id="joinLabel">{{ txt(lang, 'Join') }}</h1>
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
   </div>
   <div class="modal-body">
@@ -32,7 +32,7 @@
       <div class="accordion-item">
         <h2 class="accordion-header">
           <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#aJoin" aria-expanded="false" aria-controls="aJoin">
-            <h3>Advanced</h3>
+            <h3>{{ txt(lang, 'Advanced') }}</h3>
           </button>
         </h2>
         <div id="aJoin" class="accordion-collapse collapse" data-bs-parent="#accordionJoin">

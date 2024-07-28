@@ -107,10 +107,6 @@ SPOTIFY_REDIRECT_URI='https://localhost:8888/callback' # This is the redirect ur
 # SoundCloud
 SOUNDCLOUD_CLIENT_ID='YOUR_SOUNDCLOUD_ID' # SoundCloud ID (you can use your accounts id -> developer tools)
 
-# Parent Directory
-# For docker, set this to /app/
-PARENT_DIR='' # Leave blank if running from root directory (has to be absolute path and have / at the end)
-
 # DEFAULT VALUES - DO NOT CHANGE UNLESS YOU KNOW WHAT YOU'RE DOING
 DEFAULT_DISCORD_AVATAR="https://cdn.discordapp.com/embed/avatars/0.png"
 VLC_LOGO="https://upload.wikimedia.org/wikipedia/commons/3/38/VLC_icon.png"

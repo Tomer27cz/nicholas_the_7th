@@ -21,7 +21,7 @@
     {% for error in errors %}
       <div class="alert alert-danger div-align alert-dismissible fade show sticky-top" role="alert">
         {{ error }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ txt(lang, 'Close') }}"></button>
       </div>
     {% endfor %}
   {% endif %}
@@ -29,7 +29,7 @@
     {% for message in messages %}
       <div class="alert alert-success div-align alert-dismissible fade show sticky-top" role="alert">
         {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ txt(lang, 'Close') }}"></button>
       </div>
     {% endfor %}
   {% endif %}
@@ -204,22 +204,23 @@
             <path d="M 24 4 C 12.972066 4 4 12.972074 4 24 C 4 35.027926 12.972066 44 24 44 C 35.027934 44 44 35.027926 44 24 C 44 12.972074 35.027934 4 24 4 z M 24 7 C 33.406615 7 41 14.593391 41 24 C 41 33.406609 33.406615 41 24 41 C 14.593385 41 7 33.406609 7 24 C 7 14.593391 14.593385 7 24 7 z M 22.476562 11.978516 A 1.50015 1.50015 0 0 0 21 13.5 L 21 24.5 A 1.50015 1.50015 0 0 0 21.439453 25.560547 L 26.439453 30.560547 A 1.50015 1.50015 0 1 0 28.560547 28.439453 L 24 23.878906 L 24 13.5 A 1.50015 1.50015 0 0 0 22.476562 11.978516 z"></path>
           </svg>
         </button>
-      </div>
-    </div>
-    <div class="q-item1">
-      <div class="d-flex">
-        <div class="btn-m">
-          <input type="number" class="form-c form-control btn-m flex-fill" id="volumeInput" name="var" min="0" max="200"
-                 value="{{ int(guild.options.volume*100) }}" oninput="document.getElementById('volumeRange').value=this.value"
-                 {% if not guild.connected %}disabled{% endif %}>
-        </div>
-        <input type="range" class="form-r form-range btn-m" id="volumeRange" min="0" max="200" value="{{ int(guild.options.volume*100) }}"
-               oninput="document.getElementById('volumeInput').value=this.value" {% if not guild.connected %}disabled{% endif %}>
-        <button class="btn btn-outline btn-primary btn-sm btn-m flex-fill" type="submit"
-                title="{{ txt(lang, 'Set Volume') }}" {% if not guild.connected %}disabled{% endif %}
-                hx-trigger="click throttle:1s" hx-swap="beforeend" hx-target="#response-div"
-                hx-get="/guild/{{gi}}/action?key={{key}}&act=volume" hx-include="#volumeInput"
-        >Set</button>
+        <button class="btn btn-dark e-item1" data-bs-toggle="modal" data-bs-target="#volumeModal" title="{{ txt(lang, 'Volume') }}"
+                {% if not guild.connected %}disabled{% endif %} hx-get="/guild/{{ gi }}/modals?type=volumeModal&key={{ key }}"
+                hx-trigger="click once" hx-swap="outerHTML" hx-target="#volumeModal_content" hx-indicator="#volumeModal_spinner">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#ffffff" viewBox="0 0 16 16">
+            <path d="M11.536 14.01A8.47 8.47 0 0 0 14.026 8a8.47 8.47 0 0 0-2.49-6.01l-.708.707A7.48 7.48 0 0 1 13.025 8c0 2.071-.84 3.946-2.197 5.303z"></path>
+            <path d="M10.121 12.596A6.48 6.48 0 0 0 12.025 8a6.48 6.48 0 0 0-1.904-4.596l-.707.707A5.48 5.48 0 0 1 11.025 8a5.48 5.48 0 0 1-1.61 3.89z"></path>
+            <path d="M10.025 8a4.5 4.5 0 0 1-1.318 3.182L8 10.475A3.5 3.5 0 0 0 9.025 8c0-.966-.392-1.841-1.025-2.475l.707-.707A4.5 4.5 0 0 1 10.025 8M7 4a.5.5 0 0 0-.812-.39L3.825 5.5H1.5A.5.5 0 0 0 1 6v4a.5.5 0 0 0 .5.5h2.325l2.363 1.89A.5.5 0 0 0 7 12zM4.312 6.39 6 5.04v5.92L4.312 9.61A.5.5 0 0 0 4 9.5H2v-3h2a.5.5 0 0 0 .312-.11"></path>
+          </svg>
+        </button>
+        <button class="btn btn-dark e-item1" data-bs-toggle="modal" data-bs-target="#subtitlesModal" title="{{ txt(lang, 'Subtitles') }}"
+                {% if not guild.connected %}disabled{% endif %} hx-get="/guild/{{ gi }}/modals?type=subtitlesModal&key={{ key }}"
+                hx-trigger="click once" hx-swap="outerHTML" hx-target="#subtitlesModal_content" hx-indicator="#subtitlesModal_spinner">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#ffffff" viewBox="0 0 16 16">
+            <path d="M3.708 7.755c0-1.111.488-1.753 1.319-1.753.681 0 1.138.47 1.186 1.107H7.36V7c-.052-1.186-1.024-2-2.342-2C3.414 5 2.5 6.05 2.5 7.751v.747c0 1.7.905 2.73 2.518 2.73 1.314 0 2.285-.792 2.342-1.939v-.114H6.213c-.048.615-.496 1.05-1.186 1.05-.84 0-1.319-.62-1.319-1.727zm6.14 0c0-1.111.488-1.753 1.318-1.753.682 0 1.139.47 1.187 1.107H13.5V7c-.053-1.186-1.024-2-2.342-2C9.554 5 8.64 6.05 8.64 7.751v.747c0 1.7.905 2.73 2.518 2.73 1.314 0 2.285-.792 2.342-1.939v-.114h-1.147c-.048.615-.497 1.05-1.187 1.05-.839 0-1.318-.62-1.318-1.727z"></path>
+            <path d="M14 3a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zM2 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z"></path>
+          </svg>
+        </button>
       </div>
     </div>
   </div>
@@ -391,6 +392,24 @@
       </div>
     </div>
   </div>
+  <!-- Volume Modal -->
+  <div class="modal fade" id="volumeModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="volumeLabel"
+       aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content" id="volumeModal_content">
+        <div class="text-center"><div id="volumeModal_spinner" class="spinner-border text-primary htmx-indicator" role="status" style="width: 2rem; height: 2rem;"></div></div>
+      </div>
+    </div>
+  </div>
+  <!-- Subtitles Modal -->
+  <div class="modal fade" id="subtitlesModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="subtitlesLabel"
+       aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content" id="subtitlesModal_content">
+        <div class="text-center"><div id="subtitlesModal_spinner" class="spinner-border text-primary htmx-indicator" role="status" style="width: 2rem; height: 2rem;"></div></div>
+      </div>
+    </div>
+  </div>
 
   {% if guild.now_playing %}
     <script>
@@ -415,6 +434,7 @@
   let scroll_position = '{{ scroll_position }}';
   let socket_host = '{{ socket_host }}';
   let bot_status = '{{ bot_status }}';
+  let options_subtitles = '{{ guild.options.subtitles }}';
   </script>
   <script src="https://cdn.socket.io/4.6.0/socket.io.min.js" integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+" crossorigin="anonymous"></script>
   <script src="{{ url_for('static', filename='js/guild.js') }}"></script>

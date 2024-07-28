@@ -8,7 +8,7 @@ from commands.autocomplete import query_autocomplete_def
 
 from utils.convert import convert_duration
 from utils.log import log, collect_data
-from utils.files import get_readable_byte_size, get_icon_class_for_filename, get_log_files
+from utils.files import get_readable_byte_size, get_icon_class_for_filename, get_log_files, sort_files_by_name
 from utils.translate import txtf
 from utils.video_time import video_time_from_start
 from utils.checks import check_isdigit
@@ -274,9 +274,9 @@ async def guild_page(guild_id):
         if guild_object.now_playing.heatmap:
             nph = heatmap_to_svg(guild_object.now_playing.heatmap, guild_object.now_playing.duration)
         if guild_object.now_playing.captions:
-            npc = guild_object.now_playing.captions
+            npc = json.dumps(guild_object.now_playing.captions)
         if guild_object.now_playing.subtitles:
-            nps = guild_object.now_playing.subtitles
+            nps = json.dumps(guild_object.now_playing.subtitles)
 
     return render_template('main/guild.html',
                            guild=guild(db, guild_id),
@@ -524,6 +524,10 @@ async def htmx_modal(guild_id):
         return render_template('main/htmx/modals/saveModal.html', gi=int(guild_id), key=key)
     if modal_type == 'timeModal':
         return render_template('main/htmx/modals/timeModal.html', gi=int(guild_id), guild=guild_object, key=key)
+    if modal_type == 'volumeModal':
+        return render_template('main/htmx/modals/volumeModal.html', gi=int(guild_id), guild=guild_object, key=key)
+    if modal_type == 'subtitlesModal':
+        return render_template('main/htmx/modals/subtitlesModal.html', gi=int(guild_id), guild=guild_object, key=key)
 
     if modal_type == 'queue':
         track_id = request.args.get('var')
@@ -636,6 +640,9 @@ async def htmx_action(guild_id):
     elif 'volume' == act:
         log(web_data, 'volume_command_def', {'var': var}, log_type='web', author=web_data.author)
         response = execute_function('volume_command_def', web_data=web_data, volume=var)
+    elif 'subtitles' == act:
+        log(web_data, 'subtitles_command_def', {'var': var}, log_type='web', author=web_data.author)
+        response = execute_function('subtitles_command_def', web_data=web_data, subtitles=var)
 
     elif 'edit' == act:
         log(web_data, 'web_video_edit', {}, log_type='web', author=web_data.author)
@@ -813,7 +820,7 @@ async def admin_log_tree():
 
     log_files = get_log_files()
 
-    return render_template('admin/text_file/txt_tree.html', user=user, title='Log', log_files=log_files)
+    return render_template('admin/text_file/logs.html', user=user, title='Log', log_files=log_files)
 
 # Files
 @app.route('/admin/log/<path:file_name>')
@@ -861,7 +868,7 @@ async def admin_log_page(file_name):
 #         return abort(404)
 #
 #     try:
-#         with open(f'{config.PARENT_DIR}json/{file_name}.json', 'r', encoding='utf-8') as f:
+#         with open(f'json/{file_name}.json', 'r', encoding='utf-8') as f:
 #             lines = list(reversed(f.readlines()))
 #             chunks = math.ceil(len(lines) / 100)
 #     except Exception as e:
@@ -883,7 +890,7 @@ async def admin_log_page(file_name):
 #     if int(user['id']) not in authorized_users:
 #         return abort(403)
 #
-#     with open(f'{config.PARENT_DIR}logs/data.log', 'r', encoding='utf-8') as f:
+#     with open(f'logs/data.log', 'r', encoding='utf-8') as f:
 #         data_data = f.readlines()
 #
 #     return render_template('admin/text_file/data.html', user=user, data_data=data_data, title='Log')
@@ -950,9 +957,9 @@ async def admin_user_page(user_id):
     return render_template('admin/data/user.html', user=user, data=data, title='User Info', badge_dict=badge_dict_new)
 
 # Admin file ---------------------------------------------------------
-@app.route('/admin/file/', defaults={'reqPath': ''})
-@app.route('/admin/file/<path:req_path>')
-async def get_files(req_path):
+@app.route('/admin/file/', defaults={'rel_path': '.'})
+@app.route('/admin/file/<path:rel_path>')
+async def get_files(rel_path):
     log(request.remote_addr, request.full_path, log_type='ip')
     await simulate()
     user = flask_session.get('discord_user', {})
@@ -963,16 +970,13 @@ async def get_files(req_path):
     if int(user.get('id', 0)) not in authorized_users:
         return abort(403, 'User not authorized')
 
-    # Joining the base and the requested path
-    abs_path = safe_join(config.PARENT_DIR, req_path)
-
     # Return 404 if path doesn't exist
-    if not os.path.exists(abs_path):
+    if not os.path.exists(rel_path):
         return abort(404, 'Path not found')
 
     # Check if path is a file and serve
-    if os.path.isfile(abs_path):
-        return send_file(abs_path)
+    if os.path.isfile(rel_path):
+        return send_file(rel_path)
 
     # Show directory contents
     def f_obj_from_scan(x):
@@ -980,16 +984,13 @@ async def get_files(req_path):
         # return file information for rendering
         return {'name': x.name,
                 'fIcon': "bi bi-folder-fill" if os.path.isdir(x.path) else get_icon_class_for_filename(x.name),
-                'relPath': os.path.relpath(x.path, config.PARENT_DIR).replace("\\", "/"),
+                'relPath': x.path.replace("\\", "/"),
                 'mTime': struct_to_time(file_stat.st_mtime),
-                'size': get_readable_byte_size(num=file_stat.st_size, rel_path=os.path.relpath(x.path, config.PARENT_DIR).replace("\\", "/"))}
+                'size': get_readable_byte_size(num=file_stat.st_size, rel_path=x.path.replace("\\", "/"))
+                }
 
-    file_objs = [f_obj_from_scan(x) for x in os.scandir(abs_path)]
-
-    # get parent directory url
-    parent_folder_path = os.path.relpath(Path(abs_path).parents[0], config.PARENT_DIR).replace("\\", "/")
-    if parent_folder_path == '..':
-        parent_folder_path = '.'
+    file_objs = sort_files_by_name([f_obj_from_scan(x) for x in os.scandir(rel_path)])
+    parent_folder_path = os.path.abspath(os.path.join(rel_path, os.pardir)).replace("\\", "/")
 
     return render_template('admin/files.html', data={'files': file_objs, 'parentFolder': parent_folder_path}, title='Files', user=user)
 

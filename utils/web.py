@@ -9,8 +9,6 @@ import utils.files
 
 import os
 
-from config import PARENT_DIR
-
 def execute_function(function_name: str, web_data: classes.data_classes.WebData, **kwargs) -> classes.data_classes.ReturnData:
     # create argument dictionary
     arg_dict = {
@@ -346,7 +344,7 @@ def get_language(glob: GlobalVars, guild_id: int):
 # Channel transcript
 def get_channel_content(guild_id: int, channel_id: int):
     try:
-        path = f'{PARENT_DIR}db/guilds/{guild_id}/{channel_id}'
+        path = f'db/guilds/{guild_id}/{channel_id}'
         if not os.path.exists(path):
             return None
 

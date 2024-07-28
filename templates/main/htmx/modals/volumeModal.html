@@ -1,0 +1,28 @@
+<div class="modal-content" id="volumeModal_content">
+  <div class="modal-header">
+    <h1 class="modal-title fs-5" id="volumeLabel">{{ txt(lang, 'Volume') }}</h1>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  </div>
+  <div class="modal-body">
+
+    <input type="number" class="form-c form-control btn-m flex-fill volume-modal-input" id="volumeInput" name="var" min="0" max="200"
+                 value="{{ int(guild.options.volume*100) }}" oninput="document.getElementById('volumeRange').value=this.value">
+
+    <div class="volume-modal-svg">
+      <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="3rem" viewBox="0 0 100 100" fill="var(" preserveAspectRatio="none">
+        <path d="M 100, 0 L 100, 100 L 0, 100"></path>
+      </svg>
+    </div>
+
+    <input type="range" class="form-r form-range btn-m" id="volumeRange" min="0" max="200" value="{{ int(guild.options.volume*100) }}"
+               oninput="document.getElementById('volumeInput').value=this.value">
+
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-dark q-item1" data-bs-dismiss="modal">{{ txt(lang, 'Close') }}</button>
+    <button class="btn btn-outline btn-primary btn-m q-item1" type="submit" title="{{ txt(lang, 'Set Volume') }}"
+            hx-trigger="click throttle:1s" hx-swap="beforeend" hx-target="#response-div"
+            hx-get="/guild/{{gi}}/action?key={{key}}&act=volume" hx-include="#volumeInput"
+    >Set</button>
+  </div>
+</div>

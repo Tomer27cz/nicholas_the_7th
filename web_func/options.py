@@ -21,6 +21,7 @@ async def web_user_options_edit(web_data, glob: GlobalVars, form) -> ReturnData:
     volume = form['volume']
     buffer = form['buffer']
     history_length = form['history_length']
+    subtitles = form['subtitles']
 
     bool_list_t = ['True', 'true', '1']
     bool_list_f = ['False', 'false', '0']
@@ -31,6 +32,8 @@ async def web_user_options_edit(web_data, glob: GlobalVars, form) -> ReturnData:
         return ReturnData(False, f'loop has to be: {bool_list} --> {loop}')
     if buttons not in bool_list:
         return ReturnData(False, f'single has to be: {bool_list} --> {buttons}')
+    if subtitles not in bool_list:
+        return ReturnData(False, f'subtitles has to be: {bool_list} --> {subtitles}')
 
     if response_type not in response_types:
         return ReturnData(False, f'response_type has to be: {response_types} --> {response_type}')
@@ -47,6 +50,7 @@ async def web_user_options_edit(web_data, glob: GlobalVars, form) -> ReturnData:
 
     options.loop = to_bool(loop)
     options.buttons = to_bool(buttons)
+    options.subtitles = to_bool(subtitles)
 
     options.language = language
     options.response_type = response_type

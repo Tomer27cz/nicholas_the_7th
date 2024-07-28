@@ -3,11 +3,11 @@
 {% set title = "Server List" %}
 
 {% block content %}
-  <div class="div-align">
-    <h2>The Bot is in: {{ guilds | sum(attribute='connected') }} servers</h2>
+  <div class="div-align margin-1">
+    <h2>{{ txt(lang, 'The Bot is in') }}: {{ guilds | sum(attribute='connected') }} {{ txt(lang, 'servers') }}</h2>
   </div>
   <div class="picker">
-    <h3>Please select a server to get started</h3>
+    <h3>{{ txt(lang, 'Please select a server to get started' )}}</h3>
     <br/>
     <section class="d-cards">
       {% for guild_object in guilds %}
@@ -36,8 +36,8 @@
     </section>
     <br/>
   </div>
-  <div class="div-align">
-    <h2>Your server not here? <a href="/invite" class="btn btn-primary btn-lg">Invite the bot</a></h2>
+  <div class="div-align margin-2">
+    <h2>{{ txt(lang, 'Your server is not here?') }} <a href="/invite" class="btn btn-primary btn-lg">{{ txt(lang, 'Invite the bot' ) }}</a></h2>
   </div>
   <br><br>
 {% endblock %}

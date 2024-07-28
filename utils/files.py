@@ -6,10 +6,11 @@ from pathlib import Path
 import os
 import json
 
-from config import PARENT_DIR
-
-def get_readable_byte_size(num, suffix='B', rel_path=None) -> str:
+def get_readable_byte_size(num, suffix='B', rel_path=None, get_folders_size: bool=False) -> str:
     if num is None or num == 0:
+        if not get_folders_size:
+            return ""
+
         try:
             num = get_folder_size(rel_path)
         except (FileNotFoundError, TypeError, PermissionError):
@@ -40,7 +41,7 @@ def get_folder_size(rel_path) -> int:
     return total_size
 
 def get_guild_text_channels_file(glob: GlobalVars, guild_id: int):
-    path = f'{PARENT_DIR}db/guilds/{guild_id}/channels.json'
+    path = f'db/guilds/{guild_id}/channels.json'
     if os.path.exists(path):
         with open(path, 'r', encoding='utf-8') as f:
             data = json.load(f)
@@ -55,6 +56,31 @@ def get_guild_text_channels_file(glob: GlobalVars, guild_id: int):
 
 def get_log_files():
     log_files = []
-    for file in os.listdir(f"{PARENT_DIR}logs"):
+    for file in os.listdir(f"logs"):
         log_files.append(file)
     return log_files
+
+def sort_files_by_name(files):
+    """
+    Sorts files by name, folders first
+    {
+    'name': str,
+    'fIcon': str ("bi bi-folder-fill" for folder),
+    'relPath': str,
+    'mTime': str,
+    'size': str
+    }
+
+    :param files: list of files
+    :return: sorted list
+    """
+    folders = []
+    files_list = []
+    for file in files:
+        if file['fIcon'] == "bi bi-folder-fill":
+            folders.append(file)
+        else:
+            files_list.append(file)
+    folders.sort(key=lambda x: x['name'])
+    files_list.sort(key=lambda x: x['name'])
+    return folders + files_list

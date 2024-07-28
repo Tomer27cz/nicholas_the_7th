@@ -44,17 +44,26 @@ function npProgress(duration, played_duration) {
       }
   }
 
-  let inter = setInterval(addProgress, 100);
-  return inter;
+  function changeSubtitle(secs_played) {
+      if (formatted_subtitles === undefined) {
+          return;
+      }
+
+      if (sub_elem === null || sub_elem === undefined) {
+          return;
+      }
+
+      let new_text = currentSubtitle(formatted_subtitles, secs_played);
+      if (sub_elem.innerHTML !== new_text) {
+          sub_elem.innerHTML = new_text;
+      }
+  }
 
   function addProgress() {
       let sec_played = getSecsPlayed(played_duration);
       text_elem.innerText = convertSeconds(sec_played);
 
-      let new_text = currentSubtitle(formatted_subtitles, sec_played);
-      if (sub_elem.innerHTML !== new_text) {
-            sub_elem.innerHTML = new_text;
-      }
+      changeSubtitle(sec_played);
 
       if (duration != null) {
           let sec_remaining_add = duration - getSecsPlayed(played_duration);
@@ -70,120 +79,10 @@ function npProgress(duration, played_duration) {
           }
       }
   }
+
+  let inter = setInterval(addProgress, 100);
+  return inter;
 }
-
-// // ---------------------------------------------------------------------------------------------------------------------
-// function reloadQueue() {
-//     fetch(`/guild/${guild_id}/queue?key=${key}`)
-//         .then(response => response.text())
-//         .then(data => {
-//             document.getElementById("q-main").outerHTML = data;
-//         });
-// }
-//
-// function reloadNow(int) {
-//     fetch(`/guild/${guild_id}/queue?key=${key}&act=now_video&render=html`)
-//         .then(response => response.text())
-//         .then(data => {
-//             document.getElementById("now-playing").outerHTML = data;
-//         });
-//
-//     clearInterval(int);
-//
-//     return fetchData();
-// }
-//
-// function reloadHistory() {
-//     document.getElementById("history").outerHTML = `<div class="accordion-item" id="history">
-//       <div class="accordion-header">
-//         <div class="d-grid gap-2">
-//           <a class="btn btn-dark accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="false" aria-controls="panelsStayOpen-collapseOne" hx-target="#h-main" hx-swap="outerHTML" hx-trigger="click once" hx-get="/guild/${guild_id}/history?key=${key}">
-//             <h3>History</h3>
-//             <div class="q-item1 text-center">
-//               <div class="spinner-border text-primary htmx-indicator" role="status" style="width: 2rem; height: 2rem;"></div>
-//             </div>
-//           </a>
-//         </div>
-//       </div>
-//       <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse">
-//         <div class="accordion-body" id="h-main"></div>
-//       </div>
-//     </div>`;
-// }
-//
-// function reloadSaves() {
-//     fetch(`/guild/${guild_id}/modals?type=loadModal?key=${key}}`)
-//         .then(response => response.text())
-//         .then(data => {
-//             document.getElementById("loadModal_content").outerHTML = data;
-//         });
-// }
-//
-// function reloadOptions() {
-//     fetch(`/guild/${guild_id}/modals?type=optionsModal&key=${key}}`)
-//         .then(response => response.text())
-//         .then(data => {
-//             document.getElementById("optionsModal_content").outerHTML = data;
-//         });
-// }
-//
-// // ---------------------------------------------------------------------------------------------------------------------
-//
-// function checkUpdates(last_updated, new_last_updated, int) {
-//     if (new_last_updated['queue'] > last_updated['queue']) {
-//         console.log("Reloading queue");
-//         reloadQueue();
-//     }
-//
-//     if (new_last_updated['now'] > last_updated['now']) {
-//         console.log("Reloading now");
-//         try {
-//             reloadNow(int);
-//         } catch (e) {
-//             console.log(e);
-//         }
-//     }
-//
-//     if (new_last_updated['history'] > last_updated['history']) {
-//         console.log("Reloading history");
-//         reloadHistory();
-//     }
-//
-//     if (new_last_updated['saves'] > last_updated['saves']) {
-//         console.log("Reloading saves");
-//         reloadSaves();
-//     }
-//
-//     if (new_last_updated['options'] > last_updated['options']) {
-//         console.log("Reloading options");
-//         reloadOptions();
-//     }
-// }
-//
-// // ---------------------------------------------------------------------------------------------------------------------
-
-// function fetchData() {
-//     return fetch(`/guild/${guild_id}/queue?key=${key}&act=now_video&render=json`)
-//         .then(response => {
-//             if (!response.ok) {
-//                 throw new Error(`HTTP error! Status: ${response.status}`);
-//             }
-//             return response.json();
-//         })
-//         .then(data => {
-//             const pd = data['played_duration'];
-//             const nd = data['duration'];
-//
-//             return npProgress(nd, pd);
-//         })
-//         .catch(error => {
-//             console.error('Error fetching data:', error);
-//         }).then(int => {
-//             return int;
-//         });
-// }
-//
-// let int = fetchData();
 
 // ---------------------------------------------------------------------------------------------------------------------
 
@@ -273,23 +172,10 @@ function delay(time) {
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-function downloadSubtitles(lang) {
-    if (subtitles === null && captions === null) {
-        return;
-    }
-    if (subtitles === null) {
-        subtitles = captions;
-        console.log("Subtitles are null, using captions");
-    }
+function fetchSubtitles(url) {
+    console.log("Fetching subtitles from: " + url);
 
-    let subtitle_url = subtitles?.[lang] ?? Object.values(subtitles)[0];
-    if (subtitle_url === null || subtitle_url === undefined) {
-        console.log("Could not find subtitles for language: " + lang);
-        console.log("Could not find subtitles[0]: " + subtitles[0]);
-        return;
-    }
-
-    return fetch(subtitle_url)
+    return fetch(url)
     .then(response => {
         if (!response.ok) {
             throw new Error('Network response was not ok ' + response.statusText);
@@ -299,7 +185,72 @@ function downloadSubtitles(lang) {
     .then(data => data)
     .catch(error => {
         console.error('There was a problem with downloading subtitles:', error);
+        return null;
     })
+}
+
+function downloadSubtitles(lang) {
+    if (lang.slice(0, 10) === 'subtitles_' && subtitles !== null) {
+        console.log("Fetching subtitles: " + lang.slice(10));
+
+        let response = fetchSubtitles(subtitles['url'] + lang.slice(10) + '&fmt=json3');
+        if (response !== null) {
+            return response;
+        }
+
+        console.log("Error fetching subtitles: " + lang.slice(10));
+    }
+
+    if (lang.slice(0, 9) === 'captions_' && captions !== null) {
+        console.log("Fetching captions: " + lang.slice(9));
+
+        let response = fetchSubtitles(captions['url'] + lang.slice(9) + '&fmt=json3');
+        if (response !== null) {
+            return response;
+        }
+
+        console.log("Error fetching captions: " + lang.slice(9));
+    }
+
+    if (subtitles !== null) {
+        console.log("Fetching English subtitles");
+
+        let response = fetchSubtitles(subtitles['en']);
+        if (response !== null) {
+            return response;
+        }
+
+        console.log("Error fetching English subtitles");
+
+        console.log("Fetching first available subtitles");
+        let firstResponse = fetchSubtitles(subtitles['url'] + subtitles['langs'][0] + '&fmt=json3');
+        if (firstResponse !== null) {
+            return firstResponse;
+        }
+
+        console.log("Error fetching first available subtitles");
+    }
+
+    if (captions !== null) {
+        console.log("Fetching English captions");
+
+        let response = fetchSubtitles(captions['en']);
+        if (response !== null) {
+            return response;
+        }
+
+        console.log("Error fetching English captions");
+
+        console.log("Fetching first available captions");
+        let firstResponse = fetchSubtitles(captions['url'] + captions['langs'][0] + '&fmt=json3');
+        if (firstResponse !== null) {
+            return firstResponse;
+        }
+
+        console.log("Error fetching first available captions");
+    }
+
+    console.log("No subtitles or captions found");
 }
 
 function formatSubtitles(subtitles, combine_segments=false) {
@@ -345,12 +296,12 @@ function formatSubtitles(subtitles, combine_segments=false) {
         }
     }
 
+    console.log("Formatted subtitles");
     return new_subtitles;
 }
 
 function currentSubtitle(subtitles, time) {
     if (subtitles === undefined) {
-        console.log("Subtitles are undefined");
         return '';
     }
 
@@ -384,15 +335,31 @@ function currentSubtitle(subtitles, time) {
 
 scrollNow(scroll_position);
 
-if (duration != null && played_duration != null && bot_status !== 'Paused') {
-    npProgress(duration, played_duration);
-}
-
 let formatted_subtitles;
-if ((subtitles !== null || captions !== null) && played_duration !== null) {
-    console.log("Downloading subtitles");
+if (played_duration !== null) {
 
-    downloadSubtitles('en').then(data => {formatted_subtitles = formatSubtitles(data);}).then(() => {
-        document.getElementById("subtitles").innerHTML = currentSubtitle(formatted_subtitles, getSecsPlayed(played_duration));
-    });
+    if (bot_status !== 'Paused') {
+        npProgress(duration, played_duration);
+    }
+
+    if (options_subtitles !== 'False') {
+        if (subtitles !== null || captions !== null) {
+            console.log("Downloading subtitles: " + options_subtitles);
+
+            downloadSubtitles(options_subtitles)
+                .then(data => {
+                    formatted_subtitles = formatSubtitles(data);
+                })
+                .then(() => {
+                    document.getElementById("subtitles").innerHTML = currentSubtitle(formatted_subtitles, getSecsPlayed(played_duration));
+                });
+        } else {
+            console.log("Subtitles and captions are null");
+        }
+    } else {
+        console.log("Subtitles are disabled");
+    }
+} else {
+    console.log("Played duration is null");
 }
+

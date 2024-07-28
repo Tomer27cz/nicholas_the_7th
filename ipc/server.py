@@ -106,6 +106,8 @@ async def execute_function(request_dict, glob: GlobalVars) -> ReturnData:
 
     if func_name == 'volume_command_def':
         return asyncio.run_coroutine_threadsafe(commands.voice.volume_command_def(web_data, glob, volume=args['volume']), glob.bot.loop).result()
+    if func_name == 'subtitles_command_def':
+        return asyncio.run_coroutine_threadsafe(commands.general.subtitles_command_def(web_data, glob, subtitles=args['subtitles']), glob.bot.loop).result()
     if func_name == 'set_video_time':
         return asyncio.run_coroutine_threadsafe(commands.player.set_video_time(web_data, glob, time_stamp=args['time_stamp']), glob.bot.loop).result()
 

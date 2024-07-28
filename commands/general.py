@@ -231,16 +231,56 @@ async def key_def(ctx: dc_commands.Context, glob: GlobalVars) -> ReturnData:
     await ctx.reply(message)
     return ReturnData(True, message)
 
-async def options_command_def(ctx, glob: GlobalVars, loop=None, language=None, response_type=None, buttons=None, volume=None, buffer=None, history_length=None) -> ReturnData:
+async def options_command_def(ctx, glob: GlobalVars, loop=None, language=None, response_type=None, buttons=None, volume=None, buffer=None, history_length=None, subtitles=None) -> ReturnData:
     log(ctx, 'options_command_def', options=locals(), log_type='function', author=ctx.author)
     is_ctx, guild_id, author, guild_object = ctx_check(ctx, glob)
 
     if not is_ctx:
         return ReturnData(False, txt(guild_id, glob, 'Command cannot be used in WEB'))
 
-    if all(v is None for v in [loop, language, response_type, buttons, volume, buffer, history_length]):
+    if all(v is None for v in [loop, language, response_type, buttons, volume, buffer, history_length, subtitles]):
         return await commands.admin.options_def(ctx, glob, server=None, ephemeral=False)
 
     return await commands.admin.options_def(ctx, glob, server=guild_id, ephemeral=False, loop=str(loop), language=str(language),
                                             response_type=str(response_type), buttons=str(buttons), volume=str(volume),
-                                            buffer=str(buffer), history_length=str(history_length))
+                                            buffer=str(buffer), history_length=str(history_length), subtitles=str(subtitles))
+
+async def subtitles_command_def(ctx, glob: GlobalVars, subtitles, mute_response: bool=True) -> ReturnData:
+    log(ctx, 'subtitles_command_def', options=locals(), log_type='function', author=ctx.author)
+    is_ctx, guild_id, author, guild_object = ctx_check(ctx, glob)
+    db_guild = guild(glob, guild_id)
+
+    if subtitles in ['False', 'false', 'off', 'no', 'disable', 'disabled', '0', 'f', False, None, 0]:
+        db_guild.options.subtitles = 'False'
+        update(glob)
+
+        message = txt(guild_id, glob, 'Subtitles disabled')
+        if not mute_response:
+            await ctx.reply(message)
+        return ReturnData(True, message)
+
+    if subtitles in ['True', 'true', 'on', 'yes', 'enable', 'enabled', '1', 't', True, 1]:
+        db_guild.options.subtitles = 'True'
+        update(glob)
+
+        message = txt(guild_id, glob, 'Subtitles enabled')
+        if not mute_response:
+            await ctx.reply(message)
+        return ReturnData(True, message)
+
+    try:
+        assert isinstance(subtitles, str)
+
+        db_guild.options.subtitles = subtitles.lower()
+        update(glob)
+
+        message = txt(guild_id, glob, 'Subtitles changed to: ') + subtitles
+        if not mute_response:
+            await ctx.reply(message)
+        return ReturnData(True, message)
+
+    except AssertionError:
+        message = txt(guild_id, glob, 'Bad subtitle')
+        if not mute_response:
+            await ctx.reply(message)
+        return ReturnData(False, message)

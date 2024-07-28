@@ -20,103 +20,54 @@
     {% endfor %}
   {% endif %}
 
-
-  <form onsubmit="onSubmitDisable();" action="#" method="POST">
-    <div class="div-align-center">
-      <h1 class="btn-m">Admin</h1>
-    </div>
-    <div class="div-login">
+  <div class="div-align-center">
+    <h1 class="btn-m">Admin</h1>
+  </div>
+  <div class="div-login">
+    <div class="g-status-div">
       <div class="g-status-div">
         {% for key, value in hash_map.items() %}
           <p class="g-status-p">{{ key }}: <span class="g-status-span">{{ value }}</span></p>
         {% endfor %}
       </div>
-      <div class="g-admin-button-div">
+      <div class="g-status-div">
         <div class="g-admin-button">
-          <a href="/admin/file/" class="btn btn-success btn-m">Browse Files</a>
+          <a href="/admin/file/" class="btn btn-success btn-lg">Browse Files</a>
         </div>
         <div class="g-admin-button">
-          <a href="/admin/log" class="btn btn-primary btn-m">Logs</a>
+          <a href="/admin/log" class="btn btn-primary btn-lg">Logs</a>
         </div>
-{#        <div class="g-admin-button">#}
-{#          <a href="/admin/log/log.log" class="btn btn-info btn-m">Show Log</a>#}
-{#        </div>#}
-{#        <div class="g-admin-button">#}
-{#          <a href="/admin/log/data.log?separate_lines=True" class="btn btn-info btn-m">Show Data</a>#}
-{#        </div>#}
       </div>
     </div>
-{#    <div class="div-login">#}
-{#      <div class="row row-cols-lg-auto g-3">#}
-{#        <div class="col-12">#}
-{#          <h3>Options</h3>#}
-{#        </div>#}
-{#      </div>#}
-{#    </div>#}
-    <div class="picker">
-      <h3>Select a server to Edit</h3>
-      <br/>
-      <section class="d-cards">
-        {% for guild_object in guild %}
-          <div class="d-card">
-            <a href="/admin/guild/{{ guild_object.id }}">
-              {% if guild_object.connected %}
-                {% if guild_object.data.icon is not none %}
-                  <img loading="lazy" src="{{ guild_object.data.icon }}" class="green-border"/>
-                {% else %}
-                  <img loading="lazy" src="/static/img/discord_icon.svg" class="green-border"/>
-                {% endif %}
+  </div>
+  <div class="picker">
+    <h3>Select a server to Edit</h3>
+    <br/>
+    <section class="d-cards">
+      {% for guild_object in guild %}
+        <div class="d-card">
+          <a href="/admin/guild/{{ guild_object.id }}">
+            {% if guild_object.connected %}
+              {% if guild_object.data.icon is not none %}
+                <img loading="lazy" src="{{ guild_object.data.icon }}" class="green-border"/>
               {% else %}
-                {% if guild_object.data.icon is not none %}
-                  <img loading="lazy" src="{{ guild_object.data.icon }}" class="red-border"/>
-                {% else %}
-                  <img loading="lazy" src="/static/img/discord_icon.svg" class="red-border"/>
-                {% endif %}
+                <img loading="lazy" src="/static/img/discord_icon.svg" class="green-border"/>
               {% endif %}
-            </a>
-            <p class="d-name">{{ guild_object.data.name }}</p>
-            <p class="{{ 'd-g' if bot_status[guild_object.id] in ['Connected', 'Playing'] }}  d-status">{{ bot_status[guild_object.id] }}</p>
-            <p class="d-status">{{ struct_to_time(last_played[guild_object.id]) }}</p>
-          </div>
-        {% endfor %}
-      </section>
-      <br/>
-    </div>
-
-{#    <div class="picker display-block">#}
-{#      <div class="align-center">#}
-{#        <h3>Actions</h3>#}
-{#      </div>#}
-{#      <div class="l-div e-wrap padding-1">#}
-{#        <button type="submit" class="btn btn-dark q-item1 div-login" name="re_btn">Restart</button>#}
-{#      </div>#}
-{#    </div>#}
-{#  </form>#}
-{#  <br><br>#}
-{##}
-{#  <div class="modal fade" id="joinodal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"#}
-{#       aria-hidden="true">#}
-{#    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">#}
-{#      <div class="modal-content">#}
-{#        <div class="modal-header">#}
-{#          <h1 class="modal-title fs-5" id="staticBackdropLabel">Join a Guild with invite link</h1>#}
-{#          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>#}
-{#        </div>#}
-{#        <form onsubmit="onSubmitDisable();" method="POST" action="#">#}
-{#          <div class="modal-body">#}
-{#            <div class="mb-3">#}
-{#              <label for="inviteURL" class="btn-m">Discord invite URL</label>#}
-{#              <input type="text" class="form-control" name="inviteURL" id="inviteURL" required>#}
-{#            </div>#}
-{#          </div>#}
-{#          <div class="modal-footer">#}
-{#            <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>#}
-{#            <button type="submit" class="btn btn-primary">Join</button>#}
-{#          </div>#}
-{#        </form>#}
-{#      </div>#}
-{#    </div>#}
-{#  </div>#}
-
+            {% else %}
+              {% if guild_object.data.icon is not none %}
+                <img loading="lazy" src="{{ guild_object.data.icon }}" class="red-border"/>
+              {% else %}
+                <img loading="lazy" src="/static/img/discord_icon.svg" class="red-border"/>
+              {% endif %}
+            {% endif %}
+          </a>
+          <p class="d-name">{{ guild_object.data.name }}</p>
+          <p class="{{ 'd-g' if bot_status[guild_object.id] in ['Connected', 'Playing'] }}  d-status">{{ bot_status[guild_object.id] }}</p>
+          <p class="d-status">{{ struct_to_time(last_played[guild_object.id]) }}</p>
+        </div>
+      {% endfor %}
+    </section>
+    <br/>
+  </div>
 
 {% endblock %}

@@ -22,7 +22,7 @@
                 <button class="btn btn-outline btn-primary btn-lg btn-m" type="button" data-bs-toggle="modal"
                         hx-swap="outerHTML" hx-target="#q-main" hx-trigger="click throttle:1s"
                         hx-get="/guild/{{ gi }}/queue?act=loadName&key={{ key }}&var={{ save.name }}"
-                        ><h5>Load</h5></button>
+                        ><h5>{{ txt(lang, 'Load') }}</h5></button>
               </div>
             </div>
           </div>

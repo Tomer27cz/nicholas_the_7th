@@ -62,15 +62,15 @@ async def download_guild_channel(ctx, glob, channel_id: int, mute_response: bool
         return ReturnData(False, message)
 
     guild_id = channel_object.guild.id
-    response = await save_channel_info_to_file(glob, guild_id, f'{config.PARENT_DIR}db/guilds/{guild_id}')
+    response = await save_channel_info_to_file(glob, guild_id, f'db/guilds/{guild_id}')
     if not response.response:
         message = txt(ctx_guild_id, glob, f'Error while saving channel info to file') + ': {response.message}'
         if not mute_response:
             await ctx.reply(message, ephemeral=ephemeral)
         return ReturnData(False, message)
 
-    rel_path = f'{config.PARENT_DIR}dce/DiscordChatExporter.Cli.dll'
-    output_file_path = f'{config.PARENT_DIR}db/guilds/%g/%c/file.html'
+    rel_path = f'dce/DiscordChatExporter.Cli.dll'
+    output_file_path = f'db/guilds/%g/%c/file.html'
     command = f'dotnet "{rel_path}" export -c {channel_id} -t {config.BOT_TOKEN} -o "{output_file_path}" -p 1mb --dateformat "dd/MM/yyyy HH:mm:ss"'
 
     log(ctx, f'download_guild_channel -> executing command: {command}')
@@ -108,15 +108,15 @@ async def download_guild(ctx, glob: GlobalVars, guild_id: int, mute_response: bo
         return ReturnData(False, message)
 
     guild_id = guild_object.id
-    response = await save_channel_info_to_file(glob, guild_id, f'{config.PARENT_DIR}db/guilds/{guild_id}')
+    response = await save_channel_info_to_file(glob, guild_id, f'db/guilds/{guild_id}')
     if not response.response:
         message = txt(ctx_guild_id, glob, f'Error while saving channel info to file') + ":" + response.message
         if not mute_response:
             await ctx.reply(message, ephemeral=ephemeral)
         return ReturnData(False, message)
 
-    rel_path = f'{config.PARENT_DIR}dce/DiscordChatExporter.Cli.dll'
-    output_file_path = f'{config.PARENT_DIR}db/guilds/%g/%c/file.html'
+    rel_path = f'dce/DiscordChatExporter.Cli.dll'
+    output_file_path = f'db/guilds/%g/%c/file.html'
     command = f'dotnet "{rel_path}" exportguild -g {guild_id} -t {config.BOT_TOKEN} -o "{output_file_path}" -p 1mb --dateformat "dd/MM/yyyy HH:mm:ss"'
 
     log(ctx, f'download_guild_channel -> executing command: {command}')
@@ -158,7 +158,7 @@ async def get_guild_channel(ctx, glob: GlobalVars, channel_id: int, mute_respons
         guild_id = channel_object.guild.id
         channel_name = channel_object.name
 
-    path_of_folder = f'{config.PARENT_DIR}db/guilds/{guild_id}/{channel_id}'
+    path_of_folder = f'db/guilds/{guild_id}/{channel_id}'
 
     if not path.exists(path_of_folder):
         message = f'Channel ({channel_id}) has not been downloaded'
@@ -196,7 +196,7 @@ async def get_guild(ctx, glob: GlobalVars, guild_id: int, mute_response: bool=Fa
         if not ctx.interaction.response.is_done():
             await ctx.defer(ephemeral=ephemeral)
 
-    path_of_folder = f'{config.PARENT_DIR}db/guilds/{guild_id}'
+    path_of_folder = f'db/guilds/{guild_id}'
 
     if not path.exists(path_of_folder):
         message = f'Guild ({guild_id}) has not been downloaded'

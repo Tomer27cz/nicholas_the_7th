@@ -21,30 +21,47 @@
         <li class="nav-item">
           <a class="nav-link" href="/guild">Servers</a>
         </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Session
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="/login">{% if user %}Update{% else %}Login{% endif %}</a></li>
+            {% if user %}
+              <li><a class="dropdown-item" href="/logout">Logout</a></li>
+            {% endif %}
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="/reset">Reset</a></li>
+          </ul>
+        </li>
         <li class="nav-item">
           <a class="nav-link" href="/about">About</a>
         </li>
         {% block nav_items %}{% endblock %}
       </ul>
-      <div class="nav-static-buttons">
-        <button onClick="window.location.reload();" class="btn btn-outline-primary">Refresh Data</button>
-      </div>
-      <div>
+      <div class="nav-right-div">
         {% if user %}
-          <a class="user-color">{{ user['username'] }}</a>
-          {% if user['avatar'] != None %}
-            <img src="https://cdn.discordapp.com/avatars/{{ user['id'] }}/{{ user['avatar'] }}.png?size=32"
-                 class="rounded-circle" alt="avatar">
-          {% endif %}
           {% if int(user['id']) in auth %}
-            <a class="btn btn-outline-primary btn-sm btn-m" href="/admin">Admin Panel</a>
+            <a class="btn btn-outline-primary btn-m" href="/admin">Admin Panel</a>
           {% endif %}
-          <a class="btn btn-danger" href="/logout">Logout</a>
-          <a class="btn btn-outline-success btn-sm btn-m" href="/login">Update Session</a>
+
+          <div class="dropdown">
+            <div class="dropdown-toggle account-button" data-bs-toggle="dropdown" aria-expanded="false">
+              {% if user['avatar'] != None %}
+                <img src="https://cdn.discordapp.com/avatars/{{ user['id'] }}/{{ user['avatar'] }}.png?size=32" class="rounded-circle" alt="avatar">
+              {% endif %}
+
+              <a class="user-color">{{ user['username'] }}</a>
+            </div>
+            <ul class="dropdown-menu account-dropdown">
+              <li><a class="dropdown-item" href="/login">Update</a></li>
+              <li><a class="dropdown-item" href="/reset">Reset</a></li>
+              <li><a class="btn btn-danger account-dropdown-logout" href="/logout">Logout</a></li>
+            </ul>
+          </div>
         {% else %}
           <a class="btn btn-primary" href="/login">Login</a>
         {% endif %}
-        <a class="btn btn-outline-danger btn-sm btn-m" href="/reset">Reset Session</a>
       </div>
     </div>
   </div>

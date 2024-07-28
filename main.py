@@ -664,7 +664,8 @@ async def key_command(ctx: dc_commands.Context):
                        response_type=txt(0, glob, 'attr_options_response_type'),
                        buttons=txt(0, glob, 'attr_options_buttons'),
                        loop=txt(0, glob, 'attr_options_loop'),
-                       history_length=txt(0, glob, 'attr_options_history_length'))
+                       history_length=txt(0, glob, 'attr_options_history_length'),
+                       subtitles=txt(0, glob, 'attr_options_subtitles'))
 async def options_command(ctx: dc_commands.Context,
                           loop: bool = None,
                           language: Literal[tuple(languages_dict.keys())] = None,
@@ -672,12 +673,13 @@ async def options_command(ctx: dc_commands.Context,
                           buttons: bool = None,
                           volume: discord.ext.commands.Range[int, 0, 200] = None,
                           buffer: discord.ext.commands.Range[int, 5, 3600] = None,
-                          history_length: discord.ext.commands.Range[int, 1, 100] = None):
+                          history_length: discord.ext.commands.Range[int, 1, 100] = None,
+                          subtitles: bool = None):
     log(ctx, 'options', options=locals(), log_type='command', author=ctx.author)
 
     tl(glob, 9, guild_id=ctx.guild.id)
     await options_command_def(ctx, glob, loop=loop, language=language, response_type=response_type, buttons=buttons,
-                              volume=volume, buffer=buffer, history_length=history_length)
+                              volume=volume, buffer=buffer, history_length=history_length, subtitles=subtitles)
 
 # ---------------------------------------- ADMIN --------------------------------------------------
 

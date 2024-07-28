@@ -1,6 +1,6 @@
 <div class="modal-content" id="optionsModal_content">
   <div class="modal-header">
-    <h1 class="modal-title fs-5" id="optionsLabel">Options</h1>
+    <h1 class="modal-title fs-5" id="optionsLabel">{{ txt(lang, 'Options') }}</h1>
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
   </div>
   <form action="#" method="POST" onsubmit="onSubmitDisable();">
@@ -58,10 +58,16 @@
       </div>
 
       <div class="e-div">
-        <button class="btn e-item1 btn-secondary btn-lg btn-m" type="button" data-bs-dismiss="modal"
-                aria-label="Close">Cancel
-        </button>
-        <button class="btn e-item1 btn-primary btn-lg btn-m" type="submit" name="options_btn">Submit</button>
+        <label for="loop" class="e-label">subtitles</label>
+        <select class="e-input e-input-color" id="subtitles" name="subtitles">
+          <option value="True" {{ 'selected' if guild.options.subtitles != 'False' }}>True</option>
+          <option value="False" {{ 'selected' if guild.options.subtitles == 'False' }}>False</option>
+        </select>
+      </div>
+
+      <div class="e-div">
+        <button class="btn e-item1 btn-secondary btn-lg btn-m" type="button" data-bs-dismiss="modal" aria-label="Close">{{ txt(lang, 'Cancel') }}</button>
+        <button class="btn e-item1 btn-primary btn-lg btn-m" type="submit" name="options_btn">{{ txt(lang, 'Submit') }}</button>
       </div>
     </div>
   </form>

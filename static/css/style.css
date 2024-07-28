@@ -124,6 +124,16 @@ h1, h2, h3, h4, h5, h6 {
     background-color: var(--d-g2);
 }
 
+/* index */
+.index-svg {
+    fill: rgb(255, 255, 255);
+    padding: 1rem 20% 3rem;
+}
+@media (max-width: 575px) {
+    .index-svg {
+        padding: 1rem;
+    }
+}
 
 /* about */
 
@@ -1145,7 +1155,7 @@ input.radio-checkbox[type=radio] + label {
     background: var(--d-g3);
     padding: 0.75rem;
     border-radius: 1rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0;
 }
 .g-status-span {
     background: var(--d-g1);
@@ -1162,3 +1172,55 @@ input.radio-checkbox[type=radio] + label {
     gap: 1rem;
 }
 .g-admin-button {}
+
+/* nav bar */
+.nav-right-div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+.account-dropdown {
+    padding-bottom: 0;
+}
+.account-dropdown-logout {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 0.5rem;
+}
+.account-button {
+    cursor: pointer;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    transition: ease 0.2s;
+}
+.account-button:hover {
+    background-color: var(--d-g3);
+}
+
+/* volume modal */
+.volume-modal-svg {
+    fill: var(--d-g3);
+}
+/* subtitles modal */
+.subtitles-modal-div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+.subtitles-modal-input {
+    flex: 1;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    background-color: var(--d-g3);
+    color: var(--d-g0);
+    transition: background-color 0.5s;
+}
+.subtitles-modal-input .dropdown-divider {
+    border-top: 0.1rem solid var(--d-g4);
+}
