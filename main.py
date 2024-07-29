@@ -118,120 +118,168 @@ class Bot(dc_commands.Bot):
         update(glob)
 
     async def on_voice_state_update(self, member, before, after):
-        if not member.id == self.user.id:
-            return
+        try:
+            if not member.id == self.user.id:
+                return
 
-        voice_state = member.guild.voice_client
-        guild_id = member.guild.id
+            voice_state = member.guild.voice_client
+            guild_id = member.guild.id
 
-        # check if bot is alone in voice channel
-        if voice_state is not None and len(voice_state.channel.members) == 1:
-            voice_state.stop()
-            await voice_state.disconnect()
+            # check if bot is alone in voice channel
+            if voice_state is not None and len(voice_state.channel.members) == 1:
+                voice_state.stop()
+                await voice_state.disconnect()
 
-            guild(glob, guild_id).options.stopped = True
-            ses.commit()
+                guild(glob, guild_id).options.stopped = True
+                ses.commit()
 
-            await now_to_history(glob, guild_id)
-            clear_queue(glob, guild_id)
+                await now_to_history(glob, guild_id)
+                clear_queue(glob, guild_id)
 
-            log(guild_id, "-->> Disconnected when last person left -> Queue Cleared <<--")
+                log(guild_id, "-->> Disconnected when last person left -> Queue Cleared <<--")
 
-        # if bot joins a voice channel
-        elif before.channel is None:
-            voice = after.channel.guild.voice_client
+            # if bot joins a voice channel
+            elif before.channel is None:
+                voice = after.channel.guild.voice_client
 
-            voice_log = VoiceLog(guild_id, after.channel.id)
+                voice_log = VoiceLog(guild_id, after.channel.id)
 
-            time_var = 0
-            while True:
-                await asyncio.sleep(10)
-                time_var += 10
+                time_var = 0
+                while True:
+                    await asyncio.sleep(10)
+                    time_var += 10
 
-                if voice.is_playing():
-                    time_var = 0
-                    voice_log.playing()
-                    continue
+                    if voice.is_playing():
+                        time_var = 0
+                        voice_log.playing()
+                        continue
 
-                if voice.is_paused():
-                    time_var = 0
-                    voice_log.paused()
-                    continue
+                    if voice.is_paused():
+                        time_var = 0
+                        voice_log.paused()
+                        continue
 
-                if time_var >= guild(glob, guild_id).options.buffer:
-                    voice.stop()
-                    await voice.disconnect()
+                    if time_var >= guild(glob, guild_id).options.buffer:
+                        voice.stop()
+                        await voice.disconnect()
 
-                    guild(glob, guild_id).options.stopped = True
-                    ses.commit()
+                        guild(glob, guild_id).options.stopped = True
+                        ses.commit()
 
-                    log(guild_id, f"-->> Disconnecting after {guild(glob, guild_id).options.buffer} seconds of no play <<--")
-                    await now_to_history(glob, guild_id)
+                        log(guild_id, f"-->> Disconnecting after {guild(glob, guild_id).options.buffer} seconds of no play <<--")
+                        await now_to_history(glob, guild_id)
 
-                # At the end if disconnect caused by buffer
-                if not voice.is_connected():
-                    voice_log.calculate()
-                    ses.add(VoiceLogDB(voice_log))
-                    ses.commit()
-                    break
+                    # At the end if disconnect caused by buffer
+                    if not voice.is_connected():
+                        voice_log.calculate()
+                        ses.add(VoiceLogDB(voice_log))
+                        ses.commit()
+                        break
 
-                voice_log.in_vc()
+                    voice_log.in_vc()
 
-        # if bot leaves a voice channel
-        elif after.channel is None:
-            guild(glob, guild_id).options.stopped = True
-            ses.commit()
-            clear_queue(glob, guild_id)
-            log(guild_id, f"-->> Cleared Queue after bot Disconnected <<--")
+            # if bot leaves a voice channel
+            elif after.channel is None:
+                guild(glob, guild_id).options.stopped = True
+                ses.commit()
+                clear_queue(glob, guild_id)
+                log(guild_id, f"-->> Cleared Queue after bot Disconnected <<--")
+        except Exception as error:
+            await self.error_handler(None, error)
 
     async def on_command_error(self, ctx, error):
+        await self.error_handler(ctx, error)
+
+    async def on_message(self, message):
+        try:
+            # on every message
+            if message.author == bot.user:
+                return
+
+            # check if message is a DM
+            if not message.guild:
+                # send DM to ADMIN
+                await send_to_admin(glob, f"<@!{message.author.id}> tied to DM me with this message `{message.content}`")
+                try:
+                    # respond to DM
+                    await message.channel.send(
+                        f"I'm sorry, but I only work in servers.\n\n"
+                        f""
+                        f"If you want me to join your server, you can invite me with this link: {config.INVITE_URL}\n\n"
+                        f""
+                        f"If you have any questions, you can DM my developer <@!{config.DEVELOPER_ID}>#4272")
+                    return
+
+                except discord.errors.Forbidden:
+                    return
+
+            is_slowed, slowed_for = is_user_slowed(glob, message.author.id, message.guild.id)
+            if is_slowed:
+                try:
+                    await message.author.timeout(datetime.timedelta(seconds=slowed_for))
+                except discord.Forbidden:
+                    log(None, 'Timeout Forbidden',
+                        {'author_id': message.author.id, 'author_name': message.author.name, 'guild_id': message.guild.id,
+                         'guild_name': message.guild.name}, log_type='error')
+                    pass
+
+            await bot.process_commands(message)
+        except Exception as error:
+            await self.error_handler(None, error)
+
+    async def error_handler(self, ctx, error):
         # get error traceback
         error_traceback = traceback.format_exception(type(error), error, error.__traceback__)
         error_traceback = ''.join(error_traceback)
 
-        err_msg = f"Error: ({error})\nType: ({type(error)})\nAuthor: ({ctx.author})\nCommand: ({ctx.command})\nKwargs: ({ctx.kwargs})"
-        tl(glob, 9, guild_id=getattr(ctx.guild, 'id', 0))
+        err_msg = f"Error: ({error})\nType: ({type(error)})\nAuthor: ({getattr(ctx, 'author', None)})\nCommand: ({getattr(ctx, 'command', None)})\nKwargs: ({getattr(ctx, 'kwargs', None)})"
+        tl(glob, 9, guild_id=getattr(getattr(ctx, 'guild', 0), 'id', 0))
 
         if isinstance(error, discord.errors.Forbidden):
-            log(ctx, 'error.Forbidden', {'error': error}, log_type='error', author=ctx.author)
+            log(ctx, 'error.Forbidden', {'error': error}, log_type='error', author=getattr(ctx, 'author', None))
             await send_to_admin(glob, err_msg, file=True)
-            await ctx.send(txt(ctx.guild.id, glob, "The command failed because I don't have the required permissions.\n Please give me the required permissions and try again."))
+            if ctx:
+                await ctx.send(txt(ctx.guild.id, glob,"The command failed because I don't have the required permissions.\n Please give me the required permissions and try again."))
             return
 
         if isinstance(error, dc_commands.CheckFailure):
-            log(ctx, err_msg, log_type='error', author=ctx.author)
+            log(ctx, err_msg, log_type='error', author=getattr(ctx, 'author', None))
             await send_to_admin(glob, err_msg, file=True)
-            await ctx.reply(f"（ ͡° ͜ʖ ͡°)つ━☆・。\n"
-                            f"⊂　　 ノ 　　　・゜+.\n"
-                            f"　しーＪ　　　°。+ ´¨)\n"
-                            f"　　　　　　　　　.· ´¸.·´¨) ¸.·*¨)\n"
-                            f"　　　　　　　　　　(¸.·´ (¸.·' ☆ **Fuck off**\n"
-                            f"*{txt(ctx.guild.id, glob, 'You dont have permission to use this command')}*")
+            if ctx:
+                await ctx.reply(f"（ ͡° ͜ʖ ͡°)つ━☆・。\n"
+                                f"⊂　　 ノ 　　　・゜+.\n"
+                                f"　しーＪ　　　°。+ ´¨)\n"
+                                f"　　　　　　　　　.· ´¸.·´¨) ¸.·*¨)\n"
+                                f"　　　　　　　　　　(¸.·´ (¸.·' ☆ **Fuck off**\n"
+                                f"*{txt(ctx.guild.id, glob, 'You dont have permission to use this command')}*")
             return
 
         if isinstance(error, dc_commands.MissingPermissions):
-            log(ctx, err_msg, log_type='error', author=ctx.author)
+            log(ctx, err_msg, log_type='error', author=getattr(ctx, 'author', None))
             await send_to_admin(glob, err_msg, file=True)
-            await ctx.reply(txt(ctx.guild.id, glob, 'Bot does not have permissions to execute this command correctly') + f" - {error}")
+            if ctx:
+                await ctx.reply(txt(ctx.guild.id, glob,'Bot does not have permissions to execute this command correctly') + f" - {error}")
             return
 
         if 'Video unavailable.' in str(error):
-            # log(ctx, err_msg, log_type='error', author=ctx.author)
             try:
                 error = error.original.original
             except AttributeError:
                 pass
 
-            await ctx.reply(f'{error} -> It *may be* ***GeoBlocked*** in `Czechia` (bot server location)')
+            if ctx:
+                await ctx.reply(f'{error} -> It *may be* ***GeoBlocked*** in `Czechia` (bot server location)')
             return
 
         try:
             # error.__cause__.__cause__ = HybridCommandError -> CommandInvokeError -> {Exception}
             if isinstance(error.__cause__.__cause__, PendingRollbackError):
-                log(ctx, err_msg, log_type='error', author=ctx.author)
+                log(ctx, err_msg, log_type='error', author=getattr(ctx, 'author', None))
 
                 try:
+                    await send_to_admin(glob, "Attempting Rollback" + err_msg, file=True)
                     glob.ses.rollback()  # Rollback the session
+                    await send_to_admin(glob, "Rollback Successful", file=False)
                     err_msg += "\nRollback Successful"
                 except Exception as rollback_error:
                     rollback_traceback = traceback.format_exception(type(rollback_error), rollback_error,
@@ -239,56 +287,25 @@ class Bot(dc_commands.Bot):
                     rollback_traceback = ''.join(rollback_traceback)
 
                     err_msg += f"\nFailed Rollback: ({rollback_error})\nRollback Traceback: \n{rollback_traceback}"
-                    log(ctx, err_msg, log_type='error', author=ctx.author)
+                    log(ctx, err_msg, log_type='error', author=getattr(ctx, 'author', None))
 
                 err_msg += f"\n{'-' * 50}\nOriginal Traceback: \n{error_traceback}"
                 await send_to_admin(glob, err_msg, file=True)
 
-                await ctx.reply(
-                    f"Database error -> Attempted rollback (try again one time - if it doesn't work tell developer to restart bot)")
+                if ctx:
+                    await ctx.reply(f"Database error -> Attempted rollback (try again one time - if it doesn't work tell developer to restart bot)")
         except AttributeError as _e:
-            # message = f"Error for ({ctx.author}) -> ({ctx.command}) with error ({error})\n{error_traceback}\n\n{_e}"
+            # message = f"Error for ({getattr(ctx, 'author', None)}) -> ({ctx.command}) with error ({error})\n{error_traceback}\n\n{_e}"
             pass
 
         err_msg += f"\nTraceback: \n{error_traceback}"
-        log(ctx, err_msg, log_type='error', author=ctx.author)
+        log(ctx, err_msg, log_type='error', author=getattr(ctx, 'author', None))
 
         await send_to_admin(glob, err_msg, file=True)
-        await ctx.reply(f"{error}   {bot.get_user(config.DEVELOPER_ID).mention}", ephemeral=True)
+        if ctx:
+            await ctx.reply(f"{error}   {bot.get_user(config.DEVELOPER_ID).mention}", ephemeral=True)
 
-    async def on_message(self, message):
-        # on every message
-        if message.author == bot.user:
-            return
 
-        # check if message is a DM
-        if not message.guild:
-            # send DM to ADMIN
-            await send_to_admin(glob, f"<@!{message.author.id}> tied to DM me with this message `{message.content}`")
-            try:
-                # respond to DM
-                await message.channel.send(
-                    f"I'm sorry, but I only work in servers.\n\n"
-                    f""
-                    f"If you want me to join your server, you can invite me with this link: {config.INVITE_URL}\n\n"
-                    f""
-                    f"If you have any questions, you can DM my developer <@!{config.DEVELOPER_ID}>#4272")
-                return
-
-            except discord.errors.Forbidden:
-                return
-
-        is_slowed, slowed_for = is_user_slowed(glob, message.author.id, message.guild.id)
-        if is_slowed:
-            try:
-                await message.author.timeout(datetime.timedelta(seconds=slowed_for))
-            except discord.Forbidden:
-                log(None, 'Timeout Forbidden',
-                    {'author_id': message.author.id, 'author_name': message.author.name, 'guild_id': message.guild.id,
-                     'guild_name': message.guild.name}, log_type='error')
-                pass
-
-        await bot.process_commands(message)
 
 # ---------------------------------------------- LOAD ------------------------------------------------------------------
 

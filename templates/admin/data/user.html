@@ -11,15 +11,15 @@
     {% for error in errors %}
       <div class="alert alert-danger div-align alert-dismissible fade show" role="alert">
         {{ error }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ txt(session['lang'], 'Close') }}"></button>
       </div>
     {% endfor %}
   {% endif %}
 
   <div class="container">
     <div class="l-div div-align-center">
-      <h1 class="q-item1">User Info</h1>
-      <a href="/admin" class="btn btn-primary q-item1">Return to Admin Panel</a>
+      <h1 class="q-item1">{{ txt(session['lang'], 'User Info') }}</h1>
+      <a href="/admin" class="btn btn-primary q-item1">{{ txt(session['lang'], 'Return to Admin Panel') }}</a>
     </div>
       <div class="dp-card">
         <div class="dp-card-header">
@@ -34,7 +34,7 @@
               {% if data.bot %}
                 <div class="dp-badge-item">
                   <img src="/static/discord/png/slash_commands.png" alt=""/>
-                  <div class="dp-tooltip dp-tooltip-up">Supports Commands</div>
+                  <div class="dp-tooltip dp-tooltip-up">{{ txt(session['lang'], 'Supports Commands') }}</div>
                 </div>
               {% else %}
                 {% for badge_type, has_it in data.badges.items() %}
@@ -58,11 +58,11 @@
             <p style="color: white;">{{ data.name }}#{{ data.discriminator }}</p>
             <hr/>
             <div class="dp-basic-infos">
-              <div class="dp-category-title">About Me</div>
-              <p>Discord API does not allow to fetch this data.</p>
+              <div class="dp-category-title">{{ txt(session['lang'], 'About Me') }}</div>
+              <p>{{ txt(session['lang'], 'Discord API does not allow to fetch this data.') }}</p>
             </div>
             <div class="dp-basic-infos">
-              <div class="dp-category-title">Member Since</div>
+              <div class="dp-category-title">{{ txt(session['lang'], 'Member Since') }}</div>
               <div style="display: flex; align-items: center;">
                 <img src="https://i.ibb.co/HpbSK8B/icons8-discord-16.png" style="margin-right: 0.5rem;">
                     <p style="margin: 0;">{{ struct_to_time(data.created_at, first='discord') }}</p>

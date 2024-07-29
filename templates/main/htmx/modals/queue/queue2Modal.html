@@ -27,9 +27,9 @@
   <div class="modal-body">
     <div class="input-group mb-3">
       <input type="search" name="var" class="form-control" id="queue2_search" hx-target="#queue2_results"
-             placeholder="{{ txt(lang, 'Search on TuneIn') }}" hx-trigger="input changed delay:1s, search, click from:#queue2_search_button"
+             placeholder="{{ txt(session['lang'], 'Search on TuneIn') }}" hx-trigger="input changed delay:1s, search, click from:#queue2_search_button"
              hx-get="/guild/{{ gi }}/search?act=tunein&key={{ key }}" hx-swap="innerHTML" hx-indicator="#queue2_spinner">
-      <button class="btn btn-outline-secondary" type="submit" id="queue2_search_button">{{ txt(lang, "Search") }}</button>
+      <button class="btn btn-outline-secondary" type="submit" id="queue2_search_button">{{ txt(session['lang'], "Search") }}</button>
     </div>
     <div class="text-center"><div id="queue2_spinner" class="spinner-border text-primary htmx-indicator" role="status" style="width: 2rem; height: 2rem;"></div></div>
     <div id="queue2_results">
@@ -41,6 +41,6 @@
 
   <!-- Modal Footer -->
   <div class="modal-footer">
-    <button type="button" class="btn btn-dark" data-bs-dismiss="modal">{{ txt(lang, 'Close') }}</button>
+    <button type="button" class="btn btn-dark" data-bs-dismiss="modal">{{ txt(session['lang'], 'Close') }}</button>
   </div>
 </div>

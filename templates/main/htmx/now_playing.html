@@ -4,7 +4,7 @@
       <a class="btn btn-dark accordion-button" type="button" data-bs-toggle="collapse"
          data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="true"
          aria-controls="panelsStayOpen-collapseTwo">
-        <h3>{{ txt(lang, 'Now Playing') }}</h3>
+        <h3>{{ txt(session['lang'], 'Now Playing') }}</h3>
       </a>
     </div>
   </div>
@@ -37,7 +37,7 @@
             <p class="q-text q-3">{{ convert_duration(guild.now_playing.duration) }}</p>
           </div>
           <div class="q-item3 q-items-center">
-            <p class="q-text q-1">{{ txt(lang, 'Played at') }}</p>
+            <p class="q-text q-1">{{ txt(session['lang'], 'Played at') }}</p>
             <p class="q-text q-2">{{ struct_to_time(guild.now_playing.played_duration[0]['start']['epoch'], first='time') }}</p>
           </div>
           <div class="q-item2 q-items-center">
@@ -54,20 +54,20 @@
                 <button class="btn btn-outline btn-primary btn-sm btn-m" type="button" data-bs-toggle="modal"
                         data-bs-target=#videoEditModal_np hx-target="#videoEditModal_np_content" hx-swap="outerHTML"
                         hx-trigger="click once" hx-get="/guild/{{ gi }}/modals?type=now_playing_edit&key={{ key }}"
-                >{{ txt(lang, 'Edit') }}</button>
+                >{{ txt(session['lang'], 'Edit') }}</button>
               {% endif %}
               <button type="button" class="btn btn-secondary btn-sm dropdown-toggle btn-m" data-bs-toggle="dropdown"
-                      aria-expanded="false">{{ txt(lang, 'More') }}</button>
+                      aria-expanded="false">{{ txt(session['lang'], 'More') }}</button>
               <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
                 <li>
                   <button class="dropdown-item" hx-trigger="click throttle:500ms" hx-target="#q-main"
                           hx-swap="outerHTML" hx-get="/guild/{{ gi }}/queue?act=queue_btn&var=np&key={{ key }}"
-                  >{{ txt(lang, 'Add to queue') }}</button>
+                  >{{ txt(session['lang'], 'Add to queue') }}</button>
                 </li>
                 <li>
                   <button class="dropdown-item" hx-trigger="click throttle:500ms" hx-target="#q-main"
                           hx-swap="outerHTML" hx-get="/guild/{{ gi }}/queue?act=nextup_btn&var=np&key={{ key }}"
-                  >{{ txt(lang, 'Play next') }}</button>
+                  >{{ txt(session['lang'], 'Play next') }}</button>
                 </li>
                 <li>
                   <hr class="dropdown-divider">
@@ -76,14 +76,14 @@
                   <button class="dropdown-item" type="button" data-bs-toggle="modal"
                           data-bs-target=#videoModal_np hx-target="#videoModal_np_content" hx-swap="outerHTML"
                           hx-trigger="click once" hx-get="/guild/{{ gi }}/modals?type=now_playing&key={{ key }}"
-                  >{{ txt(lang, 'Info') }}</button>
+                  >{{ txt(session['lang'], 'Info') }}</button>
                 </li>
               </ul>
             </form>
           </div>
         </div>
         <div>
-          {% if guild.now_playing.subtitles or guild.now_playing.captions %}
+          {% if (guild.now_playing.subtitles or guild.now_playing.captions) and guild.options.subtitles != 'False' %}
             <div class="sub-div"><div id="subtitles" class="subtitles"></div></div>
           {% endif %}
           {% if guild.now_playing.heatmap %}
@@ -103,7 +103,7 @@
                       <button class="btn btn-primary btn-sm" name="var" value="{{ chapter['start_time'] }}"
                               hx-trigger="click throttle:2s" hx-swap="beforeend" hx-target="#response-div"
                               hx-get="/guild/{{ gi }}/action?act=jump&key={{ key }}&var={{ chapter['start_time'] }}"
-                      >{{ txt(lang, 'Jump') }}</button>
+                      >{{ txt(session['lang'], 'Jump') }}</button>
                     </span>
                   </span>
                 </label>
@@ -122,7 +122,7 @@
         </div>
       {% else %}
         <div class="div-align">
-          <p>{{ txt(lang, 'Nothing is playing right now') }}</p>
+          <p>{{ txt(session['lang'], 'Nothing is playing right now') }}</p>
         </div>
       {% endif %}
     </div>

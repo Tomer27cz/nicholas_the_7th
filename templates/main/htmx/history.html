@@ -11,7 +11,7 @@
           <p class="q-text q-3">{{ convert_duration(track.duration) }}</p>
         </div>
         <div class="q-item3 q-items-center">
-          <p class="q-text q-1">{{ txt(lang, 'From/To') }}</p>
+          <p class="q-text q-1">{{ txt(session['lang'], 'From/To') }}</p>
           <p class="q-text q-2">{{ struct_to_time(track.played_duration[0]['start']['epoch'], first='time') }}</p>
           <p class="q-text q-2">{{ struct_to_time(track.played_duration[-1]['end']['epoch'], first='time') }}</p>
         </div>
@@ -29,27 +29,27 @@
                     hx-target="#videoEditModal_h{{ guild.history.index(track) }}_content"
                     hx-get="/guild/{{gi}}/modals?type=history_edit&var={{ guild.history.index(track) }}&key={{key}}"
                     hx-trigger="click throttle:500ms" hx-swap="outerHTML"
-            >{{ txt(lang, 'Edit') }}</button>
+            >{{ txt(session['lang'], 'Edit') }}</button>
             <button class="btn btn-outline btn-danger btn-sm btn-m" type="submit"
                     hx-get="/guild/{{gi}}/history?key={{key}}&act=hdel_btn&var={{ guild.history.index(track) }}"
                     hx-trigger="click throttle:500ms" hx-swap="outerHTML" hx-target="#h-main"
-            >{{ txt(lang, 'Remove') }}</button>
+            >{{ txt(session['lang'], 'Remove') }}</button>
           {% endif %}
           <button type="button" class="btn btn-secondary btn-sm dropdown-toggle btn-m"
-                  data-bs-toggle="dropdown" aria-expanded="false">{{ txt(lang, 'More') }}</button>
+                  data-bs-toggle="dropdown" aria-expanded="false">{{ txt(session['lang'], 'More') }}</button>
           <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
             <li>
               <button class="dropdown-item" type="submit"
                       hx-get="/guild/{{gi}}/queue?key={{key}}&act=queue_btn&var=h{{ guild.history.index(track) }}"
                       hx-trigger="click throttle:500ms" hx-swap="outerHTML" hx-target="#q-main"
-              >{{ txt(lang, 'Add to queue') }}</button>
+              >{{ txt(session['lang'], 'Add to queue') }}</button>
             </li>
             <li>
               <button class="dropdown-item" type="submit" name="nextup_btn"
                       value="h{{ guild.history.index(track) }}"
                       hx-get="/guild/{{gi}}/queue?key={{key}}&act=nextup_btn&var=h{{ guild.history.index(track) }}"
                       hx-trigger="click throttle:500ms" hx-swap="outerHTML" hx-target="#q-main"
-              >{{ txt(lang, 'Play next') }}</button>
+              >{{ txt(session['lang'], 'Play next') }}</button>
             </li>
             <li>
               <hr class="dropdown-divider">
@@ -60,7 +60,7 @@
                       hx-target="#videoModal_h{{ guild.history.index(track) }}_content"
                       hx-get="/guild/{{gi}}/modals?type=history&var={{ guild.history.index(track) }}&key={{key}}"
                       hx-trigger="click throttle:500ms" hx-swap="outerHTML"
-              >{{ txt(lang, 'Info') }}</button>
+              >{{ txt(session['lang'], 'Info') }}</button>
             </li>
           </ul>
         </div>
@@ -84,7 +84,7 @@
     {% endfor %}
   {% else %}
     <div class="div-align">
-      <p>{{ txt(lang, 'Nothing has been played yet') }}</p>
+      <p>{{ txt(session['lang'], 'Nothing has been played yet') }}</p>
     </div>
   {% endif %}
 </div>

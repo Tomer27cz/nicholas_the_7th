@@ -1,7 +1,7 @@
 {% if not response.response and resp != 'false' %}
   <div class="alert alert-{{ 'success' if response.response else 'danger' }} div-align alert-dismissible fade show sticky-top" role="alert">
     {{ response.message }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ txt(lang, 'Close' )}}"></button>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ txt(session['lang'], 'Close' )}}"></button>
   </div>
 {% endif %}
 
@@ -13,7 +13,7 @@
     {% endfor %}
   {% else %}
     <div class="div-align">
-      <p>{{ txt(lang, 'There is nothing in the queue') }}</p>
+      <p>{{ txt(session['lang'], 'There is nothing in the queue') }}</p>
     </div>
   {% endif %}
 </div>

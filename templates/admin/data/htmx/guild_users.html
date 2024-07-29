@@ -14,7 +14,7 @@
           {% if user.bot %}
             <div class="dp-badge-item">
               <img src="/static/discord/png/slash_commands.png" alt=""/>
-              <div class="dp-tooltip dp-tooltip-up">Supports Commands</div>
+              <div class="dp-tooltip dp-tooltip-up">{{ txt(session['lang'], 'Supports Commands') }}</div>
             </div>
           {% else %}
             {% for badge_type, has_it in user.badges.items() %}
@@ -38,11 +38,11 @@
         <p style="color: white;">{{ user.name }}{% if user.discriminator and user.discriminator not in [0, '0'] %}#{{ user.discriminator }}{% endif %}</p>
         <hr/>
         <div class="dp-basic-infos">
-          <div class="dp-category-title">About Me</div>
-          <p>Discord API does not allow to fetch this data.</p>
+          <div class="dp-category-title">{{ txt(session['lang'], 'About Me') }}</div>
+          <p>{{ txt(session['lang'], 'Discord API does not allow to fetch this data.') }}</p>
         </div>
         <div class="dp-basic-infos">
-          <div class="dp-category-title">Member Since</div>
+          <div class="dp-category-title">{{ txt(session['lang'], 'Member Since') }}</div>
           <div style="display: flex; align-items: center;">
             <img src="https://i.ibb.co/HpbSK8B/icons8-discord-16.png" style="margin-right: 0.5rem;">
                 <p style="margin: 0;">{{ struct_to_time(user.created_at, first='discord') }}</p>
@@ -52,7 +52,7 @@
           </div>
         </div>
          <div class="dp-roles">
-          <div class="dp-category-title">Roles</div>
+          <div class="dp-category-title">{{ txt(session['lang'], 'Roles') }}</div>
           <div class="dp-roles-list">
             {% for role in user.roles %}
               <div class="dp-role">

@@ -5,26 +5,26 @@
 {% block content %}
   <div class="container">
     <h1>
-      About
+      {{ txt(session['lang'], 'About') }}
     </h1>
     <hr>
     <h5>
-      This is a discord bot that I made for my friends and I to use in our discord server.
-      It is a work in progress and I will be adding more features as I go along.
+      {{ txt(session['lang'], 'This is a discord bot that I made for my friends and I to use in our discord server.') }}
+      {{ txt(session['lang'], 'It is a work in progress and I will be adding more features as I go along.') }}
     </h5>
     <h5>
-      It is not meant to be used by anyone else, but if you want to use it, feel free to do so.
+      {{ txt(session['lang'], 'It is not meant to be used by anyone else, but if you want to use it, feel free to do so.') }}
     </h5>
     <br>
     <h1>
-      Installation
+      {{ txt(session['lang'], 'Installation') }}
     </h1>
     <hr>
     <h5>
-    To install the bot, I recommend using <ins><a href="https://www.docker.com/">Docker</a></ins>. You can also install it manually using python and installing the required packages using <ins><a href="https://pypi.org/project/pip/">pip</a></ins>.
+    {{ txt(session['lang'], 'To install the bot, I recommend using') }} <ins><a href="https://www.docker.com/">Docker</a></ins>. {{ txt(session['lang'], 'You can also install it manually using python and installing the required packages using') }} <ins><a href="https://pypi.org/project/pip/">pip</a></ins>.
     </h5>
     <h5>
-      To install the bot, follow the instructions on the <ins><a href="https://github.com/Tomer27cz/discord_bot_stanley_the_7th">github</a></ins> page.
+      {{ txt(session['lang'], 'To install the bot, follow the instructions on the') }} <ins><a href="https://github.com/Tomer27cz/discord_bot_stanley_the_7th">github</a></ins> {{ txt(session['lang'], 'page.') }}
     </h5>
     <a href="https://github.com/Tomer27cz/discord_bot_stanley_the_7th" class="btn btn-secondary btn-sm">GitHub</a>
   </div>

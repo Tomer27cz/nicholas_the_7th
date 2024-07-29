@@ -16,26 +16,26 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link" href="/">Home</a>
+          <a class="nav-link" href="/">{{ txt(session['lang'], 'Home') }}</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/guild">Servers</a>
+          <a class="nav-link" href="/guild">{{ txt(session['lang'], 'Servers') }}</a>
         </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Session
+            {{ txt(session['lang'], 'Session') }}
           </a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="/login">{% if user %}Update{% else %}Login{% endif %}</a></li>
+            <li><a class="dropdown-item" href="/login">{% if user %}{{ txt(session['lang'], 'Update') }}{% else %}{{ txt(session['lang'], 'Login') }}{% endif %}</a></li>
             {% if user %}
-              <li><a class="dropdown-item" href="/logout">Logout</a></li>
+              <li><a class="dropdown-item" href="/logout">{{ txt(session['lang'], 'Logout') }}</a></li>
             {% endif %}
             <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="/reset">Reset</a></li>
+            <li><a class="dropdown-item" href="/reset">{{ txt(session['lang'], 'Reset') }}</a></li>
           </ul>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/about">About</a>
+          <a class="nav-link" href="/about">{{ txt(session['lang'], 'About') }}</a>
         </li>
         {% block nav_items %}{% endblock %}
       </ul>
@@ -54,14 +54,43 @@
               <a class="user-color">{{ user['username'] }}</a>
             </div>
             <ul class="dropdown-menu account-dropdown">
-              <li><a class="dropdown-item" href="/login">Update</a></li>
-              <li><a class="dropdown-item" href="/reset">Reset</a></li>
-              <li><a class="btn btn-danger account-dropdown-logout" href="/logout">Logout</a></li>
+              <li><a class="dropdown-item" href="/login">{{ txt(session['lang'], 'Update') }}</a></li>
+              <li><a class="dropdown-item" href="/reset">{{ txt(session['lang'], 'Reset') }}</a></li>
+              <li><a class="btn btn-danger account-dropdown-logout" href="/logout">{{ txt(session['lang'], 'Logout') }}</a></li>
             </ul>
           </div>
         {% else %}
-          <a class="btn btn-primary" href="/login">Login</a>
+          <a class="btn btn-primary" href="/login">{{ txt(session['lang'], 'Login') }}</a>
         {% endif %}
+        <div class="dropdown">
+          <div class="dropdown-toggle lang-svg-div account-button" data-bs-toggle="dropdown" aria-expanded="false">
+            {{ lang_list[session['lang']]['svg']|safe }}
+          </div>
+          <ul class="dropdown-menu dropdown-menu-end lang-dropdown">
+            {% for lang in lang_list.values() %}
+              <li>
+                <a class="dropdown-item" onclick="fetchLang('{{ lang['code'] }}')">
+                  <img class="lang-svg-list" src="/static/img/flags/{{ lang['code'] }}.svg" loading="lazy"> {{ lang['name'] }}
+                </a>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+        <script>
+          function fetchLang(lang) {
+            fetch('/action?act=user_lang&resp=false&var=' + lang)
+              .then(response => response.json())
+              .then(data => {
+                  if (data['success'] === true) {
+                      if (data['refresh'] === true) {
+                          location.reload();
+                      }
+                  }
+
+                  console.log(data);
+              });
+          }
+        </script>
       </div>
     </div>
   </div>

@@ -1,7 +1,7 @@
 <div class="modal-content" id="videoModal_h{{ guild.history.index(track) }}_content">
   <div class="modal-header">
     <h1 class="modal-title fs-5"
-        id="videoLabel_h{{ guild.history.index(track) }}">{{ txt(lang, 'Video History') }} {{ guild.history.index(track) }} {{ txt(lang, 'Info') }}</h1>
+        id="videoLabel_h{{ guild.history.index(track) }}">{{ txt(session['lang'], 'Video History') }} {{ guild.history.index(track) }} {{ txt(session['lang'], 'Info') }}</h1>
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
   </div>
   <div class="info-modal">

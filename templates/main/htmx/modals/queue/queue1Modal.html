@@ -27,28 +27,28 @@
   <div class="modal-body">
     <div class="input-group mb-3">
       <input type="search" name="var" class="form-control" id="queue1_search" hx-target="#queue1_results"
-             placeholder="{{ txt(lang, 'Search or YouTube URL') }}" hx-trigger="input changed delay:1s, search, click from:#queue1_search_button"
+             placeholder="{{ txt(session['lang'], 'Search or YouTube URL') }}" hx-trigger="input changed delay:1s, search, click from:#queue1_search_button"
              hx-get="/guild/{{ gi }}/search?act=youtube&key={{ key }}" hx-swap="innerHTML" hx-indicator="#queue1_spinner"
              hx-include="#inlineRadio1, #inlineRadio2, #inlineRadio3, #inlineRadio4"
       >
-      <button class="btn btn-outline-secondary" type="submit" id="queue1_search_button">{{ txt(lang, "Search") }}</button>
+      <button class="btn btn-outline-secondary" type="submit" id="queue1_search_button">{{ txt(session['lang'], "Search") }}</button>
     </div>
     <div class="input-group mb-3">
       <div class="form-check form-check-inline">
         <input class="form-check-input" type="radio" name="sp" id="inlineRadio1" value="videos" checked>
-        <label class="form-check-label" for="inlineRadio1">{{ txt(lang, 'Only Videos' )}}</label>
+        <label class="form-check-label" for="inlineRadio1">{{ txt(session['lang'], 'Only Videos' )}}</label>
       </div>
       <div class="form-check form-check-inline">
         <input class="form-check-input" type="radio" name="sp" id="inlineRadio2" value="playlists">
-        <label class="form-check-label" for="inlineRadio2">{{ txt(lang, 'Only Playlists') }}</label>
+        <label class="form-check-label" for="inlineRadio2">{{ txt(session['lang'], 'Only Playlists') }}</label>
       </div>
       <div class="form-check form-check-inline">
         <input class="form-check-input" type="radio" name="sp" id="inlineRadio3" value="livestreams">
-        <label class="form-check-label" for="inlineRadio3">{{ txt(lang, 'Only Livestreams' )}}</label>
+        <label class="form-check-label" for="inlineRadio3">{{ txt(session['lang'], 'Only Livestreams') }}</label>
       </div>
       <div class="form-check form-check-inline">
         <input class="form-check-input" type="radio" name="sp" id="inlineRadio4" value="all">
-        <label class="form-check-label" for="inlineRadio4">{{ txt(lang, 'Everything (no channels)' )}}</label>
+        <label class="form-check-label" for="inlineRadio4">{{ txt(session['lang'], 'Everything (no channels)') }}</label>
       </div>
     </div>
     <div class="spinner-div"><div id="queue1_spinner" class="spinner-border text-primary htmx-indicator" role="status" style="width: 2rem; height: 2rem;"></div></div>
@@ -61,6 +61,6 @@
 
   <!-- Modal Footer -->
   <div class="modal-footer">
-    <button type="button" class="btn btn-dark" data-bs-dismiss="modal">{{ txt(lang, 'Close') }}</button>
+    <button type="button" class="btn btn-dark" data-bs-dismiss="modal">{{ txt(session['lang'], 'Close') }}</button>
   </div>
 </div>

@@ -53,17 +53,27 @@ def format_subtitles(subtitles: dict, subtitle_type: str='captions') -> dict:
     :param subtitle_type: str - 'captions' or 'subtitles'
     :return formatted_subtitles: dict
     """
-    if subtitles is None:
-        return subtitles
+
+    if subtitles is None or not subtitles or not isinstance(subtitles, dict) or len(subtitles) == 0:
+        return None
+
+    if subtitles.get('live_chat', None) is not None:
+        return None
 
     if subtitle_type not in ['captions', 'subtitles']:
         raise ValueError('Invalid subtitle type. Must be either "captions" or "subtitles".')
 
-    url_template = [url for url in subtitles[list(subtitles.keys())[0]] if url.get('ext', None) == 'json3'][0]['url']
-    if subtitle_type == 'captions':
-        url_template = url_template[:url_template.index('&tlang=') + 7]
-    else:
-        url_template = url_template[:url_template.index('&lang=') + 6]
+    url_template = None
+
+    subtitle_keys = [k for k in list(subtitles.keys()) if k != 'en'] # remove english
+    if subtitle_keys:
+        first_ext = [url for url in subtitles[subtitle_keys[0]] if url.get('ext', None) == 'json3']
+        if first_ext:
+            url_template = first_ext[0]['url']
+            if subtitle_type == 'captions':
+                url_template = url_template[:url_template.index('&tlang=') + 7]
+            else:
+                url_template = url_template[:url_template.index('&lang=') + 6]
 
     subtitle_dict = {
         'en': None,
@@ -80,9 +90,17 @@ def format_subtitles(subtitles: dict, subtitle_type: str='captions') -> dict:
                 subtitle_dict['langs'][lang] = ext.get('name', None)
                 break
 
-    print(subtitle_dict)
-
     return subtitle_dict
+
+def round_heatmap(heatmap: list[dict]) -> dict:
+    """
+    Round all to 2 decimal places
+    [{'start_time': float, 'end_time': float, 'value': float}, ...]
+    """
+    if heatmap is None:
+        return heatmap
+
+    return [{'start_time': round(data['start_time'], 2), 'end_time': round(data['end_time'], 2), 'value': round(data['value'], 2)} for data in heatmap]
 
 class GetSource(discord.PCMVolumeTransformer):
     ytdl = yt_dlp.YoutubeDL(YTDL_OPTIONS)
@@ -123,13 +141,11 @@ class GetSource(discord.PCMVolumeTransformer):
             loop = asyncio.get_event_loop()
             data = await loop.run_in_executor(None, lambda: cls.ytdl.extract_info(url, download=False))
 
-            print(data)
-
             if 'chapters' in data:
                 chapters = data['chapters']
 
             if 'heatmap' in data:
-                heatmap = data['heatmap']
+                heatmap = round_heatmap(data['heatmap'])
 
             if 'subtitles' in data:
                 subtitles = format_subtitles(data['subtitles'], 'subtitles')

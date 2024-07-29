@@ -1,6 +1,6 @@
 <div class="modal-content" id="loadModal_content">
   <div class="modal-header">
-    <h1 class="modal-title fs-5" id="loadLabel">{{ txt(lang, 'Load Queue') }}</h1>
+    <h1 class="modal-title fs-5" id="loadLabel">{{ txt(session['lang'], 'Load Queue') }}</h1>
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
   </div>
   <div class="modal-body">
@@ -12,7 +12,7 @@
             <div class="q-div">
               <div class="q-item1 q-wd">
                 <p class="q-text"><h3>{{ save.name }}</h3></p>
-                <p class="q-text">{{ txt(lang, 'Tracks') }}: {{ len(save.queue) }}</p>
+                <p class="q-text">{{ txt(session['lang'], 'Tracks') }}: {{ len(save.queue) }}</p>
               </div>
               <div class="q-item2 q-items-center">
                 <p class="q-text">{{ save.author['name'] }}</p>
@@ -22,17 +22,17 @@
                 <button class="btn btn-outline btn-primary btn-lg btn-m" type="button" data-bs-toggle="modal"
                         hx-swap="outerHTML" hx-target="#q-main" hx-trigger="click throttle:1s"
                         hx-get="/guild/{{ gi }}/queue?act=loadName&key={{ key }}&var={{ save.name }}"
-                        ><h5>{{ txt(lang, 'Load') }}</h5></button>
+                        ><h5>{{ txt(session['lang'], 'Load') }}</h5></button>
               </div>
             </div>
           </div>
         {% endfor %}
       {% else %}
-        <div class="text-center"><h3>{{ txt(lang, 'No saves found') }}</h3></div>
+        <div class="text-center"><h3>{{ txt(session['lang'], 'No saves found') }}</h3></div>
       {% endif %}
     </div>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-dark" data-bs-dismiss="modal">{{ txt(lang, 'Close') }}</button>
+    <button type="button" class="btn btn-dark" data-bs-dismiss="modal">{{ txt(session['lang'], 'Close') }}</button>
   </div>
 </div>

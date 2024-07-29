@@ -26,6 +26,7 @@
    "attr_options_volume":"Percentage of the volume (0-200)",
    "attr_options_buffer":"Seconds of nothing playing before bot disconnects (5-3600)",
    "attr_options_history_length":"Number of songs to keep in the history (1-100)",
+   "attr_options_subtitles":"Show subtitles (True, False) or ((captions_ or subtitles_) + language code)",
    "command_pause":"Pauses the currently playing song",
    "command_ping":"Shows the bot's latency",
    "command_play":"Plays a song",

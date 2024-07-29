@@ -10,7 +10,7 @@
 
   {% if not guild.connected %}
     <div class="alert alert-warning div-align fade show sticky-top" role="alert">
-      {{ txt(lang, 'Bot is not connected to this guild -> Disabled') }}
+      {{ txt(session['lang'], 'Bot is not connected to this guild -> Disabled') }}
     </div>
   {% endif %}
 
@@ -21,7 +21,7 @@
     {% for error in errors %}
       <div class="alert alert-danger div-align alert-dismissible fade show sticky-top" role="alert">
         {{ error }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ txt(lang, 'Close') }}"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ txt(session['lang'], 'Close') }}"></button>
       </div>
     {% endfor %}
   {% endif %}
@@ -29,7 +29,7 @@
     {% for message in messages %}
       <div class="alert alert-success div-align alert-dismissible fade show sticky-top" role="alert">
         {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ txt(lang, 'Close') }}"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ txt(session['lang'], 'Close') }}"></button>
       </div>
     {% endfor %}
   {% endif %}
@@ -50,7 +50,7 @@
         <div class="accordion-item">
           <div class="accordion-header div-options">
             <button class="btn btn-dark btn-options" data-bs-toggle="modal" data-bs-target="#optionsModal"
-                    title="{{ txt(lang, 'Server Options') }}" hx-target="#optionsModal_content" hx-swap="outerHTML" hx-trigger="click once"
+                    title="{{ txt(session['lang'], 'Server Options') }}" hx-target="#optionsModal_content" hx-swap="outerHTML" hx-trigger="click once"
             hx-get="/guild/{{ gi }}/modals?type=optionsModal&key={{ key }}" hx-indicator="#optionsModal_spinner">
               <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16">
                 <path
@@ -73,7 +73,7 @@
                   None
                 {% endif %}
                 <div class="q-item1 q-wa">
-                  <p class="q-text q-1">{{ txt(lang, 'Member Count') }}</p>
+                  <p class="q-text q-1">{{ txt(session['lang'], 'Member Count') }}</p>
                   <p class="q-text q-2">{{ guild.data.member_count }}</p>
                 </div>
                 <div class="q-item1 q-wa">
@@ -81,18 +81,18 @@
                   <p class="q-text q-2">{{ guild.data.id }}</p>
                 </div>
                 <div class="q-item1 q-items-center">
-                  <p class="q-text q-1">{{ txt(lang, 'Server Owner') }}</p>
+                  <p class="q-text q-1">{{ txt(session['lang'], 'Server Owner') }}</p>
                   <p class="q-text q-2"><a class="q-2" target="_blank" rel="noopener noreferrer"
                                            href="https://discordapp.com/users/{{ guild.data.owner_id }}">{{ guild.data.owner_name }}</a>
                   </p>
                   <p class="q-text q-3">{{ guild.data.owner_id }}</p>
                 </div>
                 <div class="q-item1 q-wa">
-                  <p class="q-text q-1">{{ txt(lang, 'Created at') }}</p>
+                  <p class="q-text q-1">{{ txt(session['lang'], 'Created at') }}</p>
                   <p class="q-text q-2">{{ struct_to_time(guild.data.created_at) }}</p>
                 </div>
                 <div class="q-item1 q-wa">
-                  <p class="q-text q-1">{{ txt(lang, 'Description') }}</p>
+                  <p class="q-text q-1">{{ txt(session['lang'], 'Description') }}</p>
                   <p class="q-text q-2">{{ guild.data.description }}</p>
                 </div>
               </div>
@@ -113,7 +113,7 @@
              aria-controls="panelsStayOpen-collapseOne"
               hx-target="#h-main" hx-swap="outerHTML" hx-trigger="click once"
               hx-get="/guild/{{gi}}/history?key={{key}}">
-            <h3>{{ txt(lang, 'History') }}</h3>
+            <h3>{{ txt(session['lang'], 'History') }}</h3>
             <div class="q-item1 text-center">
               <div class="spinner-border text-primary htmx-indicator" role="status" style="width: 2rem; height: 2rem;"></div>
             </div>
@@ -141,7 +141,7 @@
     </div>
     <div class="q-item1">
       <div class="e-div">
-        <button class="btn btn-dark e-item1" type="submit" name="play_btn" title="{{ txt(lang, 'Play') }}"
+        <button class="btn btn-dark e-item1" type="submit" name="play_btn" title="{{ txt(session['lang'], 'Play') }}"
                 {% if not guild.connected %}disabled{% endif %} hx-trigger="click throttle:2s" hx-swap="beforeend"
                 hx-target="#response-div" hx-get="/guild/{{gi}}/action?key={{key}}&act=play">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#0d6efd" viewBox="0 0 384 512">
@@ -149,7 +149,7 @@
                 d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"></path>
           </svg>
         </button>
-        <button class="btn btn-dark e-item1" type="submit" name="skip_btn" title="{{ txt(lang, 'Skip') }}"
+        <button class="btn btn-dark e-item1" type="submit" name="skip_btn" title="{{ txt(session['lang'], 'Skip') }}"
                 {% if not guild.connected %}disabled{% endif %} hx-trigger="click throttle:2s" hx-swap="beforeend"
                 hx-target="#response-div" hx-get="/guild/{{gi}}/action?key={{key}}&act=skip">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 512 512">
@@ -157,7 +157,7 @@
                 d="M52.5 440.6c-9.5 7.9-22.8 9.7-34.1 4.4S0 428.4 0 416V96C0 83.6 7.2 72.3 18.4 67s24.5-3.6 34.1 4.4L224 214.3V256v41.7L52.5 440.6zM256 352V256 128 96c0-12.4 7.2-23.7 18.4-29s24.5-3.6 34.1 4.4l192 160c7.3 6.1 11.5 15.1 11.5 24.6s-4.2 18.5-11.5 24.6l-192 160c-9.5 7.9-22.8 9.7-34.1 4.4s-18.4-16.6-18.4-29V352z"></path>
           </svg>
         </button>
-        <button class="btn btn-dark e-item1" type="submit" name="pause_btn" title="{{ txt(lang, 'Pause') }}"
+        <button class="btn btn-dark e-item1" type="submit" name="pause_btn" title="{{ txt(session['lang'], 'Pause') }}"
                 {% if not guild.connected %}disabled{% endif %} hx-trigger="click throttle:2s" hx-swap="beforeend"
                 hx-target="#response-div" hx-get="/guild/{{gi}}/action?key={{key}}&act=pause">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 320 512">
@@ -165,7 +165,7 @@
                 d="M48 64C21.5 64 0 85.5 0 112V400c0 26.5 21.5 48 48 48H80c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48H48zm192 0c-26.5 0-48 21.5-48 48V400c0 26.5 21.5 48 48 48h32c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48H240z"></path>
           </svg>
         </button>
-        <button class="btn btn-dark e-item1" type="submit" name="stop_btn" title="{{ txt(lang, 'Stop') }}"
+        <button class="btn btn-dark e-item1" type="submit" name="stop_btn" title="{{ txt(session['lang'], 'Stop') }}"
                 {% if not guild.connected %}disabled{% endif %} hx-trigger="click throttle:2s" hx-swap="beforeend"
                 hx-target="#response-div" hx-get="/guild/{{gi}}/action?key={{key}}&act=stop">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#dc3545" viewBox="0 0 384 512">
@@ -175,11 +175,11 @@
         </button>
       </div>
     </div>
-    <div class="q-item1 d-control"><p class="{{ 'd-g' if bot_status in ['Connected', 'Playing'] }}{{ 'd-r' if bot_status in ['Not connected'] }}{{ 'd-y' if bot_status in ['Unknown', 'Paused'] }} d-status">{{ txt(lang, bot_status) }}</p></div>
+    <div class="q-item1 d-control"><p class="{{ 'd-g' if bot_status in ['Connected', 'Playing'] }}{{ 'd-r' if bot_status in ['Not connected'] }}{{ 'd-y' if bot_status in ['Unknown', 'Paused'] }} d-status">{{ txt(session['lang'], bot_status) }}</p></div>
     <div class="q-item1">
       <div class="e-div">
         <button class="btn btn-dark e-item1" type="button" data-bs-toggle="modal" data-bs-target="#joinModal"
-                title="{{ txt(lang, 'Join Channel') }}" {% if not guild.connected %}disabled{% endif %}
+                title="{{ txt(session['lang'], 'Join Channel') }}" {% if not guild.connected %}disabled{% endif %}
                 hx-trigger="click once" hx-target="#joinModal_content" hx-swap="outerHTML"
                 hx-get="/guild/{{ gi }}/modals?type=joinModal&key={{ key }}" hx-indicator="#joinModal_spinner">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#198754" viewBox="0 0 16 16">
@@ -189,7 +189,7 @@
             <path d="M6.5 8.34C3.26 8.34 1 9.98666 1 12.34V13.0067H12V12.34C12 9.98 9.74 8.34 6.5 8.34Z"></path>
           </svg>
         </button>
-        <button class="btn btn-dark e-item1" type="submit" name="disconnect_btn" title="{{ txt(lang, 'Disconnect') }}"
+        <button class="btn btn-dark e-item1" type="submit" name="disconnect_btn" title="{{ txt(session['lang'], 'Disconnect') }}"
                 {% if not guild.connected %}disabled{% endif %} hx-trigger="click throttle:2s" hx-swap="beforeend"
                 hx-target="#response-div" hx-get="/guild/{{gi}}/action?key={{key}}&act=disconnect">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#dc3545" viewBox="0 0 24 24">
@@ -197,14 +197,14 @@
                 d="M21.1169 1.11603L22.8839 2.88403L19.7679 6.00003L22.8839 9.11603L21.1169 10.884L17.9999 7.76803L14.8839 10.884L13.1169 9.11603L16.2329 6.00003L13.1169 2.88403L14.8839 1.11603L17.9999 4.23203L21.1169 1.11603ZM18 22H13C6.925 22 2 17.075 2 11V6C2 5.447 2.448 5 3 5H7C7.553 5 8 5.447 8 6V10C8 10.553 7.553 11 7 11H6C6.063 14.938 9 18 13 18V17C13 16.447 13.447 16 14 16H18C18.553 16 19 16.447 19 17V21C19 21.553 18.553 22 18 22Z"></path>
           </svg>
         </button>
-        <button class="btn btn-dark e-item1" data-bs-toggle="modal" data-bs-target="#timeModal" title="{{ txt(lang, 'Time') }}"
+        <button class="btn btn-dark e-item1" data-bs-toggle="modal" data-bs-target="#timeModal" title="{{ txt(session['lang'], 'Time') }}"
                 {% if not guild.connected %}disabled{% endif %} hx-get="/guild/{{ gi }}/modals?type=timeModal&key={{ key }}"
                 hx-trigger="click once" hx-swap="outerHTML" hx-target="#timeModal_content" hx-indicator="#timeModal_spinner">
           <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#ffffff" viewBox="0 0 48 48">
             <path d="M 24 4 C 12.972066 4 4 12.972074 4 24 C 4 35.027926 12.972066 44 24 44 C 35.027934 44 44 35.027926 44 24 C 44 12.972074 35.027934 4 24 4 z M 24 7 C 33.406615 7 41 14.593391 41 24 C 41 33.406609 33.406615 41 24 41 C 14.593385 41 7 33.406609 7 24 C 7 14.593391 14.593385 7 24 7 z M 22.476562 11.978516 A 1.50015 1.50015 0 0 0 21 13.5 L 21 24.5 A 1.50015 1.50015 0 0 0 21.439453 25.560547 L 26.439453 30.560547 A 1.50015 1.50015 0 1 0 28.560547 28.439453 L 24 23.878906 L 24 13.5 A 1.50015 1.50015 0 0 0 22.476562 11.978516 z"></path>
           </svg>
         </button>
-        <button class="btn btn-dark e-item1" data-bs-toggle="modal" data-bs-target="#volumeModal" title="{{ txt(lang, 'Volume') }}"
+        <button class="btn btn-dark e-item1" data-bs-toggle="modal" data-bs-target="#volumeModal" title="{{ txt(session['lang'], 'Volume') }}"
                 {% if not guild.connected %}disabled{% endif %} hx-get="/guild/{{ gi }}/modals?type=volumeModal&key={{ key }}"
                 hx-trigger="click once" hx-swap="outerHTML" hx-target="#volumeModal_content" hx-indicator="#volumeModal_spinner">
           <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#ffffff" viewBox="0 0 16 16">
@@ -213,7 +213,7 @@
             <path d="M10.025 8a4.5 4.5 0 0 1-1.318 3.182L8 10.475A3.5 3.5 0 0 0 9.025 8c0-.966-.392-1.841-1.025-2.475l.707-.707A4.5 4.5 0 0 1 10.025 8M7 4a.5.5 0 0 0-.812-.39L3.825 5.5H1.5A.5.5 0 0 0 1 6v4a.5.5 0 0 0 .5.5h2.325l2.363 1.89A.5.5 0 0 0 7 12zM4.312 6.39 6 5.04v5.92L4.312 9.61A.5.5 0 0 0 4 9.5H2v-3h2a.5.5 0 0 0 .312-.11"></path>
           </svg>
         </button>
-        <button class="btn btn-dark e-item1" data-bs-toggle="modal" data-bs-target="#subtitlesModal" title="{{ txt(lang, 'Subtitles') }}"
+        <button class="btn btn-dark e-item1" data-bs-toggle="modal" data-bs-target="#subtitlesModal" title="{{ txt(session['lang'], 'Subtitles') }}"
                 {% if not guild.connected %}disabled{% endif %} hx-get="/guild/{{ gi }}/modals?type=subtitlesModal&key={{ key }}"
                 hx-trigger="click once" hx-swap="outerHTML" hx-target="#subtitlesModal_content" hx-indicator="#subtitlesModal_spinner">
           <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#ffffff" viewBox="0 0 16 16">
@@ -228,8 +228,8 @@
   <!-- Queue TOP -->
   <div class="q-top">
     <div class="q-item1 l-div gap1">
-      <h3>{{ txt(lang, 'Queue') }}</h3>
-      <a class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#saveModal" title="{{ txt(lang, 'Save Queue') }}"
+      <h3>{{ txt(session['lang'], 'Queue') }}</h3>
+      <a class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#saveModal" title="{{ txt(session['lang'], 'Save Queue') }}"
          hx-target="#saveModal_content" hx-swap="outerHTML" hx-trigger="click once"
          hx-get="/guild/{{gi}}/modals?type=saveModal&key={{ key }}" hx-indicator="#saveModal_spinner">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
@@ -237,7 +237,7 @@
           <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"></path>
         </svg>
       </a>
-      <a class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#loadModal" title="{{ txt(lang, 'Load Queue') }}"
+      <a class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#loadModal" title="{{ txt(session['lang'], 'Load Queue') }}"
          hx-target="#loadModal_content" hx-swap="outerHTML" hx-trigger="click"
          hx-get="/guild/{{gi}}/modals?type=loadModal&key={{ key }}" hx-indicator="#loadModal_spinner">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-upload" viewBox="0 0 16 16">
@@ -246,24 +246,24 @@
         </svg>
       </a>
       {% if admin %}
-        <a class="btn btn-primary" href="/admin/guild/{{ gi }}/saves">{{ txt(lang, 'Edit') }}</a>
+        <a class="btn btn-primary" href="/admin/guild/{{ gi }}/saves">{{ txt(session['lang'], 'Edit') }}</a>
       {% endif %}
     </div>
     <a class="q-top-add btn btn-dark" data-bs-toggle="modal" data-bs-target="#queue0Modal"
        hx-get="/guild/{{ gi }}/modals?type=queue0Modal&key={{ key }}"
        hx-trigger="click once" hx-target="#queue0Modal_content" hx-swap="outerHTML"
-       title="{{ txt(lang, 'Add to queue') }}" hx-indicator="#queue1Modal_spinner">
+       title="{{ txt(session['lang'], 'Add to queue') }}" hx-indicator="#queue1Modal_spinner">
       <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-plus-lg"
            viewBox="0 0 16 16">
         <path fill-rule="evenodd"
               d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"></path>
       </svg>
     </a>
-    <button class="btn btn-dark" title="{{ txt(lang, 'Loop') }}" hx-target="this" hx-swap="innerHTML"
+    <button class="btn btn-dark" title="{{ txt(session['lang'], 'Loop') }}" hx-target="this" hx-swap="innerHTML"
         hx-trigger="click throttle:2s" hx-get="/guild/{{gi}}/action?act=loop&key={{key}}" hx-indicator="#loop_spinner">
       {% include 'main/htmx/single/loop.html' %}
     </button>
-    <button class="btn btn-dark" title="{{ txt(lang, 'Shuffle') }}" hx-target="#q-main" hx-swap="outerHTML"
+    <button class="btn btn-dark" title="{{ txt(session['lang'], 'Shuffle') }}" hx-target="#q-main" hx-swap="outerHTML"
             hx-trigger="click throttle:500ms" hx-get="/guild/{{gi}}/queue?act=shuffle_btn&key={{key}}" hx-indicator="#shuffle_spinner">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-shuffle"
            viewBox="0 0 16 16">
@@ -274,8 +274,8 @@
       </svg>
       <div id="shuffle_spinner" class="spinner spinner-border text-primary htmx-indicator" role="status" style="width: 2rem; height: 2rem;"></div>
     </button>
-    <button class="btn btn-dark" title="{{ txt(lang, 'Clear') }}" hx-target="#q-main" hx-swap="outerHTML"
-            hx-trigger="click throttle:500ms" hx-get="/guild/{{gi}}/queue?act=clear_btn&key={{key}}" hx-confirm="{{ txt(lang, 'Do you want to clear the queue?') }}">
+    <button class="btn btn-dark" title="{{ txt(session['lang'], 'Clear') }}" hx-target="#q-main" hx-swap="outerHTML"
+            hx-trigger="click throttle:500ms" hx-get="/guild/{{gi}}/queue?act=clear_btn&key={{key}}" hx-confirm="{{ txt(session['lang'], 'Do you want to clear the queue?') }}">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#dc3545" class="bi bi-trash"
            viewBox="0 0 16 16">
         <path

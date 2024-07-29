@@ -44,18 +44,18 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link" href="/">Home</a>
+          <a class="nav-link" href="/">{{ txt(session['lang'], 'Home') }}</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/guild">Servers</a>
+          <a class="nav-link" href="/guild">{{ txt(session['lang'], 'Servers') }}</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/about">About</a>
+          <a class="nav-link" href="/about">{{ txt(session['lang'], 'About') }}</a>
         </li>
         {% block nav_items %}{% endblock %}
       </ul>
       <div class="nav-static-buttons">
-        <a href="/admin/guild/{{ guild_id }}" class="btn btn-outline-primary">Return To Dashboard</a>
+        <a href="/admin/guild/{{ guild_id }}" class="btn btn-outline-primary">{{ txt(session['lang'], 'Return To Dashboard') }}</a>
       </div>
       <div>
         {% if user %}
@@ -65,14 +65,14 @@
                  class="rounded-circle" alt="avatar">
           {% endif %}
           {% if user['id'] == '349164237605568513' %}
-            <a class="btn btn-outline-primary btn-sm btn-m" href="/admin">Admin Panel</a>
+            <a class="btn btn-outline-primary btn-sm btn-m" href="/admin">{{ txt(session['lang'], 'Admin Panel') }}</a>
           {% endif %}
-          <a class="btn btn-danger" href="/logout">Logout</a>
-          <a class="btn btn-outline-success btn-sm btn-m" href="/login">Update Session</a>
+          <a class="btn btn-danger" href="/logout">{{ txt(session['lang'], 'Logout') }}</a>
+          <a class="btn btn-outline-success btn-sm btn-m" href="/login">{{ txt(session['lang'], 'Update Session') }}</a>
         {% else %}
-          <a class="btn btn-primary" href="/login">Login</a>
+          <a class="btn btn-primary" href="/login">{{ txt(session['lang'], 'Login') }}</a>
         {% endif %}
-        <a class="btn btn-outline-danger btn-sm btn-m" href="/reset">Reset Session</a>
+        <a class="btn btn-outline-danger btn-sm btn-m" href="/reset">{{ txt(session['lang'], 'Reset Session') }}</a>
       </div>
     </div>
   </div>
@@ -83,7 +83,7 @@
     {% for error in errors %}
       <div class="alert alert-danger div-align alert-dismissible fade show sticky-top" role="alert">
         {{ error }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ txt(session['lang'], 'Close') }}"></button>
       </div>
     {% endfor %}
   {% endif %}
@@ -91,7 +91,7 @@
     {% for message in messages %}
       <div class="alert alert-success div-align alert-dismissible fade show sticky-top" role="alert">
         {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ txt(session['lang'], 'Close') }}"></button>
       </div>
     {% endfor %}
   {% endif %}
@@ -127,11 +127,11 @@
         {{ content|safe }}
       {% elif content == 0 %}
         <div class="div-login">
-          <h1>Choose a channel to begin</h1>
+          <h1>{{ txt(session['lang'], 'Choose a channel to begin') }}</h1>
         </div>
       {% else %}
         <div class="div-login">
-          <h1>Something went wrong (no content)</h1>
+          <h1>{{ txt(session['lang'], 'Something went wrong (no content)') }}</h1>
         </div>
       {% endif %}
     </div>

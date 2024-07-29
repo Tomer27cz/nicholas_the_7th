@@ -7,7 +7,7 @@
     {% for error in errors %}
       <div class="alert alert-danger div-align alert-dismissible fade show sticky-top" role="alert">
         {{ error }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ txt(session['lang'], 'Close') }}"></button>
       </div>
     {% endfor %}
   {% endif %}
@@ -15,12 +15,12 @@
     {% for message in messages %}
       <div class="alert alert-success div-align alert-dismissible fade show sticky-top" role="alert">
         {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ txt(session['lang'], 'Close') }}"></button>
       </div>
     {% endfor %}
   {% endif %}
 
-  <a href="/admin" class="btn btn-primary">Return to Admin Panel</a>
+  <a href="/admin" class="btn btn-primary">{{ txt(session['lang'], 'Return to Admin Panel') }}</a>
 
   <div class="div-log-data">
     {% for line in data_data %}

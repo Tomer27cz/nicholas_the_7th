@@ -271,6 +271,10 @@ async def to_queue(glob: GlobalVars, guild_id: int or Guild, video, position: in
     video.discord_channel = {"id": None, "name": None}
     # set new creation date
     video.created_at = int(time())
+    # strip video of subtitles
+    video.subtitles = None
+    # strip video of captions
+    video.captions = None
 
     if stream_strip is True:
         video.stream_url = None

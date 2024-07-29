@@ -7,7 +7,7 @@
     {% for error in errors %}
       <div class="alert alert-danger div-align alert-dismissible fade show" role="alert">
         {{error}}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ txt(lang, 'Close' )}}"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ txt(session['lang'], 'Close' )}}"></button>
       </div>
     {% endfor %}
   {% endif %}
@@ -15,10 +15,10 @@
 
   <div class="div-align-center">
     <div class="div-login">
-      <h1>{{ txt(lang, 'You have to log in or enter a code') }}</h1>
+      <h1>{{ txt(session['lang'], 'You have to log in or enter a code') }}</h1>
       <div class="d-grid gap-2 d-md-block">
-        <a type="button" class="btn btn-primary btn-lg" name="login" href="/login">{{ txt(lang, 'Login') }}</a>
-        <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-secondary btn-lg">{{ txt(lang, 'Enter Code') }}</button>
+        <a type="button" class="btn btn-primary btn-lg" name="login" href="/login">{{ txt(session['lang'], 'Login') }}</a>
+        <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-secondary btn-lg">{{ txt(session['lang'], 'Enter Code') }}</button>
       </div>
     </div>
   </div>
@@ -28,16 +28,16 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ txt(lang, 'Close') }}"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ txt(session['lang'], 'Close') }}"></button>
         </div>
         <form onsubmit="onSubmitDisable();" action="#" method="post">
           <div class="modal-body">
             <input type="text" class="form-control" name="key" placeholder="Enter Code">
-            <div class="form-text">{{ txt(lang, 'Do this command in the server' )}}: <span class="code-d">/key</span></div>
+            <div class="form-text">{{ txt(session['lang'], 'Do this command in the server' )}}: <span class="code-d">/key</span></div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ txt(lang, 'Close' )}}</button>
-            <button type="submit" class="btn btn-primary btn-lg" name="code_submit">{{ txt(lang, 'Submit' )}}</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ txt(session['lang'], 'Close' )}}</button>
+            <button type="submit" class="btn btn-primary btn-lg" name="code_submit">{{ txt(session['lang'], 'Submit' )}}</button>
           </div>
         </form>
       </div>

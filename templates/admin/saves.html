@@ -20,7 +20,7 @@
     {% endfor %}
   {% endif %}
 
-  <a href="/admin/guild/{{ guild_object.id }}" class="btn btn-primary">Return to Guild Dashboard</a>
+  <a href="/admin/guild/{{ guild_object.id }}" class="btn btn-primary">{{ txt(session['lang'], 'Return to Guild Dashboard') }}</a>
 
   {% if saves is not none %}
   <div class="accordion" id="accordionPanelsStayOpenExample">
@@ -38,9 +38,9 @@
         <div id="panelsStayOpen-{{ save_name }}" class="accordion-collapse collapse">
           <div class="accordion-body">
             <div class="l-div e-wrap gap1 btn-m">
-              <a class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#renameModal_{{ save_name }}" title="{{ txt(lang, 'Rename') }}">{{ txt(lang, 'Rename') }}</a>
+              <a class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#renameModal_{{ save_name }}" title="{{ txt(session['lang'], 'Rename') }}">{{ txt(session['lang'], 'Rename') }}</a>
               <form method="POST" id="deleteForm_{{ save_name }}" action="">
-                <button class="btn btn-danger" title="{{ txt(lang, 'Delete') }}" type="submit" name="deleteSave">{{ txt(lang, 'Delete') }}</button>
+                <button class="btn btn-danger" title="{{ txt(session['lang'], 'Delete') }}" type="submit" name="deleteSave">{{ txt(session['lang'], 'Delete') }}</button>
                 <input type="hidden" name="save_name" value="{{ save_name }}">
               </form>
             </div>
@@ -55,7 +55,7 @@
                   <p class="q-text q-3">{{ convert_duration(track['duration']) }}</p>
                 </div>
                 <div class="q-item3 q-items-center">
-                  <p class="q-text q-1">{{ txt(lang, 'From/To') }}</p>
+                  <p class="q-text q-1">{{ txt(session['lang'], 'From/To') }}</p>
                   <p class="q-text q-2">{{ struct_to_time(track['played_duration'][0]['start']['epoch'], first='time') }}</p>
                   <p class="q-text q-2">{{ struct_to_time(track['played_duration'][-1]['end']['epoch'], first='time') }}</p>
                 </div>
@@ -79,7 +79,7 @@
       <h3>No Saves Found</h3>
     </div>
     <div class="l-div e-wrap">
-      <a href="/admin/guild/{{ guild_object.id }}" class="btn btn-primary q-item1">Return to Guild Dashboard</a>
+      <a href="/admin/guild/{{ guild_object.id }}" class="btn btn-primary q-item1">{{ txt(session['lang'], 'Return to Guild Dashboard') }}</a>
     </div>
   </div>
   {% endif %}
@@ -91,7 +91,7 @@
       <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
           <div class="modal-header">
-            <h1 class="modal-title fs-5" id="renameLabel_{{ save_name }}">{{ txt(lang, 'Rename Save') }} - {{ save_name }}</h1>
+            <h1 class="modal-title fs-5" id="renameLabel_{{ save_name }}">{{ txt(session['lang'], 'Rename Save') }} - {{ save_name }}</h1>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <form method="POST" id="renameForm_{{ save_name }}" action="">
@@ -101,13 +101,13 @@
                 <input type="hidden" name="old_name" value="{{ save_name }}">
               </div>
               <div class="mb-3">
-                <label for="new_name" class="btn-m">{{ txt(lang, 'Name') }}</label>
+                <label for="new_name" class="btn-m">{{ txt(session['lang'], 'Name') }}</label>
                 <input type="text" class="form-control" name="new_name" id="new_name" required>
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-dark" data-bs-dismiss="modal">{{ txt(lang, 'Close') }}</button>
-              <button type="submit" class="btn btn-primary" name="renameSave">{{ txt(lang, 'Rename') }}</button>
+              <button type="button" class="btn btn-dark" data-bs-dismiss="modal">{{ txt(session['lang'], 'Close') }}</button>
+              <button type="submit" class="btn btn-primary" name="renameSave">{{ txt(session['lang'], 'Rename') }}</button>
             </div>
           </form>
         </div>

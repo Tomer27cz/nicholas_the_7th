@@ -15,7 +15,7 @@
     {% for message in messages %}
       <div class="alert alert-success div-align alert-dismissible fade show sticky-top" role="alert">
         {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ txt(session['lang'], 'Close') }}'"></button>
       </div>
     {% endfor %}
   {% endif %}
@@ -32,16 +32,16 @@
       </div>
       <div class="g-status-div">
         <div class="g-admin-button">
-          <a href="/admin/file/" class="btn btn-success btn-lg">Browse Files</a>
+          <a href="/admin/file/" class="btn btn-success btn-lg">{{ txt(session['lang'], 'Browse Files') }}</a>
         </div>
         <div class="g-admin-button">
-          <a href="/admin/log" class="btn btn-primary btn-lg">Logs</a>
+          <a href="/admin/log" class="btn btn-primary btn-lg">{{ txt(session['lang'], 'Logs') }}</a>
         </div>
       </div>
     </div>
   </div>
   <div class="picker">
-    <h3>Select a server to Edit</h3>
+    <h3>{{ txt(session['lang'], 'Select a server to Edit') }}</h3>
     <br/>
     <section class="d-cards">
       {% for guild_object in guild %}
@@ -62,7 +62,7 @@
             {% endif %}
           </a>
           <p class="d-name">{{ guild_object.data.name }}</p>
-          <p class="{{ 'd-g' if bot_status[guild_object.id] in ['Connected', 'Playing'] }}  d-status">{{ bot_status[guild_object.id] }}</p>
+          <p class="{{ 'd-g' if bot_status[guild_object.id] in ['Connected', 'Playing'] }}  d-status">{{ txt(session['lang'], bot_status[guild_object.id]) }}</p>
           <p class="d-status">{{ struct_to_time(last_played[guild_object.id]) }}</p>
         </div>
       {% endfor %}

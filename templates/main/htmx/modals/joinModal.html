@@ -1,6 +1,6 @@
 <div class="modal-content" id="joinModal_content">
   <div class="modal-header">
-    <h1 class="modal-title fs-5" id="joinLabel">{{ txt(lang, 'Join') }}</h1>
+    <h1 class="modal-title fs-5" id="joinLabel">{{ txt(session['lang'], 'Join') }}</h1>
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
   </div>
   <div class="modal-body">
@@ -16,14 +16,14 @@
                         hx-target="#response-div" hx-swap="beforeend" hx-trigger="click throttle:2s"
                         hx-get="/guild/{{ guild.id }}/action?key={{ key }}&act=join&var={{ channel['id'] }}"
                         data-bs-dismiss="modal"
-                ><h5>{{ txt(lang, 'Join') }}</h5></button>
+                ><h5>{{ txt(session['lang'], 'Join') }}</h5></button>
               </div>
             </div>
           </div>
         {% endfor %}
       {% else %}
         <div class="alert alert-warning" role="alert">
-          {{ txt(lang, 'No voice channels') }}
+          {{ txt(session['lang'], 'No voice channels') }}
         </div>
       {% endif %}
     </div>
@@ -32,7 +32,7 @@
       <div class="accordion-item">
         <h2 class="accordion-header">
           <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#aJoin" aria-expanded="false" aria-controls="aJoin">
-            <h3>{{ txt(lang, 'Advanced') }}</h3>
+            <h3>{{ txt(session['lang'], 'Advanced') }}</h3>
           </button>
         </h2>
         <div id="aJoin" class="accordion-collapse collapse" data-bs-parent="#accordionJoin">
@@ -45,11 +45,11 @@
               <button type="submit" class="btn btn-primary" name="join_btn" value="id" data-bs-dismiss="modal"
                       hx-target="#response-div" hx-swap="beforeend" hx-trigger="click throttle:2s"
                       hx-get="/guild/{{ guild.id }}/action?key={{ key }}&act=join" hx-include="#channel_id_input"
-              >{{ txt(lang, 'Join') }}</button>
+              >{{ txt(session['lang'], 'Join') }}</button>
             </div>
             {% if guild.data.voice_channels %}
               <div class="j-div">
-                <label class="btn-m j-label">{{ txt(lang, 'Channel') }}</label>
+                <label class="btn-m j-label">{{ txt(session['lang'], 'Channel') }}</label>
                 <div class="e-item2">
                   <select class="form-select" aria-label="channel_name" name="var" id="channel_name_input">
                     {% for channel in guild.data.voice_channels %}
@@ -60,7 +60,7 @@
                 <button type="submit" class="btn btn-primary" name="join_btn" value="name" hx-target="#response-div"
                         hx-swap="beforeend" hx-trigger="click throttle:2s" hx-include="#channel_name_input"
                         hx-get="/guild/{{ guild.id }}/action?key={{ key }}&act=join" data-bs-dismiss="modal"
-                >{{ txt(lang, 'Join') }}</button>
+                >{{ txt(session['lang'], 'Join') }}</button>
               </div>
             {% endif %}
           </div>

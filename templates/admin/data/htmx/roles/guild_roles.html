@@ -2,7 +2,7 @@
   <div class="div-login g-roles-height">
     <div class="q-div">
       <div class="q-item1">
-        <p class="q-text q-1">Name</p>
+        <p class="q-text q-1">{{ txt(session['lang'], 'Name') }}</p>
         <p class="q-text q-2"><span style="background: rgb({{ role.color.r }},{{ role.color.g }},{{ role.color.b }}); height: 1rem; width: 1rem;"></span> {{ role.name }}</p>
       </div>
     </div>
@@ -12,15 +12,15 @@
         <p class="q-text q-2">{{ role.id }}</p>
       </div>
       <div class="q-item1">
-        <p class="q-text q-1">Created at</p>
+        <p class="q-text q-1">{{ txt(session['lang'], 'Created at') }}</p>
         <p class="q-text q-2">{{ role.created_at }}</p>
       </div>
       <div class="q-item1">
-        <p class="q-text q-1">Color</p>
+        <p class="q-text q-1">{{ txt(session['lang'], 'Color') }}</p>
         <p class="q-text q-2">rgb({{ role.color.r }},{{ role.color.g }},{{ role.color.b }})</p>
       </div>
       <div class="q-item1">
-        <p class="q-text q-1">Members</p>
+        <p class="q-text q-1">{{ txt(session['lang'], 'Members') }}</p>
         <p class="q-text q-2">{{ role.member_count }}</p>
       </div>
     </div>
@@ -33,7 +33,7 @@
                  data-bs-target="#flush-collapse{{ role.id }}" hx-target="#accordion{{ role.id }}_content"
                  aria-controls="flush-collapse{{ role.id }}" hx-trigger="click once" hx-swap="outerHTML" aria-expanded="false"
                  hx-get="/admin/guild/{{ guild_id }}/roles/htmx?role_id={{ role.id }}&type=members">
-                <h4>Users with Role</h4>
+                <h4>{{ txt(session['lang'], 'Users with Role') }}</h4>
                 <div class="text-center">
                   <div class="spinner-border text-primary htmx-indicator" role="status" style="width: 2rem; height: 2rem;"></div>
                 </div>
@@ -54,7 +54,7 @@
                  data-bs-target="#flush-collapseP{{ role.id }}" aria-expanded="false" hx-trigger="click once"
                  aria-controls="flush-collapseP{{ role.id }}" hx-swap="outerHTML" hx-target="#accordionP{{ role.id }}_content"
                  hx-get="/admin/guild/{{ guild_id }}/roles/htmx?role_id={{ role.id }}&type=permissions">
-                <h4>Permissions</h4>
+                <h4>{{ txt(session['lang'], 'Permissions') }}</h4>
                 <div class="text-center">
                   <div class="spinner-border text-primary htmx-indicator" role="status" style="width: 2rem; height: 2rem;"></div>
                 </div>

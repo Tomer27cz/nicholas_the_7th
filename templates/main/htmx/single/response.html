@@ -1,9 +1,9 @@
 {% if not response.response %}
-{% set resp='true' %}
-{% set refresh='false' %}
+{% set resp=true %}
+{% set refresh=false %}
 {% endif %}
 
-{% if resp != 'false' %}
+{% if resp != false %}
 <div class="alert alert-{{ 'success' if response.response else 'danger' }} div-align alert-dismissible fade show sticky-top" role="alert">
   {{ response.message }}
   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -13,7 +13,7 @@
 </div>
 {% endif %}
 
-{% if refresh == 'true' %}
+{% if refresh == true %}
 <script>
   setTimeout(function() {
     location.reload();

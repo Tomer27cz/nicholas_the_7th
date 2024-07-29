@@ -213,15 +213,15 @@ async def play_def(ctx, glob: GlobalVars,
     except ConnectionRefusedError as e:
         await ctx.reply(e)
         return ReturnData(False, e)
-    except (AttributeError, IndexError, TypeError, discord.errors.ClientException,
-            discord.errors.NotFound) as e:
-        log(ctx, "------------------------------- play -------------------------")
-        tb = traceback.format_exc()
-        log(ctx, tb)
-        log(ctx, "--------------------------------------------------------------")
-        message = f'{txt(guild_id, glob, "An **error** occurred while trying to play the song")} {glob.bot.get_user(config.DEVELOPER_ID).mention} ({str(e)})'
-        await ctx.reply(message)
-        return ReturnData(False, message)
+    # except (AttributeError, IndexError, TypeError, discord.errors.ClientException,
+    #         discord.errors.NotFound) as e:
+    #     log(ctx, "------------------------------- play -------------------------")
+    #     tb = traceback.format_exc()
+    #     log(ctx, tb)
+    #     log(ctx, "--------------------------------------------------------------")
+    #     message = f'{txt(guild_id, glob, "An **error** occurred while trying to play the song")} {glob.bot.get_user(config.DEVELOPER_ID).mention} ({str(e)})'
+    #     await ctx.reply(message)
+    #     return ReturnData(False, message)
 
 async def local_def(ctx, glob: GlobalVars, effect: str, mute_response: bool = False) -> ReturnData:
     """

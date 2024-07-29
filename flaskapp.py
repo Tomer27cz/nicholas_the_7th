@@ -47,7 +47,7 @@ from database.main import *
 
 # --------------------------------------------- LOAD DATA --------------------------------------------- #
 
-from utils.global_vars import radio_dict, languages_dict, sound_effects
+from utils.global_vars import radio_dict, languages_dict, sound_effects, languages_shortcuts_dict, languages_list_dict
 authorized_users += [my_id, 349164237605568513]
 
 # --------------------------------------------- FUNCTIONS --------------------------------------------- #
@@ -151,7 +151,8 @@ def inject_data():
                 convert_duration=convert_duration,
                 video_time_from_start=video_time_from_start,
                 check_isdigit=check_isdigit,
-                ceil=math.ceil
+                ceil=math.ceil,
+                lang_list=languages_list_dict,
                 )
 
 @app.before_request
@@ -169,6 +170,8 @@ async def index_page():
     log(request.remote_addr, request.full_path, log_type='ip')
     await simulate()
     user = flask_session.get('discord_user', {})
+
+    # flask_session['lang'] = 'cs'
 
     try:
         return render_template('nav/index.html', user=user)
@@ -560,7 +563,7 @@ async def htmx_search(guild_id):
     key = request.args.get('key')
     if key != db_key:
         return abort(403, 'Invalid key')
-
+    
     act = request.args.get('act')
     if act == 'youtube':
         sp = request.args.get('sp', 'videos')
@@ -599,11 +602,8 @@ async def htmx_action(guild_id):
     if key != guild_object.data.key:
         return {'success': False, 'message': 'Invalid key'}, 403, {'ContentType': 'application/json'}
 
-    if resp not in ['true', 'false']:
-        resp = 'false'
-
-    if refresh not in ['true', 'false']:
-        refresh = 'true'
+    resp = True if resp in ['true', 'True'] else False
+    refresh = False if refresh in ['false', 'False'] else True
 
     if not act:
         return {'success': False, 'message': 'No action'}, 400, {'ContentType': 'application/json'}
@@ -662,7 +662,7 @@ async def htmx_action(guild_id):
     if response is None:
         return {'success': False, 'message': 'No response'}, 500, {'ContentType': 'application/json'}
 
-    if resp == 'false' and refresh == 'false':
+    if resp is False and refresh is False:
         return {'success': response.response, 'message': response.message, 'refresh': refresh}, 200, {'ContentType': 'application/json'}
 
     return render_template('main/htmx/single/response.html', response=response, refresh=refresh, resp=resp)
@@ -716,23 +716,27 @@ async def login_page():
 
     # Get API data
     user = Oauth.get_user(flask_session['access_token'])
-    user_guilds = Oauth.get_user_guilds(flask_session['access_token'])
+    allowed_guilds = Oauth.get_user_guilds(flask_session['access_token']) # user guilds
 
     # Collect data
     collect_data(user)
     collect_data(f'{user["username"]} -> {user_guilds}')
 
     # Store data in session
-    flask_session['discord_user'] = user
-    flask_session['discord_user_guilds'] = [int(u_guild['id']) for u_guild in user_guilds]
-
-    # Set allowed guilds to user guilds
-    allowed_guilds = user_guilds
+    flask_session['discord_user'] = {
+        'avatar': user['avatar'],
+        'discriminator': user['discriminator'],
+        'global_name': user['global_name'],
+        'id': user['id'],
+        'locale': user['locale'],
+        'username': user['username'],
+    }
+    user_lang = user['locale'][:2]
+    flask_session['lang'] = user_lang if user_lang in languages_dict.keys() else 'en'
 
     # Check if user is admin and set allowed guilds to user+bot guilds
     if int(user['id']) in authorized_users:
-        bot_guilds = Oauth.get_bot_guilds()
-        allowed_guilds = bot_guilds+user_guilds
+        allowed_guilds += Oauth.get_bot_guilds()
 
     # Store allowed guilds in session as list of guild IDs
     flask_session['allowed_guilds'] = [int(g_dict['id']) for g_dict in allowed_guilds]
@@ -774,6 +778,43 @@ async def invite_page():
     await simulate()
     return redirect(config.INVITE_URL)
 
+# ------------------------------------------------------- Action -------------------------------------------------------
+
+@app.route('/action')
+async def action_page():
+    log(request.remote_addr, request.full_path, log_type='ip')
+    await simulate()
+
+    act = request.args.get('act')
+    var = request.args.get('var')
+    resp = request.args.get('resp')
+    refresh = request.args.get('refresh')
+
+    resp = True if resp in ['true', 'True'] else False
+    refresh = False if refresh in ['false', 'False'] else True
+
+    if not act:
+        return {'success': False, 'message': 'No action'}, 400, {'ContentType': 'application/json'}
+
+    if 'user_lang' == act:
+        if var not in languages_dict.keys() or len(var) != 2 or not var:
+            return {'success': False, 'message': 'Invalid language'}, 400, {'ContentType': 'application/json'}
+
+        flask_session['lang'] = var
+        response = ReturnData(True, 'Language changed to ' + languages_list_dict[var]['name'])
+
+    else:
+        return {'success': False, 'message': 'Unknown action'}, 400, {'ContentType': 'application/json'}
+
+    if response is None:
+        return {'success': False, 'message': 'No response'}, 500, {'ContentType': 'application/json'}
+
+    if resp is False:
+        return {'success': response.response, 'message': response.message, 'refresh': refresh}, 200, {
+            'ContentType': 'application/json'}
+
+    return render_template('main/htmx/single/response.html', response=response, refresh=refresh, resp=resp)
+
 # -------------------------------------------------------- Admin -------------------------------------------------------
 
 @app.route('/admin', methods=['GET', 'POST'])
@@ -788,7 +829,7 @@ async def admin_page():
     if int(user.get('id', 0)) not in authorized_users:
         return abort(403, 'User not authorized')
 
-    guild_list = sort_guilds(guilds(db), flask_session.get('discord_user_guilds', []))
+    guild_list = sort_guilds(guilds(db), flask_session.get('allowed_guilds', []))
     bot_status = get_guilds_bot_status()
 
     hash_map = {

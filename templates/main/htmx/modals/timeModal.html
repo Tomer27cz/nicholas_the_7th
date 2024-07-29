@@ -14,7 +14,7 @@
     <div class="mb-3">
       <div class="time-top-div">
         <h2 class="time-top-item"><span id="display-time">0:00</span><input type="hidden" id="time-input" name="var" value="0"></h2>
-        <button class="btn btn-outline btn-primary time-top-item" type="submit" title="{{ txt(lang, 'Set Time') }}"
+        <button class="btn btn-outline btn-primary time-top-item" type="submit" title="{{ txt(session['lang'], 'Set Time') }}"
                 {% if not guild.connected %}disabled{% endif %} hx-trigger="click throttle:2s" hx-swap="beforeend"
                 hx-target="#response-div" hx-get="/guild/{{gi}}/action?key={{key}}&act=time" hx-include="#time-input"
                 id="time-submit" hx-validate="true"
@@ -151,7 +151,7 @@
                        hx-on:htmx:validation:failed="htmx.find('#timeInput').reportValidity()" hx-validate="true"
                        oninput="document.getElementById('time-advanced').innerText = convertSeconds(this.value)">
               </div>
-              <button class="btn btn-outline btn-primary btn-sm btn-m" type="submit" title="{{ txt(lang, 'Set Time') }}"
+              <button class="btn btn-outline btn-primary btn-sm btn-m" type="submit" title="{{ txt(session['lang'], 'Set Time') }}"
                       {% if not guild.connected %}disabled{% endif %} hx-trigger="click throttle:2s" hx-swap="beforeend"
                       hx-target="#response-div" hx-get="/guild/{{gi}}/action?key={{key}}&act=time" hx-include="#timeInput"
                       hx-validate="true"><h3>Set</h3></button>

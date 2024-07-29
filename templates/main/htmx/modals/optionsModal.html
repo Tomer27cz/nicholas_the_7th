@@ -1,6 +1,6 @@
 <div class="modal-content" id="optionsModal_content">
   <div class="modal-header">
-    <h1 class="modal-title fs-5" id="optionsLabel">{{ txt(lang, 'Options') }}</h1>
+    <h1 class="modal-title fs-5" id="optionsLabel">{{ txt(session['lang'], 'Options') }}</h1>
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
   </div>
   <form action="#" method="POST" onsubmit="onSubmitDisable();">
@@ -66,8 +66,8 @@
       </div>
 
       <div class="e-div">
-        <button class="btn e-item1 btn-secondary btn-lg btn-m" type="button" data-bs-dismiss="modal" aria-label="Close">{{ txt(lang, 'Cancel') }}</button>
-        <button class="btn e-item1 btn-primary btn-lg btn-m" type="submit" name="options_btn">{{ txt(lang, 'Submit') }}</button>
+        <button class="btn e-item1 btn-secondary btn-lg btn-m" type="button" data-bs-dismiss="modal" aria-label="Close">{{ txt(session['lang'], 'Cancel') }}</button>
+        <button class="btn e-item1 btn-primary btn-lg btn-m" type="submit" name="options_btn">{{ txt(session['lang'], 'Submit') }}</button>
       </div>
     </div>
   </form>

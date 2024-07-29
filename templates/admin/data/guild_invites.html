@@ -7,7 +7,7 @@
     {% for error in errors %}
       <div class="alert alert-danger div-align alert-dismissible fade show" role="alert">
         {{ error }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ txt(session['lang'], 'Close') }}"></button>
       </div>
     {% endfor %}
   {% endif %}
@@ -17,7 +17,7 @@
       <div class="q-item1">
         <h1>{{ guild_object.data.name }}</h1>
       </div>
-      <a href="/admin/guild/{{ guild_object.id }}" class="btn btn-primary q-item1">Return to Guild Dashboard</a>
+      <a href="/admin/guild/{{ guild_object.id }}" class="btn btn-primary q-item1">{{ txt(session['lang'], 'Return to Guild Dashboard') }}</a>
     </div>
     {% if invites %}
       {% for invite in invites %}
@@ -32,37 +32,37 @@
               <p class="q-text q-2">{{ invite.id }}</p>
             </div>
             <div class="q-item1">
-              <p class="q-text q-1">Created at</p>
+              <p class="q-text q-1">{{ txt(session['lang'], 'Created at') }}</p>
               <p class="q-text q-2">{{ invite.created_at }}</p>
             </div>
             <div class="q-item1">
-              <p class="q-text q-1">Expires at</p>
+              <p class="q-text q-1">{{ txt(session['lang'], 'Expires at') }}</p>
               <p class="q-text q-2">{{ invite.expires_at }}</p>
             </div>
             <div class="q-item1">
-              <p class="q-text q-1">Max Age</p>
+              <p class="q-text q-1">{{ txt(session['lang'], 'Max Age') }}</p>
               <p class="q-text q-2">{{ invite.max_age }}</p>
             </div>
           </div>
           <div class="q-div">
             <div class="q-item1">
-              <p class="q-text q-1">Temporary</p>
+              <p class="q-text q-1">{{ txt(session['lang'], 'Temporary') }}</p>
               <p class="q-text q-2">{{ invite.temporary }}</p>
             </div>
             <div class="q-item1">
-              <p class="q-text q-1">AP Member Count</p>
+              <p class="q-text q-1">{{ txt(session['lang'], 'Approximate Member Count') }}</p>
               <p class="q-text q-2">{{ invite.approximate_member_count }}</p>
             </div>
             <div class="q-item1">
-              <p class="q-text q-1">AP Presence Count </p>
+              <p class="q-text q-1">{{ txt(session['lang'], 'Approximate Presence Count') }}</p>
               <p class="q-text q-2">{{ invite.created_at }}</p>
             </div>
             <div class="q-item1">
-              <p class="q-text q-1">Uses</p>
+              <p class="q-text q-1">{{ txt(session['lang'], 'Uses') }}</p>
               <p class="q-text q-2">{{ invite.uses }}</p>
             </div>
             <div class="q-item1">
-              <p class="q-text q-1">Max Uses</p>
+              <p class="q-text q-1">{{ txt(session['lang'], 'Max Uses') }}</p>
               <p class="q-text q-2">{{ invite.max_uses }}</p>
             </div>
           </div>
@@ -75,7 +75,7 @@
                       <a class="btn btn-dark accordion-button collapsed no-padding" type="button"
                          data-bs-toggle="collapse" data-bs-target="#flush-collapse{{ invite.id }}" aria-expanded="false"
                          aria-controls="flush-collapse{{ invite.id }}">
-                        <h4>Invite by</h4>
+                        <h4>{{ txt(session['lang'], 'Invite by') }}</h4>
                       </a>
                     </div>
                   </div>
@@ -85,7 +85,7 @@
                       <div class="q-div">
                         <img loading="lazy" class="q-img" src="{{ invite.inviter.avatar }}" alt="User Avatar">
                         <div class="q-item1">
-                          <p class="q-text q-1">Name</p>
+                          <p class="q-text q-1">{{ txt(session['lang'], 'Name') }}</p>
                           <p class="q-text q-2">{{ invite.inviter.name }} #{{ invite.inviter.discriminator }}</p>
                         </div>
                         <div class="q-item1">
@@ -93,11 +93,11 @@
                           <p class="q-text q-2">{{ invite.inviter.id }}</p>
                         </div>
                         <div class="q-item1">
-                          <p class="q-text q-1">Joined at</p>
+                          <p class="q-text q-1">{{ txt(session['lang'], 'Joined at') }}</p>
                           <p class="q-text q-2">{{ invite.inviter.joined_at }}</p>
                         </div>
                         <div class="q-item1">
-                          <p class="q-text q-1">Status</p>
+                          <p class="q-text q-1">{{ txt(session['lang'], 'Status') }}</p>
                           {% if invite.inviter.status == 'online' %}
                             <p class="q-text c-green">{{ invite.inviter.status }}</p>
                           {% elif invite.inviter.status == 'offline' %}
@@ -107,7 +107,7 @@
                           {% endif %}
                         </div>
                         <div class="q-item0">
-                          <p class="q-text q-1">Get Full Info</p>
+                          <p class="q-text q-1">{{ txt(session['lang'], 'Get Full Info') }}</p>
                           <p class="q-text"><a class="btn btn-primary" href="/admin/user/{{ invite.inviter.id }}">Full
                             Info</a></p>
                         </div>
@@ -118,7 +118,7 @@
               </div>
             {% else %}
               <div>
-                <p class="q-text q-1">Invite by</p>
+                <p class="q-text q-1">{{ txt(session['lang'], 'Invite by') }}</p>
                 <p class="q-text q-2">{{ invite.inviter }}</p>
               </div>
             {% endif %}
@@ -127,7 +127,7 @@
       {% endfor %}
     {% else %}
       <div class="div-login">
-        <h3 class="text-center">No Invites found</h3>
+        <h3 class="text-center">{{ txt(session['lang'], 'No Invites found') }}</h3>
       </div>
     {% endif %}
   </div>

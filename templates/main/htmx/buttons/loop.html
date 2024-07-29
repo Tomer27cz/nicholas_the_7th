@@ -1,4 +1,4 @@
-<button class="btn btn-dark" title="{{ txt(lang, 'Loop') }}" hx-target="this" hx-swap="outerHTML" hx-trigger="click throttle:500ms"
+<button class="btn btn-dark" title="{{ txt(session['lang'], 'Loop') }}" hx-target="this" hx-swap="outerHTML" hx-trigger="click throttle:500ms"
       hx-get="/guild/{{gi}}/queue?act=loop_btn&key={{key}}">
 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
      fill="{{ '#198754' if guild.options.loop else 'currentColor' }}" class="bi bi-arrow-repeat"

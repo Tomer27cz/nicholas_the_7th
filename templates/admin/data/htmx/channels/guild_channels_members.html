@@ -5,7 +5,7 @@
       <div class="q-div">
         <img loading="lazy" class="q-img" src="{{ member.avatar }}" alt="User Avatar">
         <div class="q-item1">
-          <p class="q-text q-1">Name</p>
+          <p class="q-text q-1">{{ txt(session['lang'], 'Name') }}</p>
           <p class="q-text q-2">{{ member.name }} #{{ member.discriminator }}</p>
         </div>
         <div class="q-item1">
@@ -13,7 +13,7 @@
           <p class="q-text q-2">{{ member.id }}</p>
         </div>
         <div class="q-item1">
-          <p class="q-text q-1">Joined at</p>
+          <p class="q-text q-1">{{ txt(session['lang'], 'Joined at') }}</p>
           <p class="q-text q-2">{{ member.joined_at }}</p>
         </div>
         <div class="q-item1">
@@ -27,8 +27,8 @@
           {% endif %}
         </div>
         <div class="q-item0">
-          <p class="q-text q-1">Get Full Info</p>
-          <p class="q-text"><a class="btn btn-primary" href="/admin/user/{{ member.id }}">Full Info</a></p>
+          <p class="q-text q-1">{{ txt(session['lang'], 'Get Full Info') }}</p>
+          <p class="q-text"><a class="btn btn-primary" href="/admin/user/{{ member.id }}">{{ txt(session['lang'], 'Full Info') }}</a></p>
         </div>
       </div>
     </div>

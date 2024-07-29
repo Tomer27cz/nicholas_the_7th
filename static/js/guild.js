@@ -35,7 +35,7 @@ function npProgress(duration, played_duration) {
   let text_elem = document.getElementById("progress_time");
   let sub_elem = document.getElementById("subtitles");
 
-  if (duration != null) {
+  if (duration != null && duration > 0) {
       let sec_remaining = duration - getSecsPlayed(played_duration);
 
       if (Math.sign(sec_remaining) === -1) {
@@ -65,7 +65,7 @@ function npProgress(duration, played_duration) {
 
       changeSubtitle(sec_played);
 
-      if (duration != null) {
+      if (duration != null && duration > 0) {
           let sec_remaining_add = duration - getSecsPlayed(played_duration);
           let percentage = 100 - (sec_remaining_add / duration) * 100;
 

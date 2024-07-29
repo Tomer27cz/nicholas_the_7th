@@ -26,11 +26,11 @@
   <!-- Modal Body -->
   <div class="modal-body">
     <div class="input-group mb-3">
-      <input type="search" name="var" class="form-control" id="queue0_search" placeholder="{{ txt(lang, 'URL') }}">
+      <input type="search" name="var" class="form-control" id="queue0_search" placeholder="{{ txt(session['lang'], 'URL') }}">
       <button class="btn btn-outline-secondary" type="submit" id="queue0_search_button" hx-target="#q-main" hx-swap="outerHTML"
               hx-trigger="click throttle:2s" hx-get="/guild/{{ gi }}/queue?act=add&key={{ key }}&resp=true"
               hx-indicator="#queue0_spinner" data-bs-toggle="modal" hx-include="#queue0_search">
-        {{ txt(lang, "Submit") }}
+        {{ txt(session['lang'], "Submit") }}
       </button>
       <script>
         document.getElementById('queue0_search').addEventListener('keyup', function(event) {
@@ -48,6 +48,6 @@
 
   <!-- Modal Footer -->
   <div class="modal-footer">
-    <button type="button" class="btn btn-dark" data-bs-dismiss="modal">{{ txt(lang, 'Close') }}</button>
+    <button type="button" class="btn btn-dark" data-bs-dismiss="modal">{{ txt(session['lang'], 'Close') }}</button>
   </div>
 </div>

@@ -7,7 +7,7 @@
     {% for error in errors %}
       <div class="alert alert-danger div-align alert-dismissible fade show" role="alert">
         {{ error }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ txt(session['lang'], 'Close') }}"></button>
       </div>
     {% endfor %}
   {% endif %}
@@ -31,8 +31,8 @@
       {% if message6 %}
         <h6>{{ message6 }}</h6>
       {% endif %}
-      <a class="btn btn-secondary btn-lg" href="/">Return Home</a>
-      <a class="btn btn-primary btn-lg" href="/guild">Servers</a>
+      <a class="btn btn-secondary btn-lg" href="/">{{ txt(session['lang'], 'Return Home') }}</a>
+      <a class="btn btn-primary btn-lg" href="/guild">{{ txt(session['lang'], 'Servers') }}</a>
     </div>
   </div>
 

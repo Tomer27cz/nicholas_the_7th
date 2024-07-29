@@ -21,7 +21,7 @@
       <div class="q-item1">
         <h1>{{ data.name }}</h1>
       </div>
-      <a href="/admin/guild/{{ data.id }}" class="btn btn-primary q-item1">Return to Guild Dashboard</a>
+      <a href="/admin/guild/{{ data.id }}" class="btn btn-primary q-item1">{{ txt(session['lang'], 'Return to Guild Dashboard') }}</a>
     </div>
   {% if channel_type == 'voice' %}
     {% if data.voice_channel_count %}
@@ -35,7 +35,7 @@
       {% endfor %}
     {% else %}
       <div class="div-login">
-        <h3 class="text-center">No voice channels found</h3>
+        <h3 class="text-center">{{ txt(session['lang'], 'No voice channels found') }}</h3>
       </div>
     {% endif %}
   {% elif channel_type == 'text' %}
@@ -50,11 +50,11 @@
       {% endfor %}
     {% else %}
       <div class="div-login">
-        <h3 class="text-center">No text channels found</h3>
+        <h3 class="text-center">{{ txt(session['lang'], 'No text channels found') }}</h3>
       </div>
     {% endif %}
   {% else %}
-    <h1>Invalid channel type</h1>
+    <h1>{{ txt(session['lang'], 'Invalid channel type<') }}/h1>
   {% endif %}
   </div>
 {% endblock %}

@@ -1224,3 +1224,15 @@ input.radio-checkbox[type=radio] + label {
 .subtitles-modal-input .dropdown-divider {
     border-top: 0.1rem solid var(--d-g4);
 }
+/* language change */
+.lang-svg-div svg {
+    width: 2rem;
+    height: 2rem;
+}
+.lang-svg-list {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+.lang-dropdown a {
+    cursor: pointer;
+}

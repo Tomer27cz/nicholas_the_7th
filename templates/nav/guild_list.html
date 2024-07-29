@@ -4,10 +4,10 @@
 
 {% block content %}
   <div class="div-align margin-1">
-    <h2>{{ txt(lang, 'The Bot is in') }}: {{ guilds | sum(attribute='connected') }} {{ txt(lang, 'servers') }}</h2>
+    <h2>{{ txt(session['lang'], 'The Bot is in') }}: {{ guilds | sum(attribute='connected') }} {{ txt(session['lang'], 'servers') }}</h2>
   </div>
   <div class="picker">
-    <h3>{{ txt(lang, 'Please select a server to get started' )}}</h3>
+    <h3>{{ txt(session['lang'], 'Please select a server to get started' )}}</h3>
     <br/>
     <section class="d-cards">
       {% for guild_object in guilds %}
@@ -37,7 +37,7 @@
     <br/>
   </div>
   <div class="div-align margin-2">
-    <h2>{{ txt(lang, 'Your server is not here?') }} <a href="/invite" class="btn btn-primary btn-lg">{{ txt(lang, 'Invite the bot' ) }}</a></h2>
+    <h2>{{ txt(session['lang'], 'Your server is not here?') }} <a href="/invite" class="btn btn-primary btn-lg">{{ txt(session['lang'], 'Invite the bot' ) }}</a></h2>
   </div>
   <br><br>
 {% endblock %}

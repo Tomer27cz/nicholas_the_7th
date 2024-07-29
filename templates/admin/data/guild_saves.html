@@ -9,7 +9,7 @@
     {% for error in errors %}
       <div class="alert alert-danger div-align alert-dismissible fade show sticky-top" role="alert">
         {{ error }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ txt(session['lang'], 'Close') }}"></button>
       </div>
     {% endfor %}
   {% endif %}
@@ -17,12 +17,12 @@
     {% for message in messages %}
       <div class="alert alert-success div-align alert-dismissible fade show sticky-top" role="alert">
         {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ txt(session['lang'], 'Close') }}"></button>
       </div>
     {% endfor %}
   {% endif %}
 
-  <a href="/admin/guild/{{ data.id }}" class="btn btn-primary">Return to Guild Dashboard</a>
+  <a href="/admin/guild/{{ data.id }}" class="btn btn-primary">{{ txt(session['lang'], 'Return to Guild Dashboard') }}</a>
 
   {% if saves_count > 0 %}
     {% for i in range(ceil(saves_count/5)) %}
@@ -36,7 +36,7 @@
   {% else %}
   <div class="q-container display-block">
     <div class="align-center">
-      <h3>No Saves Found</h3>
+      <h3>{{ txt(session['lang'], 'No Saves Found') }}</h3>
     </div>
   </div>
   {% endif %}

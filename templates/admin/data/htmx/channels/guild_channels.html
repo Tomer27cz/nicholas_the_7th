@@ -2,7 +2,7 @@
   <div class="div-login g-channels-height">
     <div class="q-div">
       <div class="q-item1">
-        <p class="q-text q-1">Name</p>
+        <p class="q-text q-1">{{ txt(session['lang'], 'Name') }}</p>
         <p class="q-text q-2">{{ channel.name }}</p>
       </div>
     </div>
@@ -12,11 +12,11 @@
         <p class="q-text q-2">{{ channel.id }}</p>
       </div>
       <div class="q-item1">
-        <p class="q-text q-1">Created at</p>
+        <p class="q-text q-1">{{ txt(session['lang'], 'Created at') }}</p>
         <p class="q-text q-2">{{ channel.created_at }}</p>
       </div>
       <div class="q-item1">
-        <p class="q-text q-1">Members</p>
+        <p class="q-text q-1">{{ txt(session['lang'], 'Members') }}</p>
         <p class="q-text q-2">{{ channel.member_count }}</p>
       </div>
     </div>
@@ -30,7 +30,7 @@
                  aria-controls="flush-collapse{{ channel.id }}"
                  hx-get="/admin/guild/{{ guild_id }}/channels/htmx?type={{ channel_type }}_members&index=0&channel_id={{ channel.id }}"
                  hx-swap="outerHTML" hx-target="#accordion{{ channel.id }}_content" hx-trigger="click">
-                <h4>Users in Channel</h4>
+                <h4>{{ txt(session['lang'], 'Users in Channel') }}</h4>
                 <div class="text-center">
                   <div class="spinner-border text-primary htmx-indicator" role="status" id="spinner{{i}}" style="width: 2rem; height: 2rem;"></div>
                 </div>
