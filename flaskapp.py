@@ -157,6 +157,8 @@ def inject_data():
 
 @app.before_request
 def make_session_permanent():
+    if not flask_session.get('lang', None):
+        flask_session['lang'] = 'en'
     flask_session.permanent = True
 
 # @app.teardown_appcontext
@@ -563,7 +565,7 @@ async def htmx_search(guild_id):
     key = request.args.get('key')
     if key != db_key:
         return abort(403, 'Invalid key')
-    
+
     act = request.args.get('act')
     if act == 'youtube':
         sp = request.args.get('sp', 'videos')
