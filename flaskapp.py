@@ -116,7 +116,7 @@ badge_dict_new = {
 
 # --------------------------------------------- WEB SERVER -------------------------------------------------------------
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static', template_folder='templates')
 app.config['SECRET_KEY'] = config.WEB_SECRET_KEY
 
 file_path = os.path.join(os.path.abspath(os.getcwd()), 'db', 'database.db')
@@ -132,7 +132,11 @@ with app.app_context():
 
 @app.route('/favicon.ico')
 def favicon():
-    return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon/favicon.ico', mimetype='image/vnd.microsoft.icon')
+    return send_from_directory(app.static_folder, 'favicon/favicon.ico', mimetype='image/vnd.microsoft.icon')
+
+@app.route('/robots.txt')
+def robots():
+    return send_from_directory(app.static_folder, 'robots.txt', mimetype='text/plain')
 
 @app.context_processor
 def inject_data():
