@@ -138,13 +138,13 @@ async def list_command_def(ctx, glob: GlobalVars, list_type: Literal['queue', 'h
                 add = f'**{txt(guild_id, glob, f"{list_type.upper()} #")}{index}**  `{convert_duration(val.duration)}`  [`{val.title}`](<{val.url}>) \n'
 
                 if len(message) + len(add) > 2000:
-                    message = ''
-
                     if ephemeral:
                         await ctx.send(message, ephemeral=ephemeral, mention_author=False)
+                        message = ''
                         continue
 
                     await ctx.message.channel.send(content=message, mention_author=False)
+                    message = ''
                     continue
 
                 message = message + add

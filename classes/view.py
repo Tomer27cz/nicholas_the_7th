@@ -130,10 +130,9 @@ class SearchOptionView(View):
             self.glob = glob
             self.data = search_data
             self.message = None
-            self.completed = False
 
     async def on_timeout(self) -> None:
-        if self.completed:
+        if self.is_finished():
             return
 
         for item in self.children:
@@ -155,7 +154,7 @@ class SearchOptionView(View):
         if self.from_play:
             await commands.player.play_def(self.ctx, self.glob)
 
-        self.completed = True
+        self.stop()
 
     # noinspection PyUnusedLocal
     @discord.ui.button(emoji=react_dict['1'], style=discord.ButtonStyle.blurple, custom_id='1')
@@ -202,6 +201,9 @@ class PlaylistOptionView(View):
             self.message = None
 
     async def on_timeout(self) -> None:
+        if self.is_finished():
+            return
+
         for item in self.children:
             item.disabled = True
 
@@ -225,6 +227,8 @@ class PlaylistOptionView(View):
         if self.from_play:
             await commands.player.play_def(self.ctx, self.glob)
 
+        self.stop()
+
     # noinspection PyUnusedLocal
     @discord.ui.button(label='No', style=discord.ButtonStyle.blurple)
     async def callback_2(self, interaction, button):
@@ -238,6 +242,8 @@ class PlaylistOptionView(View):
 
         if self.from_play:
             await commands.player.play_def(self.ctx, self.glob)
+
+        self.stop()
 
 class OptionView(View):
     def __init__(self, ctx, glob: GlobalVars, options: list[int], option_type: str):

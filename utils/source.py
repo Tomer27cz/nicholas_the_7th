@@ -71,9 +71,11 @@ def format_subtitles(subtitles: dict, subtitle_type: str='captions') -> dict:
         if first_ext:
             url_template = first_ext[0]['url']
             if subtitle_type == 'captions':
-                url_template = url_template[:url_template.index('&tlang=') + 7]
+                if '&tlang=' in url_template:
+                    url_template = url_template[:url_template.index('&tlang=') + 7]
             else:
-                url_template = url_template[:url_template.index('&lang=') + 6]
+                if '&lang=' in url_template:
+                    url_template = url_template[:url_template.index('&lang=') + 6]
 
     subtitle_dict = {
         'en': None,
