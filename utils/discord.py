@@ -88,7 +88,7 @@ def create_embed(glob: GlobalVars, video, name: str, guild_id: int, embed_colour
         return create_radio_embed(glob, video, name, guild_id, embed_colour)
 
     try:
-        requested_by = f'<@{glob.bot.get_user(video.author['id']).mention}>'
+        requested_by = f'{glob.bot.get_user(video.author['id']).mention}'
     except AttributeError:
         requested_by = video.author['name']
 
@@ -130,7 +130,7 @@ def create_radio_embed(glob: GlobalVars, video, name: str, guild_id: int, embed_
     :return: discord.Embed
     """
     try:
-        requested_by = f'<@{glob.bot.get_user(video.author['id']).mention}>'
+        requested_by = f'{glob.bot.get_user(video.author['id']).mention}'
     except AttributeError:
         requested_by = video.author['name']
 
