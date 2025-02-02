@@ -8,10 +8,6 @@ It is not meant to be used by anyone else, but if you want to use it, feel free 
 
 [![Dashboard](https://raw.githubusercontent.com/Tomer27cz/nicholas_the_7th/master/.github/dashboard.png)](#readme)
 
-## [Invite](https://discord.com/api/oauth2/authorize?client_id=1007004463933952120&permissions=3198017&scope=bot)
-
-The bot is currently hosted by me. So if you want to, you can [Invite](https://discord.com/api/oauth2/authorize?client_id=1007004463933952120&permissions=3198017&scope=bot) him.
-
 ## [Setup Guide](.github/SETUP.md)
 
 ## Music
