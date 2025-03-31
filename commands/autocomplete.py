@@ -1,4 +1,4 @@
-from youtubesearchpython.__future__ import CustomSearch, SearchMode, Search
+from youtube_search_python.__future__ import CustomSearch, SearchMode, Search
 
 from classes.video_class import Queue
 from classes.typed_dictionaries import TuneInSearch, RadioGardenSearch, WebSearchResult

@@ -1,4 +1,4 @@
-from youtubesearchpython.__future__ import VideosSearch
+from youtube_search_python.__future__ import VideosSearch
 
 from classes.video_class import Queue
 from classes.typed_dictionaries import VideoInfo, VideoAuthor

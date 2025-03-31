@@ -1,8 +1,7 @@
-discord
+discord.py
 dnspython
 PyNaCl
 async-timeout
-youtube-search-python
 asyncio
 requests
 beautifulsoup4

@@ -1,5 +1,5 @@
 from __future__ import annotations
-from youtubesearchpython.__future__ import Video
+from youtube_search_python.__future__ import Video
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -16,7 +16,7 @@ import utils.save
 
 from sclib import Track
 from time import time
-# from youtubesearchpython import Video
+# from youtube_search_python import Video
 
 import xmltodict
 import aiohttp

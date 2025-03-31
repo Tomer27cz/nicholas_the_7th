@@ -1,6 +1,6 @@
 import traceback
 
-import youtubesearchpython.__future__ as ytsp
+import youtube_search_python.__future__ as ytsp
 from classes.data_classes import ReturnData
 from classes.video_class import Queue
 from classes.typed_dictionaries import VideoInfo, RadioGardenInfo, RadioInfoDict, TuneInDescribe, RadiosJSON
